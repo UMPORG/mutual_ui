@@ -11,7 +11,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.4.0"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.5.0"
 ```
 
 ```js
@@ -107,13 +107,13 @@ the bottom; page = `PageHeader` + content), adapted to who uses the app:
   and `<PreferenciasScript />` inside `<head>`. **Remove `next-themes`** (and
   every local theme toggle, theme page and `d` hotkey): the theme is one of
   the Acessibilidade choices (Automático / Claro / Escuro / Alto contraste).
-- Put `<AcessibilidadeMenu cookieDomain={process.env.PREFERENCIAS_COOKIE_DOMAIN} />`
+- Put `<AcessibilidadeMenu />`
   where people always see it: the public header (Eventos, Portal, QR), the
   desk shell's sidebar footer or top bar (`tone="ink"` on the dark sidebar),
   and the mobile top bar (`compacto`). Link `declaracaoHref` to the app's
   accessibility statement when it has one.
-- `PREFERENCIAS_COOKIE_DOMAIN` (server env, runtime): `.mutualismo.pt` in
-  production so the choices follow the person across apps; unset locally.
+- The choices follow the person across apps because every app shares one
+  origin (ADR 0004) — no cookie-domain setting.
 - Never hard-code light-only colours: everything must work in Claro, Escuro,
   Alto contraste, at 150% text and with Espaçamento amplo (no clipped text,
   no overlapping, no horizontal scroll at 390px).
@@ -207,15 +207,28 @@ inline script; it has no effect in production.
 - Show the person's **profile name** (`apps.<app>.nome`) and organisation in
   user cards and badges, never a login role.
 
-## Single sign-on (see `src/sso.ts`)
+## Um só endereço, subcaminhos (ADR 0004) — v0.5 (breaking)
 
-- The Portal hosts the only login (`/login`) and logout (`/sair`).
-- Apps redirect a missing session to `portalLoginUrl(PORTAL_URL, publicRequestUrl(req.url, APP_URL), "sem-sessao")`.
-- An app refusing a role shows its own `/sem-acesso` page with a link to the
-  Portal — it never calls `signOut()`.
-- Logout: `signOut()` then `location.href = portalAfterLogoutUrl(PORTAL_URL)`.
-- Cross-app links go through `portalAppUrl(PORTAL_URL, app)` (`/ir/<app>`).
-- The Portal validates `next` with `safeReturnUrl(next, allowedAppOrigins)`.
+All apps live on ONE origin (`MUTUAL_URL`, production
+`https://mutual.mutualismo.pt`) at fixed paths (`CAMINHOS`): Portal `/`,
+`/backoffice`, `/eventos` (public site; organisers at `/eventos/gestao`),
+`/simplex`, `/saude`, `/qr`, Cérebro `/api`, help centre `/ajuda`. No
+sub-domains. The Cartão Digital keeps its own host.
+
+- Next apps set `basePath` to their path (Portal: none). Browsers call the
+  Cérebro at `/api/v1` and `/api/auth` on the same origin — no rewrites, no
+  build-time `CEREBRO_URL`. Server code uses `CEREBRO_URL_INTERNO` (optional)
+  or `${MUTUAL_URL}/api`.
+- Session and preference cookies are host-only. There is no cookie domain,
+  `PORTAL_URL`, `APP_URL` or `PORTAL_*_URL`.
+- Login: `portalLoginUrl(caminhoDoPedido(request.url), "sem-sessao")` (a
+  relative `/login?next=…`); `safeReturnUrl` accepts same-origin paths only;
+  logout → `portalAfterLogoutUrl()`.
+- Emails and other out-of-band links: `urlAbsoluta(MUTUAL_URL, caminho)`.
+- "No access": render `<SemAcesso app motivo utilizador organizacao
+  variasOrganizacoes acaoSair />` — the same page and wording everywhere.
+- `localStorage` keys must be prefixed per app (`<app>.`): all apps share
+  the origin.
 
 ## Scripts
 

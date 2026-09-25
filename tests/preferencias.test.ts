@@ -27,9 +27,9 @@ test("reads the cookie among others", () => {
   assert.equal(p.sublinharLigacoes, true);
 });
 
-test("cookie is scoped to the parent domain when given", () => {
-  assert.match(cookiePreferencias(PREFERENCIAS_PADRAO, ".mutualismo.pt"), /Domain=\.mutualismo\.pt/);
+test("cookie is host-only (same origin for every app)", () => {
   assert.doesNotMatch(cookiePreferencias(PREFERENCIAS_PADRAO), /Domain=/);
+  assert.match(cookiePreferencias(PREFERENCIAS_PADRAO), /Path=\//);
 });
 
 test("automatic theme follows the OS", () => {

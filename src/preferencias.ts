@@ -1,9 +1,8 @@
 /**
  * Display preferences of the MUTU@L ecosystem ("Acessibilidade").
  *
- * One cookie (`mutual_pref`) holds the choices; it is written for the parent
- * domain when one is given (e.g. `.mutualismo.pt`), so the same choices apply
- * in every app. On localhost cookies are shared across ports already.
+ * One host-only cookie (`mutual_pref`) holds the choices. Every app lives on
+ * the same origin (ADR 0004), so the same choices apply in every app.
  *
  * The choices are applied as attributes on <html> before the first paint by
  * `PREFERENCIAS_SCRIPT` (inline in <head>), and live by `aplicarPreferencias`.
@@ -78,14 +77,13 @@ export function lerCookiePreferencias(cookieHeader: string | null | undefined): 
   return descodificarPreferencias(m?.[1]);
 }
 
-export function cookiePreferencias(p: Preferencias, dominio?: string | null): string {
+export function cookiePreferencias(p: Preferencias): string {
   const partes = [
     `${PREFERENCIAS_COOKIE}=${encodeURIComponent(codificarPreferencias(p))}`,
     "Path=/",
     `Max-Age=${UM_ANO}`,
     "SameSite=Lax",
   ];
-  if (dominio) partes.push(`Domain=${dominio}`);
   if (typeof location !== "undefined" && location.protocol === "https:") partes.push("Secure");
   return partes.join("; ");
 }

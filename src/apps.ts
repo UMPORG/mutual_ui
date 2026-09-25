@@ -5,9 +5,11 @@
  */
 
 export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr" | "saude" | "cartao";
+/** Apps served under the shared host (ADR 0004). The Cartão Digital has its own. */
+export type AppNoEndereco = Exclude<MutualAppId, "cartao">;
 
 export interface MutualApp {
-  id: MutualAppId;
+  id: Exclude<AppNoEndereco, "portal">;
   nome: string;
   /** One line, shown under the name in the Portal and in the app switcher. */
   descricao: string;

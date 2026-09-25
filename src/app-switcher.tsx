@@ -4,7 +4,7 @@ import { useId, useRef } from "react";
 import { ChevronDown, LayoutGrid } from "lucide-react";
 import { MUTUAL_APPS, type MutualAppId } from "./apps";
 import { AppMark } from "./brand";
-import { portalAppUrl } from "./sso";
+import { CAMINHOS } from "./sso";
 import { cx } from "./cx";
 
 /**
@@ -17,14 +17,12 @@ import { cx } from "./cx";
  */
 export function AppSwitcher({
   current,
-  portalUrl,
   disponiveis,
   tone = "ink",
   className,
   label = "Aplicações",
 }: {
   current: MutualAppId;
-  portalUrl: string;
   /** Apps the person can open in the active organisation — the keys of
    *  `apps` from `GET /api/v1/acessos/eu` whose value is not null (public
    *  apps such as the Validador QR are always listed). */
@@ -79,7 +77,7 @@ export function AppSwitcher({
           {apps.map((a) => (
             <li key={a.id}>
               <a
-                href={portalAppUrl(portalUrl, a.id)}
+                href={CAMINHOS[a.id]}
                 className="flex min-h-14 items-center gap-3 rounded-lg px-3 py-2 hover:bg-accent focus-visible:bg-accent"
               >
                 <AppMark app={a.id} size={36} />
@@ -93,7 +91,7 @@ export function AppSwitcher({
         </ul>
         <div className="mt-1 border-t border-border pt-1">
           <a
-            href={portalAppUrl(portalUrl, "portal")}
+            href={CAMINHOS.portal}
             className="flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-brand hover:bg-accent"
           >
             <LayoutGrid size={18} aria-hidden />

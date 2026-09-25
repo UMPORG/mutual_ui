@@ -8,6 +8,7 @@ export * from "./preferencias";
 export { PreferenciasScript } from "./preferencias-script";
 export { AcessibilidadeMenu } from "./acessibilidade";
 export { AsciiFundo, iniciarAsciiFundo, type AsciiFundoProps } from "./ascii-fundo";
+export { SemAcesso, type MotivoSemAcesso } from "./sem-acesso";
 export { cx } from "./cx";
 export {
   DemoPreencher,

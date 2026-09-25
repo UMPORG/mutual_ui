@@ -1,47 +1,43 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { portalLoginUrl, portalAppUrl, publicRequestUrl, safeReturnUrl } from "../src/sso.ts";
+import {
+  CAMINHOS,
+  caminhoDoPedido,
+  portalAfterLogoutUrl,
+  portalLoginUrl,
+  safeReturnUrl,
+  urlAbsoluta,
+} from "../src/sso.ts";
 
-const allowed = ["https://eventos.mutualismo.pt", "https://simplex.mutualismo.pt/"];
 const TAB = String.fromCharCode(9);
 const LF = String.fromCharCode(10);
 
-test("safeReturnUrl accepts allowed origins and relative paths", () => {
-  assert.equal(safeReturnUrl("https://eventos.mutualismo.pt/dashboard?x=1", allowed), "https://eventos.mutualismo.pt/dashboard?x=1");
-  assert.equal(safeReturnUrl("https://simplex.mutualismo.pt/", allowed), "https://simplex.mutualismo.pt/");
-  assert.equal(safeReturnUrl("/apps", allowed), "/apps");
-  assert.equal(safeReturnUrl("/a/../b?x=1#y", allowed), "/b?x=1#y");
-});
-
-test("safeReturnUrl refuses open redirects", () => {
+test("safeReturnUrl accepts same-origin paths only", () => {
+  assert.equal(safeReturnUrl("/simplex/associacao?x=1"), "/simplex/associacao?x=1");
+  assert.equal(safeReturnUrl("/a/../b?x=1#y"), "/b?x=1#y");
   for (const bad of [
+    "https://mutual.mutualismo.pt/simplex", // absolute URLs are refused
     "https://evil.pt/",
-    "https://eventos.mutualismo.pt.evil.pt/",
     "//evil.pt/x",
-    "/" + String.fromCharCode(92) + "evil.pt", // "/\evil.pt"
+    "/" + String.fromCharCode(92) + "evil.pt",
     "javascript:alert(1)",
-    "http://eventos.mutualismo.pt/", // scheme differs → different origin
-    "/" + TAB + "/evil.pt", // browsers strip the tab → "//evil.pt"
+    "/" + TAB + "/evil.pt",
     "/" + LF + "/evil.pt",
     " /evil",
-    "https://evil@eventos.mutualismo.pt/",
-    "https://user:pw@eventos.mutualismo.pt/",
     "/" + "x".repeat(3000),
     "",
     null,
-  ]) assert.equal(safeReturnUrl(bad as string, allowed), null, JSON.stringify(bad));
+  ]) assert.equal(safeReturnUrl(bad as string), null, JSON.stringify(bad));
 });
 
-test("portal URLs", () => {
-  assert.equal(
-    portalLoginUrl("https://portal.mutualismo.pt/", "https://eventos.mutualismo.pt/a?b=1", "sem-sessao"),
-    "https://portal.mutualismo.pt/login?next=https%3A%2F%2Feventos.mutualismo.pt%2Fa%3Fb%3D1&motivo=sem-sessao",
-  );
-  assert.equal(portalAppUrl("https://portal.mutualismo.pt", "eventos"), "https://portal.mutualismo.pt/ir/eventos");
-  assert.equal(portalAppUrl("https://portal.mutualismo.pt/", "portal"), "https://portal.mutualismo.pt/");
+test("portal login URLs are relative", () => {
+  assert.equal(portalLoginUrl("/simplex/a?b=1", "sem-sessao"), "/login?next=%2Fsimplex%2Fa%3Fb%3D1&motivo=sem-sessao");
+  assert.equal(portalLoginUrl("https://evil.pt/"), "/login");
+  assert.equal(portalAfterLogoutUrl(), "/login?motivo=saiu");
 });
 
-test("publicRequestUrl swaps the container origin for the public one", () => {
-  assert.equal(publicRequestUrl("http://0.0.0.0:3003/dashboard?a=1", "https://eventos.mutualismo.pt/"), "https://eventos.mutualismo.pt/dashboard?a=1");
-  assert.equal(publicRequestUrl("http://localhost:3003/x", undefined), "http://localhost:3003/x");
+test("paths and absolute links", () => {
+  assert.equal(CAMINHOS.eventos, "/eventos");
+  assert.equal(caminhoDoPedido("http://0.0.0.0:3005/simplex/admin?x=1"), "/simplex/admin?x=1");
+  assert.equal(urlAbsoluta("https://mutual.mutualismo.pt/", "/eventos/gestao"), "https://mutual.mutualismo.pt/eventos/gestao");
 });

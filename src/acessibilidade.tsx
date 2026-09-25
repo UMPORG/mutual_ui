@@ -55,19 +55,17 @@ function lerAtual(): Preferencias {
 
 /**
  * "Acessibilidade" — the same menu in every MUTU@L app. The choices are kept
- * in a cookie shared by the whole ecosystem (`cookieDomain`, e.g.
- * `.mutualismo.pt`), so changing them in one app changes them everywhere.
+ * in one host-only cookie; every app lives on the same origin (ADR 0004), so
+ * changing them in one app changes them everywhere.
  *
  * Needs `PreferenciasScript` in the root layout <head> (no flash on load).
  */
 export function AcessibilidadeMenu({
-  cookieDomain,
   tone = "default",
   compacto = false,
   declaracaoHref,
   className,
 }: {
-  cookieDomain?: string | null;
   tone?: "default" | "ink";
   /** Icon-only trigger (the name stays available to screen readers).
    *  "md" = icon only below the md breakpoint, label from md up. */
@@ -111,13 +109,13 @@ export function AcessibilidadeMenu({
     (parcial: Partial<Preferencias>) => {
       setPrefs((atual) => {
         const nova = { ...atual, ...parcial };
-        document.cookie = cookiePreferencias(nova, cookieDomain);
+        document.cookie = cookiePreferencias(nova);
         aplicarPreferencias(nova);
         window.dispatchEvent(new CustomEvent("mutual:preferencias", { detail: nova }));
         return nova;
       });
     },
-    [cookieDomain],
+    [],
   );
 
   const alterado = JSON.stringify(prefs) !== JSON.stringify(PREFERENCIAS_PADRAO);
