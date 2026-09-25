@@ -99,9 +99,11 @@ html.contraste {
   --success: #0b4d20;
   --success-soft: #ffffff;
   --success-soft-foreground: #0b4d20;
-  --warning: #6b2d00;
-  --warning-soft: #ffffff;
-  --warning-soft-foreground: #6b2d00;
+  /* Warning must never look like destructive: black on yellow. */
+  --warning: #5c4a00;
+  --warning-foreground: #ffffff;
+  --warning-soft: #ffe34d;
+  --warning-soft-foreground: #000000;
   --info: #0b2a8a;
   --info-soft: #ffffff;
   --info-soft-foreground: #0b2a8a;
@@ -127,3 +129,13 @@ html.contraste {
 html.contraste :where(a) { text-decoration: underline; }
 html.contraste :where([class*="border"]) { border-color: #000000; }
 html.contraste .mutual-ascii { display: none; }
+
+/* Printing ignores the screen preferences: normal size, light colours,
+   default spacing and typeface, no reading guide, no animation. */
+@media print {
+  html[data-texto] { font-size: 100% !important; }
+  html.dark, html.contraste { color-scheme: light; }
+  html[data-espaco="amplo"] body { line-height: normal; letter-spacing: normal; word-spacing: normal; }
+  html[data-letra="legivel"] body { font-family: inherit; }
+  .mutual-guia-leitura, .mutual-ascii { display: none !important; }
+}

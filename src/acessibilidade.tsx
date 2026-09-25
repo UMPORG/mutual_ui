@@ -89,11 +89,19 @@ export function AcessibilidadeMenu({
     };
     sync();
     window.addEventListener("focus", sync);
+    // Other copies of this menu on the same page (sidebar, top bar, a
+    // settings page) announce their changes; follow them.
+    const onOutro = (e: Event) => {
+      const p = (e as CustomEvent<Preferencias>).detail;
+      if (p) setPrefs(p);
+    };
+    window.addEventListener("mutual:preferencias", onOutro);
     const mq = matchMedia("(prefers-color-scheme: dark)");
     const onScheme = () => aplicarPreferencias(lerAtual());
     mq.addEventListener("change", onScheme);
     return () => {
       window.removeEventListener("focus", sync);
+      window.removeEventListener("mutual:preferencias", onOutro);
       mq.removeEventListener("change", onScheme);
     };
   }, []);
@@ -321,16 +329,31 @@ function LinhaInterruptor({
   );
 }
 
+// Only the first mounted menu draws the reading guide.
+let guiaDono: symbol | null = null;
+
 function GuiaLeitura({ ativo }: { ativo: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
+  const [dono, setDono] = useState(false);
   useEffect(() => {
-    if (!ativo) return;
+    const eu = Symbol("guia");
+    if (guiaDono === null) {
+      guiaDono = eu;
+      setDono(true);
+    }
+    return () => {
+      if (guiaDono === eu) guiaDono = null;
+    };
+  }, []);
+  useEffect(() => {
+    if (!ativo || !dono) return;
     const mover = (e: PointerEvent) => {
       if (ref.current) ref.current.style.top = `${e.clientY}px`;
     };
     window.addEventListener("pointermove", mover, { passive: true });
     return () => window.removeEventListener("pointermove", mover);
-  }, [ativo]);
+  }, [ativo, dono]);
+  if (!dono) return null;
   return <div ref={ref} aria-hidden className="mutual-guia-leitura" style={{ top: "50%" }} />;
 }
 
