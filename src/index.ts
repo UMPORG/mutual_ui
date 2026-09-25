@@ -4,4 +4,8 @@ export * from "./brand";
 export * from "./app-switcher";
 export * from "./page-header";
 export * from "./feedback";
+export * from "./preferencias";
+export { PreferenciasScript } from "./preferencias-script";
+export { AcessibilidadeMenu } from "./acessibilidade";
+export { AsciiFundo, iniciarAsciiFundo, type AsciiFundoProps } from "./ascii-fundo";
 export { cx } from "./cx";

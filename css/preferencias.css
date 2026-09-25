@@ -1,0 +1,129 @@
+/*
+ * Reactions to the "Acessibilidade" preferences (src/preferencias.ts).
+ * Attributes live on <html>; every app gets the same behaviour.
+ */
+
+/* Tamanho do texto — scales rem, so the whole UI grows, not only paragraphs. */
+html[data-texto="112"] { font-size: 112.5%; }
+html[data-texto="125"] { font-size: 125%; }
+html[data-texto="150"] { font-size: 150%; }
+
+/* Espaçamento amplo — the WCAG 1.4.12 text-spacing values. */
+html[data-espaco="amplo"] body {
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  word-spacing: 0.16em;
+}
+html[data-espaco="amplo"] :where(p, li, dd) { line-height: 1.75; }
+html[data-espaco="amplo"] :where(p) + :where(p) { margin-top: 1em; }
+
+/* Letra de leitura fácil. */
+html[data-letra="legivel"] body,
+html[data-letra="legivel"] :where(button, input, select, textarea) {
+  font-family: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Verdana, ui-sans-serif, sans-serif;
+}
+
+/* Sublinhar ligações. */
+html[data-ligacoes="sublinhadas"] a:not([data-slot="button"]):not([role="button"]) {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* Destacar o foco — a thick ring with a contrasting halo, on every element. */
+html[data-foco="destacado"] :focus-visible {
+  outline: 4px solid var(--foco-destacado, #1c1917) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 8px var(--foco-halo, #facc15) !important;
+  border-radius: 6px;
+}
+html.dark[data-foco="destacado"] { --foco-destacado: #fafaf9; --foco-halo: #a16207; }
+
+/* Reduzir movimento — the user's choice, and the OS setting. */
+html[data-movimento="reduzido"] *,
+html[data-movimento="reduzido"] *::before,
+html[data-movimento="reduzido"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Guia de leitura — a band that follows the pointer (element added by the
+   Acessibilidade menu). */
+.mutual-guia-leitura {
+  position: fixed;
+  inset-inline: 0;
+  height: 3.25rem;
+  pointer-events: none;
+  z-index: 2147483000;
+  box-shadow: 0 0 0 200vmax rgb(0 0 0 / 0.38);
+  border-block: 2px solid var(--brand);
+  transform: translateY(-50%);
+}
+html:not([data-guia="ativo"]) .mutual-guia-leitura { display: none; }
+
+/* Alto contraste — black on white, no tints, strong borders. Status keeps its
+   meaning through dark, saturated hues that pass 7:1 on white. */
+html.contraste {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --secondary: #ffffff;
+  --secondary-foreground: #000000;
+  --muted: #ffffff;
+  --muted-foreground: #000000;
+  --accent: #ececec;
+  --accent-foreground: #000000;
+  --border: #000000;
+  --input: #000000;
+  --ring: #000000;
+  --brand: #0b4d20;
+  --brand-hover: #073a17;
+  --brand-foreground: #ffffff;
+  --brand-soft: #ffffff;
+  --brand-soft-foreground: #000000;
+  --primary: #0b4d20;
+  --primary-foreground: #ffffff;
+  --success: #0b4d20;
+  --success-soft: #ffffff;
+  --success-soft-foreground: #0b4d20;
+  --warning: #6b2d00;
+  --warning-soft: #ffffff;
+  --warning-soft-foreground: #6b2d00;
+  --info: #0b2a8a;
+  --info-soft: #ffffff;
+  --info-soft-foreground: #0b2a8a;
+  --destructive: #8b0000;
+  --destructive-soft: #ffffff;
+  --destructive-soft-foreground: #8b0000;
+  --sidebar: #000000;
+  --sidebar-foreground: #ffffff;
+  --sidebar-muted-foreground: #ffffff;
+  --sidebar-accent: #1f1f1f;
+  --sidebar-border: #ffffff;
+  --sidebar-primary: #ffffff;
+  --app-accent: #000000;
+  --app-accent-soft: #ffffff;
+  --app-accent-on-ink: #ffffff;
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+}
+html.contraste :where(a) { text-decoration: underline; }
+html.contraste :where([class*="border"]) { border-color: #000000; }
+html.contraste .mutual-ascii { display: none; }

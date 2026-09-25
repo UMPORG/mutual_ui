@@ -1,8 +1,12 @@
-/* Entry point: tokens + Tailwind bindings + class scanning of the shared
-   components (so their utilities are generated in the consuming app). */
+/* Entry point: tokens + Tailwind bindings + depth + accessibility
+   preferences + class scanning of the shared components (so their
+   utilities are generated in the consuming app). */
 @import "./tokens.css";
 @import "./theme.css";
+@import "./superficies.css";
+@import "./preferencias.css";
 @source "../src";
 
-/* Every MUTU@L app themes with a `.dark` class on <html> (next-themes). */
+/* Every MUTU@L app themes with a `.dark` class on <html> (set by the
+   Acessibilidade preferences script). */
 @custom-variant dark (&:is(.dark *));

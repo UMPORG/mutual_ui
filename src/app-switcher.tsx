@@ -68,7 +68,7 @@ export function AppSwitcher({
       <div
         id={popId}
         popover="auto"
-        className="fixed m-0 w-[min(22rem,calc(100vw-2rem))] rounded-xl border border-border bg-popover p-2 text-popover-foreground shadow-xl"
+        className="fixed m-0 w-[min(22rem,calc(100vw-2rem))] m-float p-2"
         onToggle={place}
       >
         <p className="px-3 pt-2 pb-1 text-sm font-semibold text-muted-foreground">Mudar de aplicação</p>

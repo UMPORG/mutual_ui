@@ -11,7 +11,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.1.2"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.2.0"
 ```
 
 ```js
@@ -98,6 +98,79 @@ the bottom; page = `PageHeader` + content), adapted to who uses the app:
   undo where the action is reversible.
 - No single-key global shortcuts (WCAG 2.1.4) — e.g. the old `d` theme key.
 - Theme: one control (in the user menu), values Sistema / Claro / Escuro.
+
+## v0.2 — Acessibilidade, profundidade, fundo animado, texto de produção
+
+### Acessibilidade (one menu, whole system)
+
+- Root layout: `<html lang="pt-PT" data-app="<id>" suppressHydrationWarning>`
+  and `<PreferenciasScript />` inside `<head>`. **Remove `next-themes`** (and
+  every local theme toggle, theme page and `d` hotkey): the theme is one of
+  the Acessibilidade choices (Automático / Claro / Escuro / Alto contraste).
+- Put `<AcessibilidadeMenu cookieDomain={process.env.PREFERENCIAS_COOKIE_DOMAIN} />`
+  where people always see it: the public header (Eventos, Portal, QR), the
+  desk shell's sidebar footer or top bar (`tone="ink"` on the dark sidebar),
+  and the mobile top bar (`compacto`). Link `declaracaoHref` to the app's
+  accessibility statement when it has one.
+- `PREFERENCIAS_COOKIE_DOMAIN` (server env, runtime): `.mutualismo.pt` in
+  production so the choices follow the person across apps; unset locally.
+- Never hard-code light-only colours: everything must work in Claro, Escuro,
+  Alto contraste, at 150% text and with Espaçamento amplo (no clipped text,
+  no overlapping, no horizontal scroll at 390px).
+
+### Profundidade (less flat)
+
+- Map the app's Button variants onto the shared classes:
+  `default` → `m-btn m-btn-primary`, `destructive` → `m-btn m-btn-destructive`,
+  `outline` → `m-btn m-btn-outline`, `secondary` → `m-btn m-btn-secondary`,
+  `ghost` → `m-btn m-btn-ghost` (keep the app's sizes/radius/focus classes).
+- Cards and panels: `m-surface` (clickable: add `m-surface-interactive`);
+  popovers, menus, dialogs: `m-float`; inputs/selects/textareas: `m-field`;
+  page background of shells and public pages: `m-canvas`.
+- High contrast flattens all of these automatically.
+
+### Fundo animado (`AsciiFundo`)
+
+- Only on entry and landing surfaces (Portal login and launcher header area,
+  Eventos home hero, QR first-visit screen, `/sem-acesso`), never behind work
+  screens, tables or forms people fill in daily.
+- Always mask the content area (`mascara`) so characters never run behind
+  text; keep the default top fade under a header. It pauses when hidden,
+  stops with Reduzir movimento and disappears in Alto contraste.
+
+### Tours
+
+- Never start a tour automatically. Offer it with a quiet "Ver como funciona"
+  button (page header or help page). No idle hints, no pop-ups on first
+  visit, no badges nagging to take a tour.
+
+### Voz e texto (production copy, all of Portugal)
+
+The apps are used in production by the UMP and by associações across the
+country. Text is for them, not for us:
+
+- Say what the person gets or must do, never how the system works. Banned in
+  UI text: "ecossistema", "SSO", "sessão partilhada", "Cérebro", "API",
+  "token", "proxy", "cookie" (except the cookie notice), "sistema de
+  design", internal app codes, English words.
+- Short, formal pt-PT (tratamento por "você" implícito; imperativos
+  "Indique", "Escolha", "Guarde"). One idea per sentence. No exclamation
+  marks, no emoji.
+- Headlines name the place: "Portal MUTU@L", "Entrar na MUTU@L",
+  "Eventos e formações". Sub-lines are optional and ≤ 1 line.
+- Examples:
+  - "Uma só entrada para as aplicações da UMP e das associações." →
+    "Uma só entrada para a MUTU@L."
+  - "Entre uma vez e passe de uma aplicação para outra sem voltar a indicar
+    a palavra-passe." → remove (it describes mechanics), or "Todas as
+    aplicações num só lugar."
+  - "Use o email e a palavra-passe da sua conta MUTU@L." → "Indique o seu
+    email e palavra-passe."
+  - "Acesso reservado às equipas da UMP e das associações. Se ainda não tem
+    conta, peça-a aos serviços da UMP." → "Ainda não tem conta? Contacte o
+    super administrador da sua organização."
+- Help text explains a field's meaning only when it isn't obvious; never
+  explain the obvious ("Carregue em Guardar para guardar").
 
 ## Single sign-on (see `src/sso.ts`)
 
