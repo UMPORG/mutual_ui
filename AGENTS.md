@@ -34,7 +34,10 @@ Release = bump `version`, commit, `git tag vX.Y.Z`, push the tag, then bump
 the `#vX.Y.Z` ref in each app and regenerate its lockfile. Apps never pin a
 branch.
 
-## Identidade visual v2 (2026-09-25) — replaces `mutual_meta/docs/identidade-visual.md` v1
+## Identidade visual v2 (2026-09-25) — full rationale in [docs/identidade-visual.md](docs/identidade-visual.md)
+
+This repo is the home of the visual identity (the former `mutual_meta`
+workspace was retired on 2026-09-25).
 
 1. **One brand.** Every app shares the neutrals, the MUTU@L green (`--brand`
    `#1f6f36`, from the flag, 6.2:1 on white) as `--primary`, the type (Geist),
