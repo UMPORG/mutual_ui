@@ -11,7 +11,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.3.3"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.4.0"
 ```
 
 ```js
@@ -197,6 +197,15 @@ NOT use `next/script` (`beforeInteractive` runs only once Next's JavaScript
 starts, so dark/high-contrast/large-text users see the default theme flash on
 slow connections). React may print a development-only notice about the
 inline script; it has no effect in production.
+
+## v0.4 — access comes from profiles, not roles (breaking)
+
+- `MUTUAL_APPS[i].roles` is gone; `publica: boolean` says whether an app
+  needs no login. `canUseApp`, `ROLE_LABELS` and `roleLabel` are gone.
+- `AppSwitcher` takes `disponiveis` = the app ids whose `apps.<id>` is not
+  null in `GET /api/v1/acessos/eu` (public apps are always listed).
+- Show the person's **profile name** (`apps.<app>.nome`) and organisation in
+  user cards and badges, never a login role.
 
 ## Single sign-on (see `src/sso.ts`)
 

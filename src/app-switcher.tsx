@@ -2,14 +2,14 @@
 
 import { useId, useRef } from "react";
 import { ChevronDown, LayoutGrid } from "lucide-react";
-import { canUseApp, MUTUAL_APPS, type MutualAppId } from "./apps";
+import { MUTUAL_APPS, type MutualAppId } from "./apps";
 import { AppMark } from "./brand";
 import { portalAppUrl } from "./sso";
 import { cx } from "./cx";
 
 /**
  * "Mudar de aplicação" — the same menu in every app. Lists the apps the
- * signed-in role can use and opens them through the Portal (`/ir/<app>`),
+ * person can use in the active organisation and opens them through the Portal (`/ir/<app>`),
  * so no app needs to know its siblings' URLs. With SSO the user lands
  * signed in.
  *
@@ -18,21 +18,24 @@ import { cx } from "./cx";
 export function AppSwitcher({
   current,
   portalUrl,
-  role,
+  disponiveis,
   tone = "ink",
   className,
   label = "Aplicações",
 }: {
   current: MutualAppId;
   portalUrl: string;
-  role?: string | null;
+  /** Apps the person can open in the active organisation — the keys of
+   *  `apps` from `GET /api/v1/acessos/eu` whose value is not null (public
+   *  apps such as the Validador QR are always listed). */
+  disponiveis: readonly MutualAppId[];
   tone?: "ink" | "default";
   className?: string;
   label?: string;
 }) {
   const id = useId().replace(/:/g, "");
   const popId = `mutual-apps-${id}`;
-  const apps = MUTUAL_APPS.filter((a) => a.id !== current && canUseApp(a, role));
+  const apps = MUTUAL_APPS.filter((a) => a.id !== current && (a.publica || disponiveis.includes(a.id)));
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Place the popover under its button (flipping up near the bottom edge).
