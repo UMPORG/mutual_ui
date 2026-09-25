@@ -9,3 +9,11 @@ export { PreferenciasScript } from "./preferencias-script";
 export { AcessibilidadeMenu } from "./acessibilidade";
 export { AsciiFundo, iniciarAsciiFundo, type AsciiFundoProps } from "./ascii-fundo";
 export { cx } from "./cx";
+export {
+  DemoPreencher,
+  preencherFormulario,
+  registarPreenchedor,
+  type CatalogoDemo,
+  type CenarioDemo,
+  type ValorDemo,
+} from "./demo-preencher";

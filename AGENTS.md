@@ -11,7 +11,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.2.3"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.3.0"
 ```
 
 ```js
@@ -171,6 +171,29 @@ country. Text is for them, not for us:
     super administrador da sua organização."
 - Help text explains a field's meaning only when it isn't obvious; never
   explain the obvious ("Carregue em Guardar para guardar").
+
+### Modo demonstração (`DemoPreencher`)
+
+The demo environment is used to present MUTU@L to UMP leadership and to
+associações. With `DEMO_MODE=true` (server env, runtime; never set in
+production) each app renders `<DemoPreencher ativo cenarios={…} />` once in
+its root layout:
+
+- Mark every form with `data-demo-form="<id>"` and give each field a `name`.
+- Keep the app's catalogue in `lib/demo/cenarios.ts`: for every form at least
+  "Dados válidos" and one scenario that shows the form's reaction to a
+  problem (validation error, full event, negative amount, expired card…).
+  Realistic Portuguese data only (names, NIF with valid check digit, IBAN
+  PT50, moradas reais de sedes fictícias) — never real people.
+- Non-native widgets (rich text, money cells, comboboxes) register with
+  `registarPreenchedor(formId, fn)`.
+- The demo seed in the Cérebro (`DEMO_MODE`) provides the matching data.
+
+### `PreferenciasScript` without React warnings
+
+In Next.js use `next/script` in the root layout:
+`<Script id="mutual-preferencias" strategy="beforeInteractive">{PREFERENCIAS_SCRIPT}</Script>`
+(`PreferenciasScript` stays for non-Next consumers).
 
 ## Single sign-on (see `src/sso.ts`)
 
