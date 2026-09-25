@@ -68,7 +68,7 @@ export function MutualWordmark({
         {nome && (
           <span
             className={cx(
-              "text-[0.8125rem] font-semibold tracking-wide",
+              "text-[0.875rem] font-semibold tracking-wide",
               tone === "ink" ? "text-app-accent-on-ink" : "text-app-accent",
             )}
           >

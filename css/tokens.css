@@ -39,7 +39,7 @@
   --accent: #f1f0ee;
   --accent-foreground: #292524;
   --border: #d6d3d1;
-  --input: #a8a29e; /* form borders need 3:1 against the page (WCAG 1.4.11) */
+  --input: #8f8983; /* form borders: 3.46:1 on white, 3.31:1 on --background (WCAG 1.4.11) */
   --ring: #1f6f36;
 
   /* shadcn contract: primary IS the brand. */
@@ -126,7 +126,7 @@
   --accent: #2a322d;
   --accent-foreground: #f4f5f3;
   --border: #3a443e;
-  --input: #5d6962;
+  --input: #6b7770; /* 3.43:1 on --card, 3.77:1 on --background */
   --ring: #7cc97a;
 
   --success: #4ade80;
