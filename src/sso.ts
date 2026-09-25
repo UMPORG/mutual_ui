@@ -59,8 +59,20 @@ export function publicRequestUrl(requestUrl: string, appUrl?: string | null): st
  * same-site relative path (starting with a single "/"). Anything else → null.
  */
 export function safeReturnUrl(next: string | null | undefined, allowedOrigins: readonly string[]): string | null {
-  if (!next) return null;
-  if (next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")) return next;
+  if (!next || next.length > 2048) return null;
+  // URL parsers strip tabs/newlines and trim spaces, so "/\t/evil.pt" would
+  // become "//evil.pt" in the browser. Refuse any control char or whitespace.
+  if (/[\u0000-\u001f\u007f\s]/.test(next)) return null;
+  if (next.startsWith("/")) {
+    // Resolve against a sentinel origin: a real same-site path stays on it.
+    const base = "https://same-site.invalid";
+    try {
+      const r = new URL(next, base);
+      return r.origin === base ? r.pathname + r.search + r.hash : null;
+    } catch {
+      return null;
+    }
+  }
   let u: URL;
   try {
     u = new URL(next);
@@ -68,6 +80,8 @@ export function safeReturnUrl(next: string | null | undefined, allowedOrigins: r
     return null;
   }
   if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+  // "https://evil@app/" goes to the app but reads like another site.
+  if (u.username || u.password) return null;
   const allowed = new Set(allowedOrigins.map((o) => {
     try { return new URL(o).origin; } catch { return null; }
   }).filter(Boolean));

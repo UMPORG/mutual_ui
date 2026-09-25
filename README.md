@@ -4,7 +4,7 @@ Tokens, brand, shell pieces and the single-sign-on contract shared by every
 MUTU@L application (Portal, Backoffice, Eventos, Simplex, Saúde, Validador QR).
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.1.0"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.1.1"
 ```
 
 ```css

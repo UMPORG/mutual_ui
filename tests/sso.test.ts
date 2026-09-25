@@ -3,11 +3,14 @@ import assert from "node:assert/strict";
 import { portalLoginUrl, portalAppUrl, publicRequestUrl, safeReturnUrl } from "../src/sso.ts";
 
 const allowed = ["https://eventos.mutualismo.pt", "https://simplex.mutualismo.pt/"];
+const TAB = String.fromCharCode(9);
+const LF = String.fromCharCode(10);
 
 test("safeReturnUrl accepts allowed origins and relative paths", () => {
   assert.equal(safeReturnUrl("https://eventos.mutualismo.pt/dashboard?x=1", allowed), "https://eventos.mutualismo.pt/dashboard?x=1");
   assert.equal(safeReturnUrl("https://simplex.mutualismo.pt/", allowed), "https://simplex.mutualismo.pt/");
   assert.equal(safeReturnUrl("/apps", allowed), "/apps");
+  assert.equal(safeReturnUrl("/a/../b?x=1#y", allowed), "/b?x=1#y");
 });
 
 test("safeReturnUrl refuses open redirects", () => {
@@ -15,12 +18,18 @@ test("safeReturnUrl refuses open redirects", () => {
     "https://evil.pt/",
     "https://eventos.mutualismo.pt.evil.pt/",
     "//evil.pt/x",
-    "/\\evil.pt",
+    "/" + String.fromCharCode(92) + "evil.pt", // "/\evil.pt"
     "javascript:alert(1)",
     "http://eventos.mutualismo.pt/", // scheme differs → different origin
+    "/" + TAB + "/evil.pt", // browsers strip the tab → "//evil.pt"
+    "/" + LF + "/evil.pt",
+    " /evil",
+    "https://evil@eventos.mutualismo.pt/",
+    "https://user:pw@eventos.mutualismo.pt/",
+    "/" + "x".repeat(3000),
     "",
     null,
-  ]) assert.equal(safeReturnUrl(bad as string, allowed), null, String(bad));
+  ]) assert.equal(safeReturnUrl(bad as string, allowed), null, JSON.stringify(bad));
 });
 
 test("portal URLs", () => {

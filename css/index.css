@@ -3,3 +3,6 @@
 @import "./tokens.css";
 @import "./theme.css";
 @source "../src";
+
+/* Every MUTU@L app themes with a `.dark` class on <html> (next-themes). */
+@custom-variant dark (&:is(.dark *));
