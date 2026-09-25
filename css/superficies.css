@@ -154,7 +154,7 @@
   }
 }
 
-html.contraste .m-btn,
+html.contraste .m-btn:not(.m-btn-ghost),
 html.contraste .m-surface,
 html.contraste .m-float,
 html.contraste .m-field {
@@ -166,3 +166,17 @@ html.contraste .m-field {
 html.contraste .m-btn-primary { background: var(--brand); color: #ffffff; }
 html.contraste .m-btn-destructive { background: var(--destructive); color: #ffffff; }
 html.contraste .m-canvas { background: var(--background); }
+/* Ghost buttons keep the colour of where they sit (e.g. white on a dark
+   bar) and gain a visible edge in that same colour. */
+html.contraste .m-btn-ghost {
+  background: transparent;
+  color: inherit;
+  border: 2px solid currentColor;
+  box-shadow: none !important;
+}
+/* Outline/secondary buttons placed on the dark sidebar or nav bar. */
+html.contraste :is(.bg-sidebar, .bg-nav-background) .m-btn:is(.m-btn-outline, .m-btn-secondary) {
+  background: #000000;
+  color: #ffffff;
+  border-color: #ffffff;
+}

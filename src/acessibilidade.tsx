@@ -69,8 +69,9 @@ export function AcessibilidadeMenu({
 }: {
   cookieDomain?: string | null;
   tone?: "default" | "ink";
-  /** Icon-only trigger (the name stays available to screen readers). */
-  compacto?: boolean;
+  /** Icon-only trigger (the name stays available to screen readers).
+   *  "md" = icon only below the md breakpoint, label from md up. */
+  compacto?: boolean | "md";
   /** Link to the app's accessibility statement. */
   declaracaoHref?: string;
   className?: string;
@@ -128,18 +129,21 @@ export function AcessibilidadeMenu({
         onClick={() => dialogRef.current?.showModal()}
         aria-haspopup="dialog"
         aria-label={compacto ? "Acessibilidade" : undefined}
-        title={compacto ? "Acessibilidade" : undefined}
+        title={compacto === true ? "Acessibilidade" : undefined}
         className={cx(
           "inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-[0.9375rem] font-medium transition-colors",
           tone === "ink"
             ? "text-sidebar-foreground hover:bg-sidebar-accent"
             : "text-foreground hover:bg-accent",
-          compacto && "min-w-11 justify-center px-0",
+          compacto === true && "min-w-11 justify-center px-0",
+          compacto === "md" && "min-w-11 justify-center px-0 md:justify-start md:px-3",
           className,
         )}
       >
-        <Accessibility size={20} aria-hidden />
+        {/* em-sized so it grows with "Tamanho do texto" */}
+        <Accessibility aria-hidden className="size-[1.25em] shrink-0" />
         {!compacto && <span>Acessibilidade</span>}
+        {compacto === "md" && <span className="hidden md:inline">Acessibilidade</span>}
       </button>
 
       <dialog
