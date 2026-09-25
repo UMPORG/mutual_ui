@@ -1,0 +1,5 @@
+/* Entry point: tokens + Tailwind bindings + class scanning of the shared
+   components (so their utilities are generated in the consuming app). */
+@import "./tokens.css";
+@import "./theme.css";
+@source "../src";

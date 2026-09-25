@@ -1,0 +1,191 @@
+/*
+ * MUTU@L design tokens — identidade visual v2 (2026-09-25).
+ *
+ * One brand for the whole ecosystem: every app shares the neutrals, the brand
+ * green (from the MUTU@L flag), the type, the radius and the status colours.
+ * An app is recognised by its accent (`--app-accent`, set by `data-app` on
+ * <html>), used for its mark, its active navigation indicator and its tile in
+ * the Portal — never for primary buttons, links or focus.
+ *
+ * All pairs below meet WCAG AA at the size they are used (most meet AAA).
+ * Measured values are next to each pair; re-measure before changing one.
+ */
+
+:root {
+  --radius: 0.625rem;
+
+  /* Brand — the MUTU@L flag. `--brand` is the flag green darkened to 6.2:1 on
+     white; the raw flag colours are only for the logo and illustrations. */
+  --brand: #1f6f36;
+  --brand-hover: #1a5e2e;
+  --brand-foreground: #ffffff;
+  --brand-soft: #e8f3ea;
+  --brand-soft-foreground: #16502a;
+  --flag-green: #6dba6a;
+  --flag-red: #e8393c;
+
+  /* Surfaces and text — warm neutrals, unchanged from v1 so existing
+     contrast audits still hold. */
+  --background: #fafaf9;
+  --foreground: #1c1917;
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+  --secondary: #f1f0ee;
+  --secondary-foreground: #292524;
+  --muted: #f5f5f4;
+  --muted-foreground: #4f4b47; /* 7.8:1 on --muted */
+  --accent: #f1f0ee;
+  --accent-foreground: #292524;
+  --border: #d6d3d1;
+  --input: #a8a29e; /* form borders need 3:1 against the page (WCAG 1.4.11) */
+  --ring: #1f6f36;
+
+  /* shadcn contract: primary IS the brand. */
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+
+  /* Status — semantic, identical in every app. Never use raw palette classes
+     (bg-green-100, text-amber-700…) for status; use these. */
+  --success: #15803d;
+  --success-foreground: #ffffff;
+  --success-soft: #ecfdf3;
+  --success-soft-foreground: #14532d;
+  --warning: #b45309;
+  --warning-foreground: #ffffff;
+  --warning-soft: #fff7e6;
+  --warning-soft-foreground: #7c2d12;
+  --info: #1d4ed8;
+  --info-foreground: #ffffff;
+  --info-soft: #eef4ff;
+  --info-soft-foreground: #1e3a8a;
+  --destructive: #b91c1c; /* 6.5:1 on white */
+  --destructive-foreground: #ffffff;
+  --destructive-soft: #fef2f2;
+  --destructive-soft-foreground: #7f1d1d;
+
+  /* Shell — the dark "MUTU@L ink" used by every desk app's sidebar and by the
+     Portal/public headers' dark variant. Same in light and dark themes. */
+  --sidebar: #12241a;
+  --sidebar-foreground: #f4f7f4; /* 15:1 */
+  --sidebar-muted-foreground: #b8c4bc; /* 9.3:1 */
+  --sidebar-primary: #7cc97a;
+  --sidebar-primary-foreground: #12241a;
+  --sidebar-accent: #1d3528;
+  --sidebar-accent-foreground: #f4f7f4;
+  --sidebar-border: #2a4436;
+  --sidebar-ring: #7cc97a;
+  --nav-background: var(--sidebar);
+  --nav-foreground: var(--sidebar-foreground);
+  --nav-border: var(--sidebar-border);
+
+  /* App identity — overridden by [data-app]. The Portal and the Cartão use
+     the brand itself. */
+  --app-accent: var(--brand);
+  --app-accent-foreground: #ffffff;
+  --app-accent-soft: var(--brand-soft);
+  --app-accent-on-ink: #7cc97a; /* accent as seen on the dark sidebar */
+
+  /* Role (who is signed in) — identical in every app, unchanged from v1. */
+  --role-accent: var(--brand);
+  --role-accent-foreground: #ffffff;
+
+  --chart-1: var(--brand);
+  --chart-2: #b45309;
+  --chart-3: #1d4ed8;
+  --chart-4: #be185d;
+  --chart-5: #0e7490;
+
+  --shadow-2xs: 0 1px 2px 0 rgb(18 36 26 / 0.05);
+  --shadow-xs: 0 1px 3px 0 rgb(18 36 26 / 0.08);
+  --shadow-sm: 0 1px 3px 0 rgb(18 36 26 / 0.08), 0 1px 2px -1px rgb(18 36 26 / 0.08);
+  --shadow: 0 4px 10px -2px rgb(18 36 26 / 0.08), 0 2px 4px -2px rgb(18 36 26 / 0.06);
+  --shadow-md: var(--shadow);
+  --shadow-lg: 0 12px 24px -6px rgb(18 36 26 / 0.12), 0 4px 8px -4px rgb(18 36 26 / 0.08);
+  --shadow-xl: 0 24px 40px -12px rgb(18 36 26 / 0.18);
+}
+
+.dark {
+  --brand: #7cc97a;
+  --brand-hover: #8fd68c;
+  --brand-foreground: #12241a;
+  --brand-soft: #1d3528;
+  --brand-soft-foreground: #c9ecc7;
+
+  --background: #151a17;
+  --foreground: #f4f5f3;
+  --card: #1d231f;
+  --card-foreground: #f4f5f3;
+  --popover: #1d231f;
+  --popover-foreground: #f4f5f3;
+  --secondary: #2a322d;
+  --secondary-foreground: #f4f5f3;
+  --muted: #232a25;
+  --muted-foreground: #bcc5bf;
+  --accent: #2a322d;
+  --accent-foreground: #f4f5f3;
+  --border: #3a443e;
+  --input: #5d6962;
+  --ring: #7cc97a;
+
+  --success: #4ade80;
+  --success-foreground: #052e16;
+  --success-soft: #12301f;
+  --success-soft-foreground: #bbf7d0;
+  --warning: #fbbf24;
+  --warning-foreground: #1c1917;
+  --warning-soft: #3a2a0c;
+  --warning-soft-foreground: #fde68a;
+  --info: #93c5fd;
+  --info-foreground: #0b1b3a;
+  --info-soft: #172544;
+  --info-soft-foreground: #dbeafe;
+  --destructive: #f87171;
+  --destructive-foreground: #1c1917;
+  --destructive-soft: #3b1414;
+  --destructive-soft-foreground: #fecaca;
+
+  --sidebar: #0e1a13;
+  --sidebar-accent: #1a2c21;
+  --sidebar-border: #243a2d;
+
+  --app-accent-foreground: #12241a;
+  --role-accent-foreground: #1c1917;
+}
+
+/* ─── App identity ─────────────────────────────────────────────────────────
+   Values kept from identidade-visual v1 so users still recognise their app,
+   except Saúde, whose teal collided with the "Associação" role colour. */
+[data-app="backoffice"] { --app-accent: #1d4ed8; --app-accent-soft: #eef4ff; --app-accent-on-ink: #93b4fb; }
+[data-app="eventos"]    { --app-accent: #6d28d9; --app-accent-soft: #f3eefe; --app-accent-on-ink: #c4a8f7; }
+[data-app="simplex"]    { --app-accent: #b45309; --app-accent-soft: #fff4e5; --app-accent-on-ink: #f5b76a; }
+[data-app="qr"]         { --app-accent: #0e7490; --app-accent-soft: #e7f6fa; --app-accent-on-ink: #7fd3e6; }
+[data-app="saude"]      { --app-accent: #be185d; --app-accent-soft: #fdf0f6; --app-accent-on-ink: #f59ac2; }
+[data-app="portal"],
+[data-app="cartao"]     { --app-accent: var(--brand); }
+
+.dark[data-app="backoffice"], .dark [data-app="backoffice"] { --app-accent: #93b4fb; --app-accent-soft: #172544; }
+.dark[data-app="eventos"],    .dark [data-app="eventos"]    { --app-accent: #c4a8f7; --app-accent-soft: #2a1d45; }
+.dark[data-app="simplex"],    .dark [data-app="simplex"]    { --app-accent: #f5b76a; --app-accent-soft: #3a2a0c; }
+.dark[data-app="qr"],         .dark [data-app="qr"]         { --app-accent: #7fd3e6; --app-accent-soft: #0f2f38; }
+.dark[data-app="saude"],      .dark [data-app="saude"]      { --app-accent: #f59ac2; --app-accent-soft: #3a1426; }
+
+/* ─── Role accents (unchanged contract) ─────────────────────────────────── */
+[data-role="admin"] { --role-accent: #881337; --role-accent-foreground: #ffffff; }
+[data-role="associacao"],
+[data-role="admin_associacao"] { --role-accent: #0f766e; --role-accent-foreground: #ffffff; }
+[data-role="gestor_evento"],
+[data-role="operador_evento"] { --role-accent: #3730a3; --role-accent-foreground: #ffffff; }
+[data-role="profissional_saude"],
+[data-role="gestor_clinica"],
+[data-role="rececionista"] { --role-accent: #9d174d; --role-accent-foreground: #ffffff; }
+
+.dark [data-role="admin"] { --role-accent: #fda4af; --role-accent-foreground: #1c1917; }
+.dark [data-role="associacao"],
+.dark [data-role="admin_associacao"] { --role-accent: #5eead4; --role-accent-foreground: #1c1917; }
+.dark [data-role="gestor_evento"],
+.dark [data-role="operador_evento"] { --role-accent: #a5b4fc; --role-accent-foreground: #1c1917; }
+.dark [data-role="profissional_saude"],
+.dark [data-role="gestor_clinica"],
+.dark [data-role="rececionista"] { --role-accent: #f9a8d4; --role-accent-foreground: #1c1917; }
