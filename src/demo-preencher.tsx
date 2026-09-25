@@ -149,7 +149,7 @@ export function DemoPreencher({
   const disponiveis = formsNaPagina.filter((id) => cenarios[id]);
 
   return (
-    <div className={cx("fixed bottom-5 left-5 z-[2147482000] flex flex-col items-start gap-2 print:hidden", className)}>
+    <div className={cx("fixed right-5 bottom-5 z-[2147482000] flex flex-col items-end gap-2 print:hidden", className)}>
       {aberto && (
         <div
           id={painelId}

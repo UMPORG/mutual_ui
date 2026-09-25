@@ -1,6 +1,6 @@
 {
   "name": "@umporg/ui",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "MUTU@L design system: tokens, brand, shell pieces and SSO helpers shared by every MUTU@L app.",
   "license": "UNLICENSED",
   "type": "module",

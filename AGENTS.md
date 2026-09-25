@@ -11,7 +11,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.3.2"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.3.3"
 ```
 
 ```js
