@@ -146,7 +146,7 @@ export function iniciarAsciiFundo(
         if (v < 0.08) continue;
         const idx = Math.min(RAMPA.length - 1, Math.floor(v * (RAMPA.length - 1)));
         const ch = RAMPA[idx];
-        if (ch === " ") continue;
+        if (!ch || ch === " ") continue;
         const vermelha = ((indiceFaixa % 2) + 2) % 2 === 0;
         ctx.globalAlpha = Math.min(1, base * (0.35 + v * 0.9));
         ctx.fillStyle = vermelha ? cores.vermelho : cores.verde;
