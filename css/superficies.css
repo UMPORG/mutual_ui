@@ -163,8 +163,8 @@ html.contraste .m-field {
   border: 2px solid #000000;
   filter: none;
 }
-html.contraste .m-btn-primary { background: var(--brand); color: #ffffff; }
-html.contraste .m-btn-destructive { background: var(--destructive); color: #ffffff; }
+html.contraste .m-btn.m-btn-primary:not(.m-btn-ghost) { background: var(--brand); color: #ffffff; border-color: #000000; }
+html.contraste .m-btn.m-btn-destructive:not(.m-btn-ghost) { background: var(--destructive); color: #ffffff; border-color: #000000; }
 html.contraste .m-canvas { background: var(--background); }
 /* Ghost buttons keep the colour of where they sit (e.g. white on a dark
    bar) and gain a visible edge in that same colour. */
