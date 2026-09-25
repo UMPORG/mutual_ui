@@ -78,10 +78,12 @@ Anatomia comum das shells de secretária: logótipo + "MUTU@L" + nome da app →
 cartão do utilizador (perfil, tema, terminar sessão). Página = cabeçalho de
 página (localização, título, descrição, ações) + conteúdo.
 
-## Sessão única (SSO)
+## Um só endereço e sessão única
 
-O Portal MUTU@L é o único ecrã de login dos funcionários. O Cérebro escreve o
-cookie de sessão para o domínio-pai (`AUTH_COOKIE_DOMAIN`, produção
-`.mutualismo.pt`) e todas as apps o veem pelo seu proxy `/api/auth`. Terminar
-sessão numa app termina-a em todas. Ver `mutual_cerebro/docs/cors.md` e
-`src/sso.ts`.
+Todas as aplicações vivem num só endereço (`https://mutual.mutualismo.pt`),
+cada uma no seu caminho: Portal `/`, `/backoffice`, `/eventos`, `/simplex`,
+`/saude`, `/qr`, centro de ajuda `/ajuda` (ADR 0004,
+`docs/adr-0004-subcaminhos.md`). O Portal é o único ecrã de login; como tudo
+é a mesma origem, a sessão e as escolhas de Acessibilidade valem em todas as
+aplicações sem configuração. Terminar sessão numa app termina-a em todas.
+Ver `src/sso.ts`.
