@@ -11,7 +11,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.3.0"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.3.1"
 ```
 
 ```js
@@ -189,11 +189,14 @@ its root layout:
   `registarPreenchedor(formId, fn)`.
 - The demo seed in the Cérebro (`DEMO_MODE`) provides the matching data.
 
-### `PreferenciasScript` without React warnings
+### `PreferenciasScript` must run before the first paint
 
-In Next.js use `next/script` in the root layout:
-`<Script id="mutual-preferencias" strategy="beforeInteractive">{PREFERENCIAS_SCRIPT}</Script>`
-(`PreferenciasScript` stays for non-Next consumers).
+Render `<PreferenciasScript />` (a plain inline `<script>`) inside `<head>` of
+the **server** root layout, with `suppressHydrationWarning` on `<html>`. Do
+NOT use `next/script` (`beforeInteractive` runs only once Next's JavaScript
+starts, so dark/high-contrast/large-text users see the default theme flash on
+slow connections). React may print a development-only notice about the
+inline script; it has no effect in production.
 
 ## Single sign-on (see `src/sso.ts`)
 

@@ -131,7 +131,7 @@ export function AcessibilidadeMenu({
         aria-label={compacto ? "Acessibilidade" : undefined}
         title={compacto === true ? "Acessibilidade" : undefined}
         className={cx(
-          "inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-[0.9375rem] font-medium transition-colors",
+          "inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-[0.9375rem] font-medium transition-[background-color,transform] active:scale-[0.97] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring",
           tone === "ink"
             ? "text-sidebar-foreground hover:bg-sidebar-accent"
             : "text-foreground hover:bg-accent",

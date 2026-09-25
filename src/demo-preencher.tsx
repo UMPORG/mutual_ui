@@ -190,7 +190,7 @@ export function DemoPreencher({
                       key={c.id}
                       type="button"
                       onClick={() => aplicar(id, c)}
-                      className="m-btn m-btn-outline flex min-h-12 flex-col items-start rounded-lg px-3.5 py-2 text-left"
+                      className="m-btn m-btn-outline flex min-h-12 w-full shrink-0 flex-col items-start rounded-lg px-3.5 py-2 text-left whitespace-normal"
                     >
                       <span className="font-semibold">{c.nome}</span>
                       {c.descricao && <span className="text-sm font-normal text-muted-foreground">{c.descricao}</span>}
@@ -213,7 +213,7 @@ export function DemoPreencher({
         aria-expanded={aberto}
         aria-controls={painelId}
         onClick={() => setAberto((v) => !v)}
-        className="m-btn m-btn-primary inline-flex min-h-12 items-center gap-2 rounded-full px-5 shadow-lg"
+        className="m-btn m-btn-primary inline-flex min-h-12 items-center gap-2 rounded-full px-5 shadow-lg focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring"
       >
         <Wand2 aria-hidden className="size-[1.2em]" />
         Demonstração
