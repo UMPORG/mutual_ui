@@ -1,0 +1,135 @@
+/*
+ * Decorative effects (v0.7) — @umporg/ui/efeitos. The canvas effects draw
+ * with the tokens they read at run time; the CSS ones live here.
+ */
+
+/* ─── MalhaFundo: soft mesh of radial colour + grain (no filters, no JS) ─── */
+.m-malha {
+  --malha-1: color-mix(in oklab, var(--brand) 30%, transparent);
+  --malha-2: color-mix(in oklab, var(--flag-green) 34%, transparent);
+  --malha-3: color-mix(in oklab, #d9ecc9 70%, transparent);
+  --malha-4: color-mix(in oklab, var(--app-accent) 16%, transparent);
+  isolation: isolate;
+}
+.m-malha[data-tons="app"] {
+  --malha-1: color-mix(in oklab, var(--app-accent) 30%, transparent);
+  --malha-2: color-mix(in oklab, var(--app-accent-soft) 90%, transparent);
+  --malha-3: color-mix(in oklab, var(--brand) 18%, transparent);
+  --malha-4: color-mix(in oklab, var(--app-accent) 18%, transparent);
+}
+.m-malha[data-tons="bandeira"] {
+  --malha-1: color-mix(in oklab, var(--flag-green) 38%, transparent);
+  --malha-2: color-mix(in oklab, var(--brand) 22%, transparent);
+  --malha-3: color-mix(in oklab, #fbe3c7 70%, transparent);
+  --malha-4: color-mix(in oklab, var(--flag-red) 16%, transparent);
+}
+.m-malha[data-tons="calmo"] {
+  --malha-1: color-mix(in oklab, var(--brand) 12%, transparent);
+  --malha-2: color-mix(in oklab, var(--foreground) 6%, transparent);
+  --malha-3: color-mix(in oklab, var(--flag-green) 12%, transparent);
+  --malha-4: color-mix(in oklab, var(--app-accent) 8%, transparent);
+}
+.dark .m-malha { --malha-3: color-mix(in oklab, var(--brand) 18%, transparent); }
+.dark .m-malha[data-tons="bandeira"] { --malha-3: color-mix(in oklab, #7a4a1c 40%, transparent); }
+
+.m-malha > span:not(.m-malha-grao) {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+  animation: m-malha-deriva 46s ease-in-out infinite alternate;
+}
+.m-malha > span.m-malha-a { width: 95%; height: 130%; left: -25%; top: -45%; background: radial-gradient(closest-side, var(--malha-1), transparent); }
+.m-malha > span.m-malha-b { width: 85%; height: 120%; right: -25%; top: -40%; background: radial-gradient(closest-side, var(--malha-2), transparent); animation-delay: -12s; animation-duration: 52s; }
+.m-malha > span.m-malha-c { width: 90%; height: 120%; left: 5%; bottom: -60%; background: radial-gradient(closest-side, var(--malha-3), transparent); animation-delay: -24s; animation-duration: 58s; }
+.m-malha > span.m-malha-d { width: 60%; height: 90%; right: -5%; bottom: -35%; background: radial-gradient(closest-side, var(--malha-4), transparent); animation-delay: -6s; animation-duration: 40s; }
+html[data-movimento="reduzido"] .m-malha > span { animation: none; }
+@media (prefers-reduced-motion: reduce) { .m-malha > span { animation: none; } }
+@keyframes m-malha-deriva {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(6%, 4%, 0) scale(1.08); }
+  66% { transform: translate3d(-4%, 7%, 0) scale(0.95); }
+  100% { transform: translate3d(3%, -5%, 0) scale(1.04); }
+}
+.m-malha-grao {
+  position: absolute;
+  inset: 0;
+  opacity: 0.09;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  background-size: 180px 180px;
+}
+.dark .m-malha-grao { opacity: 0.14; mix-blend-mode: soft-light; filter: invert(1); }
+
+/* ─── BrilhoDestaque / .m-brilho: a light running around the edge ─────── */
+@property --m-angulo {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.m-brilho {
+  position: relative;
+  border: 2px solid transparent !important;
+  border-radius: var(--radius-xl, 14px);
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    conic-gradient(
+        from var(--m-angulo),
+        color-mix(in oklab, var(--border) 90%, transparent) 0deg,
+        color-mix(in oklab, var(--border) 90%, transparent) 150deg,
+        var(--brand) 225deg,
+        var(--flag-green) 275deg,
+        var(--app-accent) 320deg,
+        color-mix(in oklab, var(--border) 90%, transparent) 360deg
+      )
+      border-box !important;
+  animation: m-brilho-roda 7s linear infinite;
+}
+.m-brilho::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  z-index: -1;
+  border-radius: inherit;
+  background: conic-gradient(from var(--m-angulo), transparent 0deg 170deg, color-mix(in oklab, var(--brand) 70%, transparent) 250deg, color-mix(in oklab, var(--app-accent) 60%, transparent) 320deg, transparent 360deg);
+  filter: blur(16px);
+  opacity: 0.6;
+  animation: m-brilho-roda 7s linear infinite;
+  pointer-events: none;
+}
+.dark .m-brilho::after { opacity: 0.6; }
+@keyframes m-brilho-roda { to { --m-angulo: 360deg; } }
+html[data-movimento="reduzido"] .m-brilho,
+html[data-movimento="reduzido"] .m-brilho::after { --m-angulo: 300deg; animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .m-brilho, .m-brilho::after { --m-angulo: 300deg; animation: none; }
+}
+
+/* ─── MomentoSucesso seal ──────────────────────────────────────────────── */
+.m-selo-sucesso {
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 30% 25%, rgb(255 255 255 / 0.35), transparent 60%),
+    var(--success);
+  box-shadow:
+    0 0 0 8px color-mix(in oklab, var(--success) 14%, transparent),
+    0 12px 30px -10px color-mix(in oklab, var(--success) 70%, transparent);
+  animation: m-selo-entra 520ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.dark .m-selo-sucesso { color: #052e16; }
+@keyframes m-selo-entra {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ─── Guarantees: gone in Alto contraste and in print ──────────────────── */
+html.contraste .m-efeito { display: none !important; }
+html.contraste .m-brilho { background: var(--card) !important; border: 2px solid #000000 !important; animation: none; }
+html.contraste .m-brilho::after { display: none; }
+html.contraste .m-selo-sucesso { background: #0b4d20; box-shadow: none; outline: 3px solid #000000; outline-offset: 3px; }
+@media (forced-colors: active) {
+  .m-efeito { display: none !important; }
+  .m-brilho::after { display: none; }
+}
+@media print {
+  .m-efeito, .m-brilho::after { display: none !important; }
+}

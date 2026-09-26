@@ -80,3 +80,10 @@ test("contar pluraliza", () => {
   assert.equal(contar(0, "associação", "associações"), "0 associações");
   assert.equal(e(contar(12000, "pessoa", "pessoas")), "12 000 pessoas");
 });
+
+test("eixo de contagens: inteiros, sem casas decimais", async () => {
+  const { formatarEixo, formatarValor } = await import("../src/formatar.ts");
+  assert.equal(formatarEixo(2, "contagem"), "2");
+  assert.equal(formatarEixo(0.5, "inteiro"), "1");
+  assert.equal(formatarValor(1234, "contagem"), "1234");
+});

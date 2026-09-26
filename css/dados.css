@@ -92,6 +92,41 @@ html.contraste {
     to { background-position: -50% 0, 0 0; }
   }
 
+  /* DataTable: a column kept at the right edge while the table scrolls
+     sideways (row actions). A soft shadow marks the edge only while there is
+     more table underneath (scroll-driven where supported, always otherwise). */
+  .m-coluna-fixa {
+    position: sticky;
+    right: 0;
+    z-index: 1;
+    background-color: var(--card);
+  }
+  .m-coluna-fixa-cabecalho { background-color: color-mix(in oklab, var(--muted) 50%, var(--card)); }
+  tr:hover > .m-coluna-fixa:not(.m-coluna-fixa-cabecalho) { background-color: color-mix(in oklab, var(--accent) 50%, var(--card)); }
+  .m-coluna-fixa::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: -14px;
+    width: 14px;
+    pointer-events: none;
+    background: linear-gradient(to left, rgb(18 36 26 / 0.1), transparent);
+    border-right: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  }
+  .dark .m-coluna-fixa::before { background: linear-gradient(to left, rgb(0 0 0 / 0.35), transparent); }
+  @supports (animation-timeline: scroll()) {
+    .m-tabela-rolo { scroll-timeline: --m-tabela-rolo inline; }
+    .m-coluna-fixa::before {
+      opacity: 0;
+      animation: m-sombra-coluna linear both;
+      animation-timeline: --m-tabela-rolo;
+    }
+    @keyframes m-sombra-coluna {
+      0%, 96% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  }
+
   /* Values that align in columns (tables, axis ticks); big standalone
      numbers keep proportional figures. */
   .m-num { font-variant-numeric: tabular-nums; }
@@ -113,6 +148,7 @@ html.contraste {
 html.contraste a.m-surface-interactive { text-decoration: none; }
 html.contraste a.m-surface-interactive .m-cta { text-decoration: underline; text-underline-offset: 3px; }
 
+html.contraste .m-coluna-fixa::before { background: none; border-right: 2px solid #000000; }
 html.contraste .m-skeleton {
   background: #ffffff;
   border: 2px dashed #000000;

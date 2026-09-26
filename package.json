@@ -1,7 +1,7 @@
 {
   "name": "@umporg/ui",
-  "version": "0.6.0",
-  "description": "MUTU@L design system: tokens, brand, shell pieces, cards, stats, charts, tables and SSO helpers shared by every MUTU@L app.",
+  "version": "0.7.0",
+  "description": "MUTU@L design system: tokens, brand, shell pieces, form controls, overlays, dates, cards, stats, charts, tables, conversation (assistant) components, decorative effects and SSO helpers shared by every MUTU@L app.",
   "license": "UNLICENSED",
   "type": "module",
   "sideEffects": [
@@ -19,12 +19,21 @@
     "./apps": "./src/apps.ts",
     "./formatar": "./src/formatar.ts",
     "./graficos": "./src/graficos.tsx",
+    "./controlos": "./src/controlos.ts",
+    "./datas": "./src/datas.tsx",
+    "./calendario": "./src/calendario.ts",
+    "./efeitos": "./src/efeitos.ts",
+    "./conversa": "./src/conversa.ts",
+    "./markdown": "./src/markdown.tsx",
     "./css/index.css": "./css/index.css",
     "./css/tokens.css": "./css/tokens.css",
     "./css/theme.css": "./css/theme.css",
     "./css/superficies.css": "./css/superficies.css",
     "./css/preferencias.css": "./css/preferencias.css",
     "./css/dados.css": "./css/dados.css",
+    "./css/controlos.css": "./css/controlos.css",
+    "./css/efeitos.css": "./css/efeitos.css",
+    "./css/conversa.css": "./css/conversa.css",
     "./preferencias": "./src/preferencias.ts",
     "./assets/*": "./assets/*"
   },
@@ -34,16 +43,22 @@
     "embed-logo": "node scripts/embed-logo.mjs"
   },
   "peerDependencies": {
+    "@base-ui/react": ">=1.6.0 <2",
     "lucide-react": ">=0.400.0",
     "react": ">=19",
+    "react-dom": ">=19",
     "recharts": ">=3.1.0"
   },
   "peerDependenciesMeta": {
+    "@base-ui/react": {
+      "optional": true
+    },
     "recharts": {
       "optional": true
     }
   },
   "devDependencies": {
+    "@base-ui/react": "1.6.0",
     "@types/node": "^25.9.8",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.3.0",

@@ -5,6 +5,9 @@
 @import "./theme.css";
 @import "./superficies.css";
 @import "./dados.css";
+@import "./controlos.css";
+@import "./efeitos.css";
+@import "./conversa.css";
 @import "./preferencias.css";
 @source "../src";
 

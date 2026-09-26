@@ -5,14 +5,16 @@
 The shared design system of the MUTU@L ecosystem: design tokens, brand
 (logo, wordmark, app marks), shell pieces (app switcher, page header,
 status callouts, empty states), data components (cards, stat tiles,
-charts, tables, pt-PT formatting) and the single-sign-on contract.
+charts, tables, pt-PT formatting), form controls and overlays,
+decorative effects, the assistant's conversation components (v0.7) and
+the single-sign-on contract.
 
 Public GitHub repo `UMPORG/mutual_ui`, consumed as a **git dependency** (no
 npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.6.0"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.7.0"
 ```
 
 ```js
@@ -424,19 +426,156 @@ const colunas: Column<Associacao>[] = [
 - `Skeleton className="h-4 w-40"` for custom placeholders (`m-skeleton`,
   stops with Reduzir movimento, dashed outline in Alto contraste).
 
+## v0.7 — controlos, efeitos, conversa (additive, no breaking change)
+
+Everything in v0.6 is unchanged. New sub-path entries so an app only
+bundles what it imports:
+
+| Import | What | Needs |
+| --- | --- | --- |
+| `@umporg/ui` | + `Button`, `buttonClasses`, `Badge`, `Tag`, `Kbd`, `Separator`, `Spinner`, `Breadcrumbs`, `Stepper`, `FormField`, `Fieldset`, `Input`, `Textarea`, `NativeSelect`, filtering helpers | nothing new (server-safe) |
+| `@umporg/ui/controlos` | `Select`, `Combobox`, `MultiSelect`, `DropdownMenu`, `ContextMenu`, `Tooltip`, `TooltipProvider`, `Popover`, `Dialog`, `DialogClose`, `ConfirmDialog`, `Sheet`, `Accordion`, `Collapsible`, `Tabs`, `useUrlParam`, `Switch`, `Checkbox`, `RadioGroup`, `RadioCards`, `SegmentedControl`, `Slider`, `NumberField`, `Toaster`, `toast`, `ScrollArea`, `Avatar`, `AvatarGroup` | `@base-ui/react` ≥ 1.6 (optional peer; Backoffice, Simplex, Saúde and Eventos already have it; checked against 1.6 and 1.8) |
+| `@umporg/ui/datas` | `Calendar`, `DatePicker`, `DateRangePicker` | `@base-ui/react` |
+| `@umporg/ui/calendario` | pure date maths: `hojeLisboa`, `interpretarData`, `grelhaDoMes`, `somarDias`, `somarMeses`, `intervalosRapidos`… | nothing |
+| `@umporg/ui/efeitos` | `ConstelacaoFundo`, `TopografiaFundo`, `MalhaFundo`, `PontosFundo`, `BrilhoDestaque` (class `m-brilho`), `Celebracao`, `MomentoSucesso` (+ `AsciiFundo`) | nothing |
+| `@umporg/ui/conversa` | `ChatLayout`, `ThreadList`, `ConversationTitle`, `MessageList`, `ChatMessage`, `ThinkingIndicator`, `SourceList`, `ActionCard`, `SuggestionChips`, `ChatEmptyState`, `MessageFeedback`, `Composer`, `AttachmentChip`, `Markdown`, `CopyButton` | `@base-ui/react` |
+| `@umporg/ui/markdown` | safe `Markdown` renderer + `analisarMarkdown`, `sanitizarUrl`, `markdownParaTexto` | nothing |
+
+CSS comes with `css/index.css` as before (`controlos.css`, `efeitos.css`
+and `conversa.css` are imported by it). Also in v0.7, from the Simplex
+adoption: `Column.stickyEnd` keeps a row-actions column visible while a
+table scrolls sideways; numeric values in phone cards never wrap; value
+axes use whole-number ticks for counts (`format="contagem"` or
+`"inteiro"`, or automatically when every value is an integer).
+
+### Forms: `FormField` around every control
+
+```tsx
+<FormField label="NIF" required hint="Nove algarismos." error={errors.nif?.message}>
+  <Input {...register("nif")} inputMode="numeric" />
+</FormField>
+<FormField label="Observações" optional count={{ value: obs.length, max: 500 }}>
+  {(p) => <Textarea {...p} value={obs} onChange={…} />}          {/* render-prop form */}
+</FormField>
+<FormField label="Distrito" required><Select options={DISTRITOS} name="distrito" /></FormField>
+<Fieldset legend="Forma de pagamento" error={…}><RadioGroup options={…} /></Fieldset>
+```
+
+The field wires `id`, `aria-describedby` (error, hint, count),
+`aria-invalid` and `aria-required`; it never owns the value, so it works with
+react-hook-form + zod, server actions and plain forms. Mark whichever is the
+minority: `required` ("*" + "obrigatório" for screen readers) or `optional`.
+
+### Which control — and when not
+
+| Need | Use | Not |
+| --- | --- | --- |
+| One of ≤ 6 visible options | `RadioGroup` (in a `Fieldset`) | `Select` (hides the options) |
+| One of a few options that need a description or icon | `RadioCards` | — |
+| One of ~7–15 fixed options | `Select` | — |
+| Long plain list on phones, GET filter forms, no-JS pages | `NativeSelect` (the OS picker) | `Select` / `Combobox` |
+| Many options, or a remote search (associação, utente) | `Combobox` (`onSearch`, accents ignored, `onCreate` for "Criar «…»") | a `Select` with 200 items |
+| Several values | `MultiSelect` (chips, `max`) | many checkboxes in a dropdown |
+| A setting that applies at once | `Switch` | inside a form saved with a button → `Checkbox` |
+| Views of the same content (Lista / Mapa) | `SegmentedControl` | form values |
+| Sibling sections of one thing | `Tabs` (`line` under the page header, `pill` inside cards; `useUrlParam` keeps it in the address) | steps (→ `Stepper`), page navigation (→ links) |
+| Optional or secondary content, FAQ | `Accordion` (the browser's search opens panels), `Collapsible` | hiding required fields |
+| Actions of a row, card or page | `DropdownMenu` (destructive last, after a separator) | navigation, form values |
+| The same actions on right-click | `ContextMenu` — always also reachable another way | the only way to an action |
+| Name of an icon-only button | `Tooltip` + the same `aria-label` | essential information (touch has no hover) |
+| Small interactive panel tied to a button | `Popover` | long forms (→ `Dialog` / `Sheet`) |
+| A task to finish or cancel | `Dialog` (`dismissible={false}` when it holds typed data) | messages (→ `StatusCallout`) |
+| Confirming a destructive action | `ConfirmDialog` (focus starts on "Cancelar", double-click guard, `pending`, `error` stays inside) | a button that changes its label |
+| Hard-to-undo actions (DNS zone, revoke all accesses) | `ConfirmDialog confirmText="auroradominho.pt"` (typed confirmation) | — |
+| Detail next to a list | `Sheet` (`side="right"`; `"bottom"` on phones) | a new page for three fields |
+| Confirm what the person just did | `toast.success("Alterações guardadas.", { action: { label: "Anular", onClick } })` + one `<Toaster />` | errors, warnings, anything to read |
+| A date | `DatePicker` (type "3/10/2026", "hoje" or pick; Monday first; Europe/Lisbon; ISO values) | birth dates on phones → `native` |
+| A period | `DateRangePicker` (quick ranges, two months on desktop) | two separate pickers |
+| An exact number with limits | `NumberField` (pt-PT format, − / +) | `Slider` |
+| An approximate value on a range | `Slider` (`onValueCommitted` to fetch) | exact amounts |
+| Where am I / way back | `Breadcrumbs` (phones: "‹ Parent" only) — `PageHeader` already has them | — |
+| Wizard steps | `Stepper` (collapses to "Passo 2 de 5" on phones) | tabs |
+| A short wait inside a control | `Spinner`; lists and cards keep `Skeleton` | full-page spinners |
+
+### Efeitos: onde usar cada um
+
+Each effect has its own look and its own place, so the apps do not all wear
+the same backdrop. All of them are `aria-hidden`, pointer-transparent,
+DPR-capped (1.5) and frame-capped, pause off screen and in hidden tabs,
+stay still under "Reduzir movimento", disappear in "Alto contraste"
+(forced colours and print too), and take `mascara` / `fadeTopo` so nothing
+moves behind text. Put them first inside a `relative overflow-hidden`
+container and give the content `relative`.
+
+| Effect | Look | Use on | Never on |
+| --- | --- | --- | --- |
+| `AsciiFundo` (v0.2, unchanged) | the flag in ASCII | entry: Portal login and launcher header, QR first visit, `/sem-acesso` | anything else |
+| `ConstelacaoFundo` | dotted map of Portugal (Açores and Madeira insets), associations twinkling, a light travelling between neighbours | pages about the network: Portal "a rede" band, public "Sobre", associations directory hero, UMP report covers | forms, tables, work screens |
+| `TopografiaFundo` | contour lines in the app accent, slow drift | help centre (`/ajuda`) hero, public section covers, onboarding intros | dashboards, lists |
+| `MalhaFundo` (`tons` marca / app / bandeira / calmo) | soft colour mesh with grain, pure CSS | public heroes with big type (Eventos home and event pages), campaign bands; `bandeira` for institutional days | work pages of desk apps |
+| `PontosFundo` | a still dot grid that swells near the pointer | page-level empty states, "sem resultados", 404, the assistant's greeting (`ChatEmptyState backdrop`) | inline empty states in cards and tables |
+| `BrilhoDestaque` / `.m-brilho` | a light running around a card's edge | ONE featured card per page: recommended plan, next event, a new feature | several cards, status, errors |
+| `Celebracao` / `MomentoSucesso` | one burst of the flag's colours, ≈ 1.5 s, once | end of a task: "Documento submetido", "Inscrição confirmada", "Pagamento recebido" | ordinary saves (→ toast), page loads, repeats |
+
+One backdrop per screen. Defaults per app, so they differ: Portal →
+`AsciiFundo` (login) + `ConstelacaoFundo`; Eventos público → `MalhaFundo
+tons="app"`; Ajuda → `TopografiaFundo`; assistente → `PontosFundo`;
+Backoffice, Simplex, Saúde, DNS → no backdrops on work pages, only
+`PontosFundo` on page-level empty states and `MomentoSucesso` at the end of
+submissions.
+
+### Conversa (assistente)
+
+The app owns threads, messages, streaming and tools; the components render
+`ChatMessageData` (`role` user / assistant / system / error, `content` in
+Markdown, `status` streaming / done / stopped / error, `sources`,
+`feedback`).
+
+```tsx
+<ChatLayout className="h-dvh"
+  threads={<ThreadList threads={…} activeId={id} hrefFor={(t) => `/assistente/${t.id}`} LinkComponent={Link} onNew onRename onDelete />}
+  header={<ConversationTitle title={titulo} onRename={…} />}
+  composer={<Composer onSubmit={enviar} onStop={parar} streaming={aEscrever} maxLength={4000} />}>
+  <MessageList messages={mensagens} LinkComponent={Link} thinking={{ steps }} onRetry onFeedback
+    empty={<ChatEmptyState prompts={[…]} onSelect={enviar} backdrop={<PontosFundo />} />} />
+</ChatLayout>
+```
+
+- Replies are Markdown rendered as React elements (never HTML): raw HTML
+  shows as text, links are limited to http(s) / mailto / tel / relative,
+  images become links (never loaded), code blocks have "Copiar", tables
+  scroll in their own region, "[1]" markers link to `sources`. While
+  streaming, unclosed markers are hidden and a caret follows the last word.
+- Screen readers hear "O assistente está a responder." once, then the
+  reply as plain text when it ends (cut near 600 characters, "A resposta
+  continua na conversa."); errors once, assertively. Every message has a
+  hidden heading ("Você disse", "Resposta do assistente").
+- The list follows new text only while the person is at the bottom ("Ir
+  para o fim" otherwise); long threads render the last 60 messages
+  ("Mostrar mensagens anteriores") with `content-visibility`.
+- Composer: Enter sends, Shift + Enter makes a new line (IME-safe), Esc
+  stops, focus stays in the box; the counter shows from 80% of the limit.
+- `ActionCard` proposes a change in the person's data; nothing happens
+  until "Aplicar", and the card stays as the record (aplicada / cancelada /
+  não aplicada).
+- Sources: `kind: "ajuda"` (help-centre page) or `"registo"` (an app
+  record; `app` gives its accent).
+
 ## Scripts
 
 ```bash
 pnpm install
 pnpm typecheck
-pnpm test        # node --test: SSO, preferences, formatters, chart/table helpers
+pnpm test        # node --test: SSO, preferences, formatters, chart/table helpers,
+                 # dates, combobox filtering, Markdown safety, conversation helpers
 pnpm embed-logo  # regenerate src/logo-data.ts from assets/mutual-flag-96.webp
 
 # Visual review of every data component, state and theme (not published):
 cd showcase && pnpm install --ignore-workspace && pnpm build && bun serve.ts
 # -> http://localhost:5199/?tema=claro|escuro|contraste&texto=150&app=simplex
 node shots.mjs <outDir> --secoes   # Playwright screenshots (server running)
+node shots-v07.mjs <outDir> [filtro] # v0.7: ?pagina=controlos|efeitos|conversa + open states
 ```
 
-The showcase resolves React and Recharts from the package's own
+The showcase resolves React, Recharts and Base UI from the package's own
 devDependencies (one React copy); it only installs Tailwind.

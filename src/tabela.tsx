@@ -318,6 +318,11 @@ export interface Column<T> {
   hideOnMobile?: boolean | undefined;
   /** Header text for the phone card when `header` is not plain text. */
   mobileLabel?: string | undefined;
+  /**
+   * Keep this column visible at the right edge while the table scrolls
+   * sideways (row actions). Use on the last column only.
+   */
+  stickyEnd?: boolean | undefined;
   className?: string | undefined;
   headerClassName?: string | undefined;
 }
@@ -454,7 +459,7 @@ export function DataTable<T>({
   ) : null;
 
   const tabela = (
-    <div className={cx(mobile === "cards" && "max-md:hidden", "overflow-x-auto")}>
+    <div className={cx(mobile === "cards" && "max-md:hidden", "m-tabela-rolo overflow-x-auto")}>
       <table className="w-full border-collapse text-base">
         <caption className={cx(showCaption ? "px-5 pt-4 pb-2 text-left text-lg font-semibold" : "sr-only")}>{caption}</caption>
         <thead>
@@ -467,6 +472,7 @@ export function DataTable<T>({
                 className={cx(
                   "bg-muted/50 px-4 py-2 text-[0.9375rem] font-semibold whitespace-nowrap text-muted-foreground first:pl-5 last:pr-5",
                   alinhamento(c),
+                  c.stickyEnd && "m-coluna-fixa m-coluna-fixa-cabecalho",
                   c.headerClassName,
                 )}
               >
@@ -481,7 +487,7 @@ export function DataTable<T>({
               ? Array.from({ length: skeletonRows }, (_, i) => (
                   <tr key={i}>
                     {cols.map((c, j) => (
-                      <td key={c.id} className={cx("px-4 py-3.5 first:pl-5 last:pr-5", alinhamento(c))}>
+                      <td key={c.id} className={cx("px-4 py-3.5 first:pl-5 last:pr-5", alinhamento(c), c.stickyEnd && "m-coluna-fixa")}>
                         <Skeleton className={cx("inline-block h-4", j === 0 ? "w-40" : c.numeric ? "w-16" : "w-24")} />
                       </td>
                     ))}
@@ -496,6 +502,7 @@ export function DataTable<T>({
                           "px-4 py-3 align-middle first:pl-5 last:pr-5",
                           alinhamento(c as Column<unknown>),
                           c.numeric && "m-num whitespace-nowrap",
+                          c.stickyEnd && "m-coluna-fixa",
                           c.className,
                         )}
                       >
@@ -531,8 +538,8 @@ export function DataTable<T>({
                       {columns.map((c, j) =>
                         j === primaryIdx || c.hideOnMobile ? null : (
                           <div key={c.id} className="contents">
-                            <dt className="text-muted-foreground">{c.mobileLabel ?? c.header}</dt>
-                            <dd className={cx("min-w-0 text-right break-words", c.numeric && "m-num")}>{c.cell(row, i)}</dd>
+                            <dt className="min-w-0 text-muted-foreground text-pretty">{c.mobileLabel ?? c.header}</dt>
+                            <dd className={cx("min-w-0 text-right", c.numeric ? "m-num whitespace-nowrap" : "break-words")}>{c.cell(row, i)}</dd>
                           </div>
                         ),
                       )}

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "../css/index.css";
 @source "./app.tsx";
+@source "./controlos.tsx";
+@source "./efeitos.tsx";
+@source "./conversa.tsx";
 
 :root { --font-geist-sans: "Geist"; }

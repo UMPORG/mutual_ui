@@ -253,3 +253,24 @@ export function proporcoes(valores: readonly number[]): number[] {
   const total = valores.reduce((s, v) => s + (Number.isFinite(v) && v > 0 ? v : 0), 0);
   return valores.map((v) => (total > 0 && Number.isFinite(v) && v > 0 ? v / total : 0));
 }
+
+/**
+ * True when a value axis must use whole-number ticks (no "0,5" steps): the
+ * format says so ("inteiro", "contagem"), or every value is an integer and
+ * the format is a plain number. Percentages, currency and custom formatters
+ * keep decimals unless the format is explicit.
+ */
+export function eixoInteiro(dados: ReadonlyArray<Record<string, unknown>>, chaves: readonly string[], formato?: FormatoValor): boolean {
+  if (formato === "inteiro" || formato === "contagem") return true;
+  if (formato !== undefined && formato !== "numero" && !(typeof formato === "object" && formato.tipo === "numero" && !formato.opcoes?.casas)) return false;
+  let algum = false;
+  for (const d of dados) {
+    for (const k of chaves) {
+      const v = paraNumero(d[k] as number);
+      if (v === null) continue;
+      algum = true;
+      if (!Number.isInteger(v)) return false;
+    }
+  }
+  return algum;
+}

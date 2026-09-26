@@ -41,6 +41,43 @@ import {
   type Column,
 } from "../src/index.ts";
 import { ChartFrame, GraficoArea, GraficoBarras, GraficoDonut, GraficoLinhas } from "../src/graficos.tsx";
+import { PaginaControlos } from "./controlos.tsx";
+import { PaginaEfeitos } from "./efeitos.tsx";
+import { PaginaConversa } from "./conversa.tsx";
+
+const PAGINA = new URLSearchParams(location.search).get("pagina") ?? "dados";
+
+function Paginas() {
+  const q = new URLSearchParams(location.search);
+  const link = (p: string, rotulo: string) => {
+    const n = new URLSearchParams(q);
+    n.set("pagina", p);
+    return (
+      <a
+        key={p}
+        href={`?${n}`}
+        aria-current={PAGINA === p ? "page" : undefined}
+        className={
+          "inline-flex h-10 items-center rounded-lg px-3 text-[0.9375rem] font-medium " +
+          (PAGINA === p ? "bg-sidebar-accent text-sidebar-foreground" : "text-sidebar-muted-foreground hover:text-sidebar-foreground")
+        }
+      >
+        {rotulo}
+      </a>
+    );
+  };
+  return (
+    <nav aria-label="Páginas" className="flex flex-wrap gap-1">
+      {[link("dados", "Dados"), link("controlos", "Controlos"), link("efeitos", "Efeitos"), link("conversa", "Assistente")]}
+    </nav>
+  );
+}
+
+const TITULOS: Record<string, [string, string]> = {
+  controlos: ["Controlos", "Campos, seleção, datas, menus, diálogos e avisos — v0.7."],
+  efeitos: ["Efeitos", "Fundos decorativos com lugar próprio — v0.7."],
+  conversa: ["Assistente", "Componentes de conversa do assistente MUTU@L — v0.7."],
+};
 
 // ─── Demo data (fictional) ───────────────────────────────────────────────
 
@@ -235,9 +272,18 @@ function App() {
       <header className="bg-sidebar text-sidebar-foreground">
         <div className="mx-auto flex max-w-[84rem] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-8">
           <MutualWordmark app="backoffice" tone="ink" />
+          <Paginas />
           <Tema />
         </div>
       </header>
+      {PAGINA !== "dados" ? (
+        <main className="mx-auto flex max-w-[84rem] flex-col gap-12 px-4 py-8 sm:px-8">
+          <PageHeader title={TITULOS[PAGINA]?.[0] ?? PAGINA} description={TITULOS[PAGINA]?.[1]} className="mb-0" />
+          {PAGINA === "controlos" && <PaginaControlos />}
+          {PAGINA === "efeitos" && <PaginaEfeitos />}
+          {PAGINA === "conversa" && <PaginaConversa />}
+        </main>
+      ) : (
       <main className="mx-auto flex max-w-[84rem] flex-col gap-12 px-4 py-8 sm:px-8">
         <PageHeader
           breadcrumbs={[{ label: "Início", href: "#" }, { label: "Painel" }]}
@@ -579,6 +625,7 @@ function App() {
           </div>
         </Section>
       </main>
+      )}
     </div>
   );
 }

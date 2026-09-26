@@ -1,0 +1,220 @@
+/*
+ * Conversation and Markdown (v0.7) — @umporg/ui/conversa and /markdown.
+ */
+
+@layer components {
+  /* ─── Markdown prose ─────────────────────────────────────────────────── */
+  .m-md {
+    min-width: 0;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+    color: var(--foreground);
+  }
+  .m-md > * + * { margin-top: 0.85em; }
+  .m-md :is(h2, h3, h4, h5, h6) {
+    margin-top: 1.4em;
+    line-height: 1.3;
+    font-weight: 650;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+  .m-md > :first-child { margin-top: 0; }
+  .m-md h2 { font-size: 1.3em; }
+  .m-md h3 { font-size: 1.15em; }
+  .m-md :is(h4, h5, h6) { font-size: 1em; }
+  .m-md a {
+    color: var(--brand);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .m-md a:hover { text-decoration-thickness: 2px; }
+  .m-md-ext { display: inline; margin-left: 0.15em; vertical-align: -0.05em; opacity: 0.75; }
+  .m-md strong { font-weight: 650; }
+  .m-md :is(ul, ol) { padding-left: 1.5em; }
+  .m-md ul { list-style: disc; }
+  .m-md ol { list-style: decimal; }
+  .m-md li + li { margin-top: 0.3em; }
+  .m-md li > :is(ul, ol) { margin-top: 0.3em; }
+  .m-md li::marker { color: var(--muted-foreground); }
+  .m-md ul.m-md-tarefas { list-style: none; padding-left: 0.25em; }
+  .m-md-caixa {
+    display: inline-grid;
+    place-items: center;
+    width: 1.05em;
+    height: 1.05em;
+    margin-right: 0.5em;
+    vertical-align: -0.12em;
+    border-radius: 0.25em;
+    border: 1.5px solid var(--input);
+  }
+  .m-md-caixa-feita { background: var(--brand); border-color: var(--brand); color: var(--brand-foreground); }
+  .m-md blockquote {
+    padding: 0.1em 0 0.1em 1em;
+    border-left: 3px solid color-mix(in oklab, var(--brand) 45%, var(--border));
+    color: var(--muted-foreground);
+  }
+  .m-md hr { border: 0; border-top: 1px solid var(--border); margin-block: 1.4em; }
+  .m-md :not(pre) > code {
+    padding: 0.1em 0.35em;
+    border-radius: 0.35em;
+    background: color-mix(in oklab, var(--foreground) 7%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+  .m-md-codigo {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 2px);
+    background: color-mix(in oklab, var(--foreground) 3%, var(--card));
+  }
+  .m-md-codigo-barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.125rem 0.375rem 0.125rem 0.875rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+  }
+  .m-md-codigo pre {
+    margin: 0;
+    padding: 0.875rem 1rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    white-space: pre;
+    tab-size: 2;
+    outline: none;
+  }
+  .m-md-codigo pre:focus-visible { outline: 3px solid var(--ring); outline-offset: -3px; }
+  .m-md-tabela {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 2px);
+    outline: none;
+  }
+  .m-md-tabela:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+  .m-md-tabela table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+  .m-md-tabela :is(th, td) { padding: 0.5rem 0.875rem; text-align: left; vertical-align: top; }
+  .m-md-tabela th {
+    background: color-mix(in oklab, var(--muted) 70%, var(--card));
+    font-weight: 600;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+  }
+  .m-md-tabela tr + tr td, .m-md-tabela tbody tr td { border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent); }
+  .m-md-tabela td { font-variant-numeric: tabular-nums; }
+  .m-md sup { line-height: 0; }
+  .m-md-cit {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.35rem;
+    height: 1.35rem;
+    margin-left: 0.15em;
+    padding: 0 0.3em;
+    border-radius: 999px;
+    background: var(--brand-soft);
+    color: var(--brand-soft-foreground) !important;
+    font-size: 0.75rem;
+    font-weight: 650;
+    text-decoration: none !important;
+    vertical-align: 0.35em;
+    line-height: 1;
+  }
+  .m-md-cit:hover { background: var(--brand); color: var(--brand-foreground) !important; }
+  .m-md-cit-sem { font-size: 0.75em; color: var(--muted-foreground); }
+
+  /* Streaming caret: a soft block after the last word. */
+  .m-caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.1em;
+    margin-left: 0.12em;
+    vertical-align: -0.18em;
+    border-radius: 2px;
+    background: var(--brand);
+    animation: m-caret 1s steps(2, jump-none) infinite;
+  }
+  @keyframes m-caret { 50% { opacity: 0.15; } }
+
+  /* ─── Messages ───────────────────────────────────────────────────────── */
+  .m-mensagem {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 140px;
+  }
+  .m-balao-pessoa {
+    background: color-mix(in oklab, var(--brand) 9%, var(--card));
+    border: 1px solid color-mix(in oklab, var(--brand) 16%, var(--border));
+    color: var(--foreground);
+  }
+  .dark .m-balao-pessoa { background: color-mix(in oklab, var(--brand) 16%, var(--card)); }
+  .m-assistente-marca {
+    background:
+      radial-gradient(circle at 30% 25%, rgb(255 255 255 / 0.9), transparent 70%),
+      linear-gradient(145deg, color-mix(in oklab, var(--flag-green) 22%, var(--card)), color-mix(in oklab, var(--flag-red) 12%, var(--card)));
+    border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+    box-shadow: 0 1px 2px rgb(18 36 26 / 0.08);
+  }
+  .dark .m-assistente-marca {
+    background: linear-gradient(145deg, color-mix(in oklab, var(--flag-green) 20%, var(--card)), color-mix(in oklab, var(--flag-red) 10%, var(--card)));
+  }
+
+  /* Thinking: three dots breathing in turn. */
+  .m-pensar { display: inline-flex; gap: 0.25rem; }
+  .m-pensar > span {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: var(--brand);
+    opacity: 0.35;
+    animation: m-pensar 1.2s ease-in-out infinite;
+  }
+  .m-pensar > span:nth-child(2) { animation-delay: 0.15s; }
+  .m-pensar > span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes m-pensar {
+    0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+    40% { opacity: 1; transform: translateY(-2px); }
+  }
+  .m-pensar-ponto {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999px;
+    border: 2px solid color-mix(in oklab, var(--brand) 30%, transparent);
+    border-top-color: var(--brand);
+    animation: m-rodar 0.9s linear infinite;
+  }
+
+  /* Composer: a raised field. */
+  .m-compositor {
+    background: var(--card);
+    border: 1px solid color-mix(in oklab, var(--input) 70%, var(--border));
+    box-shadow:
+      0 1px 2px rgb(18 36 26 / 0.05),
+      0 10px 30px -14px rgb(18 36 26 / 0.22);
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+  }
+  .m-compositor:focus-within {
+    border-color: var(--ring);
+    box-shadow:
+      0 0 0 4px color-mix(in oklab, var(--ring) 18%, transparent),
+      0 10px 30px -14px rgb(18 36 26 / 0.25);
+  }
+  .m-compositor textarea:focus-visible { outline: none; }
+  .dark .m-compositor { box-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -14px rgb(0 0 0 / 0.6); }
+}
+
+html.contraste .m-balao-pessoa { background: #ffffff; border: 2px solid #000000; }
+html.contraste .m-assistente-marca { background: #ffffff; border: 2px solid #000000; box-shadow: none; }
+html.contraste .m-compositor { border: 2px solid #000000; box-shadow: none; }
+html.contraste .m-compositor:focus-within { outline: 3px solid #000000; outline-offset: 2px; }
+html.contraste .m-md-cit { background: #000000; color: #ffffff !important; }
+html.contraste .m-md-codigo,
+html.contraste .m-md-tabela { border: 2px solid #000000; }
+html.contraste .m-caret { background: #000000; }
+@media print {
+  .m-caret, .m-pensar { display: none; }
+  .m-mensagem { content-visibility: visible; }
+}

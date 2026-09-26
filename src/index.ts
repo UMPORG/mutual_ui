@@ -23,3 +23,7 @@ export * from "./dados";
 export * from "./cartao";
 export * from "./estatisticas";
 export * from "./tabela";
+// v0.7 — server-safe primitives and form fields (no new dependencies).
+export * from "./basicos";
+export { FormField, Fieldset, Input, Textarea, NativeSelect, type FormFieldProps, type FieldControlProps } from "./campo";
+export { normalizarTexto, filtrarOpcoes, textoParaCriar, partesDestacadas, pontuarCorrespondencia } from "./filtrar";

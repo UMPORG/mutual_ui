@@ -141,3 +141,16 @@ test("proporções ignoram negativos e totais nulos", () => {
   assert.deepEqual(proporcoes([0, 0]), [0, 0]);
   assert.deepEqual(proporcoes([-1, 2]), [0, 1]);
 });
+
+test("eixo de contagens usa só inteiros (sem passos de 0,5)", async () => {
+  const { eixoInteiro } = await import("../src/dados.ts");
+  const contagens = [{ m: "jan", n: 1 }, { m: "fev", n: 2 }, { m: "mar", n: 0 }];
+  assert.equal(eixoInteiro(contagens, ["n"]), true);
+  assert.equal(eixoInteiro(contagens, ["n"], "numero"), true);
+  assert.equal(eixoInteiro(contagens, ["n"], "contagem"), true);
+  assert.equal(eixoInteiro([{ n: 1.5 }], ["n"]), false);
+  assert.equal(eixoInteiro([{ n: 1.5 }], ["n"], "inteiro"), true);
+  assert.equal(eixoInteiro(contagens, ["n"], "percentagem"), false);
+  assert.equal(eixoInteiro(contagens, ["n"], "moeda"), false);
+  assert.equal(eixoInteiro([{ n: null }], ["n"]), false);
+});

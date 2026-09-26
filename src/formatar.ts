@@ -102,6 +102,8 @@ export function formatarPercentagem(valor: ValorNumerico, opcoes: OpcoesPercenta
 export type FormatoValor =
   | "numero"
   | "inteiro"
+  /** Counts of things (inscrições, pedidos): whole numbers, integer axis ticks. */
+  | "contagem"
   | "moeda"
   | "percentagem"
   | ((valor: number) => string)
@@ -130,6 +132,7 @@ export function formatarValor(valor: ValorNumerico, formato: FormatoValor = "num
     case "percentagem":
       return formatarPercentagem(n);
     case "inteiro":
+    case "contagem":
       return formatarNumero(n, { casas: compacto ? undefined : 0, compacto });
     default:
       return formatarNumero(n, { compacto });
@@ -154,6 +157,7 @@ export function formatarEixo(valor: ValorNumerico, formato: FormatoValor = "nume
     const escala = typeof formato === "object" && formato.tipo === "percentagem" ? formato.opcoes?.escala : undefined;
     return formatarPercentagem(n, { escala });
   }
+  if (tipo === "inteiro" || tipo === "contagem") return formatarNumero(Math.round(n), { compacto: grande, casas: grande ? undefined : 0 });
   return formatarNumero(n, { compacto: grande });
 }
 

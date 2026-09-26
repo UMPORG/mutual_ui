@@ -40,6 +40,7 @@ import {
   atribuirCores,
   corSerie,
   descreverGrafico,
+  eixoInteiro,
   tabelaDoGrafico,
   type CorSerie,
   type Fatia,
@@ -426,6 +427,7 @@ export function GraficoBarras<T extends Linha>(props: GraficoBarrasProps<T>) {
           tickLine={false}
           axisLine={false}
           tickFormatter={(v: number) => formatarEixo(v, props.format)}
+          allowDecimals={!eixoInteiro(props.data as Linha[], props.series.map((x) => x.key), props.format)}
         />
       ) : (
         <YAxis
@@ -435,6 +437,7 @@ export function GraficoBarras<T extends Linha>(props: GraficoBarrasProps<T>) {
           tickLine={false}
           axisLine={false}
           tickFormatter={(v: number) => formatarEixo(v, props.format)}
+          allowDecimals={!eixoInteiro(props.data as Linha[], props.series.map((x) => x.key), props.format)}
         />
       )}
       {horizontal ? (
@@ -570,6 +573,7 @@ export function GraficoLinhas<T extends Linha>(props: GraficoLinhasProps<T>) {
             axisLine={false}
             domain={props.domain ?? [0, "auto"]}
             tickFormatter={(v: number) => formatarEixo(v, props.format)}
+          allowDecimals={!eixoInteiro(props.data as Linha[], props.series.map((x) => x.key), props.format)}
           />
           <Tooltip
             cursor={{ stroke: "var(--grafico-cursor)", strokeWidth: 1 }}
@@ -652,6 +656,7 @@ export function GraficoArea<T extends Linha>(props: GraficoAreaProps<T>) {
             tickLine={false}
             axisLine={false}
             tickFormatter={(v: number) => formatarEixo(v, props.format)}
+          allowDecimals={!eixoInteiro(props.data as Linha[], props.series.map((x) => x.key), props.format)}
           />
           <Tooltip
             cursor={{ stroke: "var(--grafico-cursor)", strokeWidth: 1 }}
