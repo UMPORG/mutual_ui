@@ -69,6 +69,7 @@ import {
   type Option,
 } from "../src/controlos.ts";
 import { DatePicker, DateRangePicker } from "../src/datas.tsx";
+import { useAppAtual } from "./app-atual.ts";
 
 const DISTRITOS: Option[] = [
   "Aveiro", "Beja", "Braga", "Bragança", "Castelo Branco", "Coimbra", "Évora", "Faro", "Guarda", "Leiria", "Lisboa",
@@ -513,6 +514,7 @@ function Sobreposicoes() {
 }
 
 function Basicos() {
+  const app = useAppAtual();
   return (
     <div className="grid gap-8 lg:grid-cols-2">
       <Grupo titulo="Botões">
@@ -533,7 +535,9 @@ function Basicos() {
         <div className="flex flex-wrap items-center gap-2">
           <Badge>Rascunho</Badge>
           <Badge variant="brand">Novo</Badge>
-          <Badge variant="app" icon={<Building2 />}>Backoffice</Badge>
+          <Badge variant="app" icon={<Building2 />}>
+            {app.nome}
+          </Badge>
           <Badge variant="outline">12 documentos</Badge>
           <Badge variant="solid" size="sm">
             3

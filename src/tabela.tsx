@@ -139,8 +139,12 @@ export function FilterChips({
   const Link = LinkComponent;
   const chip =
     "inline-flex min-h-9 items-center gap-1.5 rounded-full border border-border bg-card pl-3 text-[0.9375rem] shadow-xs";
+  // 36px visual, 44px hit area (the ::after extends 4px on every side; the
+  // 8px gap between chips keeps neighbouring targets apart).
   const remove =
-    "grid size-9 place-items-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground";
+    "relative grid size-9 place-items-center rounded-full text-muted-foreground after:absolute after:-inset-1 after:rounded-full hover:bg-accent hover:text-foreground";
+  const limpar =
+    "m-btn m-btn-ghost relative inline-flex min-h-9 items-center rounded-lg px-3 text-[0.9375rem] after:absolute after:inset-x-0 after:-inset-y-1";
   return (
     <ul aria-label="Filtros ativos" className={cx("flex flex-wrap items-center gap-2", className)}>
       {filters.map((f) => (
@@ -164,11 +168,11 @@ export function FilterChips({
       {(onClear || clearHref) && (
         <li>
           {clearHref ? (
-            <Link href={clearHref} className="m-btn m-btn-ghost inline-flex min-h-9 items-center rounded-lg px-3 text-[0.9375rem] underline-offset-4 hover:underline">
+            <Link href={clearHref} className={cx(limpar, "underline-offset-4 hover:underline")}>
               Limpar filtros
             </Link>
           ) : (
-            <button type="button" onClick={onClear} className="m-btn m-btn-ghost inline-flex min-h-9 items-center rounded-lg px-3 text-[0.9375rem]">
+            <button type="button" onClick={onClear} className={limpar}>
               Limpar filtros
             </button>
           )}

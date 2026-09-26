@@ -22,12 +22,14 @@ const APPS: AppDemo[] = [
   { id: "assistente", nome: "Assistente", proposta: true, pagina: "Conversas", descricao: "Pergunte o que precisa de saber." },
 ];
 
-const NAV = [
+// The active entry is the app's own page, so no shell shows another app's
+// menu (the Saúde shell used to highlight "Associações").
+const nav = (app: AppDemo) => [
   { rotulo: "Painel", icon: LayoutDashboard },
-  { rotulo: "Associações", icon: Building2, ativo: true, contagem: 18 },
-  { rotulo: "Associados", icon: Users },
-  { rotulo: "Quotas", icon: Wallet },
-  { rotulo: "Pagamentos", icon: Receipt },
+  { rotulo: app.pagina, icon: Building2, ativo: true, contagem: 18 },
+  { rotulo: "Pessoas", icon: Users },
+  { rotulo: "Pagamentos", icon: Wallet },
+  { rotulo: "Faturas", icon: Receipt },
   { rotulo: "Documentos", icon: FileText },
   { rotulo: "Avisos", icon: Bell },
   { rotulo: "Definições", icon: Settings },
@@ -81,7 +83,7 @@ function ShellSecretaria({ app }: { app: AppDemo }) {
         </div>
         <nav className="min-h-0 flex-1 overflow-y-auto px-2" aria-label="Navegação">
           <ul className="flex flex-col gap-0.5">
-            {NAV.map(({ rotulo, icon: Icon, ativo, contagem }) => (
+            {nav(app).map(({ rotulo, icon: Icon, ativo, contagem }) => (
               <li key={rotulo}>
                 <span
                   className={

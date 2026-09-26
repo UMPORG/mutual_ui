@@ -97,15 +97,7 @@ export function FormField({
     <div className={cx("flex min-w-0 flex-col gap-1.5", className)}>
       <label htmlFor={campoId} className={cx("flex flex-wrap items-baseline gap-x-1.5 text-base font-medium", hideLabel && "sr-only")}>
         {label}
-        {required && (
-          <>
-            <span aria-hidden className="text-destructive">
-              *
-            </span>
-            <span className="sr-only">(obrigatório)</span>
-          </>
-        )}
-        {optional && !required && <span className="text-[0.9375rem] font-normal text-muted-foreground">(opcional)</span>}
+        <Marca required={required} optional={optional} />
       </label>
       {hint && (
         <p id={hintId} className="-mt-0.5 text-[0.9375rem] text-muted-foreground">
@@ -141,6 +133,34 @@ export function FormField({
 }
 
 /**
+ * The "*" / "(opcional)" mark after a label or legend. The label is a flex
+ * row (the gap does the visual spacing), but the accessible name is built from
+ * the text, so each mark carries its own leading space — otherwise the name
+ * would be "Nome(opcional)". The space lives inside a span (a bare whitespace
+ * text node between flex items is dropped from layout, and some browsers drop
+ * it from the name too).
+ */
+function Marca({ required, optional }: { required?: boolean | undefined; optional?: boolean | undefined }) {
+  if (required)
+    return (
+      <>
+        {/* The "*" is generated content so it stays out of the label's text:
+            getByLabel("Nome (obrigatório)") and screen readers both get
+            "Nome (obrigatório)". */}
+        <span aria-hidden className="text-destructive after:content-['*']" />
+        <span className="sr-only">{" (obrigatório)"}</span>
+      </>
+    );
+  if (optional)
+    return (
+      <span className="text-[0.9375rem] font-normal text-muted-foreground">
+        <span className="sr-only"> </span>(opcional)
+      </span>
+    );
+  return null;
+}
+
+/**
  * A group of related controls (radio group, checkboxes, a date range) with a
  * legend, hint and error — the grouping version of `FormField`.
  */
@@ -172,14 +192,7 @@ export function Fieldset({
     >
       <legend className={cx("mb-1 flex flex-wrap items-baseline gap-x-1.5 p-0 text-base font-medium", hideLegend && "sr-only")}>
         {legend}
-        {required && (
-          <>
-            <span aria-hidden className="text-destructive">
-              *
-            </span>
-            <span className="sr-only">(obrigatório)</span>
-          </>
-        )}
+        <Marca required={required} />
       </legend>
       {hint && (
         <p id={hintId} className="-mt-1 text-[0.9375rem] text-muted-foreground">

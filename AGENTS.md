@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.0"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.1"
 ```
 
 ```js
@@ -466,6 +466,11 @@ The field wires `id`, `aria-describedby` (error, hint, count),
 `aria-invalid` and `aria-required`; it never owns the value, so it works with
 react-hook-form + zod, server actions and plain forms. Mark whichever is the
 minority: `required` ("*" + "obrigatório" for screen readers) or `optional`.
+The accessible name is the label plus the mark, with a space (v0.8.1):
+`getByLabel("NIF (obrigatório)")`, `getByLabel("Observações (opcional)")`
+and screen readers all get that text (the "*" is CSS generated content, so it
+is not part of the name). Never write "(opcional)" into the label text — use
+the prop.
 
 ### Which control — and when not
 
@@ -638,6 +643,16 @@ import { ScrollShadow } from "@umporg/ui";          // or "@umporg/ui/controlos"
 <ScrollShadow label="Próximos eventos" className="flex gap-3 pb-2">{cartoes}</ScrollShadow>
 <div className="m-scroll-x">{/* server component: CSS-only shadows */}</div>
 ```
+
+## v0.8.1 — fixes (no API change)
+
+- `FormField` / `Fieldset`: the name joins the mark with a space ("Nome
+  (opcional)", not "Nome(opcional)"); the "*" is out of the name.
+- `FilterChips`: the remove buttons keep their 36px look with a 44px hit
+  area (a `::after` 4px outside the button); "Limpar filtros" too.
+- Showcase: the header and the "app" badge follow `data-app` live; each shell
+  highlights its own page. `node showcase/verificar.mjs` checks names, hit
+  areas and the header (server running).
 
 ## Scripts
 

@@ -39,7 +39,6 @@ import {
   StatusSummary,
   Toolbar,
   type Column,
-  type MutualAppId,
 } from "../src/index.ts";
 import { ChartFrame, GraficoArea, GraficoBarras, GraficoDonut, GraficoLinhas } from "../src/graficos.tsx";
 import { PaginaControlos } from "./controlos.tsx";
@@ -47,6 +46,7 @@ import { PaginaEfeitos } from "./efeitos.tsx";
 import { PaginaConversa } from "./conversa.tsx";
 import { PaginaShells } from "./shells.tsx";
 import { PaginaRolagem } from "./rolagem.tsx";
+import { useAppAtual } from "./app-atual.ts";
 
 const PAGINA = new URLSearchParams(location.search).get("pagina") ?? "dados";
 /** Inside the side-by-side iframes: page content only. */
@@ -270,6 +270,7 @@ function Estado({ titulo, children }: { titulo: string; children: React.ReactNod
 }
 
 function App() {
+  const app = useAppAtual();
   const colunasMini: Column<Associacao>[] = [
     { id: "nome", header: "Associação", cell: (r) => r.nome },
     { id: "associados", header: "Associados", cell: (r) => r.associados, numeric: true },
@@ -284,7 +285,7 @@ function App() {
     <div className="min-h-dvh m-canvas">
       <header className="bg-sidebar text-sidebar-foreground">
         <div className="mx-auto flex max-w-[84rem] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-8">
-          <MutualWordmark app={(document.documentElement.dataset.app as MutualAppId | undefined) ?? "backoffice"} tone="ink" />
+          <MutualWordmark app={app.id} tone="ink" />
           <Paginas />
           <Tema />
         </div>
