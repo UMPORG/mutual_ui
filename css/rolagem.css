@@ -1,0 +1,181 @@
+/*
+ * Scrolling (v0.8): one scrollbar look for the whole ecosystem, vertical and
+ * horizontal, plus edge shadows that say "there is more this way".
+ *
+ * - Thin (6px thumb in a 12px lane) and rounded; the thumb grows to 8px and
+ *   darkens under the pointer, so the lane stays easy to grab.
+ * - Colours come from tokens (css/tokens.css): --scroll-thumb,
+ *   --scroll-thumb-hover, --scroll-track, and the "-ink" set on the tinted
+ *   sidebar and nav bar (.bg-sidebar, .bg-nav-background, .m-tinta).
+ * - Chrome, Edge and Safari use ::-webkit-scrollbar (Chrome ignores those
+ *   rules on any element that sets scrollbar-width / scrollbar-color, so
+ *   they are only set for Firefox, which has no ::-webkit-scrollbar).
+ * - Alto contraste: 16px lane, solid black thumb (white on the sidebar).
+ *   Forced colours (Windows): system colours. Nothing here animates.
+ * - Sizes are px on purpose: they follow page zoom like everything else,
+ *   and keyboard scrolling is untouched.
+ */
+
+/* Which colours apply here. Surfaces placed inside the sidebar DOM (menus,
+   popovers) and the content canvas (desk shells wrap it in bg-sidebar) go
+   back to the light set. */
+:root {
+  --m-polegar: var(--scroll-thumb);
+  --m-polegar-hover: var(--scroll-thumb-hover);
+  --m-calha: var(--scroll-track);
+}
+:where(.bg-sidebar, .bg-nav-background, .m-tinta) {
+  --m-polegar: var(--scroll-thumb-ink);
+  --m-polegar-hover: var(--scroll-thumb-ink-hover);
+  --m-calha: var(--scroll-track-ink);
+}
+:where(.bg-sidebar, .bg-nav-background, .m-tinta) :where(.m-canvas, .m-float, .m-surface, .bg-popover, .bg-card, .bg-background) {
+  --m-polegar: var(--scroll-thumb);
+  --m-polegar-hover: var(--scroll-thumb-hover);
+  --m-calha: var(--scroll-track);
+}
+
+@supports selector(::-webkit-scrollbar) {
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    background-color: var(--m-calha);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--m-polegar);
+    background-clip: padding-box;
+    border: 3px solid transparent;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover,
+  ::-webkit-scrollbar-thumb:active {
+    background-color: var(--m-polegar-hover);
+    border-width: 2px;
+  }
+  ::-webkit-scrollbar-corner { background-color: transparent; }
+  ::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+
+  :root.contraste::-webkit-scrollbar,
+  :root.contraste ::-webkit-scrollbar { width: 16px; height: 16px; }
+  :root.contraste::-webkit-scrollbar-thumb,
+  :root.contraste ::-webkit-scrollbar-thumb { border-width: 3px; }
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--m-polegar) var(--m-calha);
+  }
+  :root.contraste,
+  :root.contraste * { scrollbar-width: auto; }
+}
+
+@media (forced-colors: active) {
+  :root,
+  :where(.bg-sidebar, .bg-nav-background, .m-tinta),
+  :where(.bg-sidebar, .bg-nav-background, .m-tinta) :where(.m-canvas, .m-float, .m-surface, .bg-popover, .bg-card, .bg-background) {
+    --m-polegar: CanvasText;
+    --m-polegar-hover: Highlight;
+    --m-calha: Canvas;
+  }
+  ::-webkit-scrollbar,
+  ::-webkit-scrollbar-thumb { forced-color-adjust: none; }
+}
+
+/* ─── Edge shadows: .m-scroll-x / .m-scroll-y ─────────────────────────────
+   A soft shadow at an edge while there is more content beyond it. Drawn
+   with the scroller's own background (below the content), sized by four
+   registered properties that a scroll-driven animation moves (Chrome, Edge,
+   Safari 26+). Where scroll timelines are missing (Firefox), the
+   ScrollShadow component / useScrollShadow hook sets data-rolo-* instead;
+   without either, there is simply no shadow. Content with an opaque
+   background (a hovered row) covers the shadow — keep cells transparent. */
+@property --m-sombra-ini-x { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --m-sombra-fim-x { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --m-sombra-ini-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --m-sombra-fim-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
+@layer components {
+  .m-scroll-x {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+  .m-scroll-y {
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+  }
+  .m-scroll-x,
+  .m-scroll-y {
+    background-image:
+      radial-gradient(farthest-side at 0 50%, var(--scroll-shadow), transparent),
+      radial-gradient(farthest-side at 100% 50%, var(--scroll-shadow), transparent),
+      radial-gradient(farthest-side at 50% 0, var(--scroll-shadow), transparent),
+      radial-gradient(farthest-side at 50% 100%, var(--scroll-shadow), transparent);
+    background-position: left center, right center, center top, center bottom;
+    background-size:
+      var(--m-sombra-ini-x) 100%,
+      var(--m-sombra-fim-x) 100%,
+      100% var(--m-sombra-ini-y),
+      100% var(--m-sombra-fim-y);
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+  }
+  .m-scroll-x[data-rolo-inicio] { --m-sombra-ini-x: 14px; }
+  .m-scroll-x[data-rolo-fim] { --m-sombra-fim-x: 14px; }
+  .m-scroll-y[data-rolo-cima] { --m-sombra-ini-y: 12px; }
+  .m-scroll-y[data-rolo-baixo] { --m-sombra-fim-y: 12px; }
+
+  @supports (animation-timeline: scroll()) {
+    .m-scroll-x {
+      animation: m-sombra-x linear both;
+      animation-timeline: scroll(self inline);
+    }
+    .m-scroll-y {
+      animation: m-sombra-y linear both;
+      animation-timeline: scroll(self block);
+    }
+    .m-scroll-x.m-scroll-y {
+      animation: m-sombra-x linear both, m-sombra-y linear both;
+      animation-timeline: scroll(self inline), scroll(self block);
+    }
+  }
+  @keyframes m-sombra-x {
+    0% { --m-sombra-ini-x: 0px; --m-sombra-fim-x: 14px; }
+    6% { --m-sombra-ini-x: 14px; }
+    94% { --m-sombra-fim-x: 14px; }
+    100% { --m-sombra-ini-x: 14px; --m-sombra-fim-x: 0px; }
+  }
+  @keyframes m-sombra-y {
+    0% { --m-sombra-ini-y: 0px; --m-sombra-fim-y: 12px; }
+    6% { --m-sombra-ini-y: 12px; }
+    94% { --m-sombra-fim-y: 12px; }
+    100% { --m-sombra-ini-y: 12px; --m-sombra-fim-y: 0px; }
+  }
+
+  /* A focusable scroller (tabindex="0" so keyboard users can scroll it)
+     shows where the focus is. */
+  :is(.m-scroll-x, .m-scroll-y):focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: -3px;
+  }
+}
+
+/* High contrast: a hard edge instead of a soft shadow. */
+html.contraste :is(.m-scroll-x, .m-scroll-y) {
+  background-image:
+    linear-gradient(#000, #000),
+    linear-gradient(#000, #000),
+    linear-gradient(#000, #000),
+    linear-gradient(#000, #000);
+  background-size:
+    min(var(--m-sombra-ini-x), 3px) 100%,
+    min(var(--m-sombra-fim-x), 3px) 100%,
+    100% min(var(--m-sombra-ini-y), 3px),
+    100% min(var(--m-sombra-fim-y), 3px);
+}
+@media (forced-colors: active) {
+  :is(.m-scroll-x, .m-scroll-y) { background-image: none; }
+}
+@media print {
+  :is(.m-scroll-x, .m-scroll-y) { background-image: none; overflow: visible; }
+}

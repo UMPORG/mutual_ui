@@ -480,7 +480,7 @@ export function DateRangePicker({
           <Popover.Positioner side="bottom" align="start" sideOffset={6} collisionPadding={12} className={CLASSE_POSICIONADOR}>
             <Popover.Popup aria-label="Escolher período" className={cx(CLASSE_FLUTUANTE, "flex max-w-[var(--available-width)] flex-col sm:flex-row")}>
               {rapidos.length > 0 && (
-                <div className="flex gap-1 overflow-x-auto border-b border-border p-2 sm:w-44 sm:flex-col sm:overflow-visible sm:border-r sm:border-b-0">
+                <div className="m-scroll-x flex gap-1 overflow-x-auto border-b border-border p-2 sm:w-44 sm:flex-col sm:overflow-visible sm:border-r sm:border-b-0">
                   {rapidos.map((r) => {
                     const ativo = rascunho.inicio === r.inicio && rascunho.fim === r.fim;
                     return (

@@ -78,6 +78,10 @@
   --color-app-accent-foreground: var(--app-accent-foreground);
   --color-app-accent-soft: var(--app-accent-soft);
   --color-app-accent-on-ink: var(--app-accent-on-ink);
+  --color-app-canvas: var(--app-canvas);
+  --color-app-rule: var(--app-rule);
+  --color-scroll-thumb: var(--scroll-thumb);
+  --color-scroll-thumb-hover: var(--scroll-thumb-hover);
   --color-role-accent: var(--role-accent);
   --color-role-accent-foreground: var(--role-accent-foreground);
 

@@ -1,6 +1,6 @@
 {
   "name": "@umporg/ui",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "MUTU@L design system: tokens, brand, shell pieces, form controls, overlays, dates, cards, stats, charts, tables, conversation (assistant) components, decorative effects and SSO helpers shared by every MUTU@L app.",
   "license": "UNLICENSED",
   "type": "module",
@@ -34,6 +34,7 @@
     "./css/controlos.css": "./css/controlos.css",
     "./css/efeitos.css": "./css/efeitos.css",
     "./css/conversa.css": "./css/conversa.css",
+    "./css/rolagem.css": "./css/rolagem.css",
     "./preferencias": "./src/preferencias.ts",
     "./assets/*": "./assets/*"
   },

@@ -76,7 +76,21 @@ Siglas: BO = Backoffice, SX = Simplex, EV = Eventos, SA = Saúde, PO = Portal.
 - `components/acessos/pessoas.tsx` (tabela crua com cartões no telemóvel, `Paginacao` local, pesquisa, selects, "Limpar filtros") → `DataTable` + `Toolbar` + `FilterChips` + `Pagination hrefFor`. `convites.tsx` e `perfis.tsx` seguem o mesmo padrão.
 - Faixa de estado dos serviços → `StatusSummary variant="inline"`.
 
-## 3. Paleta dos gráficos (decisão)
+## 3. Rolagem (v0.8)
+
+Zonas que rolam de lado nas apps (grep `overflow-x-auto` em 2026-09-26):
+Simplex 11 ficheiros, Eventos 4, Backoffice 3, DNS 1, Portal 1, Saúde e QR
+nenhum. Todas ganham a barra nova sem mudanças (é global). Para ganharem
+também as sombras nas pontas: trocar `overflow-x-auto` por `m-scroll-x`
+(CSS, serve em componentes de servidor) ou envolver em `ScrollShadow`
+(cliente; nome falado com `label`, entra na ordem do Tab quando transborda).
+A `DataTable`, os `Tabs`, os blocos de código e tabelas do `Markdown`, a
+tabela "Ver dados" dos gráficos, a `MessageList` e os intervalos rápidos do
+`DateRangePicker` já as têm. Não usar `scrollbar-width` nem
+`scrollbar-color` nas apps: no Chrome anulam o estilo partilhado (o
+utilitário `no-scrollbar` do Simplex e do Eventos continua a funcionar).
+
+## 4. Paleta dos gráficos (decisão)
 
 Uma só paleta categórica, **"MUTU@L"**, em `css/dados.css`. O verde da marca
 vem primeiro, seguido de uma ordem fixa de tons: verde, azul, magenta, amarelo,

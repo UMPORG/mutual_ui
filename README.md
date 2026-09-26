@@ -6,7 +6,7 @@ MUTU@L application (Portal, Backoffice, Eventos, Simplex, Saúde, Servidores e
 DNS, Validador QR).
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.7.0"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.0"
 ```
 
 ```css

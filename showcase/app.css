@@ -4,5 +4,7 @@
 @source "./controlos.tsx";
 @source "./efeitos.tsx";
 @source "./conversa.tsx";
+@source "./shells.tsx";
+@source "./rolagem.tsx";
 
 :root { --font-geist-sans: "Geist"; }

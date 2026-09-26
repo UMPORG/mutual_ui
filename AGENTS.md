@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.7.0"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.0"
 ```
 
 ```js
@@ -68,9 +68,10 @@ workspace was retired on 2026-09-25).
    `destructive`, each with `-soft` / `-soft-foreground` pairs. No raw palette
    classes (`bg-green-100`, `text-amber-700`…) for status. Status is always
    icon + words, never colour alone.
-5. **The desk shell is dark "MUTU@L ink"** (`--sidebar` `#12241a`) in both
-   themes, with `MutualWordmark tone="ink"` at the top and `AppSwitcher`
-   right under it.
+5. **The desk shell is dark, tinted per app** (v0.8): the same depth as the
+   "MUTU@L ink" (`--sidebar` `#12241a`, kept by the Portal and the Cartão),
+   each app in its own hue, in both themes, with `MutualWordmark tone="ink"`
+   at the top and `AppSwitcher` right under it. See "v0.8" below.
 
 ## One family, shells per audience
 
@@ -561,13 +562,91 @@ Markdown, `status` streaming / done / stopped / error, `sources`,
 - Sources: `kind: "ajuda"` (help-centre page) or `"registo"` (an app
   record; `app` gives its accent).
 
+## v0.8 — app-tinted shells and custom scrollbars (additive, visual only)
+
+No API change: bump the tag and the apps change look. Owner feedback:
+switching apps "felt like I didn't even change app", and scrollbars should
+be custom, vertical and horizontal.
+
+### Tinted shell
+
+- `[data-app]` now sets `--sidebar`, `--sidebar-accent`,
+  `--sidebar-border`, `--sidebar-foreground`,
+  `--sidebar-muted-foreground` per app (light and dark), and
+  `--sidebar-primary` = `--app-accent-on-ink` (text on it =
+  `--sidebar`). `--sidebar-ring` stays brand green. Everything that uses
+  `bg-sidebar` / `bg-nav-background` (sidebar, mobile top bar) follows.
+  Values, ratios and the rationale: `css/tokens.css` and
+  [docs/identidade-visual.md](docs/identidade-visual.md) ("Tons das
+  shells"); `tests/tokens.test.ts` fails if a pair drops below 7:1 (text)
+  or 4.5:1 (muted, accent).
+
+  | App | `--sidebar` light / dark | Hue |
+  | --- | --- | --- |
+  | Portal, Cartão | `#12241a` / `#0e1a13` | MUTU@L ink (unchanged) |
+  | Backoffice | `#101e3b` / `#0c162b` | navy |
+  | Eventos | `#221939` / `#191229` | aubergine |
+  | Simplex | `#301909` / `#231307` | walnut |
+  | Validador QR | `#00242f` / `#031a22` | petrol |
+  | Saúde | `#341220` / `#260e17` | wine |
+  | Servidores e DNS | `#18202c` / `#111720` | slate |
+  | `monitor` (reserved) | `#19230b` / `#121a08`, accent `#4d7c0f` / on ink `#bef264` | moss |
+  | `assistente` (reserved) | `#2d152e` / `#210f22`, accent `#a21caf` / on ink `#f0abfc` | plum |
+
+- `.m-canvas` (the content area of every shell) gains a 3px top rule in
+  the app accent (`--app-rule`, a border so scrolled content never covers
+  it) and a very light band of the accent (`--app-canvas`) behind the page
+  header that scrolls away with the content. Opt out on one element with
+  `m-canvas-neutro` or `--app-rule-width: 0px`.
+- Alto contraste: every sidebar is black, no band, no rule (the app name
+  under the wordmark still says where you are). Forced colours: system
+  colours.
+- Never hard-code the ink (`#12241a`, `#0e1a13`, `#1d3528`…) in an app:
+  use `bg-sidebar`, `bg-sidebar-accent`, `text-sidebar-*`,
+  `text-app-accent-on-ink`. Nested `data-app` elements (Portal tiles) get
+  their own tint.
+- `bg-sidebar` outside a shell takes the tint too (e.g. the Eventos public
+  "Como se inscrever" band is now aubergine with a violet button).
+
+### Scrollbars (`css/rolagem.css`, imported by `css/index.css`)
+
+- Global, nothing to add: thin rounded thumb (6px in a 12px lane, 8px and
+  darker under the pointer), transparent track. Tokens `--scroll-thumb`,
+  `--scroll-thumb-hover`, `--scroll-track` (+ `-ink` variants used
+  automatically inside `.bg-sidebar`, `.bg-nav-background`, `.m-tinta`;
+  menus, cards and `.m-canvas` inside them go back to the light set).
+  Chrome/Edge/Safari via `::-webkit-scrollbar`, Firefox via
+  `scrollbar-width: thin` + `scrollbar-color`.
+- **Do not set `scrollbar-width` / `scrollbar-color` in an app** —
+  Chrome then ignores the shared `::-webkit-scrollbar` look for that
+  element (`no-scrollbar` utilities that hide a bar are fine).
+- Alto contraste: 16px lane, solid black thumb (white on the sidebar).
+  Forced colours: `CanvasText` on `Canvas`. Nothing animates.
+- Horizontal (or vertical) scrollers with edge shadows: class
+  `m-scroll-x` / `m-scroll-y` (CSS only, server-safe; the shadow is part
+  of the scroller's background, so keep cells transparent) or
+  `<ScrollShadow label="Próximos eventos">…</ScrollShadow>` (client; adds
+  the shadows in Firefox too, becomes a named region and joins the Tab order
+  only while it overflows) or `useScrollShadow(ref)` on your own element.
+  Already applied to `DataTable`, `Tabs` (line), `Markdown` code and
+  tables, the chart "Ver dados" table, `MessageList` and the
+  `DateRangePicker` quick ranges. The v0.7 `ScrollArea` (Base UI) uses the
+  same look.
+
+```tsx
+import { ScrollShadow } from "@umporg/ui";          // or "@umporg/ui/controlos"
+<ScrollShadow label="Próximos eventos" className="flex gap-3 pb-2">{cartoes}</ScrollShadow>
+<div className="m-scroll-x">{/* server component: CSS-only shadows */}</div>
+```
+
 ## Scripts
 
 ```bash
 pnpm install
 pnpm typecheck
 pnpm test        # node --test: SSO, preferences, formatters, chart/table helpers,
-                 # dates, combobox filtering, Markdown safety, conversation helpers
+                 # dates, combobox filtering, Markdown safety, conversation helpers,
+                 # app shell tint contrast (tokens.test.ts)
 pnpm embed-logo  # regenerate src/logo-data.ts from assets/mutual-flag-96.webp
 
 # Visual review of every data component, state and theme (not published):
@@ -575,6 +654,7 @@ cd showcase && pnpm install --ignore-workspace && pnpm build && bun serve.ts
 # -> http://localhost:5199/?tema=claro|escuro|contraste&texto=150&app=simplex
 node shots.mjs <outDir> --secoes   # Playwright screenshots (server running)
 node shots-v07.mjs <outDir> [filtro] # v0.7: ?pagina=controlos|efeitos|conversa + open states
+node shots-v08.mjs <outDir> [filtro] # v0.8: ?pagina=shells (&vista=lado) | rolagem, hover, forced colours
 ```
 
 The showcase resolves React, Recharts and Base UI from the package's own

@@ -35,8 +35,11 @@ explica as decisões; os valores vivem em `css/tokens.css`.
 4. **Estados semânticos partilhados** (`success`, `warning`, `info`,
    `destructive` + variantes `-soft`). Nunca classes de paleta crua para
    estado. Estado = ícone + palavras, nunca só cor.
-5. **Shell escura "MUTU@L ink"** (`#12241a`) na barra lateral de todas as
-   apps de secretária, igual nos dois temas.
+5. **Shell escura com o tom de cada app** (v0.8). A barra lateral das apps
+   de secretária é escura em todas, com a mesma profundidade da "MUTU@L ink"
+   (`#12241a`), mas cada app tem o seu tom (azul-noite, beringela, nogueira,
+   petróleo, vinho, ardósia). O Portal e o Cartão mantêm o verde da tinta.
+   Ver "Tons das shells".
 6. **Rótulos sem abreviaturas** (mantido da v1), texto base 16 px, alvos
    ≥ 44 px (48 px nos fluxos principais), WCAG AA em todos os pares (AAA onde
    já estava medido).
@@ -52,6 +55,53 @@ explica as decisões; os valores vivem em `css/tokens.css`.
 | Validador QR | `#0e7490` | `#7fd3e6` | igual à v1 |
 | Saúde | `#be185d` | `#f59ac2` | **mudou** — o verde-azulado colidia com o perfil Associação |
 | Servidores e DNS | `#475569` (ardósia, 7,6:1 sobre branco) | `#cbd5e1` (10,9:1 sobre a shell) | nova em 2026-09 (v0.6.0) — distinta das outras apps e dos perfis |
+| Monitor (proposta) | `#4d7c0f` (oliva, 5,0:1) | `#bef264` | reservada em v0.8, app ainda não existe |
+| Assistente (proposta) | `#a21caf` (orquídea, 6,3:1) | `#f0abfc` | reservada em v0.8, app ainda não existe |
+
+## Tons das shells (v0.8)
+
+Pedido do dono: ao mudar de aplicação "parecia que não tinha mudado". Agora
+muda o fundo da barra lateral (e da barra de topo no telemóvel), e o
+conteúdo tem uma linha fina na cor da app no topo e uma faixa muito leve
+dessa cor atrás do cabeçalho da página (`--app-canvas`), para que a mudança
+se veja também com a barra fechada ou no telemóvel.
+
+Regras: a mesma luminosidade OKLCH da tinta (0,241; 0,204 em modo escuro),
+só muda o tom. Texto ≥ 7:1, texto secundário e acento ≥ 4,5:1 sobre a barra
+e sobre o item ativo; vermelho da bandeira ≥ 3,9:1. `tests/tokens.test.ts`
+volta a medir tudo. Em Alto contraste todas as barras ficam pretas e não há
+faixa nem linha.
+
+| App | Barra (claro) | Item ativo | Barra (escuro) | Texto · secundário · acento (barra / item ativo) |
+| --- | --- | --- | --- | --- |
+| Portal, Cartão | `#12241a` (tinta) | `#1d3528` | `#0e1a13` | 15,0 · 9,0 · 8,1 / 12,2 · 7,3 · 6,6 |
+| Backoffice | `#101e3b` azul-noite | `#1a2e53` | `#0c162b` | 15,3 · 9,3 · 8,0 / 12,4 · 7,6 · 6,5 |
+| Eventos | `#221939` beringela | `#322650` | `#191229` | 15,3 · 9,3 · 8,1 / 12,7 · 7,7 · 6,7 |
+| Simplex | `#301909` nogueira | `#442712` | `#231307` | 15,3 · 9,3 · 9,4 / 12,5 · 7,6 · 7,7 |
+| Validador QR | `#00242f` petróleo | `#023543` | `#031a22` | 15,0 · 9,2 · 9,6 / 12,2 · 7,4 · 7,8 |
+| Saúde | `#341220` vinho | `#4a1e30` | `#260e17` | 15,4 · 9,3 · 8,2 / 12,7 · 7,7 · 6,8 |
+| Servidores e DNS | `#18202c` ardósia | `#25303f` | `#111720` | 15,1 · 9,2 · 11,0 / 12,3 · 7,5 · 9,0 |
+| Monitor (proposta) | `#19230b` musgo | `#273414` | `#121a08` | 15,1 · 9,3 · 12,5 / 12,3 · 7,5 · 10,1 |
+| Assistente (proposta) | `#2d152e` ameixa | `#412143` | `#210f22` | 15,4 · 9,3 · 9,5 / 12,7 · 7,7 · 7,8 |
+
+Em modo escuro os valores sobem (texto ≥ 16,6:1, secundário ≥ 10,1:1,
+acento ≥ 8,7:1). Na faixa do conteúdo o texto fica ≥ 15:1 (claro) e o texto
+secundário ≥ 7,4:1.
+
+**Propostas para apps futuras:** Monitor — oliva `#4d7c0f` (5,0:1 sobre
+branco; sobre a barra `#bef264`); Assistente — orquídea `#a21caf` (6,3:1;
+sobre a barra `#f0abfc`). Ficam reservadas em `data-app="monitor"` e
+`data-app="assistente"`; ainda não estão em `MUTUAL_APPS`.
+
+## Rolagem (v0.8)
+
+Uma só barra de rolagem em todo o ecossistema, vertical e horizontal: fina
+(6 px numa faixa de 12 px), arredondada, cresce para 8 px e escurece sob o
+ponteiro. Polegar 3,3:1 sobre o fundo (claro), 3,6:1 (escuro), ≥ 3,7:1 sobre
+a barra lateral. Em Alto contraste é mais grossa (16 px) e sólida; com as
+cores forçadas do Windows usa as cores do sistema. As zonas que rolam de lado
+(tabelas, separadores, código, faixas) mostram uma sombra suave na ponta onde
+há mais conteúdo. Detalhes técnicos em `css/rolagem.css` e no AGENTS.md.
 
 ## Cores de perfil (`--role-accent`)
 

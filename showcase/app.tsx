@@ -39,13 +39,18 @@ import {
   StatusSummary,
   Toolbar,
   type Column,
+  type MutualAppId,
 } from "../src/index.ts";
 import { ChartFrame, GraficoArea, GraficoBarras, GraficoDonut, GraficoLinhas } from "../src/graficos.tsx";
 import { PaginaControlos } from "./controlos.tsx";
 import { PaginaEfeitos } from "./efeitos.tsx";
 import { PaginaConversa } from "./conversa.tsx";
+import { PaginaShells } from "./shells.tsx";
+import { PaginaRolagem } from "./rolagem.tsx";
 
 const PAGINA = new URLSearchParams(location.search).get("pagina") ?? "dados";
+/** Inside the side-by-side iframes: page content only. */
+const SO_CONTEUDO = new URLSearchParams(location.search).get("so") === "1";
 
 function Paginas() {
   const q = new URLSearchParams(location.search);
@@ -68,7 +73,7 @@ function Paginas() {
   };
   return (
     <nav aria-label="Páginas" className="flex flex-wrap gap-1">
-      {[link("dados", "Dados"), link("controlos", "Controlos"), link("efeitos", "Efeitos"), link("conversa", "Assistente")]}
+      {[link("dados", "Dados"), link("controlos", "Controlos"), link("efeitos", "Efeitos"), link("conversa", "Assistente"), link("shells", "Aplicações"), link("rolagem", "Rolagem")]}
     </nav>
   );
 }
@@ -77,6 +82,8 @@ const TITULOS: Record<string, [string, string]> = {
   controlos: ["Controlos", "Campos, seleção, datas, menus, diálogos e avisos — v0.7."],
   efeitos: ["Efeitos", "Fundos decorativos com lugar próprio — v0.7."],
   conversa: ["Assistente", "Componentes de conversa do assistente MUTU@L — v0.7."],
+  shells: ["Aplicações", "A barra lateral e o conteúdo de cada aplicação — v0.8."],
+  rolagem: ["Rolagem", "Barras de rolagem e sombras nas pontas — v0.8."],
 };
 
 // ─── Demo data (fictional) ───────────────────────────────────────────────
@@ -267,11 +274,17 @@ function App() {
     { id: "nome", header: "Associação", cell: (r) => r.nome },
     { id: "associados", header: "Associados", cell: (r) => r.associados, numeric: true },
   ];
+  if (SO_CONTEUDO)
+    return (
+      <div className="min-h-dvh bg-background p-4">
+        {PAGINA === "shells" ? <PaginaShells /> : <PaginaRolagem />}
+      </div>
+    );
   return (
     <div className="min-h-dvh m-canvas">
       <header className="bg-sidebar text-sidebar-foreground">
         <div className="mx-auto flex max-w-[84rem] flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-8">
-          <MutualWordmark app="backoffice" tone="ink" />
+          <MutualWordmark app={(document.documentElement.dataset.app as MutualAppId | undefined) ?? "backoffice"} tone="ink" />
           <Paginas />
           <Tema />
         </div>
@@ -282,6 +295,8 @@ function App() {
           {PAGINA === "controlos" && <PaginaControlos />}
           {PAGINA === "efeitos" && <PaginaEfeitos />}
           {PAGINA === "conversa" && <PaginaConversa />}
+          {PAGINA === "shells" && <PaginaShells />}
+          {PAGINA === "rolagem" && <PaginaRolagem />}
         </main>
       ) : (
       <main className="mx-auto flex max-w-[84rem] flex-col gap-12 px-4 py-8 sm:px-8">

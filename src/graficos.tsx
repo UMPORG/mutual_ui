@@ -244,7 +244,7 @@ export function ChartFrame({
           </EmptyState>
         ))
       ) : verTabela && table ? (
-        <div className="max-h-[28rem] overflow-auto rounded-lg border border-border">
+        <div className="m-scroll-x m-scroll-y max-h-[28rem] overflow-auto rounded-lg border border-border">
           <table className="w-full border-collapse text-[0.9375rem]">
             <caption className="sr-only">{typeof title === "string" ? title : "Dados do gráfico"}</caption>
             <thead className="sticky top-0 bg-muted">

@@ -23,6 +23,8 @@ export * from "./dados";
 export * from "./cartao";
 export * from "./estatisticas";
 export * from "./tabela";
+// v0.8 — scrolling: edge shadows for any scroller (client hook + wrapper).
+export { ScrollShadow, useScrollShadow, bordasComMais } from "./rolagem";
 // v0.7 — server-safe primitives and form fields (no new dependencies).
 export * from "./basicos";
 export { FormField, Fieldset, Input, Textarea, NativeSelect, type FormFieldProps, type FieldControlProps } from "./campo";

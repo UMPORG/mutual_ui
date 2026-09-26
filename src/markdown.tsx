@@ -234,7 +234,7 @@ function Blocos({ b, ctx, caret }: { b: Block[]; ctx: Ctx; caret?: boolean }): R
       }
       case "table":
         return (
-          <div key={i} className="m-md-tabela" role="region" aria-label="Tabela" tabIndex={0}>
+          <div key={i} className="m-md-tabela m-scroll-x" role="region" aria-label="Tabela" tabIndex={0}>
             <table>
               <thead>
                 <tr>
@@ -286,7 +286,7 @@ function BlocoCodigo({ lang, codigo, caret }: { lang: string; codigo: string; ca
         <span>{NOMES_LINGUAGEM[lang.toLowerCase()] ?? (lang || "Código")}</span>
         <CopyButton text={codigo} label="Copiar código" doneLabel="Código copiado" />
       </div>
-      <pre tabIndex={0}>
+      <pre tabIndex={0} className="m-scroll-x">
         <code>{codigo}</code>
         {caret ? CARET : null}
       </pre>

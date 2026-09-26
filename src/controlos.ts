@@ -25,3 +25,4 @@ export { Accordion, Collapsible, Tabs, useUrlParam, type AccordionItem, type Tab
 export { Switch, Checkbox, RadioGroup, RadioCards, SegmentedControl, Slider, NumberField, type RadioOption } from "./escolhas";
 export { Toaster, toast, type ToastOptions } from "./avisos";
 export { ScrollArea, Avatar, AvatarGroup, iniciais } from "./diversos";
+export { ScrollShadow, useScrollShadow } from "./rolagem";

@@ -601,7 +601,7 @@ export function MessageList({
           noFim.current = perto;
           if (perto) setMostrarBotao(false);
         }}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        className="m-scroll-y min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         <div ref={conteudo} className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6 sm:px-6">
           {messages.length === 0 && empty}

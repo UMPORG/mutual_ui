@@ -110,12 +110,6 @@ html.contraste {
   --destructive: #8b0000;
   --destructive-soft: #ffffff;
   --destructive-soft-foreground: #8b0000;
-  --sidebar: #000000;
-  --sidebar-foreground: #ffffff;
-  --sidebar-muted-foreground: #ffffff;
-  --sidebar-accent: #1f1f1f;
-  --sidebar-border: #ffffff;
-  --sidebar-primary: #ffffff;
   --app-accent: #000000;
   --app-accent-soft: #ffffff;
   --app-accent-on-ink: #ffffff;
@@ -126,6 +120,33 @@ html.contraste {
   --shadow-lg: none;
   --shadow-xl: none;
 }
+/* v0.8: the app shell tints, the canvas band and the accent rule give way
+   to plain black and white — every app looks the same here; the app name
+   under the wordmark still says where you are. These selectors outrank
+   [data-app] and .dark[data-app]. Scrollbars: solid black thumb on white
+   (white on the black sidebar), thicker (css/rolagem.css). */
+html.contraste,
+html.contraste[data-app],
+html.contraste [data-app] {
+  --sidebar: #000000;
+  --sidebar-foreground: #ffffff;
+  --sidebar-muted-foreground: #ffffff;
+  --sidebar-accent: #1f1f1f;
+  --sidebar-border: #ffffff;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #000000;
+  --scroll-thumb-ink: #ffffff;
+  --scroll-thumb-ink-hover: #ffffff;
+  --scroll-track-ink: #000000;
+  --app-accent-on-ink: #ffffff;
+  --app-canvas: #ffffff;
+  --app-rule-width: 0px;
+  --scroll-thumb: #000000;
+  --scroll-thumb-hover: #000000;
+  --scroll-track: #ffffff;
+  --scroll-shadow: rgb(0 0 0 / 0.55);
+}
+
 html.contraste :where(a) { text-decoration: underline; }
 html.contraste :where([class*="border"]) { border-color: #000000; }
 html.contraste .mutual-ascii { display: none; }

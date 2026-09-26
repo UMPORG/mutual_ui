@@ -169,7 +169,7 @@ export function Tabs({
       onValueChange={onValueChange ? (v) => onValueChange(v as string) : undefined}
       className={cx("flex min-w-0 flex-col gap-5", className)}
     >
-      <BaseTabs.List aria-label={label} className={variant === "line" ? "m-tabs-linha" : "m-tabs-pilula"}>
+      <BaseTabs.List aria-label={label} className={variant === "line" ? "m-tabs-linha m-scroll-x" : "m-tabs-pilula"}>
         {tabs.map((t) => (
           <BaseTabs.Tab key={t.value} value={t.value} disabled={t.disabled} className="m-tab [&_svg]:size-[1.125rem]">
             {t.icon}

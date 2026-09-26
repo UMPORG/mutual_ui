@@ -258,7 +258,8 @@
     gap: 0.25rem;
     border-bottom: 1px solid var(--border);
     overflow-x: auto;
-    scrollbar-width: thin;
+    overflow-y: hidden; /* the indicator must never add a vertical bar */
+    /* scrollbar and edge shadows: m-scroll-x (css/rolagem.css) */
   }
   .m-tab {
     position: relative;
@@ -361,22 +362,30 @@
   .m-spinner { animation: m-rodar 0.9s linear infinite; }
   @keyframes m-rodar { to { transform: rotate(360deg); } }
 
-  /* ─── Scroll area ────────────────────────────────────────────────────── */
+  /* ─── Scroll area ──────────────────────────────────────────────────────
+     Same look as the native scrollbars (css/rolagem.css): a 12px lane, a
+     6px rounded thumb that grows to 8px and darkens under the pointer.
+     It fades in while the pointer is over the area or it scrolls. */
   .m-scroll-barra {
     display: flex;
-    padding: 2px;
+    padding: 3px;
     opacity: 0;
-    transition: opacity 160ms ease;
+    transition: opacity 160ms ease, padding 120ms ease;
+    touch-action: none;
   }
-  .m-scroll-barra[data-orientation="vertical"] { width: 0.625rem; }
-  .m-scroll-barra[data-orientation="horizontal"] { height: 0.625rem; flex-direction: column; }
+  .m-scroll-barra[data-orientation="vertical"] { width: 12px; }
+  .m-scroll-barra[data-orientation="horizontal"] { height: 12px; flex-direction: column; }
   .m-scroll-barra[data-hovering],
   .m-scroll-barra[data-scrolling] { opacity: 1; }
+  .m-scroll-barra:hover { padding: 2px; }
   .m-scroll-polegar {
     flex: 1;
     border-radius: 999px;
-    background: color-mix(in oklab, var(--foreground) 28%, transparent);
+    background: var(--m-polegar, var(--scroll-thumb));
   }
+  .m-scroll-barra:hover .m-scroll-polegar,
+  .m-scroll-polegar[data-dragging],
+  .m-scroll-polegar:active { background: var(--m-polegar-hover, var(--scroll-thumb-hover)); }
 
   /* ─── Calendar (DatePicker) ──────────────────────────────────────────── */
   .m-dia {
@@ -491,6 +500,9 @@ html.contraste .m-radio-deco { border: 2px solid #000000; }
 html.contraste .m-segmentos { background: #ffffff; border: 2px solid #000000; box-shadow: none; }
 html.contraste .m-segmento[data-checked] { background: #000000; color: #ffffff; box-shadow: none; }
 html.contraste .m-tabs-indicador { background: #000000; height: 4px; }
+html.contraste .m-scroll-barra { opacity: 1; padding: 2px; }
+html.contraste .m-scroll-barra[data-orientation="vertical"] { width: 16px; }
+html.contraste .m-scroll-barra[data-orientation="horizontal"] { height: 16px; }
 html.contraste .m-tabs-pilula .m-tab[data-active] { background: #000000; color: #ffffff; }
 html.contraste .m-dica { background: #000000; color: #ffffff; border: 2px solid #ffffff; }
 html.contraste .m-dia[data-selecionado] { background: #000000; color: #ffffff; }
@@ -505,4 +517,6 @@ html.contraste .m-toast > * { border: 2px solid #000000; box-shadow: none; }
 @media (forced-colors: active) {
   .m-check[data-checked], .m-radio[data-checked], .m-switch[data-checked] { background: Highlight; }
   .m-item[data-highlighted] { outline: 2px solid Highlight; }
+  .m-scroll-barra { opacity: 1; }
+  .m-scroll-polegar { forced-color-adjust: none; background: CanvasText; }
 }
