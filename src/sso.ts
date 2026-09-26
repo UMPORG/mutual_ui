@@ -25,6 +25,7 @@ export const CAMINHOS = {
   simplex: "/simplex",
   saude: "/saude",
   qr: "/qr",
+  dns: "/dns",
   ajuda: "/ajuda",
   api: "/api",
 } as const satisfies Record<AppNoEndereco | "ajuda" | "api", string>;

@@ -4,14 +4,15 @@
 
 The shared design system of the MUTU@L ecosystem: design tokens, brand
 (logo, wordmark, app marks), shell pieces (app switcher, page header,
-status callouts, empty states) and the single-sign-on contract.
+status callouts, empty states), data components (cards, stat tiles,
+charts, tables, pt-PT formatting) and the single-sign-on contract.
 
 Public GitHub repo `UMPORG/mutual_ui`, consumed as a **git dependency** (no
 npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.5.1"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.6.0"
 ```
 
 ```js
@@ -56,6 +57,7 @@ workspace was retired on 2026-09-25).
    | Simplex | `#b45309` | `#f5b76a` |
    | Validador QR | `#0e7490` | `#7fd3e6` |
    | Saúde | `#be185d` (was teal — collided with the Associação role) | `#f59ac2` |
+   | Servidores e DNS | `#475569` (slate) | `#cbd5e1` |
 
 3. **Role colours** (`--role-accent`, via `data-role`) are unchanged:
    admin `#881337`, associação `#0f766e`, equipa de eventos `#3730a3`, plus
@@ -81,6 +83,7 @@ the bottom; page = `PageHeader` + content), adapted to who uses the app:
 | Saúde | Receptionists, health professionals, clinic managers | Desk shell with a unit selector in the top bar; Balcão is the home for receção; responsive navigation (tablets). |
 | Eventos (gestão) | Organisers | Desk shell; one event workspace with tabs. |
 | Eventos (público) | Associates and the public | Public site: light header (wordmark, Ajuda, Acessibilidade), large imagery, one clear call to action per page, footer with UMP identity. |
+| Servidores e DNS | UMP IT team | Desk shell; addresses and servers, tables first. |
 | Validador QR | Staff at the door / counter | Full-screen tool: compact header with wordmark, big result states, no navigation. |
 
 ## UX rules for every app
@@ -212,7 +215,7 @@ inline script; it has no effect in production.
 All apps live on ONE origin (`MUTUAL_URL`, production
 `https://mutual.mutualismo.pt`) at fixed paths (`CAMINHOS`): Portal `/`,
 `/backoffice`, `/eventos` (public site; organisers at `/eventos/gestao`),
-`/simplex`, `/saude`, `/qr`, Cérebro `/api`, help centre `/ajuda`. No
+`/simplex`, `/saude`, `/qr`, `/dns`, Cérebro `/api`, help centre `/ajuda`. No
 sub-domains. The Cartão Digital keeps its own host.
 
 - Next apps set `basePath` to their path (Portal: none). Browsers call the
@@ -230,11 +233,210 @@ sub-domains. The Cartão Digital keeps its own host.
 - `localStorage` keys must be prefixed per app (`<app>.`): all apps share
   the origin.
 
+## v0.6 — dados: cartões, indicadores, gráficos, tabelas, formatação
+
+Inventory of what the apps do today and which component replaces what:
+[docs/inventario-componentes.md](docs/inventario-componentes.md). Visual
+review page: `showcase/` (see Scripts). Rules for every data page:
+
+- One headline number → `StatCard`, not a one-bar chart. A few numbers →
+  `StatGroup` of `StatCard`s. The one number a dashboard leads with →
+  `StatCard size="hero"` (one per page).
+- Filters sit in ONE row above everything they scope (`Toolbar`), never
+  inside a chart card. Refetch keeps the frame (`refreshing`), no skeleton
+  flash.
+- Never format by hand: `formatarNumero/Moeda/Percentagem/Data` (pt-PT,
+  Europe/Lisbon). Missing values are "—" everywhere (never "0,00 €").
+- Status is icon + words: `StatusBadge`, `StatusSummary`, `Delta`, `Meter`
+  thresholds. Chart series never wear status colours unless the series *is*
+  a status (pass `color: "sucesso" | "aviso" | "perigo" | "info"`).
+- No raw palette classes and no hex in charts: series use `--serie-1..8`
+  (validated palette in `css/dados.css`), grey context/"Outros" uses
+  `--serie-outros`. `--chart-1..5` now alias `--serie-1..5`.
+
+### Formatação (`@umporg/ui` or `@umporg/ui/formatar`)
+
+```ts
+formatarNumero(12345.6)                 // "12 345,6"   (compacto: "12,3 mil")
+formatarMoeda(1234.5)                   // "1234,50 €"  (moeda: "USD", casas, compacto, sinal)
+formatarPercentagem(0.125)              // "12,5%"      ({ escala: "cem" } for 12.5)
+formatarData("2026-10-03")              // "03/10/2026"
+formatarData(d, "longa")                // "sábado, 3 de outubro de 2026"
+// estilos: curta | longa | media | diaMes ("3 out.") | mesAno | mesAnoCurto ("out. 2026") | dataHora | hora
+formatarValor(v, "moeda" | "percentagem" | "inteiro" | "numero" | fn, compacto?)
+formatarEixo(v, formato)                // axis ticks: "26 mil €", "6500 €"
+contar(3, "associação", "associações")  // "3 associações"
+```
+
+pt-PT (CLDR) groups thousands from five digits: "1234" but "12 345". Pure
+helpers in `dados.ts`: `calcularVariacao(atual, anterior)`,
+`formatarVariacao`, `descreverVariacao` (words for screen readers),
+`paginasVisiveis`, `intervaloPagina`, `agruparOutros`, `atribuirCores`,
+`tabelaDoGrafico`, `descreverGrafico`.
+
+### Card, Section, DescriptionList (server-safe)
+
+Use `Card` for every panel (it is `m-surface`); padding lives in the parts
+so tables can sit flush. `Section` titles a block of the page (no surface).
+
+```tsx
+<Section id="s-quotas" title="Quotas" description="Ano de 2026." actions={<Button …/>}>
+  <Card accent="app">
+    <CardHeader title="Últimos pagamentos" description="…" icon={<Receipt />} actions={…} divider />
+    <CardContent flush>{/* table or list, edge to edge */}</CardContent>
+    <CardFooter>Atualizado às 14:30 <a href="…">Ver todos</a></CardFooter>
+  </Card>
+</Section>
+
+<Card href="/licencas" LinkComponent={Link}>…</Card>   {/* whole card is one link */}
+<Card variant="muted">…</Card>                         {/* quiet panel, no shadow */}
+
+<DescriptionList columns={3} items={[
+  { term: "NIF", details: "501 234 569" },
+  { term: "Distrito", details: "Braga", icon: <MapPin /> },
+  { term: "Sede", details: morada, wide: true },
+]} />
+<DescriptionList layout="rows" items={…} />             {/* term | value; stacks when narrow */}
+```
+
+`accent="app"` is identity (a 3px line in the app colour), never status.
+Heading levels: `CardHeader level` (2 on a page, 3 inside a `Section`).
+
+### StatCard, StatGroup, Delta, Sparkline, Meter, StatusSummary (server-safe)
+
+```tsx
+<StatGroup>
+  <StatCard label="Associações ativas" value={312} icon={<Building2 />}
+    delta={{ value: 0.034, label: "face a 2025" }} trend={serie12Meses} href="/associacoes" LinkComponent={Link} />
+  <StatCard label="Quotas recebidas" value={184350.5} format="moeda"
+    delta={{ value: calcularVariacao(atual, anterior) ?? 0, label: "face ao mês anterior" }} />
+  <StatCard label="Taxa de cobrança" value={0.912} format="percentagem"
+    delta={{ value: 2.1, format: "pontos", label: "face a 2025" }} />
+  <StatCard label="Pedidos por validar" value={18} unit="pedidos"
+    delta={{ value: 5, format: "numero", better: "descer", label: "desde segunda-feira" }} />
+</StatGroup>
+<StatCard label="…" value={null} loading />
+<StatCard label="…" value={null} error="Indisponível de momento" />
+```
+
+- `delta.value` is a fraction for `"percentagem"` (0.034 = +3,4%), points
+  for `"pontos"`, units for `"numero"`/`"moeda"`. `better="descer"` for
+  debts, delays, open requests. Colour = direction × good/bad; the arrow and
+  a screen-reader sentence ("Subiu 3,4% face a 2025.") always go with it.
+- Values ≥ 100 000 are shortened ("184,4 mil €", exact value in the
+  tooltip and for screen readers); `compact={false}` turns it off. The hero
+  stays exact up to 10 million.
+- `Sparkline values={…}` alone (tables, cards): grey history, brand dot on
+  the current value; decorative unless `label` is given.
+
+```tsx
+<Meter label="Congresso 2026" value={372} max={400} detail="372 de 400"
+  thresholds={{ warning: 0.85, danger: 1 }} statusLabel="Quase esgotado" />
+<StatusSummary label="Quotas por estado" totalLabel="Quotas emitidas" items={[
+  { label: "Pagas", value: 515, tone: "success", href: "?estado=paga" },
+  { label: "Em atraso", value: 36, tone: "warning", href: "?estado=atraso" },
+]} />
+<StatusSummary variant="inline" items={[{ label: "Regulares", value: 241, tone: "success", onSelect, selected }]} />
+```
+
+`StatusSummary variant="inline"` replaces the Backoffice `ListSummary` line
+above lists (items can filter the list). `variant="bar"` is the dashboard
+version (proportion bar + legend with counts and %). Use it instead of a pie
+of estados.
+
+### Gráficos (`@umporg/ui/graficos`, client, needs `recharts` ≥ 3.1)
+
+`recharts` is an **optional peer dependency**: only apps that import
+`@umporg/ui/graficos` need it (Backoffice and Simplex already have it). The
+main entry never imports Recharts.
+
+```tsx
+"use client";
+import { GraficoBarras, GraficoLinhas, GraficoArea, GraficoDonut, ChartFrame } from "@umporg/ui/graficos";
+
+<GraficoBarras title="Quotas recebidas por mês" description="Euros recebidos em 2026."
+  data={linhas} categoryKey="mes" categoryLabel="Mês"
+  formatCategory={(m) => formatarData(`${m}-01`, "mesAnoCurto")}
+  series={[{ key: "recebido", label: "Recebido" }]} format="moeda" />
+<GraficoBarras … orientation="horizontal" highlight="Braga" />   {/* ranking, emphasis */}
+<GraficoBarras … stacked series={[{ key: "pagas", label: "Pagas", color: "sucesso" }, …]} />
+<GraficoLinhas … context={["media"]} domain={[0, 1]} format="percentagem" />
+<GraficoArea … series={[{ key: "saldo", label: "Saldo" }]} format="moeda" />
+<GraficoDonut title="Inscrições por origem" data={[{ label: "Associados", value: 812 }, …]} totalLabel="inscrições" />
+```
+
+- Every chart is a `ChartFrame`: card, title (`level`, default h3),
+  description, a legend for ≥ 2 series, a "Ver dados" toggle that shows the
+  data as a table, an svg `title`/`desc` summary generated from the data,
+  keyboard focus (Tab, then arrow keys move the tooltip), pt-PT axes,
+  `loading`, `refreshing`, an `empty` state, and no animation under Reduzir
+  movimento. Heights are px at 100% text and scale with the text size.
+- Form first: a single value → `StatCard`; part-to-whole of estados →
+  `StatusSummary`; close values → bars, not a donut. Never two y-axes.
+- Colour follows the entity: series take their declared position; pin
+  `color: 1..8` when a filter can remove series so survivors keep their
+  colour. More than 8 series throws — fold into "Outros" or split the chart.
+  Donut: ≤ 4 slices + "Outros" (automatic).
+- Own chart (map, heatmap, SVG): wrap it in `ChartFrame` with `legend` and
+  `table`, and use `var(--serie-N)`, `var(--grafico-grelha)`,
+  `var(--grafico-eixo)`.
+
+### DataTable, Toolbar, SearchField, FilterChips, Pagination, Skeleton (server-safe shell)
+
+The shell renders; the app keeps its data logic (URL state, nuqs, server
+pagination, TanStack if it wants). Server pages use the `…Href` props;
+client components use `onSort` / `onPageChange` / `onRemove`.
+
+```tsx
+const colunas: Column<Associacao>[] = [
+  { id: "nome", header: "Associação", cell: (r) => r.nome, sortable: true }, // first = phone card title
+  { id: "associados", header: "Associados", cell: (r) => formatarNumero(r.associados), numeric: true, sortable: true },
+  { id: "quota", header: "Quotas do ano", cell: (r) => formatarMoeda(r.quota), numeric: true },
+  { id: "estado", header: "Estado", cell: (r) => <StatusBadge tone={…}>{…}</StatusBadge> },
+  { id: "atualizada", header: "Atualizada em", cell: (r) => formatarData(r.atualizada), hideOnMobile: true },
+];
+
+<DataTable caption="Associações" columns={colunas} rows={linhas} rowKey={(r) => r.id}
+  rowHref={(r) => `/associacoes/${r.id}`} LinkComponent={Link}
+  sort={{ id: "associados", direction: "desc" }} sortHref={(id) => `?ordem=${id}`}
+  loading={aCarregar} refreshing={aAtualizar}
+  error={erro && "Não foi possível carregar as associações."} onRetry={refetch}
+  empty={<EmptyState variant="inline" icon={<Inbox />} title="Nenhuma associação encontrada">Experimente outro nome.</EmptyState>}
+  toolbar={
+    <Toolbar
+      search={<SearchField placeholder="Nome, NIF ou distrito" defaultValue={q} />}
+      filters={<>{/* the app's selects, class m-field h-11 */}</>}
+      actions={<>{/* Exportar, Nova associação */}</>}
+      summary={<ResultCount count={126} total={312} singular="associação" plural="associações" />}
+      chips={<FilterChips filters={[{ id: "estado", label: "Estado", value: "Em atraso", removeHref: "?…" }]} clearHref="?" />}
+    />
+  }
+  footer={<Pagination page={2} pageCount={7} totalItems={126} pageSize={20} hrefFor={(p) => `?pagina=${p}`} />}
+/>
+```
+
+- Phones (< 48rem): each row becomes a card (primary column as title, the
+  others as term/value). `mobile="scroll"` keeps the table and scrolls it
+  sideways inside its card. Put sorting in the toolbar if phones need it.
+- `numeric` columns are right-aligned with tabular figures.
+- `EmptyState variant="inline"` inside cards, tables and charts; the
+  default `variant="page"` for a whole empty page.
+- `Skeleton className="h-4 w-40"` for custom placeholders (`m-skeleton`,
+  stops with Reduzir movimento, dashed outline in Alto contraste).
+
 ## Scripts
 
 ```bash
 pnpm install
 pnpm typecheck
-pnpm test        # node --test, SSO helpers
+pnpm test        # node --test: SSO, preferences, formatters, chart/table helpers
 pnpm embed-logo  # regenerate src/logo-data.ts from assets/mutual-flag-96.webp
+
+# Visual review of every data component, state and theme (not published):
+cd showcase && pnpm install --ignore-workspace && pnpm build && bun serve.ts
+# -> http://localhost:5199/?tema=claro|escuro|contraste&texto=150&app=simplex
+node shots.mjs <outDir> --secoes   # Playwright screenshots (server running)
 ```
+
+The showcase resolves React and Recharts from the package's own
+devDependencies (one React copy); it only installs Tailwind.

@@ -18,3 +18,8 @@ export {
   type CenarioDemo,
   type ValorDemo,
 } from "./demo-preencher";
+export * from "./formatar";
+export * from "./dados";
+export * from "./cartao";
+export * from "./estatisticas";
+export * from "./tabela";

@@ -86,6 +86,17 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-serie-1: var(--serie-1);
+  --color-serie-2: var(--serie-2);
+  --color-serie-3: var(--serie-3);
+  --color-serie-4: var(--serie-4);
+  --color-serie-5: var(--serie-5);
+  --color-serie-6: var(--serie-6);
+  --color-serie-7: var(--serie-7);
+  --color-serie-8: var(--serie-8);
+  --color-serie-outros: var(--serie-outros);
+  --color-grafico-grelha: var(--grafico-grelha);
+  --color-grafico-eixo: var(--grafico-eixo);
 
   --shadow-2xs: var(--shadow-2xs);
   --shadow-xs: var(--shadow-xs);

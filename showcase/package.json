@@ -1,0 +1,15 @@
+{
+  "name": "@umporg/ui-showcase",
+  "private": true,
+  "type": "module",
+  "description": "Visual review page: every data component in every state and theme. Not published.",
+  "scripts": {
+    "build": "bun build app.tsx --outdir dist --target browser --minify && tailwindcss -i app.css -o dist/app.css --minify",
+    "serve": "bun serve.ts",
+    "shots": "node shots.mjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  }
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-PT" data-app="backoffice">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MUTU@L — componentes de dados</title>
+    <script>
+      // ?tema=claro|escuro|contraste  ?texto=100|125|150  ?app=<id>  ?movimento=reduzido
+      (function () {
+        var q = new URLSearchParams(location.search), h = document.documentElement;
+        var t = q.get("tema") || "claro";
+        if (t === "escuro") h.classList.add("dark");
+        if (t === "contraste") h.classList.add("contraste");
+        h.style.colorScheme = t === "escuro" ? "dark" : "light";
+        if (q.get("texto")) h.setAttribute("data-texto", q.get("texto"));
+        if (q.get("app")) h.setAttribute("data-app", q.get("app"));
+        if (q.get("movimento")) h.setAttribute("data-movimento", q.get("movimento"));
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="./dist/app.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./dist/app.js"></script>
+  </body>
+</html>

@@ -91,11 +91,7 @@
   --role-accent: var(--brand);
   --role-accent-foreground: #ffffff;
 
-  --chart-1: var(--brand);
-  --chart-2: #b45309;
-  --chart-3: #1d4ed8;
-  --chart-4: #be185d;
-  --chart-5: #0e7490;
+  /* --chart-1..5 and the chart palette (--serie-*) live in dados.css. */
 
   --shadow-2xs: 0 1px 2px 0 rgb(18 36 26 / 0.05);
   --shadow-xs: 0 1px 3px 0 rgb(18 36 26 / 0.08);
@@ -162,6 +158,8 @@
 [data-app="simplex"]    { --app-accent: #b45309; --app-accent-soft: #fff4e5; --app-accent-on-ink: #f5b76a; }
 [data-app="qr"]         { --app-accent: #0e7490; --app-accent-soft: #e7f6fa; --app-accent-on-ink: #7fd3e6; }
 [data-app="saude"]      { --app-accent: #be185d; --app-accent-soft: #fdf0f6; --app-accent-on-ink: #f59ac2; }
+/* Servidores e DNS: slate — 7.6:1 on white, #cbd5e1 10.9:1 on the ink sidebar. */
+[data-app="dns"]        { --app-accent: #475569; --app-accent-soft: #f1f5f9; --app-accent-on-ink: #cbd5e1; }
 [data-app="portal"],
 [data-app="cartao"]     { --app-accent: var(--brand); }
 
@@ -170,6 +168,7 @@
 .dark[data-app="simplex"],    .dark [data-app="simplex"]    { --app-accent: #f5b76a; --app-accent-soft: #3a2a0c; }
 .dark[data-app="qr"],         .dark [data-app="qr"]         { --app-accent: #7fd3e6; --app-accent-soft: #0f2f38; }
 .dark[data-app="saude"],      .dark [data-app="saude"]      { --app-accent: #f59ac2; --app-accent-soft: #3a1426; }
+.dark[data-app="dns"],        .dark [data-app="dns"]        { --app-accent: #cbd5e1; --app-accent-soft: #1e2733; }
 
 /* ─── Role accents (unchanged contract) ─────────────────────────────────── */
 [data-role="admin"] { --role-accent: #881337; --role-accent-foreground: #ffffff; }

@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "../css/index.css";
+@source "./app.tsx";
+
+:root { --font-geist-sans: "Geist"; }

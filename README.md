@@ -1,10 +1,12 @@
 # @umporg/ui — MUTU@L design system
 
-Tokens, brand, shell pieces and the single-sign-on contract shared by every
-MUTU@L application (Portal, Backoffice, Eventos, Simplex, Saúde, Validador QR).
+Tokens, brand, shell pieces, data components (cards, stat tiles, charts,
+tables, pt-PT formatting) and the single-sign-on contract shared by every
+MUTU@L application (Portal, Backoffice, Eventos, Simplex, Saúde, Servidores e
+DNS, Validador QR).
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.5.1"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.6.0"
 ```
 
 ```css
@@ -14,6 +16,8 @@ MUTU@L application (Portal, Backoffice, Eventos, Simplex, Saúde, Validador QR).
 
 ```tsx
 import { MutualWordmark, AppSwitcher, PageHeader, StatusCallout } from "@umporg/ui";
+import { StatCard, StatGroup, Card, CardHeader, DataTable, formatarMoeda } from "@umporg/ui";
+import { GraficoBarras } from "@umporg/ui/graficos"; // needs recharts (optional peer)
 import { portalLoginUrl, safeReturnUrl } from "@umporg/ui/sso";
 ```
 
