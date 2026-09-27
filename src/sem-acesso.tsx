@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowLeftRight, LayoutGrid, ShieldAlert } from "lucide-react";
-import { getMutualApp, type AppNoEndereco } from "./apps";
+import { nomeDaApp, type MutualAppId } from "./apps";
 import { CAMINHOS } from "./sso";
 import { MutualWordmark } from "./brand";
 import { AcessibilidadeMenu } from "./acessibilidade";
@@ -14,13 +14,17 @@ export type MotivoSemAcesso =
   /** App-specific second layer (e.g. Saúde: not linked to any unit). */
   | "sem-unidade"
   /** The app is not available to this type of organisation (e.g. UMP area). */
-  | "tipo-organizacao";
+  | "tipo-organizacao"
+  /** Cartão Digital: a team account with no associado record. */
+  | "sem-associado";
 
 const TEXTO: Record<MotivoSemAcesso, (app: string) => string> = {
   "sem-organizacao": () => "Escolha no Portal a organização com que quer trabalhar.",
   "sem-perfil": (app) => `O seu perfil nesta organização não inclui a aplicação ${app}.`,
   "sem-unidade": () => "A sua conta ainda não está associada a nenhuma unidade.",
   "tipo-organizacao": (app) => `A aplicação ${app} não está disponível para este tipo de organização.`,
+  "sem-associado": () =>
+    "O Cartão Digital é para os associados das associações mutualistas. Esta conta não tem ficha de associado.",
 };
 
 /**
@@ -34,9 +38,11 @@ export function SemAcesso({
   organizacao,
   variasOrganizacoes = false,
   acaoSair,
+  acoes,
+  portalHref = CAMINHOS.portal,
   className,
 }: {
-  app: Exclude<AppNoEndereco, "portal">;
+  app: Exclude<MutualAppId, "portal">;
   motivo: MotivoSemAcesso;
   utilizador?: { nome: string; email: string } | null | undefined;
   organizacao?: string | null | undefined;
@@ -44,9 +50,14 @@ export function SemAcesso({
   variasOrganizacoes?: boolean | undefined;
   /** The app's own sign-out button (it needs the app's auth client). */
   acaoSair?: ReactNode | undefined;
+  /** Extra actions before "Ir para o Portal MUTU@L" (e.g. the Cartão's "Sou associado"). */
+  acoes?: ReactNode | undefined;
+  /** The Portal address — absolute for an app on another host (the Cartão). */
+  portalHref?: string | undefined;
   className?: string | undefined;
 }) {
-  const nome = getMutualApp(app)?.nome ?? "aplicação";
+  const nome = nomeDaApp(app) ?? "aplicação";
+  const portal = portalHref.replace(/\/+$/, "");
   return (
     <main data-app={app} className={cx("m-canvas flex min-h-dvh flex-col", className)}>
       <header className="flex items-center justify-between gap-3 px-6 py-4">
@@ -77,16 +88,20 @@ export function SemAcesso({
               )}
             </dl>
           )}
-          {motivo !== "sem-organizacao" && (
+          {motivo !== "sem-organizacao" && motivo !== "sem-associado" && (
             <p className="text-[0.9375rem]">Para ter acesso, contacte o super administrador da sua organização.</p>
           )}
+          {motivo === "sem-associado" && (
+            <p className="text-[0.9375rem]">Para trabalhar na MUTU@L, use o Portal. Se também é associado, indique os seus dados de associado.</p>
+          )}
           <div className="flex flex-wrap gap-3">
-            <a href={CAMINHOS.portal} className="m-btn m-btn-primary inline-flex min-h-12 items-center gap-2 rounded-lg px-5">
+            {acoes}
+            <a href={portal || "/"} className="m-btn m-btn-primary inline-flex min-h-12 items-center gap-2 rounded-lg px-5">
               <LayoutGrid aria-hidden className="size-[1.15em]" />
               Ir para o Portal MUTU@L
             </a>
             {(variasOrganizacoes || motivo === "sem-organizacao") && (
-              <a href="/organizacao" className="m-btn m-btn-outline inline-flex min-h-12 items-center gap-2 rounded-lg px-5">
+              <a href={`${portal}/organizacao`} className="m-btn m-btn-outline inline-flex min-h-12 items-center gap-2 rounded-lg px-5">
                 <ArrowLeftRight aria-hidden className="size-[1.15em]" />
                 {motivo === "sem-organizacao" ? "Escolher organização" : "Mudar de organização"}
               </a>

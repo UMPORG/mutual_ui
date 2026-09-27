@@ -1,6 +1,6 @@
 import type { ComponentType, CSSProperties, SVGProps } from "react";
 import { Building2, CalendarDays, CreditCard, Handshake, Landmark, LayoutGrid, MessagesSquare, QrCode, Server, Stethoscope } from "lucide-react";
-import { getMutualApp, type MutualAppId } from "./apps";
+import { nomeDaApp, type MutualAppId } from "./apps";
 import { MUTUAL_FLAG_DATA_URI, MUTUAL_FLAG_RATIO } from "./logo-data";
 import { cx } from "./cx";
 
@@ -53,7 +53,7 @@ export function MutualWordmark({
   size?: "sm" | "md" | "lg" | undefined;
   className?: string | undefined;
 }) {
-  const nome = app && app !== "portal" ? getMutualApp(app)?.nome : app === "portal" ? "Portal" : undefined;
+  const nome = app ? nomeDaApp(app) : undefined;
   const flag = size === "lg" ? 34 : size === "sm" ? 20 : 26;
   const text = size === "lg" ? "text-2xl" : size === "sm" ? "text-base" : "text-lg";
   return (

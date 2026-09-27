@@ -41,3 +41,16 @@ test("paths and absolute links", () => {
   assert.equal(caminhoDoPedido("http://0.0.0.0:3005/simplex/admin?x=1"), "/simplex/admin?x=1");
   assert.equal(urlAbsoluta("https://mutual.mutualismo.pt/", "/eventos/gestao"), "https://mutual.mutualismo.pt/eventos/gestao");
 });
+
+test("the Cartão Digital lives on its own host (ADR 0004 exception)", async () => {
+  const { CARTAO_URL_PRODUCAO, urlCartao } = await import("../src/sso.ts");
+  const { APP_CARTAO, nomeDaApp, MUTUAL_APPS } = await import("../src/apps.ts");
+  assert.equal(CARTAO_URL_PRODUCAO, "https://id.mutualismo.pt");
+  assert.equal(urlCartao(), "https://id.mutualismo.pt/");
+  assert.equal(urlCartao("http://127.0.0.1:3002/", "/entrar"), "http://127.0.0.1:3002/entrar");
+  assert.equal(nomeDaApp("cartao"), APP_CARTAO.nome);
+  assert.equal(nomeDaApp("portal"), "Portal");
+  assert.equal(nomeDaApp("eventos"), "Eventos");
+  // Not a staff app: never in the launcher or the switcher.
+  assert.ok(!MUTUAL_APPS.some((a) => (a.id as string) === "cartao"));
+});

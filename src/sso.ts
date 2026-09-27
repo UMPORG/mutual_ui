@@ -87,6 +87,18 @@ export function safeReturnUrl(next: string | null | undefined): string | null {
   }
 }
 
+/**
+ * The Cartão Digital (associados) is the only app on its own host — ADR 0004
+ * exception: `https://id.mutualismo.pt` in production, served at the root.
+ * Its sessions never mix with the staff ones on `MUTUAL_URL`.
+ */
+export const CARTAO_URL_PRODUCAO = "https://id.mutualismo.pt";
+
+/** Absolute link into the Cartão Digital (`base` = the deployment's Cartão origin). */
+export function urlCartao(base: string = CARTAO_URL_PRODUCAO, caminho = "/"): string {
+  return urlAbsoluta(base, caminho);
+}
+
 /** Absolute URL for emails and other out-of-band links: `MUTUAL_URL` + path. */
 export function urlAbsoluta(mutualUrl: string, caminho: string): string {
   return mutualUrl.replace(/\/+$/, "") + (caminho.startsWith("/") ? caminho : `/${caminho}`);

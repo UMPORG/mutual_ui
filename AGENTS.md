@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.4"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.6"
 ```
 
 ```js
@@ -743,3 +743,22 @@ devDependencies (one React copy); it only installs Tailwind.
   `tests/tokens.test.ts`).
 - The Backoffice description no longer lists protocols (they moved to the new app).
 - A `Record<MutualAppId, …>` in an app now needs a `protocolos` entry.
+
+## v0.8.6 — Cartão Digital on its own host (additive)
+
+- Owner decision (2026-09-27, ADR 0004 exception): the **Cartão Digital** —
+  the associados' own app, not for UMP or association teams — is the only app
+  outside `MUTUAL_URL`: `https://id.mutualismo.pt` in production, served at the
+  root (no `basePath`), with its own host-only session. It is NOT in
+  `CAMINHOS` nor in `MUTUAL_APPS` (launcher/switcher list staff apps).
+- `CARTAO_URL_PRODUCAO` + `urlCartao(base?, caminho?)` (`@umporg/ui/sso`):
+  absolute links into the Cartão; each deployment passes its own Cartão
+  origin (e.g. the Portal's «É associado? Abra o Cartão Digital»; locally
+  `http://127.0.0.1:3002` — a different host from `localhost`, so cookies do
+  not mix with the gateway's).
+- `APP_CARTAO` (name, description, audience) and `nomeDaApp(id)` for any app
+  id; `MutualWordmark app="cartao"` now shows «Cartão Digital».
+- `SemAcesso` accepts `app="cartao"` with `motivo="sem-associado"` (a team
+  account with no associado record), `portalHref` (absolute Portal address
+  for an app on another host) and `acoes` (extra buttons, e.g. «Sou
+  associado»).

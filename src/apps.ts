@@ -8,6 +8,21 @@ export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr"
 /** Apps served under the shared host (ADR 0004). The Cartão Digital has its own. */
 export type AppNoEndereco = Exclude<MutualAppId, "cartao">;
 
+/**
+ * The Cartão Digital: the associados' own app (not for UMP or association
+ * teams). The only app on another host (`urlCartao`, ADR 0004 exception), so
+ * it is not in `MUTUAL_APPS` (the Portal launcher and the app switcher list
+ * the staff apps).
+ */
+export const APP_CARTAO = {
+  id: "cartao",
+  nome: "Cartão Digital",
+  descricao: "O seu cartão de associado: identificação, quotas, benefícios, eventos e saúde.",
+  publico: "Associados das associações mutualistas",
+  palavrasChave: ["cartão de associado", "sócio", "quotas", "benefícios", "descontos", "identificação"],
+  publica: false,
+} as const;
+
 export interface MutualApp {
   id: Exclude<AppNoEndereco, "portal">;
   nome: string;
@@ -92,4 +107,11 @@ export const MUTUAL_APPS: readonly MutualApp[] = [
 
 export function getMutualApp(id: MutualAppId): MutualApp | undefined {
   return MUTUAL_APPS.find((a) => a.id === id);
+}
+
+/** The display name of any app ("Portal", "Cartão Digital", "Eventos"…). */
+export function nomeDaApp(id: MutualAppId): string | undefined {
+  if (id === "portal") return "Portal";
+  if (id === "cartao") return APP_CARTAO.nome;
+  return getMutualApp(id)?.nome;
 }
