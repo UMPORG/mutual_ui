@@ -4,7 +4,7 @@
  * list of URLs; every other app only needs the Portal's URL — see sso.ts).
  */
 
-export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr" | "saude" | "dns" | "cartao";
+export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr" | "saude" | "dns" | "assistente" | "cartao";
 /** Apps served under the shared host (ADR 0004). The Cartão Digital has its own. */
 export type AppNoEndereco = Exclude<MutualAppId, "cartao">;
 
@@ -62,6 +62,14 @@ export const MUTUAL_APPS: readonly MutualApp[] = [
     descricao: "Endereços da MUTU@L e os servidores onde vivem, sem complicações.",
     publico: "Equipa de informática da UMP",
     palavrasChave: ["dns", "servidores", "domínios", "subdomínios", "cloudflare", "vps", "coolify", "endereços"],
+    publica: false,
+  },
+  {
+    id: "assistente",
+    nome: "Assistente",
+    descricao: "Respostas sobre as aplicações e os seus dados, com ligações para a ajuda.",
+    publico: "Equipas da UMP e das associações com acesso ao piloto",
+    palavrasChave: ["ia", "inteligência artificial", "chat", "conversa", "perguntas", "dúvidas", "ajuda"],
     publica: false,
   },
   {

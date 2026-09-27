@@ -1,5 +1,5 @@
 import type { ComponentType, CSSProperties, SVGProps } from "react";
-import { Building2, CalendarDays, CreditCard, Landmark, LayoutGrid, QrCode, Server, Stethoscope } from "lucide-react";
+import { Building2, CalendarDays, CreditCard, Landmark, LayoutGrid, MessagesSquare, QrCode, Server, Stethoscope } from "lucide-react";
 import { getMutualApp, type MutualAppId } from "./apps";
 import { MUTUAL_FLAG_DATA_URI, MUTUAL_FLAG_RATIO } from "./logo-data";
 import { cx } from "./cx";
@@ -14,6 +14,7 @@ export const APP_ICONS: Record<MutualAppId, Icon> = {
   saude: Stethoscope,
   qr: QrCode,
   dns: Server,
+  assistente: MessagesSquare,
   cartao: CreditCard,
 };
 

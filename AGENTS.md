@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.2"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.3"
 ```
 
 ```js
@@ -596,7 +596,7 @@ be custom, vertical and horizontal.
   | Saúde | `#341220` / `#260e17` | wine |
   | Servidores e DNS | `#18202c` / `#111720` | slate |
   | `monitor` (reserved) | `#19230b` / `#121a08`, accent `#4d7c0f` / on ink `#bef264` | moss |
-  | `assistente` (reserved) | `#2d152e` / `#210f22`, accent `#a21caf` / on ink `#f0abfc` | plum |
+  | Assistente (`assistente`) | `#2d152e` / `#210f22`, accent `#a21caf` / on ink `#f0abfc` | plum |
 
 - `.m-canvas` (the content area of every shell) gains a 3px top rule in
   the app accent (`--app-rule`, a border so scrolled content never covers
@@ -677,6 +677,15 @@ import { ScrollShadow } from "@umporg/ui";          // or "@umporg/ui/controlos"
   (`showcase/ssr.tsx`); `node showcase/verificar.mjs` also checks the Tag hit
   areas, the invalid tint in the three themes, DataTable page width at 150%
   and the control labels (server HTML and hydrated).
+
+## v0.8.3 — app `assistente` (additive)
+
+- `MUTUAL_APPS` gains **Assistente** (`id: "assistente"`, login, icon
+  `MessagesSquare`), `CAMINHOS.assistente = "/assistente"` (ADR 0006,
+  `UMPORG/mutual_assistente`, Next `basePath: "/assistente"`). Access comes
+  from `apps.assistente` of `/acessos/eu` (profiles `assistente.utilizador`,
+  `assistente.gestor`). The plum tint slot is no longer "reserved".
+- A `Record<MutualAppId, …>` in an app now needs an `assistente` entry.
 
 ## Scripts
 
