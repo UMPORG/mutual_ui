@@ -597,6 +597,7 @@ be custom, vertical and horizontal.
   | Servidores e DNS | `#18202c` / `#111720` | slate |
   | `monitor` (reserved) | `#19230b` / `#121a08`, accent `#4d7c0f` / on ink `#bef264` | moss |
   | Assistente (`assistente`) | `#2d152e` / `#210f22`, accent `#a21caf` / on ink `#f0abfc` | plum |
+  | Protocolos (`protocolos`) | `#33150f` / `#25100c`, accent `#b93a2e` / on ink `#fca99f` | brick |
 
 - `.m-canvas` (the content area of every shell) gains a 3px top rule in
   the app accent (`--app-rule`, a border so scrolled content never covers
@@ -727,3 +728,18 @@ node shots-v08.mjs <outDir> [filtro] # v0.8: ?pagina=shells (&vista=lado) | rola
 
 The showcase resolves React, Recharts and Base UI from the package's own
 devDependencies (one React copy); it only installs Tailwind.
+
+## v0.8.5 — app `protocolos` (additive)
+
+- `MUTUAL_APPS` gains **Protocolos** (`id: "protocolos"`, login, icon
+  `Handshake`), `CAMINHOS.protocolos = "/protocolos"` (ADR 0008,
+  `UMPORG/mutual_protocolos`, Next `basePath: "/protocolos"`, port 3012).
+  Access comes from `apps.protocolos` of `/acessos/eu` (profiles
+  `protocolos.gestor|consulta` for the UMP and associações,
+  `protocolos.gestor|balcao` for partner companies — organisation type
+  `parceiro`).
+- `[data-app="protocolos"]`: coral accent `#b93a2e` (6.0:1 on white), on ink
+  `#fca99f`; brick sidebar `#33150f` / dark `#25100c` (contrast checked in
+  `tests/tokens.test.ts`).
+- The Backoffice description no longer lists protocols (they moved to the new app).
+- A `Record<MutualAppId, …>` in an app now needs a `protocolos` entry.

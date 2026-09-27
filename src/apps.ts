@@ -4,7 +4,7 @@
  * list of URLs; every other app only needs the Portal's URL — see sso.ts).
  */
 
-export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr" | "saude" | "dns" | "assistente" | "cartao";
+export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr" | "saude" | "dns" | "assistente" | "protocolos" | "cartao";
 /** Apps served under the shared host (ADR 0004). The Cartão Digital has its own. */
 export type AppNoEndereco = Exclude<MutualAppId, "cartao">;
 
@@ -27,7 +27,7 @@ export const MUTUAL_APPS: readonly MutualApp[] = [
   {
     id: "backoffice",
     nome: "Backoffice",
-    descricao: "Associações e associados: quotas, licenças, protocolos e caracterização.",
+    descricao: "Associações e associados: quotas, licenças, documentos e caracterização.",
     publico: "Serviços administrativos da UMP e dirigentes das associações",
     palavrasChave: ["quotas", "pagamentos", "membros", "sócios", "fichas", "licenciamento", "dados das associações"],
     publica: false,
@@ -70,6 +70,14 @@ export const MUTUAL_APPS: readonly MutualApp[] = [
     descricao: "Respostas sobre as aplicações e os seus dados, com ligações para a ajuda.",
     publico: "Equipas da UMP e das associações com acesso ao piloto",
     palavrasChave: ["ia", "inteligência artificial", "chat", "conversa", "perguntas", "dúvidas", "ajuda"],
+    publica: false,
+  },
+  {
+    id: "protocolos",
+    nome: "Protocolos",
+    descricao: "Protocolos e parcerias: propostas das empresas, negociação, validação no balcão e relatórios.",
+    publico: "Empresas parceiras, associações e UMP",
+    palavrasChave: ["parcerias", "benefícios", "descontos", "convenções", "empresas parceiras", "propostas", "balcão"],
     publica: false,
   },
   {

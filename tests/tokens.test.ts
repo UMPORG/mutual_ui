@@ -33,7 +33,7 @@ function declaracoes(seletor: RegExp): Record<string, string> {
 
 const raiz = declaracoes(/^:root$/);
 const escuroRaiz = declaracoes(/^\.dark$/);
-const APPS = ["portal", "backoffice", "eventos", "simplex", "qr", "saude", "dns", "monitor", "assistente"];
+const APPS = ["portal", "backoffice", "eventos", "simplex", "qr", "saude", "dns", "monitor", "assistente", "protocolos"];
 
 for (const app of APPS) {
   const claro = { ...raiz, ...declaracoes(new RegExp(`^\\[data-app="${app}"\\]`)) };

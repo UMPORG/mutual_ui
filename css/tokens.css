@@ -230,6 +230,9 @@
 /* Assistente — plum.        text 15.4 / 12.7, muted 9.3 / 7.7, accent 9.5 / 7.8 */
 [data-app="assistente"] { --app-accent: #a21caf; --app-accent-soft: #faf0fb; --app-accent-on-ink: #f0abfc;
                           --sidebar: #2d152e; --sidebar-accent: #412143; --sidebar-border: #512f53; --sidebar-foreground: #f8f5f8; --sidebar-muted-foreground: #cdbccd; }
+/* Protocolos — brick.       coral accent #b93a2e (6.0:1 on white), on ink #fca99f. */
+[data-app="protocolos"] { --app-accent: #b93a2e; --app-accent-soft: #fdf0ee; --app-accent-on-ink: #fca99f;
+                          --sidebar: #33150f; --sidebar-accent: #4a241c; --sidebar-border: #5b3127; --sidebar-foreground: #faf5f4; --sidebar-muted-foreground: #d6bdb8; }
 
 /* Dark theme: one step deeper (as #0e1a13 is for the ink); foregrounds as in
    light. Ratios text / muted / accent on --sidebar · on --sidebar-accent. */
@@ -241,6 +244,7 @@
 .dark[data-app="dns"],        .dark [data-app="dns"]        { --sidebar: #111720; --sidebar-accent: #1f2834; --sidebar-border: #2b3544; } /* 16.6/10.1/12.1 · 13.8/8.4/10.0 */
 .dark[data-app="monitor"],    .dark [data-app="monitor"]    { --app-accent: #bef264; --app-accent-soft: #1f2a10; --sidebar: #121a08; --sidebar-accent: #212b12; --sidebar-border: #2c391b; } /* 16.6/10.1/13.7 · 13.7/8.4/11.3 */
 .dark[data-app="assistente"], .dark [data-app="assistente"] { --app-accent: #f0abfc; --app-accent-soft: #33163a; --sidebar: #210f22; --sidebar-accent: #351c37; --sidebar-border: #452747; } /* 16.8/10.1/10.3 · 14.1/8.5/8.7 */
+.dark[data-app="protocolos"], .dark [data-app="protocolos"] { --app-accent: #fca99f; --app-accent-soft: #3a1712; --sidebar: #25100c; --sidebar-accent: #3c1c16; --sidebar-border: #4e271f; }
 
 /* ─── Derived per app ───────────────────────────────────────────────────
    Declared on :root AND on every [data-app] element, so a nested app context
