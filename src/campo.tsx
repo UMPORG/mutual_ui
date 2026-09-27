@@ -34,20 +34,20 @@ export interface FieldControlProps {
 export interface FormFieldProps {
   label: ReactNode;
   /** A short explanation, only when the meaning is not obvious. */
-  hint?: ReactNode;
+  hint?: ReactNode | undefined;
   /** The validation message (e.g. `errors.nome?.message`). Shown with an icon. */
-  error?: ReactNode;
+  error?: ReactNode | undefined;
   /** Marks the field as required (a "*" and "obrigatório" for screen readers). */
-  required?: boolean;
+  required?: boolean | undefined;
   /** Shows "(opcional)" — mark whichever is the minority on the form. */
-  optional?: boolean;
+  optional?: boolean | undefined;
   /** Character count: "120 de 500". Pass the current length and the limit. */
   count?: { value: number; max: number } | undefined;
   /** Id for the control (default: generated). */
-  id?: string;
+  id?: string | undefined;
   /** Visually hide the label (it stays for screen readers). */
-  hideLabel?: boolean;
-  className?: string;
+  hideLabel?: boolean | undefined;
+  className?: string | undefined;
   /**
    * The control: an element (it receives id and ARIA props) or a function
    * `(props) => <input {...props} {...register("x")} />`.
@@ -174,12 +174,12 @@ export function Fieldset({
   hideLegend,
 }: {
   legend: ReactNode;
-  hint?: ReactNode;
-  error?: ReactNode;
-  required?: boolean;
+  hint?: ReactNode | undefined;
+  error?: ReactNode | undefined;
+  required?: boolean | undefined;
   children: ReactNode;
-  className?: string;
-  hideLegend?: boolean;
+  className?: string | undefined;
+  hideLegend?: boolean | undefined;
 }) {
   const id = useId();
   const hintId = hint ? `${id}-ajuda` : undefined;
@@ -219,7 +219,7 @@ export function Input({
   className,
   ref,
   ...props
-}: InputHTMLAttributes<HTMLInputElement> & { ref?: Ref<HTMLInputElement> }) {
+}: InputHTMLAttributes<HTMLInputElement> & { ref?: Ref<HTMLInputElement> | undefined }) {
   return <input ref={ref} className={cx(CAMPO, "h-11 px-3", className)} {...props} />;
 }
 
@@ -229,7 +229,7 @@ export function Textarea({
   autoSize,
   ref,
   ...props
-}: TextareaHTMLAttributes<HTMLTextAreaElement> & { autoSize?: boolean; ref?: Ref<HTMLTextAreaElement> }) {
+}: TextareaHTMLAttributes<HTMLTextAreaElement> & { autoSize?: boolean | undefined; ref?: Ref<HTMLTextAreaElement> | undefined }) {
   return (
     <textarea
       ref={ref}
@@ -249,7 +249,7 @@ export function NativeSelect({
   children,
   ref,
   ...props
-}: SelectHTMLAttributes<HTMLSelectElement> & { ref?: Ref<HTMLSelectElement> }) {
+}: SelectHTMLAttributes<HTMLSelectElement> & { ref?: Ref<HTMLSelectElement> | undefined }) {
   return (
     <span className={cx("relative flex min-w-0", className)}>
       <select ref={ref} className={cx(CAMPO, "h-11 appearance-none py-0 pr-10 pl-3")} {...props}>

@@ -16,16 +16,16 @@ import { cx } from "./cx";
  * server-action results, outside React.
  */
 
-type DadosToast = { tom: "success" | "info"; acao?: { label: string; onClick: () => void } };
+type DadosToast = { tom: "success" | "info"; acao?: { label: string; onClick: () => void } | undefined };
 
 const gestor = Toast.createToastManager();
 
 export interface ToastOptions {
-  description?: ReactNode;
+  description?: ReactNode | undefined;
   /** One action, usually "Anular" for a reversible change. */
-  action?: { label: string; onClick: () => void };
+  action?: { label: string; onClick: () => void } | undefined;
   /** ms before it closes (default 5 s; 10 s with an action). Pauses on hover and focus. */
-  timeout?: number;
+  timeout?: number | undefined;
 }
 
 function adicionar(tom: DadosToast["tom"], title: ReactNode, o: ToastOptions = {}): string {
@@ -82,7 +82,7 @@ function Lista() {
 }
 
 /** Where toasts appear: bottom-right on desktop, bottom of the screen on phones. Render once. */
-export function Toaster({ limit = 3 }: { limit?: number }) {
+export function Toaster({ limit = 3 }: { limit?: number | undefined }) {
   return (
     <Toast.Provider toastManager={gestor} limit={limit}>
       <Toast.Portal>

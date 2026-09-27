@@ -22,32 +22,32 @@ import { CLASSE_FLUTUANTE, CLASSE_POSICIONADOR } from "./controlos-comum";
 
 export type MenuEntry =
   | {
-      type?: "item";
+      type?: "item" | undefined;
       label: string;
-      icon?: ReactNode;
+      icon?: ReactNode | undefined;
       /** Secondary text under the label. */
-      description?: string;
+      description?: string | undefined;
       /** Shown on the right in help style (e.g. "Ctrl + E"); informative only. */
-      shortcut?: string;
-      onSelect?: () => void;
+      shortcut?: string | undefined;
+      onSelect?: (() => void) | undefined;
       /** Red, for "Eliminar". Put it last, after a separator. */
-      destructive?: boolean;
-      disabled?: boolean;
+      destructive?: boolean | undefined;
+      disabled?: boolean | undefined;
       /** Keep the menu open after choosing (e.g. "Copiar"). */
-      keepOpen?: boolean;
+      keepOpen?: boolean | undefined;
     }
-  | { type: "link"; label: string; href: string; icon?: ReactNode; external?: boolean }
+  | { type: "link"; label: string; href: string; icon?: ReactNode | undefined; external?: boolean | undefined }
   | { type: "separator" }
   | { type: "group"; label: string; items: MenuEntry[] }
-  | { type: "checkbox"; label: string; checked: boolean; onCheckedChange: (checked: boolean) => void; disabled?: boolean }
+  | { type: "checkbox"; label: string; checked: boolean; onCheckedChange: (checked: boolean) => void; disabled?: boolean | undefined }
   | {
       type: "radio";
       label: string;
       value: string;
       onValueChange: (value: string) => void;
-      options: Array<{ value: string; label: string; disabled?: boolean }>;
+      options: Array<{ value: string; label: string; disabled?: boolean | undefined }>;
     }
-  | { type: "submenu"; label: string; icon?: ReactNode; items: MenuEntry[]; disabled?: boolean };
+  | { type: "submenu"; label: string; icon?: ReactNode | undefined; items: MenuEntry[]; disabled?: boolean | undefined };
 
 function Entradas({ items, LinkComponent }: { items: MenuEntry[]; LinkComponent: ElementType }) {
   return (
@@ -163,13 +163,13 @@ export interface DropdownMenuProps {
   /** The button that opens the menu (e.g. `<Button variant="outline">Ações</Button>`). */
   trigger: ReactElement;
   items: MenuEntry[];
-  side?: "top" | "bottom" | "left" | "right";
-  align?: "start" | "center" | "end";
+  side?: "top" | "bottom" | "left" | "right" | undefined;
+  align?: "start" | "center" | "end" | undefined;
   /** Next's `Link` for `type: "link"` entries. */
-  LinkComponent?: ElementType;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  className?: string;
+  LinkComponent?: ElementType | undefined;
+  open?: boolean | undefined;
+  onOpenChange?: ((open: boolean) => void) | undefined;
+  className?: string | undefined;
 }
 
 export function DropdownMenu({ trigger, items, side = "bottom", align = "start", LinkComponent = "a", open, onOpenChange, className }: DropdownMenuProps) {
@@ -191,8 +191,8 @@ export interface ContextMenuProps {
   /** The area that reacts to right-click / long-press. */
   children: ReactNode;
   items: MenuEntry[];
-  LinkComponent?: ElementType;
-  className?: string;
+  LinkComponent?: ElementType | undefined;
+  className?: string | undefined;
 }
 
 export function ContextMenu({ children, items, LinkComponent = "a", className }: ContextMenuProps) {

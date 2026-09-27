@@ -5,6 +5,6 @@ import { PREFERENCIAS_SCRIPT } from "./preferencias";
  * <html>): applies the saved "Acessibilidade" choices before the first paint.
  * Replaces next-themes' script — the theme is one of those choices.
  */
-export function PreferenciasScript({ nonce }: { nonce?: string }) {
+export function PreferenciasScript({ nonce }: { nonce?: string | undefined }) {
   return <script nonce={nonce} dangerouslySetInnerHTML={{ __html: PREFERENCIAS_SCRIPT }} />;
 }

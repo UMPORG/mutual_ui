@@ -27,7 +27,7 @@ import { CLASSE_FLUTUANTE, CLASSE_POSICIONADOR } from "./controlos-comum";
 // ─── Tooltip ──────────────────────────────────────────────────────────────
 
 /** Wrap the app (or a toolbar) once so neighbouring tooltips open instantly after the first. */
-export function TooltipProvider({ children, delay = 500 }: { children: ReactNode; delay?: number }) {
+export function TooltipProvider({ children, delay = 500 }: { children: ReactNode; delay?: number | undefined }) {
   return <BaseTooltip.Provider delay={delay}>{children}</BaseTooltip.Provider>;
 }
 
@@ -40,8 +40,8 @@ export function Tooltip({
   content: ReactNode;
   /** The trigger — usually an icon-only `Button` with the same `aria-label`. */
   children: ReactElement;
-  side?: "top" | "bottom" | "left" | "right";
-  align?: "start" | "center" | "end";
+  side?: "top" | "bottom" | "left" | "right" | undefined;
+  align?: "start" | "center" | "end" | undefined;
 }) {
   return (
     <BaseTooltip.Root>
@@ -71,16 +71,16 @@ export function Popover({
 }: {
   trigger: ReactElement;
   /** Heading of the panel (names it for screen readers). */
-  title?: ReactNode;
-  description?: ReactNode;
-  children?: ReactNode;
-  side?: "top" | "bottom" | "left" | "right";
-  align?: "start" | "center" | "end";
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  className?: string;
+  title?: ReactNode | undefined;
+  description?: ReactNode | undefined;
+  children?: ReactNode | undefined;
+  side?: "top" | "bottom" | "left" | "right" | undefined;
+  align?: "start" | "center" | "end" | undefined;
+  open?: boolean | undefined;
+  onOpenChange?: ((open: boolean) => void) | undefined;
+  className?: string | undefined;
   /** A "Fechar" button in the corner (for panels with a lot inside). */
-  showClose?: boolean;
+  showClose?: boolean | undefined;
 }) {
   return (
     <BasePopover.Root open={open} onOpenChange={onOpenChange ? (a) => onOpenChange(a) : undefined}>
@@ -108,30 +108,30 @@ export function Popover({
 const LARGURA = { sm: "max-w-md", md: "max-w-lg", lg: "max-w-2xl", xl: "max-w-4xl" } as const;
 
 export interface DialogProps {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  open?: boolean | undefined;
+  onOpenChange?: ((open: boolean) => void) | undefined;
   /** Button that opens it (uncontrolled use). */
-  trigger?: ReactElement;
+  trigger?: ReactElement | undefined;
   title: ReactNode;
-  description?: ReactNode;
-  children?: ReactNode;
+  description?: ReactNode | undefined;
+  children?: ReactNode | undefined;
   /** Buttons row; primary action last. */
-  footer?: ReactNode;
-  size?: keyof typeof LARGURA;
+  footer?: ReactNode | undefined;
+  size?: keyof typeof LARGURA | undefined;
   /** Close by clicking outside (default true). Turn off for forms with data. */
-  dismissible?: boolean;
+  dismissible?: boolean | undefined;
   /** Element to focus first (default: the first focusable one). */
-  initialFocus?: React.RefObject<HTMLElement | null>;
-  className?: string;
+  initialFocus?: React.RefObject<HTMLElement | null> | undefined;
+  className?: string | undefined;
 }
 
 /** Body + footer for dialogs and sheets: the body scrolls, the footer stays. */
 function Moldura({ title, description, children, footer, fechar = true, Title, Description, Close }: {
   title: ReactNode;
-  description?: ReactNode;
-  children?: ReactNode;
-  footer?: ReactNode;
-  fechar?: boolean;
+  description?: ReactNode | undefined;
+  children?: ReactNode | undefined;
+  footer?: ReactNode | undefined;
+  fechar?: boolean | undefined;
   Title: typeof BaseDialog.Title;
   Description: typeof BaseDialog.Description;
   Close: typeof BaseDialog.Close;
@@ -184,7 +184,7 @@ export function Dialog({ open, onOpenChange, trigger, title, description, childr
 }
 
 /** A button that closes the dialog it sits in ("Cancelar"). */
-export function DialogClose({ children = "Cancelar", variant = "outline" as const }: { children?: ReactNode; variant?: "outline" | "ghost" }) {
+export function DialogClose({ children = "Cancelar", variant = "outline" as const }: { children?: ReactNode | undefined; variant?: "outline" | "ghost" | undefined }) {
   return <BaseDialog.Close render={<Button variant={variant} />}>{children}</BaseDialog.Close>;
 }
 
@@ -199,24 +199,24 @@ export interface ConfirmDialogProps {
   onConfirm: () => void;
   title: ReactNode;
   /** What will happen, in plain words, and whether it can be undone. */
-  description?: ReactNode;
+  description?: ReactNode | undefined;
   /** The verb: "Eliminar", "Revogar", "Aprovar". Never "OK" or "Sim". */
   confirmLabel: string;
-  cancelLabel?: string;
+  cancelLabel?: string | undefined;
   /** "danger" (default): red confirm button. "default": brand button. */
-  tone?: "danger" | "default";
+  tone?: "danger" | "default" | undefined;
   /** Disables the buttons and shows a spinner while the action runs. */
-  pending?: boolean;
+  pending?: boolean | undefined;
   /** Error of the action — it stays in the dialog, not in a toast. */
-  error?: ReactNode;
+  error?: ReactNode | undefined;
   /**
    * Typed confirmation for actions that are hard to undo (delete a DNS
    * zone, revoke all accesses): the person must type this exact text.
    */
-  confirmText?: string;
+  confirmText?: string | undefined;
   /** Label of the typed-confirmation field. Default: "Para confirmar, escreva «…»". */
-  confirmTextLabel?: ReactNode;
-  children?: ReactNode;
+  confirmTextLabel?: ReactNode | undefined;
+  children?: ReactNode | undefined;
 }
 
 /**
@@ -341,9 +341,9 @@ export function ConfirmDialog({
 
 export interface SheetProps extends Omit<DialogProps, "size"> {
   /** Where it comes from. "bottom" suits phones (short content). */
-  side?: "right" | "left" | "bottom";
+  side?: "right" | "left" | "bottom" | undefined;
   /** Width of side sheets. Default "md" (28rem). */
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | undefined;
 }
 
 const LARGURA_LADO = { sm: "sm:max-w-sm", md: "sm:max-w-md", lg: "sm:max-w-2xl" } as const;

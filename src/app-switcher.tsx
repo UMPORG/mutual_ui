@@ -27,9 +27,9 @@ export function AppSwitcher({
    *  `apps` from `GET /api/v1/acessos/eu` whose value is not null (public
    *  apps such as the Validador QR are always listed). */
   disponiveis: readonly MutualAppId[];
-  tone?: "ink" | "default";
-  className?: string;
-  label?: string;
+  tone?: "ink" | "default" | undefined;
+  className?: string | undefined;
+  label?: string | undefined;
 }) {
   const id = useId().replace(/:/g, "");
   const popId = `mutual-apps-${id}`;

@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.3"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.4"
 ```
 
 ```js
@@ -687,11 +687,31 @@ import { ScrollShadow } from "@umporg/ui";          // or "@umporg/ui/controlos"
   `assistente.gestor`). The plum tint slot is no longer "reserved".
 - A `Record<MutualAppId, …>` in an app now needs an `assistente` entry.
 
+## v0.8.4 — `exactOptionalPropertyTypes`-ready types, `Switch` names (additive)
+
+- Every optional prop/option of every exported type is declared
+  `name?: T | undefined`, so apps can turn on `exactOptionalPropertyTypes`
+  and pass maybes straight through (`buttonClasses({ iconOnly })` with
+  `iconOnly: boolean | undefined`, `<Switch checked={maybe} />`). The
+  package itself now compiles WITH the flag (`tsconfig.json`) and without
+  it (`tsconfig.solto.json`); `pnpm typecheck` runs both.
+- `tests/tipos-exatos.tsx` is a generic type test: for each function or
+  component of each entry point, every parameter with all its optional
+  keys set to `undefined` must be accepted — a new prop written as
+  `name?: T` fails `pnpm typecheck` and the error names the export. Write
+  new optional props as `name?: T | undefined`.
+- Props passed on to Recharts / Base UI whose own types reject `undefined`
+  go through the internal `opcional(chave, valor)` spread (`src/opcional.ts`).
+- `Switch` takes `aria-labelledby` (read before the visible label: a field
+  label «Proteção» + visible state «Ligada» → «Proteção Ligada») or
+  `aria-label` (replaces the name; keep the visible words in it). Use it
+  when the visible label is only the state.
+
 ## Scripts
 
 ```bash
 pnpm install
-pnpm typecheck
+pnpm typecheck   # with exactOptionalPropertyTypes (+ tests/tipos-exatos.tsx) and without it
 pnpm test        # node --test: SSO, preferences, formatters, chart/table helpers,
                  # dates, combobox filtering, Markdown safety, conversation helpers,
                  # app shell tint contrast (tokens.test.ts)

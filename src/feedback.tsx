@@ -53,7 +53,7 @@ export function StatusCallout({
 }
 
 /** Status pill: icon-less, but always with words. */
-export function StatusBadge({ tone = "neutral", children, className }: { tone?: Tone; children: ReactNode; className?: string }) {
+export function StatusBadge({ tone = "neutral", children, className }: { tone?: Tone | undefined; children: ReactNode; className?: string | undefined }) {
   return (
     <span
       className={cx(

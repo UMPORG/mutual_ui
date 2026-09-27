@@ -27,7 +27,7 @@ export interface Option {
   /** Second line in the list (NIF, distrito…). */
   description?: string | undefined;
   disabled?: boolean | undefined;
-  icon?: ReactNode;
+  icon?: ReactNode | undefined;
 }
 export interface OptionGroup {
   label: string;
@@ -139,7 +139,7 @@ export function Select({
 
 // ─── Combobox (single) ────────────────────────────────────────────────────
 
-type ItemInterno = Option & { criar?: string };
+type ItemInterno = Option & { criar?: string | undefined };
 
 export interface ComboboxProps extends PropsDeCampo {
   /** Local options (filtered as the person types, accents ignored). */
@@ -195,7 +195,7 @@ function usePesquisaRemota(onSearch: ComboboxProps["onSearch"], consulta: string
   return estado;
 }
 
-function ItemCombobox({ o, consulta, multiplo }: { o: ItemInterno; consulta: string; multiplo?: boolean }) {
+function ItemCombobox({ o, consulta, multiplo }: { o: ItemInterno; consulta: string; multiplo?: boolean | undefined }) {
   return (
     <BaseCombobox.Item value={o} disabled={o.disabled} className={cx("m-item", o.criar ? "text-brand" : "pr-9")}>
       {o.criar ? (
@@ -245,7 +245,7 @@ function Lista({
   estado: { a: boolean; erro: boolean; resultados: Option[] | null };
   remoto: boolean;
   minChars: number;
-  multiplo?: boolean;
+  multiplo?: boolean | undefined;
 }) {
   const q = consulta.trim();
   let mensagem: ReactNode = null;

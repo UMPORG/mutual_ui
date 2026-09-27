@@ -34,22 +34,22 @@ export interface EstadoEfeito {
 
 export interface OpcoesEfeito {
   /** Frames per second cap. */
-  fps?: number;
+  fps?: number | undefined;
   /** Max device pixel ratio. */
-  dprMax?: number;
+  dprMax?: number | undefined;
   /** Called after every resize and theme change (precompute layers here). */
-  preparar?: (ctx: CanvasRenderingContext2D, e: EstadoEfeito) => void;
+  preparar?: ((ctx: CanvasRenderingContext2D, e: EstadoEfeito) => void) | undefined;
   /**
    * Draws a frame at time `t` (ms). Return false to sleep until woken by the
    * pointer (effects that are still when nobody interacts).
    */
   desenhar: (ctx: CanvasRenderingContext2D, e: EstadoEfeito, t: number) => boolean | void;
   /** Wake up on pointer movement over the canvas area. */
-  rato?: boolean;
+  rato?: boolean | undefined;
   /** Time used for the still frame. */
-  tempoParado?: number;
+  tempoParado?: number | undefined;
   /** How fast the pointer's influence fades per frame (0–1, default 0.93). */
-  decaimento?: number;
+  decaimento?: number | undefined;
 }
 
 function lerCores(el: Element): CoresEfeito {
@@ -191,7 +191,7 @@ export function iniciarEfeito(canvas: HTMLCanvasElement, o: OpcoesEfeito): () =>
 }
 
 /** Where the content sits: the effect fades out there so it never runs behind text. */
-export type Mascara = { x?: string; y?: string; largura?: string; altura?: string } | false;
+export type Mascara = { x?: string | undefined; y?: string | undefined; largura?: string | undefined; altura?: string | undefined } | false;
 
 /**
  * CSS mask for an effect: a soft hole where the content sits (`mascara`)

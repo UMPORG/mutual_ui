@@ -38,13 +38,13 @@ export function SemAcesso({
 }: {
   app: Exclude<AppNoEndereco, "portal">;
   motivo: MotivoSemAcesso;
-  utilizador?: { nome: string; email: string } | null;
-  organizacao?: string | null;
+  utilizador?: { nome: string; email: string } | null | undefined;
+  organizacao?: string | null | undefined;
   /** Show "Mudar de organização" (the person belongs to several). */
-  variasOrganizacoes?: boolean;
+  variasOrganizacoes?: boolean | undefined;
   /** The app's own sign-out button (it needs the app's auth client). */
-  acaoSair?: ReactNode;
-  className?: string;
+  acaoSair?: ReactNode | undefined;
+  className?: string | undefined;
 }) {
   const nome = getMutualApp(app)?.nome ?? "aplicação";
   return (

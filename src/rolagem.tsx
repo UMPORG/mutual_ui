@@ -24,7 +24,7 @@ type Eixo = "x" | "y" | "ambos";
 const temLinhaDeRolagem = () =>
   typeof CSS !== "undefined" && typeof CSS.supports === "function" && CSS.supports("animation-timeline: scroll()");
 
-export function useScrollShadow(ref: RefObject<HTMLElement | null>, { eixo = "x" }: { eixo?: Eixo } = {}) {
+export function useScrollShadow(ref: RefObject<HTMLElement | null>, { eixo = "x" }: { eixo?: Eixo | undefined } = {}) {
   const [transborda, setTransborda] = useState(false);
   useEffect(() => {
     const el = ref.current;
@@ -73,10 +73,10 @@ export function ScrollShadow({
 }: {
   children: ReactNode;
   /** Scroll direction: "x" (default), "y" or "ambos". */
-  eixo?: Eixo;
+  eixo?: Eixo | undefined;
   /** Spoken name of the region. */
-  label?: string;
-  className?: string;
+  label?: string | undefined;
+  className?: string | undefined;
 } & Omit<HTMLAttributes<HTMLDivElement>, "children" | "className">) {
   const ref = useRef<HTMLDivElement>(null);
   const { transborda } = useScrollShadow(ref, { eixo });

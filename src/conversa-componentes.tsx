@@ -86,7 +86,7 @@ function useAnunciador() {
 // ─── Sources ──────────────────────────────────────────────────────────────
 
 /** Numbered chips to help-centre pages ("ajuda") and app records ("registo"). */
-export function SourceList({ sources, LinkComponent = "a", className }: { sources: ChatSource[]; LinkComponent?: ElementType; className?: string }) {
+export function SourceList({ sources, LinkComponent = "a", className }: { sources: ChatSource[]; LinkComponent?: ElementType | undefined; className?: string | undefined }) {
   const L = LinkComponent;
   const lista = numerarFontes(sources).sort((a, b) => a.n - b.n);
   if (!lista.length) return null;
@@ -127,10 +127,10 @@ export function MessageFeedback({
   onChange,
   onComment,
 }: {
-  value?: "util" | "nao-util" | null;
+  value?: "util" | "nao-util" | null | undefined;
   onChange: (value: "util" | "nao-util" | null) => void;
   /** Called with the chosen reasons and free text after "Não útil". */
-  onComment?: (reasons: string[], text: string) => void;
+  onComment?: ((reasons: string[], text: string) => void) | undefined;
 }) {
   const [aberto, setAberto] = useState(false);
   const [motivos, setMotivos] = useState<string[]>([]);
@@ -235,7 +235,7 @@ export interface WorkStep {
  * assistant is taking ("A procurar na ajuda", "A consultar as suas quotas").
  * Not a live region — the list announces "O assistente está a responder." once.
  */
-export function ThinkingIndicator({ label = "A pensar", steps }: { label?: string; steps?: WorkStep[] }) {
+export function ThinkingIndicator({ label = "A pensar", steps }: { label?: string | undefined; steps?: WorkStep[] | undefined }) {
   return (
     <div className="flex flex-col gap-2 py-1">
       <p className="inline-flex items-center gap-2.5 text-[0.9375rem] font-medium text-muted-foreground">
@@ -289,19 +289,19 @@ export function ActionCard({
   app,
 }: {
   title: ReactNode;
-  description?: ReactNode;
+  description?: ReactNode | undefined;
   /** What will change: [{ term: "Associado", details: "Maria Silva (n.º 1234)" }]. */
-  details?: Array<{ term: ReactNode; details: ReactNode }>;
+  details?: Array<{ term: ReactNode; details: ReactNode }> | undefined;
   status: ActionStatus;
-  onApply?: () => void;
-  onCancel?: () => void;
-  applyLabel?: string;
+  onApply?: (() => void) | undefined;
+  onCancel?: (() => void) | undefined;
+  applyLabel?: string | undefined;
   /** Error of the last attempt (status "erro"). */
-  error?: ReactNode;
+  error?: ReactNode | undefined;
   /** After "aplicada": what happened, with a link to the record. */
-  result?: ReactNode;
+  result?: ReactNode | undefined;
   /** App where the change happens (its accent marks the card). */
-  app?: string;
+  app?: string | undefined;
 }) {
   const estado: Record<ActionStatus, ReactNode> = {
     proposta: null,
@@ -370,10 +370,10 @@ export function SuggestionChips({
   label = "Sugestões",
   className,
 }: {
-  suggestions: Array<string | { label: string; prompt?: string }>;
+  suggestions: Array<string | { label: string; prompt?: string | undefined }>;
   onSelect: (prompt: string) => void;
-  label?: string;
-  className?: string;
+  label?: string | undefined;
+  className?: string | undefined;
 }) {
   return (
     <div role="group" aria-label={label} className={cx("flex flex-wrap gap-2", className)}>
@@ -400,18 +400,18 @@ export function SuggestionChips({
 export interface ChatMessageProps {
   message: ChatMessageData;
   /** Next's `Link` for sources and relative links in replies. */
-  LinkComponent?: ElementType;
-  onRetry?: () => void;
-  onRegenerate?: () => void;
-  onFeedback?: (value: "util" | "nao-util" | null) => void;
-  onFeedbackComment?: (reasons: string[], text: string) => void;
+  LinkComponent?: ElementType | undefined;
+  onRetry?: (() => void) | undefined;
+  onRegenerate?: (() => void) | undefined;
+  onFeedback?: ((value: "util" | "nao-util" | null) => void) | undefined;
+  onFeedbackComment?: ((reasons: string[], text: string) => void) | undefined;
   /** Work in progress before the first words (see ThinkingIndicator). */
-  thinking?: { label?: string; steps?: WorkStep[] };
+  thinking?: { label?: string | undefined; steps?: WorkStep[] | undefined } | undefined;
   /** Extra content under the reply (ActionCards). */
-  children?: ReactNode;
+  children?: ReactNode | undefined;
 }
 
-function Hora({ d }: { d?: string | Date }) {
+function Hora({ d }: { d?: string | Date | undefined }) {
   if (!d) return null;
   const iso = typeof d === "string" ? d : d.toISOString();
   return (
@@ -507,20 +507,20 @@ export function ChatMessage({ message: m, LinkComponent = "a", onRetry, onRegene
 export interface MessageListProps {
   messages: ChatMessageData[];
   /** Custom rendering per message (default: `ChatMessage` with the props below). */
-  renderMessage?: (m: ChatMessageData) => ReactNode;
-  LinkComponent?: ElementType;
-  onRetry?: (m: ChatMessageData) => void;
-  onRegenerate?: (m: ChatMessageData) => void;
-  onFeedback?: (m: ChatMessageData, value: "util" | "nao-util" | null) => void;
-  onFeedbackComment?: (m: ChatMessageData, reasons: string[], text: string) => void;
-  thinking?: { label?: string; steps?: WorkStep[] };
+  renderMessage?: ((m: ChatMessageData) => ReactNode) | undefined;
+  LinkComponent?: ElementType | undefined;
+  onRetry?: ((m: ChatMessageData) => void) | undefined;
+  onRegenerate?: ((m: ChatMessageData) => void) | undefined;
+  onFeedback?: ((m: ChatMessageData, value: "util" | "nao-util" | null) => void) | undefined;
+  onFeedbackComment?: ((m: ChatMessageData, reasons: string[], text: string) => void) | undefined;
+  thinking?: { label?: string | undefined; steps?: WorkStep[] | undefined } | undefined;
   /** Shown when there are no messages (ChatEmptyState). */
-  empty?: ReactNode;
+  empty?: ReactNode | undefined;
   /** Only the last N messages render at first; "Mostrar mensagens anteriores" loads more. */
-  initialCount?: number;
+  initialCount?: number | undefined;
   /** Suggestions under the last reply. */
-  footer?: ReactNode;
-  className?: string;
+  footer?: ReactNode | undefined;
+  className?: string | undefined;
 }
 
 export function MessageList({
@@ -662,13 +662,13 @@ export function ChatEmptyState({
   onSelect,
   backdrop,
 }: {
-  title?: ReactNode;
-  description?: ReactNode;
+  title?: ReactNode | undefined;
+  description?: ReactNode | undefined;
   /** Example questions, as cards. 2–4 is best. */
-  prompts?: Array<{ title: string; prompt?: string; icon?: ReactNode; description?: string }>;
-  onSelect?: (prompt: string) => void;
+  prompts?: Array<{ title: string; prompt?: string | undefined; icon?: ReactNode | undefined; description?: string | undefined }> | undefined;
+  onSelect?: ((prompt: string) => void) | undefined;
   /** Decorative effect behind the greeting (e.g. `<PontosFundo />`). */
-  backdrop?: ReactNode;
+  backdrop?: ReactNode | undefined;
 }) {
   return (
     <div className="relative flex flex-col items-center gap-6 px-2 pt-[min(12vh,6rem)] pb-6 text-center">
@@ -717,9 +717,9 @@ export function ConversationTitle({
   className,
 }: {
   title: string;
-  onRename?: (title: string) => void;
-  level?: 1 | 2;
-  className?: string;
+  onRename?: ((title: string) => void) | undefined;
+  level?: 1 | 2 | undefined;
+  className?: string | undefined;
 }) {
   const [editar, setEditar] = useState(false);
   const [texto, setTexto] = useState(title);
@@ -809,17 +809,17 @@ export function ConversationTitle({
 
 export interface ThreadListProps<T extends ChatThread> {
   threads: T[];
-  activeId?: string | null;
+  activeId?: string | null | undefined;
   /** Link to a thread (server navigation) … */
-  hrefFor?: (t: T) => string;
+  hrefFor?: ((t: T) => string) | undefined;
   /** … or a callback (client state). */
-  onSelect?: (t: T) => void;
-  onNew?: () => void;
-  onRename?: (t: T, title: string) => void;
-  onDelete?: (t: T) => void;
-  LinkComponent?: ElementType;
-  loading?: boolean;
-  className?: string;
+  onSelect?: ((t: T) => void) | undefined;
+  onNew?: (() => void) | undefined;
+  onRename?: ((t: T, title: string) => void) | undefined;
+  onDelete?: ((t: T) => void) | undefined;
+  LinkComponent?: ElementType | undefined;
+  loading?: boolean | undefined;
+  className?: string | undefined;
 }
 
 export function ThreadList<T extends ChatThread>({ threads, activeId, hrefFor, onSelect, onNew, onRename, onDelete, LinkComponent = "a", loading, className }: ThreadListProps<T>) {
@@ -961,16 +961,16 @@ export function ChatLayout({
   className,
 }: {
   /** The ThreadList (sidebar on desktop, a sheet on phones and tablets). */
-  threads?: ReactNode;
+  threads?: ReactNode | undefined;
   /** Title and actions above the conversation (ConversationTitle, "Nova conversa"). */
-  header?: ReactNode;
+  header?: ReactNode | undefined;
   /** The MessageList. */
   children: ReactNode;
   /** The Composer, fixed under the messages. */
-  composer?: ReactNode;
-  threadsTitle?: string;
+  composer?: ReactNode | undefined;
+  threadsTitle?: string | undefined;
   /** Give it a height (e.g. `h-dvh` or `h-[calc(100dvh-4rem)]`). */
-  className?: string;
+  className?: string | undefined;
 }) {
   const [aberto, setAberto] = useState(false);
   return (

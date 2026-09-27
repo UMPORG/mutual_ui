@@ -4,6 +4,7 @@ import { getMutualApp, type MutualAppId } from "./apps";
 import { MUTUAL_FLAG_DATA_URI, MUTUAL_FLAG_RATIO } from "./logo-data";
 import { cx } from "./cx";
 
+// Sem `| undefined`: descreve os ícones Lucide que recebemos (cujas props não o aceitam).
 type Icon = ComponentType<SVGProps<SVGSVGElement> & { size?: number | string; strokeWidth?: number | string }>;
 
 export const APP_ICONS: Record<MutualAppId, Icon> = {
@@ -19,7 +20,7 @@ export const APP_ICONS: Record<MutualAppId, Icon> = {
 };
 
 /** The MUTU@L flag. Decorative by default (the wordmark carries the name). */
-export function MutualFlag({ height = 24, className, title }: { height?: number; className?: string; title?: string }) {
+export function MutualFlag({ height = 24, className, title }: { height?: number | undefined; className?: string | undefined; title?: string | undefined }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- inline data URI, no optimisation needed
     <img
@@ -46,10 +47,10 @@ export function MutualWordmark({
   size = "md",
   className,
 }: {
-  app?: MutualAppId;
-  tone?: "default" | "ink";
-  size?: "sm" | "md" | "lg";
-  className?: string;
+  app?: MutualAppId | undefined;
+  tone?: "default" | "ink" | undefined;
+  size?: "sm" | "md" | "lg" | undefined;
+  className?: string | undefined;
 }) {
   const nome = app && app !== "portal" ? getMutualApp(app)?.nome : app === "portal" ? "Portal" : undefined;
   const flag = size === "lg" ? 34 : size === "sm" ? 20 : 26;
@@ -83,7 +84,7 @@ export function MutualWordmark({
 }
 
 /** Square app icon in the app's accent colour (Portal tiles, switcher). */
-export function AppMark({ app, size = 40, className }: { app: MutualAppId; size?: number; className?: string }) {
+export function AppMark({ app, size = 40, className }: { app: MutualAppId; size?: number | undefined; className?: string | undefined }) {
   const Icon = APP_ICONS[app];
   const style: CSSProperties = { width: size, height: size };
   return (

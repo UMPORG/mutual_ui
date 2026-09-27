@@ -37,7 +37,7 @@ export function buttonClasses({
   size = "md",
   iconOnly = false,
   className,
-}: { variant?: ButtonVariant; size?: ButtonSize; iconOnly?: boolean; className?: string | undefined } = {}): string {
+}: { variant?: ButtonVariant | undefined; size?: ButtonSize | undefined; iconOnly?: boolean | undefined; className?: string | undefined } = {}): string {
   return cx(
     "m-btn inline-flex shrink-0 items-center justify-center rounded-lg whitespace-nowrap select-none",
     "disabled:pointer-events-none disabled:opacity-55 aria-disabled:pointer-events-none aria-disabled:opacity-55",
@@ -49,13 +49,13 @@ export function buttonClasses({
 }
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
+  variant?: ButtonVariant | undefined;
+  size?: ButtonSize | undefined;
   /** Square button with only an icon — give it an `aria-label`. */
-  iconOnly?: boolean;
+  iconOnly?: boolean | undefined;
   /** Shows a spinner, keeps the label, and blocks repeated presses. */
-  pending?: boolean;
-  ref?: Ref<HTMLButtonElement>;
+  pending?: boolean | undefined;
+  ref?: Ref<HTMLButtonElement> | undefined;
 }
 
 /** The MUTU@L button (the `m-btn` look). `type="button"` unless told otherwise. */
@@ -90,7 +90,7 @@ export function Button({
  * A key as printed on the keyboard: `<Kbd>Enter</Kbd>`, `<Kbd keys={["Shift", "Enter"]} />`.
  * Use it in help text only; the apps have no single-key shortcuts (WCAG 2.1.4).
  */
-export function Kbd({ children, keys, className }: { children?: ReactNode; keys?: string[]; className?: string }) {
+export function Kbd({ children, keys, className }: { children?: ReactNode | undefined; keys?: string[] | undefined; className?: string | undefined }) {
   if (keys?.length) {
     return (
       <span className={cx("inline-flex items-center gap-1 align-baseline", className)}>
@@ -129,11 +129,11 @@ export function Badge({
   children,
   className,
 }: {
-  variant?: BadgeVariant;
-  size?: "sm" | "md";
-  icon?: ReactNode;
+  variant?: BadgeVariant | undefined;
+  size?: "sm" | "md" | undefined;
+  icon?: ReactNode | undefined;
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 }) {
   return (
     <span
@@ -166,8 +166,8 @@ export function Tag({
   onRemove?: (() => void) | undefined;
   /** Spoken name of the remove button; default "Remover <texto>". */
   removeLabel?: string | undefined;
-  icon?: ReactNode;
-  className?: string;
+  icon?: ReactNode | undefined;
+  className?: string | undefined;
 }) {
   return (
     <span
@@ -204,11 +204,11 @@ export function Separator({
   label,
   className,
 }: {
-  orientation?: "horizontal" | "vertical";
-  decorative?: boolean;
+  orientation?: "horizontal" | "vertical" | undefined;
+  decorative?: boolean | undefined;
   /** Text in the middle ("ou"). */
-  label?: ReactNode;
-  className?: string;
+  label?: ReactNode | undefined;
+  className?: string | undefined;
 }) {
   const a11y = decorative ? { "aria-hidden": true } : { role: "separator", "aria-orientation": orientation };
   if (label) {
@@ -235,7 +235,7 @@ export function Separator({
  * whole lists and cards prefer `Skeleton` (keeps the layout). With `label`
  * it is announced once ("A carregar…").
  */
-export function Spinner({ size = 20, label, className }: { size?: number; label?: string; className?: string }) {
+export function Spinner({ size = 20, label, className }: { size?: number | undefined; label?: string | undefined; className?: string | undefined }) {
   return (
     <span role={label ? "status" : undefined} className={cx("inline-flex items-center gap-2 text-muted-foreground", className)}>
       <Loader2 aria-hidden size={size} className="m-spinner shrink-0" />
@@ -263,10 +263,10 @@ export function Breadcrumbs({
   className,
 }: {
   items: BreadcrumbItem[];
-  LinkComponent?: ElementType;
+  LinkComponent?: ElementType | undefined;
   /** Beyond this many, the middle items fold into "…". */
-  maxItems?: number;
-  className?: string;
+  maxItems?: number | undefined;
+  className?: string | undefined;
 }) {
   const Link = LinkComponent;
   if (!items.length) return null;
@@ -337,11 +337,11 @@ export function Stepper({
   steps: StepperStep[];
   /** Index of the current step (0-based). */
   current: number;
-  orientation?: "horizontal" | "vertical";
-  LinkComponent?: ElementType;
+  orientation?: "horizontal" | "vertical" | undefined;
+  LinkComponent?: ElementType | undefined;
   /** Makes completed steps buttons (client components). */
   onStepClick?: ((index: number) => void) | undefined;
-  className?: string;
+  className?: string | undefined;
 }) {
   const Link = LinkComponent;
   const total = steps.length;

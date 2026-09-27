@@ -33,6 +33,7 @@ import {
 } from "recharts";
 import { BarChart3, Table2 } from "lucide-react";
 import { cx } from "./cx";
+import { opcional } from "./opcional";
 import { EmptyState } from "./feedback";
 import { formatarEixo, formatarPercentagem, formatarValor, paraNumero, type FormatoValor } from "./formatar";
 import {
@@ -138,7 +139,7 @@ export interface LegendItem {
   value?: string | undefined;
 }
 
-export function ChartLegend({ items, className }: { items: LegendItem[]; className?: string }) {
+export function ChartLegend({ items, className }: { items: LegendItem[]; className?: string | undefined }) {
   return (
     <ul className={cx("flex flex-wrap gap-x-4 gap-y-1.5 text-[0.9375rem]", className)} aria-label="Legenda">
       {items.map((it) => (
@@ -311,7 +312,7 @@ function ChartTooltip({
             <span
               aria-hidden
               className={cx("shrink-0", shape === "line" ? "h-[3px] w-3.5 rounded-full" : "size-2.5 rounded-[2px]")}
-              style={{ background: (p.payload as { __cor?: string })?.__cor ?? p.color ?? p.stroke }}
+              style={{ background: (p.payload as { __cor?: string | undefined })?.__cor ?? p.color ?? p.stroke }}
             />
             <span className="font-semibold text-foreground m-num">{formatarValor(p.value as number, format)}</span>
             <span className="text-muted-foreground">{p.name}</span>
@@ -448,7 +449,7 @@ export function GraficoBarras<T extends Linha>(props: GraficoBarrasProps<T>) {
           tick={TICK}
           tickLine={false}
           axisLine={{ stroke: "var(--grafico-eixo)" }}
-          tickFormatter={fc ? (v: unknown) => fc(v) : undefined}
+          {...opcional("tickFormatter", fc ? (v: unknown) => fc(v) : undefined)}
           interval={0}
         />
       ) : (
@@ -457,7 +458,7 @@ export function GraficoBarras<T extends Linha>(props: GraficoBarrasProps<T>) {
           tick={TICK}
           tickLine={false}
           axisLine={{ stroke: "var(--grafico-eixo)" }}
-          tickFormatter={fc ? (v: unknown) => fc(v) : undefined}
+          {...opcional("tickFormatter", fc ? (v: unknown) => fc(v) : undefined)}
           minTickGap={8}
         />
       )}
@@ -473,7 +474,7 @@ export function GraficoBarras<T extends Linha>(props: GraficoBarrasProps<T>) {
           barGap={2}
           barCategoryGap={horizontal ? "28%" : "24%"}
           accessibilityLayer
-          title={tituloTexto(props.title)}
+          {...opcional("title", tituloTexto(props.title))}
           desc={resumo}
         >
           <CartesianGrid
@@ -496,16 +497,16 @@ export function GraficoBarras<T extends Linha>(props: GraficoBarrasProps<T>) {
                 dataKey={s.key}
                 name={s.label}
                 fill={s.cor}
-                stackId={stacked ? "pilha" : undefined}
+                {...opcional("stackId", stacked ? "pilha" : undefined)}
                 maxBarSize={24}
                 radius={horizontal ? [0, r, r, 0] : [r, r, 0, 0]}
-                stroke={stacked ? "var(--card)" : undefined}
+                {...opcional("stroke", stacked ? "var(--card)" : undefined)}
                 strokeWidth={stacked ? 2 : 0}
                 isAnimationActive={!reduzido}
                 animationDuration={500}
               >
                 {highlight !== undefined &&
-                  (dados as Array<Linha & { __destaque?: boolean }>).map((d, j) => (
+                  (dados as Array<Linha & { __destaque?: boolean | undefined }>).map((d, j) => (
                     <Cell key={j} fill={d.__destaque ? s.cor : "var(--serie-outros)"} />
                   ))}
                 {labels && topo && (
@@ -553,7 +554,7 @@ export function GraficoLinhas<T extends Linha>(props: GraficoLinhasProps<T>) {
           data={props.data as Linha[]}
           margin={{ top: 12, right: 16, bottom: 0, left: 0 }}
           accessibilityLayer
-          title={tituloTexto(props.title)}
+          {...opcional("title", tituloTexto(props.title))}
           desc={resumo}
         >
           <CartesianGrid stroke="var(--grafico-grelha)" vertical={false} />
@@ -562,7 +563,7 @@ export function GraficoLinhas<T extends Linha>(props: GraficoLinhasProps<T>) {
             tick={TICK}
             tickLine={false}
             axisLine={{ stroke: "var(--grafico-eixo)" }}
-            tickFormatter={fc ? (v: unknown) => fc(v) : undefined}
+            {...opcional("tickFormatter", fc ? (v: unknown) => fc(v) : undefined)}
             minTickGap={16}
             padding={{ left: 8, right: 8 }}
           />
@@ -591,7 +592,7 @@ export function GraficoLinhas<T extends Linha>(props: GraficoLinhasProps<T>) {
               strokeLinecap="round"
               strokeLinejoin="round"
               connectNulls={false}
-              dot={(d: { cx?: number; cy?: number; index?: number; key?: React.Key | null }) =>
+              dot={(d: { cx?: number | undefined; cy?: number | undefined; index?: number | undefined; key?: React.Key | null | undefined }) =>
                 d.index === ultimo && d.cx !== undefined && d.cy !== undefined ? (
                   <circle key={d.key ?? undefined} cx={d.cx} cy={d.cy} r={4.5} fill={cor(s)} stroke="var(--card)" strokeWidth={2} />
                 ) : (
@@ -630,7 +631,7 @@ export function GraficoArea<T extends Linha>(props: GraficoAreaProps<T>) {
           data={props.data as Linha[]}
           margin={{ top: 12, right: 16, bottom: 0, left: 0 }}
           accessibilityLayer
-          title={tituloTexto(props.title)}
+          {...opcional("title", tituloTexto(props.title))}
           desc={resumo}
         >
           <defs>
@@ -647,7 +648,7 @@ export function GraficoArea<T extends Linha>(props: GraficoAreaProps<T>) {
             tick={TICK}
             tickLine={false}
             axisLine={{ stroke: "var(--grafico-eixo)" }}
-            tickFormatter={fc ? (v: unknown) => fc(v) : undefined}
+            {...opcional("tickFormatter", fc ? (v: unknown) => fc(v) : undefined)}
             minTickGap={16}
           />
           <YAxis
@@ -669,7 +670,7 @@ export function GraficoArea<T extends Linha>(props: GraficoAreaProps<T>) {
               type="monotone"
               dataKey={s.key}
               name={s.label}
-              stackId={props.stacked ? "pilha" : undefined}
+              {...opcional("stackId", props.stacked ? "pilha" : undefined)}
               stroke={s.cor}
               strokeWidth={2}
               fill={`url(#${id}-${s.key})`}
@@ -760,7 +761,7 @@ export function GraficoDonut({
       <div className="grid grid-cols-1 items-center gap-x-6 gap-y-4 @lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         <div className="relative min-h-0" style={{ height: rem(height) }}>
           <ResponsiveContainer width="100%" height="100%">
-            <PieChart accessibilityLayer title={tituloTexto(title)} desc={resumo}>
+            <PieChart accessibilityLayer {...opcional("title", tituloTexto(title))} desc={resumo}>
               <Tooltip
                 isAnimationActive={false}
                 content={(p) => <ChartTooltip {...p} format={format} shape="rect" />}

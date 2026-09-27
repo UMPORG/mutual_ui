@@ -64,26 +64,39 @@ export function Switch({
   disabled,
   align = "start",
   className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledby,
 }: {
   label: ReactNode;
-  description?: ReactNode;
-  checked?: boolean;
-  defaultChecked?: boolean;
-  onCheckedChange?: (checked: boolean) => void;
-  name?: string;
-  disabled?: boolean;
+  description?: ReactNode | undefined;
+  checked?: boolean | undefined;
+  defaultChecked?: boolean | undefined;
+  onCheckedChange?: ((checked: boolean) => void) | undefined;
+  name?: string | undefined;
+  disabled?: boolean | undefined;
   /** "end" puts the switch on the right (settings lists). */
-  align?: "start" | "end";
-  className?: string;
+  align?: "start" | "end" | undefined;
+  className?: string | undefined;
+  /**
+   * Accessible name when the visible `label` is only the state («Ligada»):
+   * `aria-labelledby` points at the field's own label and is read BEFORE the
+   * visible label («Proteção, Ligada»); `aria-label` replaces the name (keep
+   * the visible words in it — WCAG 2.5.3).
+   */
+  "aria-label"?: string | undefined;
+  "aria-labelledby"?: string | undefined;
 }) {
   const id = useId();
   const controlo = useRef<HTMLElement>(null);
+  const nome = ariaLabel
+    ? { "aria-label": ariaLabel }
+    : { "aria-labelledby": ariaLabelledby ? `${ariaLabelledby} ${id}-l` : `${id}-l` };
   return (
     <div className={cx("flex items-start gap-3", align === "end" && "flex-row-reverse justify-between", disabled && "opacity-60", className)}>
       <BaseSwitch.Root
         ref={controlo}
         id={id}
-        aria-labelledby={`${id}-l`}
+        {...nome}
         checked={checked}
         defaultChecked={defaultChecked}
         onCheckedChange={onCheckedChange ? (v) => onCheckedChange(v) : undefined}
@@ -124,18 +137,18 @@ export function Checkbox({
   className,
   ...aria
 }: Aria & {
-  label?: ReactNode;
-  description?: ReactNode;
-  checked?: boolean;
-  defaultChecked?: boolean;
+  label?: ReactNode | undefined;
+  description?: ReactNode | undefined;
+  checked?: boolean | undefined;
+  defaultChecked?: boolean | undefined;
   /** "Some selected" (a select-all box). */
-  indeterminate?: boolean;
-  onCheckedChange?: (checked: boolean) => void;
-  name?: string;
-  value?: string;
-  disabled?: boolean;
-  required?: boolean;
-  className?: string;
+  indeterminate?: boolean | undefined;
+  onCheckedChange?: ((checked: boolean) => void) | undefined;
+  name?: string | undefined;
+  value?: string | undefined;
+  disabled?: boolean | undefined;
+  required?: boolean | undefined;
+  className?: string | undefined;
 }) {
   const auto = useId();
   const id = aria.id ?? auto;
@@ -185,20 +198,20 @@ export function Checkbox({
 export interface RadioOption {
   value: string;
   label: ReactNode;
-  description?: ReactNode;
-  icon?: ReactNode;
-  disabled?: boolean;
+  description?: ReactNode | undefined;
+  icon?: ReactNode | undefined;
+  disabled?: boolean | undefined;
 }
 
 interface PropsGrupo extends Aria {
   options: RadioOption[];
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
-  name?: string;
-  disabled?: boolean;
-  required?: boolean;
-  className?: string;
+  value?: string | undefined;
+  defaultValue?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
+  name?: string | undefined;
+  disabled?: boolean | undefined;
+  required?: boolean | undefined;
+  className?: string | undefined;
 }
 
 function OpcaoRadio({ id, opcao: o }: { id: string; opcao: RadioOption }) {
@@ -242,7 +255,7 @@ export function RadioGroup({
   orientation = "vertical",
   className,
   ...aria
-}: PropsGrupo & { orientation?: "vertical" | "horizontal" }) {
+}: PropsGrupo & { orientation?: "vertical" | "horizontal" | undefined }) {
   const base = useId();
   return (
     <BaseRadioGroup
@@ -274,7 +287,7 @@ export function RadioCards({
   columns = 3,
   className,
   ...aria
-}: PropsGrupo & { columns?: 1 | 2 | 3 | 4 }) {
+}: PropsGrupo & { columns?: 1 | 2 | 3 | 4 | undefined }) {
   const base = useId();
   return (
     <BaseRadioGroup
@@ -330,13 +343,13 @@ export function SegmentedControl({
   label,
   className,
 }: {
-  options: Array<{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean }>;
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
+  options: Array<{ value: string; label: ReactNode; icon?: ReactNode | undefined; disabled?: boolean | undefined }>;
+  value?: string | undefined;
+  defaultValue?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
   /** Spoken name ("Vista"). */
   label: string;
-  className?: string;
+  className?: string | undefined;
 }) {
   return (
     <BaseRadioGroup
@@ -375,20 +388,20 @@ export function Slider({
 }: {
   label: ReactNode;
   /** One number, or two for a range. */
-  value?: number | readonly number[];
-  defaultValue?: number | readonly number[];
-  onValueChange?: (value: number | readonly number[]) => void;
+  value?: number | readonly number[] | undefined;
+  defaultValue?: number | readonly number[] | undefined;
+  onValueChange?: ((value: number | readonly number[]) => void) | undefined;
   /** After the drag ends (fetch here, not on every move). */
-  onValueCommitted?: (value: number | readonly number[]) => void;
-  min?: number;
-  max?: number;
-  step?: number;
+  onValueCommitted?: ((value: number | readonly number[]) => void) | undefined;
+  min?: number | undefined;
+  max?: number | undefined;
+  step?: number | undefined;
   /** Intl options for the shown value, e.g. `{ style: "unit", unit: "kilometer" }`. */
-  format?: Intl.NumberFormatOptions;
-  showValue?: boolean;
-  name?: string;
-  disabled?: boolean;
-  className?: string;
+  format?: Intl.NumberFormatOptions | undefined;
+  showValue?: boolean | undefined;
+  name?: string | undefined;
+  disabled?: boolean | undefined;
+  className?: string | undefined;
 }) {
   return (
     <BaseSlider.Root
@@ -437,18 +450,18 @@ export function NumberField({
   className,
   ...aria
 }: Aria & {
-  value?: number | null;
-  defaultValue?: number;
-  onValueChange?: (value: number | null) => void;
-  min?: number;
-  max?: number;
-  step?: number;
+  value?: number | null | undefined;
+  defaultValue?: number | undefined;
+  onValueChange?: ((value: number | null) => void) | undefined;
+  min?: number | undefined;
+  max?: number | undefined;
+  step?: number | undefined;
   /** Intl options, e.g. `{ style: "currency", currency: "EUR" }` or `{ maximumFractionDigits: 2 }`. */
-  format?: Intl.NumberFormatOptions;
-  name?: string;
-  disabled?: boolean;
-  required?: boolean;
-  className?: string;
+  format?: Intl.NumberFormatOptions | undefined;
+  name?: string | undefined;
+  disabled?: boolean | undefined;
+  required?: boolean | undefined;
+  className?: string | undefined;
 }) {
   const botao = "grid h-full w-11 shrink-0 place-items-center text-muted-foreground hover:bg-foreground/6 hover:text-foreground disabled:opacity-40";
   return (

@@ -19,13 +19,13 @@ import { dentroDoPoligono, ILHAS, LOCAIS_ASSOCIACOES, PORTUGAL_CONTINENTAL } fro
  */
 
 interface BaseProps {
-  className?: string;
+  className?: string | undefined;
   /** Soft hole where the content sits (so nothing moves behind text). */
-  mascara?: Mascara;
+  mascara?: Mascara | undefined;
   /** Fade out at the top under a header, e.g. "5rem". */
-  fadeTopo?: string | false;
+  fadeTopo?: string | false | undefined;
   /** 0–1: overall strength. */
-  intensidade?: number;
+  intensidade?: number | undefined;
 }
 
 function useCanvas(iniciar: (c: HTMLCanvasElement) => () => void, deps: unknown[]) {
@@ -45,11 +45,11 @@ const CLASSE_CANVAS = "m-efeito pointer-events-none absolute inset-0 size-full s
 
 export interface ConstelacaoFundoProps extends BaseProps {
   /** Places to light up ([lon, lat]); default: towns with mutual associations. */
-  pontos?: ReadonlyArray<readonly [number, number]>;
+  pontos?: ReadonlyArray<readonly [number, number]> | undefined;
   /** Where the map sits; keep the text on the other side. */
-  posicao?: "direita" | "esquerda" | "centro";
+  posicao?: "direita" | "esquerda" | "centro" | undefined;
   /** Madeira and the Azores in an inset. */
-  ilhas?: boolean;
+  ilhas?: boolean | undefined;
 }
 
 /**
@@ -249,11 +249,11 @@ function ruido(semente: number) {
 
 export interface TopografiaFundoProps extends BaseProps {
   /** Number of contour levels (default 12). */
-  niveis?: number;
+  niveis?: number | undefined;
   /** Size of the hills in px (default 420). */
-  escala?: number;
+  escala?: number | undefined;
   /** Line colour: the app accent (default) or the brand green. */
-  cor?: "acento" | "marca";
+  cor?: "acento" | "marca" | undefined;
 }
 
 /**
@@ -345,9 +345,9 @@ export interface MalhaFundoProps extends BaseProps {
    * brand; "bandeira": the flag's green with a touch of its red
    * (celebrations, institutional); "calmo": almost neutral.
    */
-  tons?: "marca" | "app" | "bandeira" | "calmo";
+  tons?: "marca" | "app" | "bandeira" | "calmo" | undefined;
   /** Film grain over the colours (default true). */
-  grao?: boolean;
+  grao?: boolean | undefined;
 }
 
 /**
@@ -371,9 +371,9 @@ export function MalhaFundo({ className, tons = "marca", grao = true, mascara = f
 
 export interface PontosFundoProps extends BaseProps {
   /** Distance between dots in px (default 22). */
-  espaco?: number;
+  espaco?: number | undefined;
   /** Reach of the pointer in px (default 150). */
-  alcance?: number;
+  alcance?: number | undefined;
 }
 
 /**
@@ -463,7 +463,7 @@ export function PontosFundo({ className, espaco = 22, alcance = 150, mascara = f
  * ("Recomendado", the next event, a new feature). Also available as the
  * class `m-brilho` (e.g. `<Card className="m-brilho">`).
  */
-export function BrilhoDestaque({ children, as: Tag = "div", className }: { children: ReactNode; as?: ElementType; className?: string }) {
+export function BrilhoDestaque({ children, as: Tag = "div", className }: { children: ReactNode; as?: ElementType | undefined; className?: string | undefined }) {
   return <Tag className={cx("m-brilho", className)}>{children}</Tag>;
 }
 
@@ -471,11 +471,11 @@ export function BrilhoDestaque({ children, as: Tag = "div", className }: { child
 
 export interface CelebracaoProps {
   /** Plays when it becomes true (default: on mount). */
-  ativo?: boolean;
+  ativo?: boolean | undefined;
   /** Centre of the burst inside the parent. */
-  origem?: { x?: string; y?: string };
-  particulas?: number;
-  className?: string;
+  origem?: { x?: string | undefined; y?: string | undefined } | undefined;
+  particulas?: number | undefined;
+  className?: string | undefined;
 }
 
 /**
@@ -572,12 +572,12 @@ export function MomentoSucesso({
   className,
 }: {
   title: ReactNode;
-  children?: ReactNode;
-  actions?: ReactNode;
+  children?: ReactNode | undefined;
+  actions?: ReactNode | undefined;
   /** Play the burst (default true). */
-  celebrar?: boolean;
-  headingLevel?: 1 | 2;
-  className?: string;
+  celebrar?: boolean | undefined;
+  headingLevel?: 1 | 2 | undefined;
+  className?: string | undefined;
 }) {
   const titulo = useRef<HTMLHeadingElement>(null);
   useEffect(() => {

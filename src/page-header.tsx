@@ -4,7 +4,7 @@ import { cx } from "./cx";
 
 export interface Crumb {
   label: string;
-  href?: string;
+  href?: string | undefined;
 }
 
 /**
@@ -22,14 +22,14 @@ export function PageHeader({
   LinkComponent = "a",
 }: {
   title: ReactNode;
-  description?: ReactNode;
-  actions?: ReactNode;
-  breadcrumbs?: Crumb[];
+  description?: ReactNode | undefined;
+  actions?: ReactNode | undefined;
+  breadcrumbs?: Crumb[] | undefined;
   /** Small label above the title (e.g. state or category). */
-  eyebrow?: ReactNode;
-  className?: string;
+  eyebrow?: ReactNode | undefined;
+  className?: string | undefined;
   /** Pass Next's `Link` for client-side navigation. */
-  LinkComponent?: React.ElementType;
+  LinkComponent?: React.ElementType | undefined;
 }) {
   const Link = LinkComponent;
   return (

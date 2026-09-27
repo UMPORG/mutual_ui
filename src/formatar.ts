@@ -107,9 +107,9 @@ export type FormatoValor =
   | "moeda"
   | "percentagem"
   | ((valor: number) => string)
-  | ({ tipo: "numero"; opcoes?: OpcoesNumero })
-  | ({ tipo: "moeda"; opcoes?: OpcoesMoeda })
-  | ({ tipo: "percentagem"; opcoes?: OpcoesPercentagem });
+  | ({ tipo: "numero"; opcoes?: OpcoesNumero | undefined })
+  | ({ tipo: "moeda"; opcoes?: OpcoesMoeda | undefined })
+  | ({ tipo: "percentagem"; opcoes?: OpcoesPercentagem | undefined });
 
 /**
  * One entry point for components: `formatarValor(v, "moeda")`.

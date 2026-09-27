@@ -12,16 +12,16 @@ export type ChatStatus = "streaming" | "done" | "stopped" | "error";
 export interface ChatSource {
   id: string;
   /** Number used in the reply's "[1]" markers. */
-  n?: number;
+  n?: number | undefined;
   title: string;
   /** Help-centre page or app record. */
   href: string;
   /** "ajuda": documentation; "registo": the person's own data in an app. */
   kind: "ajuda" | "registo";
   /** App of a record (its accent marks the chip): "simplex", "backoffice"… */
-  app?: string;
+  app?: string | undefined;
   /** Short quote shown in the tooltip/detail. */
-  excerpt?: string;
+  excerpt?: string | undefined;
 }
 
 export interface ChatMessageData {
@@ -29,10 +29,10 @@ export interface ChatMessageData {
   role: ChatRole;
   /** Markdown for the assistant; plain text for the person. */
   content: string;
-  createdAt?: string | Date;
-  status?: ChatStatus;
-  sources?: ChatSource[];
-  feedback?: "util" | "nao-util" | null;
+  createdAt?: string | Date | undefined;
+  status?: ChatStatus | undefined;
+  sources?: ChatSource[] | undefined;
+  feedback?: "util" | "nao-util" | null | undefined;
 }
 
 export interface ChatThread {
@@ -82,7 +82,7 @@ export function textoParaAnunciar(markdown: string, max = 600): string {
 }
 
 /** Enter sends; Shift+Enter, Enter while composing (IME) or with a modifier do not. */
-export function teclaEnvia(e: { key: string; shiftKey?: boolean; altKey?: boolean; ctrlKey?: boolean; metaKey?: boolean; isComposing?: boolean; keyCode?: number }): boolean {
+export function teclaEnvia(e: { key: string; shiftKey?: boolean | undefined; altKey?: boolean | undefined; ctrlKey?: boolean | undefined; metaKey?: boolean | undefined; isComposing?: boolean | undefined; keyCode?: number | undefined }): boolean {
   if (e.key !== "Enter") return false;
   if (e.isComposing || e.keyCode === 229) return false;
   if (e.shiftKey || e.altKey) return false;

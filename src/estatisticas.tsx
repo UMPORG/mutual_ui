@@ -161,7 +161,7 @@ export interface StatCardProps {
   /** Change vs a reference period. */
   delta?: DeltaProps | undefined;
   /** History for a sparkline (oldest first; the last is the current value). */
-  trend?: ReadonlyArray<number | null | undefined>;
+  trend?: ReadonlyArray<number | null | undefined> | undefined;
   /** One quiet line under the value ("Das 312 inscritas"). */
   description?: ReactNode | undefined;
   icon?: ReactNode | undefined;
@@ -358,7 +358,7 @@ export function Meter({
   detail?: ReactNode | undefined;
   tone?: MeterTone | undefined;
   /** Ratios (0–1) at which the fill turns warning / danger. */
-  thresholds?: { warning?: number; danger?: number } | undefined;
+  thresholds?: { warning?: number | undefined; danger?: number | undefined } | undefined;
   /** Words for the warning/danger state ("Quase esgotado"). */
   statusLabel?: ReactNode | undefined;
   size?: "sm" | "md" | undefined;

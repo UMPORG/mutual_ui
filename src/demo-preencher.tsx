@@ -30,10 +30,10 @@ export interface CenarioDemo {
   id: string;
   /** Short label shown in the menu, e.g. "Dados válidos", "Com erros". */
   nome: string;
-  descricao?: string;
+  descricao?: string | undefined;
   campos: Record<string, ValorDemo>;
   /** Submit the form after filling. */
-  submeter?: boolean;
+  submeter?: boolean | undefined;
 }
 
 export type CatalogoDemo = Record<string, { titulo: string; cenarios: CenarioDemo[] }>;
@@ -99,7 +99,7 @@ export function DemoPreencher({
 }: {
   ativo: boolean;
   cenarios: CatalogoDemo;
-  className?: string;
+  className?: string | undefined;
 }) {
   const [aberto, setAberto] = useState(false);
   const [formsNaPagina, setFormsNaPagina] = useState<string[]>([]);

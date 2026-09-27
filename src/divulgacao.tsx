@@ -6,6 +6,7 @@ import { Collapsible as BaseCollapsible } from "@base-ui/react/collapsible";
 import { Tabs as BaseTabs } from "@base-ui/react/tabs";
 import { ChevronDown } from "lucide-react";
 import { cx } from "./cx";
+import { opcional } from "./opcional";
 import { formatarNumero } from "./formatar";
 
 /**
@@ -28,8 +29,8 @@ export interface AccordionItem {
   title: ReactNode;
   content: ReactNode;
   /** Small text next to the title ("3 documentos"). */
-  meta?: ReactNode;
-  disabled?: boolean;
+  meta?: ReactNode | undefined;
+  disabled?: boolean | undefined;
 }
 
 export function Accordion({
@@ -44,15 +45,15 @@ export function Accordion({
 }: {
   items: AccordionItem[];
   /** Several panels open at once (default: one at a time). */
-  multiple?: boolean;
-  value?: string[];
-  defaultValue?: string[];
-  onValueChange?: (value: string[]) => void;
+  multiple?: boolean | undefined;
+  value?: string[] | undefined;
+  defaultValue?: string[] | undefined;
+  onValueChange?: ((value: string[]) => void) | undefined;
   /** Level of the heading around each trigger (2 on a page, 3 inside a section). */
-  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  headingLevel?: 2 | 3 | 4 | 5 | 6 | undefined;
   /** "separated": each item a card; "plain": hairlines between items (inside a Card). */
-  variant?: "separated" | "plain";
-  className?: string;
+  variant?: "separated" | "plain" | undefined;
+  className?: string | undefined;
 }) {
   const H = `h${headingLevel}` as const;
   return (
@@ -68,7 +69,7 @@ export function Accordion({
         <BaseAccordion.Item
           key={it.value}
           value={it.value}
-          disabled={it.disabled}
+          {...opcional("disabled", it.disabled)}
           className={cx(variant === "separated" && "m-surface overflow-hidden rounded-xl")}
         >
           <BaseAccordion.Header render={<H className="m-0" />}>
@@ -107,12 +108,12 @@ export function Collapsible({
   /** "Mostrar detalhes" */
   label: ReactNode;
   /** "Esconder detalhes" (default: same as label). */
-  openLabel?: ReactNode;
+  openLabel?: ReactNode | undefined;
   children: ReactNode;
-  open?: boolean;
-  defaultOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  className?: string;
+  open?: boolean | undefined;
+  defaultOpen?: boolean | undefined;
+  onOpenChange?: ((open: boolean) => void) | undefined;
+  className?: string | undefined;
 }) {
   return (
     <BaseCollapsible.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange ? (a) => onOpenChange(a) : undefined} className={className}>
@@ -133,11 +134,11 @@ export function Collapsible({
 export interface TabItem {
   value: string;
   label: ReactNode;
-  icon?: ReactNode;
+  icon?: ReactNode | undefined;
   /** A count next to the label ("Inscrições 128"). */
-  count?: number;
+  count?: number | undefined;
   content: ReactNode;
-  disabled?: boolean;
+  disabled?: boolean | undefined;
 }
 
 export function Tabs({
@@ -151,16 +152,16 @@ export function Tabs({
   className,
 }: {
   tabs: TabItem[];
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
+  value?: string | undefined;
+  defaultValue?: string | undefined;
+  onValueChange?: ((value: string) => void) | undefined;
   /** "line": under a page header (the app accent marks the tab). "pill": inside a card or a panel. */
-  variant?: "line" | "pill";
+  variant?: "line" | "pill" | undefined;
   /** Spoken name of the tab list ("Secções do evento"). */
   label: string;
   /** Keep hidden panels in the DOM (forms whose state must survive). */
-  keepMounted?: boolean;
-  className?: string;
+  keepMounted?: boolean | undefined;
+  className?: string | undefined;
 }) {
   return (
     <BaseTabs.Root

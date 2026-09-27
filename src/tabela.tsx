@@ -15,7 +15,7 @@ import { formatarNumero } from "./formatar";
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────
 
-export function Skeleton({ className, style }: { className?: string; style?: React.CSSProperties }) {
+export function Skeleton({ className, style }: { className?: string | undefined; style?: React.CSSProperties | undefined }) {
   return <span aria-hidden className={cx("m-skeleton", className ?? "h-4 w-full")} style={style} />;
 }
 
@@ -92,7 +92,7 @@ export function SearchField({
   hideLabel = true,
   className,
   ...input
-}: Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & { label?: string; hideLabel?: boolean }) {
+}: Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & { label?: string | undefined; hideLabel?: boolean | undefined }) {
   return (
     <label className={cx("flex min-w-0 flex-col gap-1.5", className)}>
       <span className={cx("text-[0.9375rem] font-medium", hideLabel && "sr-only")}>{label}</span>

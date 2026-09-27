@@ -48,21 +48,21 @@ type Aria = {
 
 export interface CalendarProps {
   /** Single date. */
-  value?: DataIso | null;
-  onSelect?: (iso: DataIso) => void;
+  value?: DataIso | null | undefined;
+  onSelect?: ((iso: DataIso) => void) | undefined;
   /** Range mode: both ends (fim may be null while choosing). */
-  range?: { inicio: DataIso | null; fim: DataIso | null };
-  min?: DataIso | null;
-  max?: DataIso | null;
+  range?: { inicio: DataIso | null; fim: DataIso | null } | undefined;
+  min?: DataIso | null | undefined;
+  max?: DataIso | null | undefined;
   /** Days that cannot be chosen (weekends, full days). */
-  isDisabled?: (iso: DataIso) => boolean;
+  isDisabled?: ((iso: DataIso) => boolean) | undefined;
   /** Months side by side (range picker on desktop: 2). */
-  months?: 1 | 2;
+  months?: 1 | 2 | undefined;
   /** Month shown first (default: the value's, or today's). */
-  defaultMonth?: DataIso;
+  defaultMonth?: DataIso | undefined;
   /** Focus the active day when shown (inside a popover). */
-  autoFocus?: boolean;
-  className?: string;
+  autoFocus?: boolean | undefined;
+  className?: string | undefined;
 }
 
 function primeiroDoMes(iso: DataIso): DataIso {
@@ -233,20 +233,20 @@ export function Calendar({ value, onSelect, range, min, max, isDisabled, months 
 // ─── DatePicker ───────────────────────────────────────────────────────────
 
 export interface DatePickerProps extends Aria {
-  value?: DataIso | null;
-  defaultValue?: DataIso | null;
-  onValueChange?: (iso: DataIso | null) => void;
-  min?: DataIso | null;
-  max?: DataIso | null;
-  isDisabled?: (iso: DataIso) => boolean;
+  value?: DataIso | null | undefined;
+  defaultValue?: DataIso | null | undefined;
+  onValueChange?: ((iso: DataIso | null) => void) | undefined;
+  min?: DataIso | null | undefined;
+  max?: DataIso | null | undefined;
+  isDisabled?: ((iso: DataIso) => boolean) | undefined;
   /** Hidden input with the ISO value, for forms. */
-  name?: string;
-  required?: boolean;
-  disabled?: boolean;
+  name?: string | undefined;
+  required?: boolean | undefined;
+  disabled?: boolean | undefined;
   /** The OS date control (phones, birth dates). */
-  native?: boolean;
-  placeholder?: string;
-  className?: string;
+  native?: boolean | undefined;
+  placeholder?: string | undefined;
+  className?: string | undefined;
 }
 
 export function DatePicker({
@@ -403,19 +403,19 @@ export interface DateRange {
 }
 
 export interface DateRangePickerProps extends Aria {
-  value?: DateRange;
-  defaultValue?: DateRange;
-  onValueChange?: (range: DateRange) => void;
-  min?: DataIso | null;
-  max?: DataIso | null;
-  isDisabled?: (iso: DataIso) => boolean;
+  value?: DateRange | undefined;
+  defaultValue?: DateRange | undefined;
+  onValueChange?: ((range: DateRange) => void) | undefined;
+  min?: DataIso | null | undefined;
+  max?: DataIso | null | undefined;
+  isDisabled?: ((iso: DataIso) => boolean) | undefined;
   /** Quick choices ("Últimos 30 dias"…). `true` = the default set; false hides them. */
-  presets?: boolean | Array<{ id: string; rotulo: string; inicio: DataIso; fim: DataIso }>;
+  presets?: boolean | Array<{ id: string; rotulo: string; inicio: DataIso; fim: DataIso }> | undefined;
   /** Hidden inputs `${name}_inicio` / `${name}_fim` for forms. */
-  name?: string;
-  disabled?: boolean;
-  placeholder?: string;
-  className?: string;
+  name?: string | undefined;
+  disabled?: boolean | undefined;
+  placeholder?: string | undefined;
+  className?: string | undefined;
 }
 
 export function DateRangePicker({

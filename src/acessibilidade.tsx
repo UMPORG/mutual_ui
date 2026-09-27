@@ -66,13 +66,13 @@ export function AcessibilidadeMenu({
   declaracaoHref,
   className,
 }: {
-  tone?: "default" | "ink";
+  tone?: "default" | "ink" | undefined;
   /** Icon-only trigger (the name stays available to screen readers).
    *  "md" = icon only below the md breakpoint, label from md up. */
-  compacto?: boolean | "md";
+  compacto?: boolean | "md" | undefined;
   /** Link to the app's accessibility statement. */
-  declaracaoHref?: string;
-  className?: string;
+  declaracaoHref?: string | undefined;
+  className?: string | undefined;
 }) {
   const [prefs, setPrefs] = useState<Preferencias>(PREFERENCIAS_PADRAO);
   const dialogRef = useRef<HTMLDialogElement>(null);

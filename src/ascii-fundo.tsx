@@ -16,15 +16,15 @@ import { cx } from "./cx";
  * form), so the characters never run behind text.
  */
 export interface AsciiFundoProps {
-  className?: string;
+  className?: string | undefined;
   /** Hole in the animation, in CSS units relative to the backdrop. */
-  mascara?: { x?: string; y?: string; largura?: string; altura?: string } | false;
+  mascara?: { x?: string | undefined; y?: string | undefined; largura?: string | undefined; altura?: string | undefined } | false | undefined;
   /** Cell size in px (character grid). */
-  celula?: number;
+  celula?: number | undefined;
   /** 0–1: overall strength of the characters. */
-  intensidade?: number;
+  intensidade?: number | undefined;
   /** Fade the animation out at the top (keeps a header legible), e.g. "6rem"; false to disable. */
-  fadeTopo?: string | false;
+  fadeTopo?: string | false | undefined;
 }
 
 const RAMPA = " .·:-=+*#%@";
@@ -76,7 +76,7 @@ export function AsciiFundo({
 
 export function iniciarAsciiFundo(
   canvas: HTMLCanvasElement,
-  { celula = 15, intensidade = 1 }: { celula?: number; intensidade?: number } = {},
+  { celula = 15, intensidade = 1 }: { celula?: number | undefined; intensidade?: number | undefined } = {},
 ): () => void {
   const ctx = canvas.getContext("2d", { alpha: true });
   if (!ctx) return () => {};

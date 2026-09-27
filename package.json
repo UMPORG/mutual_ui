@@ -1,6 +1,6 @@
 {
   "name": "@umporg/ui",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "MUTU@L design system: tokens, brand, shell pieces, form controls, overlays, dates, cards, stats, charts, tables, conversation (assistant) components, decorative effects and SSO helpers shared by every MUTU@L app.",
   "license": "UNLICENSED",
   "type": "module",
@@ -39,7 +39,7 @@
     "./assets/*": "./assets/*"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.solto.json",
     "test": "node --import ./tests/resolver.mjs --test --experimental-strip-types tests/*.test.ts",
     "embed-logo": "node scripts/embed-logo.mjs"
   },

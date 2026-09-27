@@ -22,28 +22,28 @@ import { teclaEnvia } from "./conversa-dados";
 export interface ComposerProps {
   onSubmit: (text: string) => void;
   /** Stops the reply being written. */
-  onStop?: () => void;
+  onStop?: (() => void) | undefined;
   /** A reply is being written (shows "Parar"). */
-  streaming?: boolean;
+  streaming?: boolean | undefined;
   /** Controlled text (optional). */
-  value?: string;
-  onValueChange?: (text: string) => void;
-  placeholder?: string;
+  value?: string | undefined;
+  onValueChange?: ((text: string) => void) | undefined;
+  placeholder?: string | undefined;
   /** Default 4000 characters. */
-  maxLength?: number;
-  disabled?: boolean;
+  maxLength?: number | undefined;
+  disabled?: boolean | undefined;
   /** Why it is disabled, shown under the box ("Sem ligação. A tentar de novo…"). */
-  disabledReason?: ReactNode;
+  disabledReason?: ReactNode | undefined;
   /** Chips of attached files (AttachmentChip). */
-  attachments?: ReactNode;
+  attachments?: ReactNode | undefined;
   /** Buttons at the bottom-left (e.g. "Anexar ficheiro"). */
-  actions?: ReactNode;
+  actions?: ReactNode | undefined;
   /** Line under the box. Default: the reminder to confirm important data. `false` hides it. */
-  disclaimer?: ReactNode | false;
+  disclaimer?: ReactNode | false | undefined;
   /** Spoken name of the text box. */
-  label?: string;
-  autoFocus?: boolean;
-  className?: string;
+  label?: string | undefined;
+  autoFocus?: boolean | undefined;
+  className?: string | undefined;
 }
 
 export function Composer({
@@ -189,9 +189,9 @@ export function AttachmentChip({
 }: {
   name: string;
   /** Bytes. */
-  size?: number;
-  status?: "a-carregar" | "pronto" | "erro";
-  onRemove?: () => void;
+  size?: number | undefined;
+  status?: "a-carregar" | "pronto" | "erro" | undefined;
+  onRemove?: (() => void) | undefined;
 }) {
   const tamanho =
     size === undefined ? null : size < 1024 * 1024 ? `${formatarNumero(Math.max(1, Math.round(size / 1024)), { casas: 0 })} KB` : `${formatarNumero(size / 1024 / 1024, { casas: 1 })} MB`;

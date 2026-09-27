@@ -25,11 +25,11 @@ export function ScrollArea({
 }: {
   children: ReactNode;
   /** Spoken name of the region ("Conversas"). */
-  label?: string;
+  label?: string | undefined;
   /** Size the root (e.g. `h-80` or `max-h-[60vh]`). */
-  className?: string;
-  viewportClassName?: string;
-  orientation?: "vertical" | "horizontal" | "both";
+  className?: string | undefined;
+  viewportClassName?: string | undefined;
+  orientation?: "vertical" | "horizontal" | "both" | undefined;
 }) {
   return (
     <BaseScrollArea.Root className={cx("relative flex min-h-0 flex-col overflow-hidden", className)}>
@@ -87,11 +87,11 @@ export function Avatar({
   /** Person or organisation name (initials and colour come from it). */
   name: string;
   /** Photo URL; the initials show while it loads or if it fails. */
-  src?: string | null;
-  size?: keyof typeof TAMANHO_AVATAR;
+  src?: string | null | undefined;
+  size?: keyof typeof TAMANHO_AVATAR | undefined;
   /** Spoken name; omit when the name is written next to the avatar (then it is decorative). */
-  label?: string;
-  className?: string;
+  label?: string | undefined;
+  className?: string | undefined;
 }) {
   const tom = tomDoNome(name);
   return (
@@ -124,12 +124,12 @@ export function AvatarGroup({
   label,
   className,
 }: {
-  people: Array<{ name: string; src?: string | null }>;
-  max?: number;
-  size?: keyof typeof TAMANHO_AVATAR;
+  people: Array<{ name: string; src?: string | null | undefined }>;
+  max?: number | undefined;
+  size?: keyof typeof TAMANHO_AVATAR | undefined;
   /** "5 participantes: Maria Silva, João Costa e mais 3" — default built from the names. */
-  label?: string;
-  className?: string;
+  label?: string | undefined;
+  className?: string | undefined;
 }) {
   const visiveis = people.slice(0, max);
   const resto = people.length - visiveis.length;

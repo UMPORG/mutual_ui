@@ -29,12 +29,12 @@ export interface MarkdownProps {
   /** Number → source, for "[1]" markers. */
   citations?: Record<number, Citation> | undefined;
   /** Next's `Link` for relative links. */
-  LinkComponent?: ElementType;
+  LinkComponent?: ElementType | undefined;
   /** Level of "#" headings (default 3: replies sit under the page's h1/h2). */
-  headingLevel?: 2 | 3 | 4;
+  headingLevel?: 2 | 3 | 4 | undefined;
   /** A blinking caret after the last word (streaming). */
-  caret?: boolean;
-  className?: string;
+  caret?: boolean | undefined;
+  className?: string | undefined;
 }
 
 interface Ctx {
@@ -54,10 +54,10 @@ export function CopyButton({
   iconOnly,
 }: {
   text: string | (() => string);
-  label?: string;
-  doneLabel?: string;
-  className?: string;
-  iconOnly?: boolean;
+  label?: string | undefined;
+  doneLabel?: string | undefined;
+  className?: string | undefined;
+  iconOnly?: boolean | undefined;
 }) {
   const [feito, setFeito] = useState(false);
   const t = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -172,7 +172,7 @@ function Inlines({ c, ctx }: { c: Inline[]; ctx: Ctx }): ReactNode {
 
 const CARET = <span aria-hidden className="m-caret" />;
 
-function Blocos({ b, ctx, caret }: { b: Block[]; ctx: Ctx; caret?: boolean }): ReactNode {
+function Blocos({ b, ctx, caret }: { b: Block[]; ctx: Ctx; caret?: boolean | undefined }): ReactNode {
   return b.map((x, i) => {
     const ultimo = caret && i === b.length - 1;
     const fim = ultimo ? CARET : null;
@@ -279,7 +279,7 @@ const NOMES_LINGUAGEM: Record<string, string> = {
   txt: "Texto",
 };
 
-function BlocoCodigo({ lang, codigo, caret }: { lang: string; codigo: string; caret?: boolean }) {
+function BlocoCodigo({ lang, codigo, caret }: { lang: string; codigo: string; caret?: boolean | undefined }) {
   return (
     <div className="m-md-codigo">
       <div className="m-md-codigo-barra">
