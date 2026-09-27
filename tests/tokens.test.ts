@@ -80,3 +80,27 @@ test("bordasComMais: shadows only toward hidden content", () => {
   const vertical = bordasComMais({ ...base, scrollWidth: 400, scrollLeft: 0, scrollHeight: 500, scrollTop: 200 });
   assert.deepEqual([vertical.cima, vertical.baixo, vertical.transbordaY], [true, true, true]);
 });
+
+// ─── v0.8.2: invalid fields are tinted with --destructive-soft ────────────
+test("invalid field tint: text, placeholder and red border stay readable (light, dark)", () => {
+  for (const [tema, t] of [["claro", raiz], ["escuro", { ...raiz, ...escuroRaiz }]] as const) {
+    const fundo = t["--destructive-soft"]!;
+    assert.ok(fundo, `${tema}: --destructive-soft declared`);
+    assert.ok(contraste(t["--foreground"]!, fundo) >= 7, `${tema}: text on the tint`);
+    assert.ok(contraste(t["--muted-foreground"]!, fundo) >= 4.5, `${tema}: placeholder on the tint`);
+    assert.ok(contraste(t["--destructive"]!, fundo) >= 3, `${tema}: red border on the tint`);
+  }
+});
+
+test("invalid field tint is wired in css/controlos.css, with an Alto contraste override", () => {
+  const controlos = readFileSync(new URL("../css/controlos.css", import.meta.url), "utf8");
+  assert.match(controlos, /\.m-field\[aria-invalid="true"\][^{]*\{[^}]*background-color:\s*var\(--destructive-soft\)/);
+  assert.match(controlos, /html\.contraste \.m-field\[aria-invalid="true"\][^{]*\{[^}]*border:\s*3px solid var\(--destructive\)/);
+});
+
+test("DataTable scroller is a containing block (sr-only text cannot widen the page)", () => {
+  const dados = readFileSync(new URL("../css/dados.css", import.meta.url), "utf8");
+  assert.match(dados, /\.m-tabela-rolo\s*\{\s*position:\s*relative;/);
+  const tabela = readFileSync(new URL("../src/tabela.tsx", import.meta.url), "utf8");
+  assert.match(tabela, /"m-tabela-rolo m-scroll-x relative"/);
+});

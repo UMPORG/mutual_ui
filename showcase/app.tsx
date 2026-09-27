@@ -209,6 +209,18 @@ function Tabela() {
       cell: (r) => <StatusBadge tone={ESTADO[r.estado].tone}>{ESTADO[r.estado].label}</StatusBadge>,
     },
     { id: "atualizada", header: "Atualizada em", cell: (r) => formatarData(r.atualizada), hideOnMobile: true, sortable: true },
+    // A visually hidden header, as the apps do for row actions: verificar.mjs
+    // checks it cannot widen the page at 150% text (v0.8.2).
+    {
+      id: "acoes",
+      header: <span className="sr-only">Ações</span>,
+      cell: (r) => (
+        <a href={`#${r.id}`} className="m-btn m-btn-ghost inline-flex h-9 items-center rounded-lg px-3 text-[0.9375rem]">
+          Abrir
+        </a>
+      ),
+      hideOnMobile: true,
+    },
   ];
   const ordenar = (id: string) =>
     setSort((s) => (s.id === id ? { id, direction: s.direction === "asc" ? "desc" : "asc" } : { id, direction: "asc" }));

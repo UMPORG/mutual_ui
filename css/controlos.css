@@ -126,9 +126,16 @@
   .m-gatilho[data-disabled],
   .m-field[data-disabled],
   .m-field:has(:disabled) { opacity: 0.6; cursor: not-allowed; }
+  /* Invalid: red border AND a light red tint, so errors stand out in dense
+     grids (a Simplex map has ~30 cells). Never colour alone: FormField
+     always adds the icon + message. Text on the tint keeps ≥ 7:1 (light,
+     dark) — tests/tokens.test.ts; Alto contraste: below. */
   .m-field[aria-invalid="true"],
   .m-field:has([aria-invalid="true"]),
-  .m-gatilho[aria-invalid="true"] { border-color: var(--destructive); }
+  .m-gatilho[aria-invalid="true"] {
+    border-color: var(--destructive);
+    background-color: var(--destructive-soft);
+  }
   .m-gatilho [data-placeholder], .m-gatilho[data-placeholder] { color: var(--muted-foreground); }
 
   /* ─── Checkbox, radio, switch ────────────────────────────────────────── */
@@ -495,6 +502,14 @@ html.contraste .m-switch-polegar { background: #000000; box-shadow: none; }
 html.contraste .m-switch[data-checked] { background: #0b4d20; }
 html.contraste .m-switch[data-checked] .m-switch-polegar { background: #ffffff; }
 html.contraste .m-radio-cartao { border: 2px solid #000000; box-shadow: none; }
+/* Invalid fields keep a dark red 3px border here (the flat black border of
+   `html.contraste .m-field` would otherwise hide it); the tint is white. */
+html.contraste .m-field[aria-invalid="true"],
+html.contraste .m-field:has([aria-invalid="true"]),
+html.contraste .m-gatilho[aria-invalid="true"] {
+  border: 3px solid var(--destructive);
+  background: var(--destructive-soft);
+}
 html.contraste .m-radio-cartao[data-checked] { border-width: 4px; background: #ffffff; }
 html.contraste .m-radio-deco { border: 2px solid #000000; }
 html.contraste .m-segmentos { background: #ffffff; border: 2px solid #000000; box-shadow: none; }

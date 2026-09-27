@@ -463,7 +463,7 @@ export function DataTable<T>({
   ) : null;
 
   const tabela = (
-    <div className={cx(mobile === "cards" && "max-md:hidden", "m-tabela-rolo m-scroll-x")}>
+    <div className={cx(mobile === "cards" && "max-md:hidden", "m-tabela-rolo m-scroll-x relative")}>
       <table className="w-full border-collapse text-base">
         <caption className={cx(showCaption ? "px-5 pt-4 pb-2 text-left text-lg font-semibold" : "sr-only")}>{caption}</caption>
         <thead>

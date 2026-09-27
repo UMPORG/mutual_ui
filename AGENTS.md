@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.1"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.2"
 ```
 
 ```js
@@ -653,6 +653,30 @@ import { ScrollShadow } from "@umporg/ui";          // or "@umporg/ui/controlos"
 - Showcase: the header and the "app" badge follow `data-app` live; each shell
   highlights its own page. `node showcase/verificar.mjs` checks names, hit
   areas and the header (server running).
+
+## v0.8.2 — fixes (no API change)
+
+- `DataTable`: the horizontal scroller (`.m-tabela-rolo`) is a containing
+  block (`position: relative`), so visually hidden caption/header text
+  (`sr-only`, e.g. an "Ações" column) can no longer widen the whole page at
+  150% text. Apps can drop their `.m-tabela-rolo { position: relative }`
+  workaround.
+- Invalid fields (`.m-field` / `.m-gatilho` with `aria-invalid`, i.e. every
+  `FormField` with `error`): red border **and** a light `--destructive-soft`
+  tint, so errors stand out in dense grids. Alto contraste: 3px dark red
+  border on white. The icon + message stay (never colour alone).
+- `Checkbox`, `Switch`, `RadioGroup`: the visible label now names the
+  focusable control (`aria-labelledby`) in server-rendered HTML too, and a
+  click on the label clicks the control. Before, `<label for>` pointed at
+  Base UI's hidden input: no name before hydration, and `getByLabel` found
+  the hidden input (server HTML) or two elements (after hydration). Tests can
+  use `getByLabel("…")` / `getByRole("checkbox", { name })` directly.
+- `Tag` and `MultiSelect` chips: the remove button keeps its 28px look with
+  a 44px hit area (`::after`, 8px outside).
+- Showcase: `/ssr` serves a server-rendered, hydrated fixture
+  (`showcase/ssr.tsx`); `node showcase/verificar.mjs` also checks the Tag hit
+  areas, the invalid tint in the three themes, DataTable page width at 150%
+  and the control labels (server HTML and hydrated).
 
 ## Scripts
 

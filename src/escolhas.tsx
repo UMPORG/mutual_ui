@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, type ReactNode } from "react";
+import { useId, useRef, type ReactNode } from "react";
 import { Switch as BaseSwitch } from "@base-ui/react/switch";
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
@@ -35,6 +35,23 @@ type Aria = {
   "aria-labelledby"?: string | undefined;
 };
 
+/**
+ * The visible label of a Base UI checkbox / switch / radio. Base UI renders
+ * the focusable control as a `<span role=…>` plus a hidden native input that
+ * takes our `id`, so a `<label for>` named the hidden input, not the control:
+ * in server HTML the control had no name and getByLabel found the hidden
+ * input; after hydration getByLabel found both. The control now names itself
+ * with `aria-labelledby` (server HTML included) and a click on the label
+ * clicks the control.
+ */
+function Rotulo({ id, alvo, className, children }: { id: string; alvo: { current: HTMLElement | null }; className: string; children: ReactNode }) {
+  return (
+    <label id={id} className={className} onClick={() => alvo.current?.click()}>
+      {children}
+    </label>
+  );
+}
+
 // ─── Switch ───────────────────────────────────────────────────────────────
 
 export function Switch({
@@ -60,10 +77,13 @@ export function Switch({
   className?: string;
 }) {
   const id = useId();
+  const controlo = useRef<HTMLElement>(null);
   return (
     <div className={cx("flex items-start gap-3", align === "end" && "flex-row-reverse justify-between", disabled && "opacity-60", className)}>
       <BaseSwitch.Root
+        ref={controlo}
         id={id}
+        aria-labelledby={`${id}-l`}
         checked={checked}
         defaultChecked={defaultChecked}
         onCheckedChange={onCheckedChange ? (v) => onCheckedChange(v) : undefined}
@@ -75,9 +95,9 @@ export function Switch({
         <BaseSwitch.Thumb className="m-switch-polegar" />
       </BaseSwitch.Root>
       <span className="flex min-w-0 flex-col gap-0.5">
-        <label htmlFor={id} className="text-base leading-snug font-medium">
+        <Rotulo id={`${id}-l`} alvo={controlo} className="text-base leading-snug font-medium">
           {label}
-        </label>
+        </Rotulo>
         {description && (
           <span id={`${id}-d`} className="text-[0.9375rem] text-muted-foreground">
             {description}
@@ -119,10 +139,13 @@ export function Checkbox({
 }) {
   const auto = useId();
   const id = aria.id ?? auto;
+  const controlo = useRef<HTMLElement>(null);
   const caixa = (
     <BaseCheckbox.Root
       {...aria}
+      ref={controlo}
       id={id}
+      aria-labelledby={aria["aria-labelledby"] ?? (label ? `${id}-l` : undefined)}
       checked={checked}
       defaultChecked={defaultChecked}
       indeterminate={indeterminate}
@@ -144,9 +167,9 @@ export function Checkbox({
     <div className={cx("flex items-start gap-3", disabled && "opacity-60", className)}>
       {caixa}
       <span className="flex min-w-0 flex-col gap-0.5">
-        <label htmlFor={id} className="text-base leading-snug">
+        <Rotulo id={`${id}-l`} alvo={controlo} className="text-base leading-snug">
           {label}
-        </label>
+        </Rotulo>
         {description && (
           <span id={`${id}-d`} className="text-[0.9375rem] text-muted-foreground">
             {description}
@@ -178,6 +201,35 @@ interface PropsGrupo extends Aria {
   className?: string;
 }
 
+function OpcaoRadio({ id, opcao: o }: { id: string; opcao: RadioOption }) {
+  const controlo = useRef<HTMLElement>(null);
+  return (
+    <div className={cx("flex items-start gap-3", o.disabled && "opacity-60")}>
+      <Radio.Root
+        ref={controlo}
+        id={id}
+        value={o.value}
+        disabled={o.disabled}
+        aria-labelledby={`${id}-l`}
+        aria-describedby={o.description ? `${id}-d` : undefined}
+        className="m-radio mt-0.5"
+      >
+        <Radio.Indicator className="m-radio-ponto" />
+      </Radio.Root>
+      <span className="flex min-w-0 flex-col gap-0.5">
+        <Rotulo id={`${id}-l`} alvo={controlo} className="text-base leading-snug">
+          {o.label}
+        </Rotulo>
+        {o.description && (
+          <span id={`${id}-d`} className="text-[0.9375rem] text-muted-foreground">
+            {o.description}
+          </span>
+        )}
+      </span>
+    </div>
+  );
+}
+
 /** Put it inside a `Fieldset` (the legend names the group). */
 export function RadioGroup({
   options,
@@ -203,26 +255,9 @@ export function RadioGroup({
       required={required}
       className={cx("flex gap-3", orientation === "vertical" ? "flex-col" : "flex-row flex-wrap gap-x-6", className)}
     >
-      {options.map((o, i) => {
-        const id = `${base}-${i}`;
-        return (
-          <div key={o.value} className={cx("flex items-start gap-3", o.disabled && "opacity-60")}>
-            <Radio.Root id={id} value={o.value} disabled={o.disabled} aria-describedby={o.description ? `${id}-d` : undefined} className="m-radio mt-0.5">
-              <Radio.Indicator className="m-radio-ponto" />
-            </Radio.Root>
-            <span className="flex min-w-0 flex-col gap-0.5">
-              <label htmlFor={id} className="text-base leading-snug">
-                {o.label}
-              </label>
-              {o.description && (
-                <span id={`${id}-d`} className="text-[0.9375rem] text-muted-foreground">
-                  {o.description}
-                </span>
-              )}
-            </span>
-          </div>
-        );
-      })}
+      {options.map((o, i) => (
+        <OpcaoRadio key={o.value} id={`${base}-${i}`} opcao={o} />
+      ))}
     </BaseRadioGroup>
   );
 }

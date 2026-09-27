@@ -460,7 +460,7 @@ export function MultiSelect({
               className="inline-flex max-w-full items-center gap-0.5 rounded-md border border-border bg-secondary py-0.5 pr-0.5 pl-2 text-[0.9375rem] text-secondary-foreground outline-none data-[highlighted]:border-brand data-[highlighted]:bg-brand-soft focus-within:border-brand"
             >
               <span className="truncate">{o.label}</span>
-              <BaseCombobox.ChipRemove aria-label={`Remover ${o.label}`} className="grid size-7 shrink-0 place-items-center rounded text-muted-foreground hover:bg-foreground/10 hover:text-foreground">
+              <BaseCombobox.ChipRemove aria-label={`Remover ${o.label}`} className="relative grid size-7 shrink-0 place-items-center rounded text-muted-foreground after:absolute after:-inset-2 after:rounded-md hover:bg-foreground/10 hover:text-foreground">
                 <X aria-hidden size={16} />
               </BaseCombobox.ChipRemove>
             </BaseCombobox.Chip>

@@ -185,7 +185,8 @@ export function Tag({
           type="button"
           onClick={onRemove}
           aria-label={removeLabel ?? `Remover ${typeof children === "string" ? children : ""}`.trim()}
-          className="grid size-7 shrink-0 place-items-center rounded text-muted-foreground hover:bg-foreground/10 hover:text-foreground"
+          // 28px visual, 44px hit area (the ::after extends 8px on every side).
+          className="relative grid size-7 shrink-0 place-items-center rounded text-muted-foreground after:absolute after:-inset-2 after:rounded-md hover:bg-foreground/10 hover:text-foreground"
         >
           <X aria-hidden size={16} />
         </button>
