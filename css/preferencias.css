@@ -89,6 +89,7 @@ html.contraste {
   --border: #000000;
   --input: #000000;
   --ring: #000000;
+  --ring-conteudo: #000000;
   --brand: #0b4d20;
   --brand-hover: #073a17;
   --brand-foreground: #ffffff;
@@ -135,6 +136,7 @@ html.contraste [data-app] {
   --sidebar-border: #ffffff;
   --sidebar-primary: #ffffff;
   --sidebar-primary-foreground: #000000;
+  --sidebar-ring: #ffffff;
   --scroll-thumb-ink: #ffffff;
   --scroll-thumb-ink-hover: #ffffff;
   --scroll-track-ink: #000000;

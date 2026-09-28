@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.1"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.2"
 ```
 
 ```js
@@ -944,3 +944,12 @@ four sidebar widths/footers, and three content paddings.
 - **Alto contraste**: nested `[data-app]` (Portal tiles, app marks) and
   `[data-role]` badges now also turn black on white (they kept 5–6.7:1
   colours before; AAA needs 7:1).
+
+## v0.9.2 — focus ring on the dark shell (no API change)
+
+- On `.bg-sidebar`, `.bg-nav-background` and `.m-tinta` the focus ring
+  (`--ring`) is `--sidebar-ring` (light green, ≥ 8:1 on every tint; white in
+  Alto contraste); popovers, cards and the canvas inside them go back to
+  `--ring-conteudo` (the content ring). Before, brand green on the dark
+  sidebar was < 3:1 unless the app set its own `.superficie-tinta` rule —
+  apps delete that rule now.

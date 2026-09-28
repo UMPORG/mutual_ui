@@ -44,6 +44,9 @@
   --border: #d6d3d1;
   --input: #8f8983; /* form borders: 3.46:1 on white, 3.31:1 on --background (WCAG 1.4.11) */
   --ring: #1f6f36;
+  /* The ring of the content (cards, popovers, the canvas) — restored inside
+     the dark shell, where --ring is --sidebar-ring (v0.9.2). */
+  --ring-conteudo: #1f6f36;
 
   /* shadcn contract: primary IS the brand. */
   --primary: var(--brand);
@@ -145,6 +148,7 @@
   --border: #3a443e;
   --input: #6b7770; /* 3.43:1 on --card, 3.77:1 on --background */
   --ring: #7cc97a;
+  --ring-conteudo: #7cc97a;
 
   --success: #4ade80;
   --success-foreground: #052e16;
@@ -282,3 +286,15 @@
 .dark [data-role="profissional_saude"],
 .dark [data-role="gestor_clinica"],
 .dark [data-role="rececionista"] { --role-accent: #f9a8d4; --role-accent-foreground: #1c1917; }
+
+/* ─── Focus on the dark shell (v0.9.2) ──────────────────────────────────
+   On the tinted sidebar and the phone top bar the focus ring is the light
+   green of --sidebar-ring (≥ 8:1 on every tint; brand green there is < 3:1).
+   Popovers, cards and the content canvas inside the shell go back to the
+   content ring. Apps drop their own `.superficie-tinta { --ring: … }`. */
+:where(.bg-sidebar, .bg-nav-background, .m-tinta) {
+  --ring: var(--sidebar-ring);
+}
+:where(.bg-sidebar, .bg-nav-background, .m-tinta) :where(.m-canvas, .m-float, .m-surface, .bg-popover, .bg-card, .bg-background) {
+  --ring: var(--ring-conteudo);
+}
