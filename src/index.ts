@@ -2,6 +2,7 @@ export * from "./apps";
 export * from "./sso";
 export * from "./brand";
 export * from "./app-switcher";
+export { ShellBarraLateral, ShellMarca, ShellConta, ShellGrupo, classeItemShell, SHELL_LARGURA } from "./shell";
 export * from "./page-header";
 export * from "./feedback";
 export * from "./preferencias";

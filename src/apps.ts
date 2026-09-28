@@ -123,3 +123,20 @@ export function nomeDaApp(id: MutualAppId): string | undefined {
   if (id === "cartao") return APP_CARTAO.nome;
   return getMutualApp(id)?.nome;
 }
+
+/**
+ * The apps a person can open in the active organisation, in the ecosystem's
+ * order: the keys of `apps` from `GET /api/v1/acessos/eu` whose value is not
+ * null, plus the Portal (always). The `disponiveis` of `AppSwitcher` /
+ * `ShellMarca` — every app uses this one function, so a new app appears in
+ * every switcher by bumping `@umporg/ui` (v0.9.1). Public apps (Validador QR)
+ * are always listed by the switcher itself.
+ */
+export function appsDisponiveis(apps: Readonly<Record<string, unknown>> | null | undefined): MutualAppId[] {
+  const lista: MutualAppId[] = ["portal"];
+  for (const a of MUTUAL_APPS) {
+    const valor = apps?.[a.id];
+    if (valor !== null && valor !== undefined) lista.push(a.id);
+  }
+  return lista;
+}

@@ -149,6 +149,16 @@ Anatomia comum das shells de secretária: logótipo + "MUTU@L" + nome da app →
 cartão do utilizador (perfil, tema, terminar sessão). Página = cabeçalho de
 página (localização, título, descrição, ações) + conteúdo.
 
+Desde a v0.9.1 as peças são as mesmas em todas as apps de secretária
+(`ShellBarraLateral`, `ShellMarca`, `ShellConta`, `classeItemShell`): barra de
+16 rem, itens de 44 px, item atual com fundo, barra de 3 px e ícone na cor da
+app; no fim quem tem sessão iniciada (nome, perfil, organização),
+Acessibilidade, Ajuda, «Mudar de organização» (quando há mais de uma),
+ligações próprias da app e «Terminar sessão». O «Aplicações» lista sempre as
+mesmas apps pela mesma ordem, com a atual marcada («Está aqui»). O conteúdo
+usa `.m-pagina`: margens de 16 / 24 / 32 px (telemóvel / tablet / secretária),
+32 px no topo e largura máxima de 80 rem.
+
 ## Um só endereço e sessão única
 
 Todas as aplicações vivem num só endereço (`https://mutual.mutualismo.pt`),

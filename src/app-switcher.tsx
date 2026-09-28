@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef } from "react";
-import { ChevronDown, LayoutGrid } from "lucide-react";
+import { Check, ChevronDown, LayoutGrid } from "lucide-react";
 import { MUTUAL_APPS, type MutualAppId } from "./apps";
 import { AppMark } from "./brand";
 import { CAMINHOS } from "./sso";
@@ -9,9 +9,11 @@ import { cx } from "./cx";
 
 /**
  * "Mudar de aplicação" — the same menu in every app. Lists the apps the
- * person can use in the active organisation and opens them through the Portal (`/ir/<app>`),
- * so no app needs to know its siblings' URLs. With SSO the user lands
- * signed in.
+ * person can use in the active organisation, always in the same order
+ * (`MUTUAL_APPS`), the current one included and marked «Está aqui» (v0.9.1:
+ * the list is identical in every app), and opens them at their fixed path.
+ * With SSO the user lands signed in. Build `disponiveis` with
+ * `appsDisponiveis(eu.apps)`.
  *
  * Uses the native Popover API (light-dismiss, Esc, top layer) — no deps.
  */
@@ -33,7 +35,7 @@ export function AppSwitcher({
 }) {
   const id = useId().replace(/:/g, "");
   const popId = `mutual-apps-${id}`;
-  const apps = MUTUAL_APPS.filter((a) => a.id !== current && (a.publica || disponiveis.includes(a.id)));
+  const apps = MUTUAL_APPS.filter((a) => a.id === current || a.publica || disponiveis.includes(a.id));
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Place the popover under its button (flipping up near the bottom edge).
@@ -69,25 +71,35 @@ export function AppSwitcher({
       <div
         id={popId}
         popover="auto"
-        className="fixed m-0 w-[min(22rem,calc(100vw-2rem))] m-float p-2"
+        className="fixed m-0 max-h-[calc(100dvh-1rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto m-float p-2"
         onToggle={place}
       >
         <p className="px-3 pt-2 pb-1 text-sm font-semibold text-muted-foreground">Mudar de aplicação</p>
         <ul className="flex flex-col">
-          {apps.map((a) => (
-            <li key={a.id}>
-              <a
-                href={CAMINHOS[a.id]}
-                className="flex min-h-14 items-center gap-3 rounded-lg px-3 py-2 hover:bg-accent focus-visible:bg-accent"
-              >
-                <AppMark app={a.id} size={36} />
-                <span className="flex min-w-0 flex-col">
-                  <span className="font-semibold">{a.nome}</span>
-                  <span className="truncate text-sm text-muted-foreground">{a.descricao}</span>
-                </span>
-              </a>
-            </li>
-          ))}
+          {apps.map((a) => {
+            const aqui = a.id === current;
+            return (
+              <li key={a.id}>
+                <a
+                  href={CAMINHOS[a.id]}
+                  aria-current={aqui ? "page" : undefined}
+                  className={cx(
+                    "flex min-h-14 items-center gap-3 rounded-lg px-3 py-2 hover:bg-accent focus-visible:bg-accent",
+                    aqui && "bg-accent",
+                  )}
+                >
+                  <AppMark app={a.id} size={36} />
+                  <span className="flex min-w-0 flex-1 flex-col">
+                    <span className="font-semibold">{a.nome}</span>
+                    <span className="truncate text-sm text-muted-foreground">
+                      {aqui ? "Está aqui" : a.descricao}
+                    </span>
+                  </span>
+                  {aqui && <Check size={18} aria-hidden className="shrink-0 text-brand" />}
+                </a>
+              </li>
+            );
+          })}
         </ul>
         <div className="mt-1 border-t border-border pt-1">
           <a

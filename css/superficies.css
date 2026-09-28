@@ -155,6 +155,24 @@
       radial-gradient(900px 500px at 110% 10%, color-mix(in oklab, var(--app-accent) 6%, transparent), transparent 60%);
     background-attachment: scroll;
   }
+  /* The content column of a desk shell (v0.9.1): the same gutters, top
+     space, bottom room (demo pill) and maximum width in every app — 16px
+     on phones, 24px from 40rem, 32px from 64rem; 80rem wide at most,
+     centred. `m-pagina-larga` drops the maximum (maps, planners, wide
+     tables that need the whole screen). Pages start with `PageHeader`. */
+  .m-pagina {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding: 1.5rem 1rem calc(2rem + var(--demo-reserva, 0px));
+  }
+  .m-pagina.m-pagina-larga { max-width: none; }
+  @media (min-width: 40rem) {
+    .m-pagina { padding-inline: 1.5rem; }
+  }
+  @media (min-width: 64rem) {
+    .m-pagina { padding: 2rem 2rem calc(2.5rem + var(--demo-reserva, 0px)); }
+  }
   /* Form fields: inset well so they read as "type here". */
   .m-field {
     background: var(--card);

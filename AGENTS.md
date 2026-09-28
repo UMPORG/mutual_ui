@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.0"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.1"
 ```
 
 ```js
@@ -908,3 +908,39 @@ export const onRequestError = criarOnRequestError({
   app: "eventos", cerebroUrl: process.env.CEREBRO_URL, chave: process.env.MONITOR_CHAVE,
 });
 ```
+
+## v0.9.1 — one desk shell: `ShellMarca`, `ShellConta`, `.m-pagina`, `appsDisponiveis` (additive)
+
+Final UI sweep (owner, 2026-09-28): every desk app must show the same app
+switcher with every app the account can open, the same account block and
+the same page gutters. Found: each app kept its own list of app ids (Eventos,
+Simplex, Saúde and DNS did not list Assistente, Protocolos or Monitorização),
+four sidebar widths/footers, and three content paddings.
+
+- **`appsDisponiveis(eu.apps)`** (`@umporg/ui` / `@umporg/ui/apps`): the
+  `disponiveis` of the switcher — Portal + every `MUTUAL_APPS` id whose
+  `apps.<id>` is not null, in the ecosystem order. Apps delete their own
+  `APPS_MUTUAL` lists; a new app shows up everywhere with a tag bump.
+- **`AppSwitcher`** lists the current app too («Está aqui», `aria-current`),
+  so the list is identical in every app; it scrolls inside the viewport.
+- **Desk shell pieces** (`src/shell.tsx`, client):
+  - `ShellBarraLateral` — the `<aside>`: `w-64` (`SHELL_LARGURA`),
+    `bg-sidebar`, `px-3 py-4`, `gap-4`, scrolls on its own.
+  - `ShellMarca app disponiveis inicioHref LinkComponent onNavegar` —
+    wordmark with the app name (link home) + «Aplicações».
+  - `classeItemShell(ativo, nivel?)` — the one nav item: 44px, 15px medium
+    text, 20px icon; current = `bg-sidebar-accent`, semibold, a 3px bar and
+    the icon in `--app-accent-on-ink`. `ShellGrupo titulo` for a titled group.
+  - `ShellConta app nome perfil organizacao variasOrganizacoes
+    onTerminarSessao aTerminar? ajudaHref? comAcessibilidade? extra?` —
+    who is signed in, then Acessibilidade, Ajuda (`/ajuda/<app>`), «Mudar de
+    organização» (Portal `/organizacao?next=`), the app's `extra` links, and
+    «Terminar sessão». Same order and look in every app.
+- **`.m-pagina`** (css/superficies.css): the content column of a desk
+  shell — 16px gutters on phones, 24px from 40rem, 32px from 64rem; 24px /
+  32px on top; bottom room for the demo pill; `max-width: 80rem`, centred.
+  `m-pagina-larga` has no maximum. Pages start with `PageHeader` (28px
+  title, 24px below it).
+- **Alto contraste**: nested `[data-app]` (Portal tiles, app marks) and
+  `[data-role]` badges now also turn black on white (they kept 5–6.7:1
+  colours before; AAA needs 7:1).
