@@ -29,3 +29,16 @@ export { ScrollShadow, useScrollShadow, bordasComMais } from "./rolagem";
 export * from "./basicos";
 export { FormField, Fieldset, Input, Textarea, NativeSelect, type FormFieldProps, type FieldControlProps } from "./campo";
 export { normalizarTexto, filtrarOpcoes, textoParaCriar, partesDestacadas, pontuarCorrespondencia } from "./filtrar";
+// v0.8.9 — Portuguese identifiers: validators/normalisers (also `@umporg/ui/validar`),
+// the phone display and the masked inputs (client).
+export * from "./validar";
+export { Telefone, type TelefoneProps } from "./telefone";
+export {
+  CampoTelefone,
+  CampoNif,
+  CampoCodigoPostal,
+  CampoIban,
+  BotaoCopiar,
+  type CampoTelefoneProps,
+  type CampoMascaradoProps,
+} from "./campos-identificadores";

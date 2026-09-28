@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.8"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.9"
 ```
 
 ```js
@@ -818,3 +818,48 @@ devDependencies (one React copy); it only installs Tailwind.
 - `node showcase/verificar.mjs` checks it (a 72px fixed bar: pill at 88px,
   still in a corner). The focus-trap check now asserts that Tab never lands
   on a page control (Base UI's guards may hold focus for an instant).
+
+## v0.8.9 — identificadores: telefones, NIF, código postal, IBAN (additive)
+
+Owner: phone numbers "and such things" are shown formatted everywhere and
+typed through shared, on-brand fields. Never format or validate them by
+hand in an app (the NIF check existed five times).
+
+- **Storage is normalised**: phones in E.164 (`+351222084177`), NIF/NIPC 9
+  digits, código postal `4000-123`, IBAN in capitals without spaces.
+  Normalise where the value enters (form schema, API body), show it with the
+  formatters.
+- **Formatters** (`@umporg/ui` / `@umporg/ui/formatar`): `formatarTelefone`
+  («222 084 177»; foreign «+44 207 946 0958»; `{ indicativo: true }` →
+  «+351 912 345 678»), `hrefTelefone` (`tel:+351…`, raw E.164, `null` when
+  it is not a number), `formatarNif` («501 234 560»), `formatarCodigoPostal`,
+  `formatarIban` (groups of four). Unreadable values are shown as they came,
+  empty is «—».
+- **Validators/normalisers** (`@umporg/ui/validar`, pure, no deps):
+  `normalizarTelefone|Nif|CodigoPostal|Iban` → normalised or `null`;
+  `validarTelefone(v, { tipo: "movel" | "fixo", indicativo })`,
+  `validarNif(v, { tipo: "singular" | "coletiva" })`, `validarNipc`,
+  `validarCodigoPostal`, `validarIban(v, { pais: "PT" })` →
+  `{ valido: true, valor }` or `{ valido: false, erro }` (pt-PT message for
+  `FormField error`). Portuguese phones: 2x fixed, 30, 70–76, 8x, mobiles
+  91/92/93/96. zod 4: `z.string().transform(comZod(validarTelefone))`
+  (`{ opcional: true }` turns "" into `null`); Effect Schema: filter on
+  `validarX(v).valido` and decode with `normalizarX`.
+- **`Telefone`** (server-safe): `<Telefone numero={t} icone copiar />` —
+  formatted, `tel:` link with the E.164 number (44px hit area without
+  growing the line), optional 44px «Copiar número», `semLigacao` inside rows
+  that are links, `vazio` for the empty text.
+- **Fields** (client, inside `FormField`, which wires id/ARIA/error):
+  `CampoTelefone` (country list, +351 by default, mask while typing,
+  pasting «+44 …»/«00351…» switches the country, `semIndicativo`),
+  `CampoNif`, `CampoCodigoPostal`, `CampoIban`. `value`/`onValueChange` carry
+  the **normalised** value (incomplete phones as `+351912` so the validator
+  can say what is missing); `name` goes on a hidden input with that value, so
+  plain forms, server actions and `DemoPreencher` work. TanStack Form:
+  `value={field.state.value} onValueChange={field.handleChange}
+  onBlur={field.handleBlur}`. Light, dark and Alto contraste through
+  `m-field`; invalid tint via `aria-invalid`.
+- `BotaoCopiar` (44px copy button with a spoken confirmation) is exported too.
+- Showcase `?pagina=identificadores`; `node showcase/verificar.mjs` checks the
+  mask, the country switch, the hidden E.164 value and the `tel:` hit area.
+  Unit tests: `tests/identificadores.test.ts`.

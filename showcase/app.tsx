@@ -47,6 +47,7 @@ import { PaginaConversa } from "./conversa.tsx";
 import { PaginaShells } from "./shells.tsx";
 import { PaginaRolagem } from "./rolagem.tsx";
 import { PaginaDemo } from "./demo.tsx";
+import { PaginaIdentificadores } from "./identificadores.tsx";
 import { useAppAtual } from "./app-atual.ts";
 
 const PAGINA = new URLSearchParams(location.search).get("pagina") ?? "dados";
@@ -74,7 +75,7 @@ function Paginas() {
   };
   return (
     <nav aria-label="Páginas" className="flex flex-wrap gap-1">
-      {[link("dados", "Dados"), link("controlos", "Controlos"), link("efeitos", "Efeitos"), link("conversa", "Assistente"), link("shells", "Aplicações"), link("rolagem", "Rolagem"), link("demo", "Demonstração")]}
+      {[link("dados", "Dados"), link("controlos", "Controlos"), link("efeitos", "Efeitos"), link("conversa", "Assistente"), link("shells", "Aplicações"), link("rolagem", "Rolagem"), link("demo", "Demonstração"), link("identificadores", "Identificadores")]}
     </nav>
   );
 }
@@ -85,6 +86,7 @@ const TITULOS: Record<string, [string, string]> = {
   conversa: ["Assistente", "Componentes de conversa do assistente MUTU@L — v0.7."],
   shells: ["Aplicações", "A barra lateral e o conteúdo de cada aplicação — v0.8."],
   rolagem: ["Rolagem", "Barras de rolagem e sombras nas pontas — v0.8."],
+  identificadores: ["Identificadores", "Telefones, NIF, código postal e IBAN: mostrar, escrever e validar — v0.8.9."],
   demo: ["Demonstração", "Preencher formulários com dados de exemplo, também dentro de diálogos — v0.8.7."],
 };
 
@@ -313,6 +315,7 @@ function App() {
           {PAGINA === "shells" && <PaginaShells />}
           {PAGINA === "rolagem" && <PaginaRolagem />}
           {PAGINA === "demo" && <PaginaDemo />}
+          {PAGINA === "identificadores" && <PaginaIdentificadores />}
         </main>
       ) : (
       <main className="mx-auto flex max-w-[84rem] flex-col gap-12 px-4 py-8 sm:px-8">

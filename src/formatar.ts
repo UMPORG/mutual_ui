@@ -9,6 +9,18 @@
  * Europe/Lisbon time zone. Spaces inside numbers are non-breaking.
  */
 
+import {
+  INDICATIVO_PT,
+  mascaraIban,
+  mascaraNif,
+  mascaraTelefoneNacional,
+  normalizarCodigoPostal,
+  normalizarIban,
+  normalizarNif,
+  normalizarTelefone,
+  separarIndicativo,
+} from "./identificadores";
+
 export const LOCALE = "pt-PT";
 export const FUSO_HORARIO = "Europe/Lisbon";
 /** What we show when a value is missing. */
@@ -239,4 +251,60 @@ function partes(d: Date, opcoes: Intl.DateTimeFormatOptions): string {
 /** Pluralises a count in words: `contar(1, "associação", "associações")` → "1 associação". */
 export function contar(n: number, singular: string, plural: string): string {
   return `${formatarNumero(n, { casas: 0 })} ${Math.abs(n) === 1 ? singular : plural}`;
+}
+
+// ─── Identificadores (v0.8.9) ─────────────────────────────────────────────
+// Stored values are normalised (see `@umporg/ui/validar`); these show them.
+// A value that cannot be read is shown as it came (never lost), empty is "—".
+
+export interface OpcoesFormatarTelefone {
+  /**
+   * Show "+351" on Portuguese numbers too ("+351 912 345 678"). Default:
+   * national for Portugal ("912 345 678"), always the code for other countries.
+   */
+  indicativo?: boolean | undefined;
+}
+
+/**
+ * `formatarTelefone("+351222084177")` → "222 084 177";
+ * `formatarTelefone("912345678", { indicativo: true })` → "+351 912 345 678";
+ * `formatarTelefone("+442079460958")` → "+44 207 946 0958".
+ */
+export function formatarTelefone(valor: string | null | undefined, opcoes: OpcoesFormatarTelefone = {}): string {
+  const bruto = (valor ?? "").trim();
+  if (!bruto) return SEM_VALOR;
+  const e164 = normalizarTelefone(bruto);
+  if (!e164) return bruto;
+  const { indicativo, nacional } = separarIndicativo(e164);
+  const numero = mascaraTelefoneNacional(nacional, indicativo);
+  return indicativo === INDICATIVO_PT && !opcoes.indicativo ? numero : `+${indicativo} ${numero}`;
+}
+
+/** `tel:` link with the raw E.164 number ("tel:+351222084177"), or `null` when it is not a phone number. */
+export function hrefTelefone(valor: string | null | undefined): string | null {
+  const e164 = normalizarTelefone(valor);
+  return e164 ? `tel:${e164}` : null;
+}
+
+/** `formatarNif("501234560")` → "501 234 560" (also NIPC). */
+export function formatarNif(valor: string | null | undefined): string {
+  const bruto = (valor ?? "").trim();
+  if (!bruto) return SEM_VALOR;
+  const nif = normalizarNif(bruto);
+  return nif ? mascaraNif(nif) : bruto;
+}
+
+/** `formatarCodigoPostal("4000123")` → "4000-123". */
+export function formatarCodigoPostal(valor: string | null | undefined): string {
+  const bruto = (valor ?? "").trim();
+  if (!bruto) return SEM_VALOR;
+  return normalizarCodigoPostal(bruto) ?? bruto;
+}
+
+/** `formatarIban("PT50000201231234567890154")` → "PT50 0002 0123 1234 5678 9015 4". */
+export function formatarIban(valor: string | null | undefined): string {
+  const bruto = (valor ?? "").trim();
+  if (!bruto) return SEM_VALOR;
+  const iban = normalizarIban(bruto);
+  return iban ? mascaraIban(iban) : bruto;
 }

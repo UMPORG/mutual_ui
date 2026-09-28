@@ -226,5 +226,21 @@ await p.waitForTimeout(400);
 const dur = await p.locator("[data-demo-preencher]").evaluate((e) => parseFloat(getComputedStyle(e).transitionDuration));
 ok(dur < 0.01, `demo: movimento reduzido sem transição (${dur}s)`);
 
+// ─── v0.8.9 — identificadores ─────────────────────────────────────────────
+await p.setViewportSize({ width: 1440, height: 900 });
+await p.goto(BASE + "?pagina=identificadores");
+await p.waitForTimeout(500);
+const tel = p.getByLabel("Telefone (opcional)", { exact: true });
+await tel.pressSequentially("222084177");
+ok((await tel.inputValue()) === "222 084 177", "CampoTelefone: máscara ao escrever");
+await tel.fill("+44 20 7946 0958");
+ok((await p.locator('select[aria-label^="Indicativo"]').first().inputValue()) === "44", "CampoTelefone: colar «+44 …» muda o país");
+ok((await p.locator('input[type="hidden"][name="telefone"]').inputValue()) === "+442079460958", "CampoTelefone: valor em E.164");
+await p.getByLabel("Código postal (obrigatório)").pressSequentially("4700328");
+ok((await p.locator('input[type="hidden"][name="codigoPostal"]').inputValue()) === "4700-328", "CampoCodigoPostal: 4700-328");
+const alvoTel = await p.locator('a[href^="tel:"]').first().evaluate((e) => { const r = e.getBoundingClientRect(); const a = getComputedStyle(e, "::after"); return r.height - 2 * parseFloat(a.top); });
+ok(alvoTel >= 44, `Telefone: alvo ${Math.round(alvoTel)}px`);
+ok((await p.locator('a[href^="tel:"]').first().getAttribute("href")) === "tel:+351253000111", "Telefone: tel: com E.164");
+
 await b.close();
 if (falhas.length) process.exit(1);

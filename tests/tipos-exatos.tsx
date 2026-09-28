@@ -18,6 +18,7 @@ import type * as Markdown from "../src/markdown";
 import type * as Efeitos from "../src/efeitos";
 import type * as Sso from "../src/sso";
 import type * as Formatar from "../src/formatar";
+import type * as Validar from "../src/validar";
 import type * as Calendario from "../src/calendario";
 import type * as Preferencias from "../src/preferencias";
 import type * as Apps from "../src/apps";
@@ -51,6 +52,7 @@ type Todas =
   | Falhas<typeof Efeitos>
   | Falhas<typeof Sso>
   | Falhas<typeof Formatar>
+  | Falhas<typeof Validar>
   | Falhas<typeof Calendario>
   | Falhas<typeof Preferencias>
   | Falhas<typeof Apps>;
