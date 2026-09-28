@@ -468,10 +468,11 @@ export function DataTable<T>({
 
   const tabela = (
     // Reachable by keyboard: a table wider than its card scrolls sideways (WCAG 2.1.1,
-    // axe scrollable-region-focusable). Named by the caption when it is text.
+    // axe scrollable-region-focusable). A named group, not a region: the page's own
+    // section often has the same name as the caption (v0.9.8).
     <div
       tabIndex={0}
-      role="region"
+      role="group"
       aria-label={typeof caption === "string" ? caption : undefined}
       className={cx(mobile === "cards" && "max-md:hidden", "m-tabela-rolo m-scroll-x relative")}
     >

@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.7"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.8"
 ```
 
 ```js
@@ -991,3 +991,9 @@ four sidebar widths/footers, and three content paddings.
   (`tabIndex=0`, `role="region"`, named by a text caption).
 - `Pagination label` — name each landmark when a page has two paginated
   lists.
+
+## v0.9.8 — the DataTable scroller is a named group (no API change)
+
+- v0.9.7 made it a `region` named by the caption; a page section with the
+  same name then gave two landmarks with one name (axe landmark-unique, DNS
+  Definições). It is now `role="group"` (focusable, named, not a landmark).
