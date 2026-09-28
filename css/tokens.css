@@ -12,6 +12,9 @@
  */
 
 :root {
+  /* Room the floating «Demonstração» pill needs at the bottom of the page
+     (0 outside demo mode; see .m-demo below and AGENTS.md). */
+  --demo-reserva: 0px;
   --radius: 0.625rem;
 
   /* Brand — the MUTU@L flag. `--brand` is the flag green darkened to 6.2:1 on

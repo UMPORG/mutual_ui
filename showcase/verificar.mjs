@@ -3,8 +3,9 @@
 // in Playwright's getByLabel and in Chromium's accessibility tree, the 44px
 // hit area of the FilterChips and Tag buttons, that the header follows data-app,
 // the invalid-field tint, that DataTable never widens the page at 150% text,
-// and that Checkbox/Switch/Radio labels name the focusable control in server
-// HTML and after hydration (/ssr).
+// that Checkbox/Switch/Radio labels name the focusable control in server
+// HTML and after hydration (/ssr), and that DemoPreencher works inside open
+// dialogs and never covers a long form's last actions (?pagina=demo).
 // `node verificar.mjs` — exits 1 on the first failure.
 import { chromium } from "file:///D:/Mutual/mutual_eventos/node_modules/@playwright/test/index.mjs";
 
@@ -127,6 +128,78 @@ const ativas = p.getByLabel("Só associações ativas", { exact: true });
 ok((await ativas.count()) === 1 && (await ativas.getAttribute("role")) === "checkbox", 'showcase (popover): getByLabel("Só associações ativas") → a caixa');
 await p.getByText("Só associações ativas", { exact: true }).click();
 ok((await ativas.getAttribute("aria-checked")) === "false", "showcase (popover): clique no rótulo desmarca");
+
+// ─── v0.8.7 — DemoPreencher: dialogs and long forms ──────────────────────
+const retangulo = (loc) => loc.evaluate((e) => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
+const sobrepoe = (a, b) => Math.min(a.x + a.w, b.x + b.w) > Math.max(a.x, b.x) && Math.min(a.y + a.h, b.y + b.h) > Math.max(a.y, b.y);
+for (const [nome, vp] of [["desktop", { width: 1440, height: 900 }], ["telemóvel", { width: 390, height: 844 }]]) {
+  await p.setViewportSize(vp);
+  await p.goto(BASE + "?pagina=demo");
+  await p.waitForTimeout(500);
+  const pilula = p.locator("[data-demo-preencher] > button[aria-expanded]");
+  const guardar = p.locator('[data-teste="guardar"]');
+  const cancelar = guardar.locator("xpath=preceding-sibling::button[1]");
+  ok((await p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--demo-reserva").trim())) === "5rem", `demo (${nome}): <html data-demo> dá --demo-reserva`);
+  // The last actions exactly at the bottom edge of the window: the pill docks away.
+  for (const folga of [4, 30, 60]) {
+    await guardar.evaluate((e, f) => window.scrollBy(0, e.getBoundingClientRect().bottom - (window.innerHeight - f)), folga);
+    await p.waitForTimeout(250);
+    const pr = await retangulo(pilula);
+    const livre = !sobrepoe(pr, await retangulo(guardar)) && !sobrepoe(pr, await retangulo(cancelar));
+    ok(livre, `demo (${nome}): a pílula não tapa «Cancelar»/«Guardar ficha» (fundo a ${folga}px, doca ${await p.locator("[data-demo-preencher]").getAttribute("data-doca")})`);
+  }
+  await p.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await p.waitForTimeout(250);
+  ok(!sobrepoe(await retangulo(pilula), await retangulo(guardar)), `demo (${nome}): no fim da página a reserva deixa as ações livres`);
+  await guardar.click({ timeout: 2000 }); // Playwright refuses when another element covers it
+  ok(await p.getByText("Use o formato 1234-567.").isVisible(), `demo (${nome}): «Guardar ficha» clicável`);
+  // Keyboard: open, first scenario focused, Escape returns focus to the pill.
+  await pilula.focus();
+  await p.keyboard.press("Enter");
+  ok(await p.evaluate(() => document.activeElement?.hasAttribute("data-cenario") ?? false), `demo (${nome}): Enter abre e foca o primeiro cenário`);
+  await p.keyboard.press("Escape");
+  ok(await pilula.evaluate((e) => e === document.activeElement), `demo (${nome}): Escape fecha e devolve o foco`);
+  await pilula.click();
+  await p.getByRole("button", { name: /Dados válidos/ }).click();
+  ok((await p.locator('input[name="codigoPostal"]').inputValue()) === "4700-328", `demo (${nome}): cenário da página aplicado`);
+
+  // A decision dialog: the pill hides, the strip in the dialog fills its form.
+  await p.evaluate(() => window.scrollTo(0, 0));
+  await p.locator('[data-abrir="decisao"]').click();
+  await p.waitForTimeout(400);
+  const dialogo = p.getByRole("dialog", { name: "Recusar o pedido de adesão?" });
+  ok(await p.locator("[data-demo-preencher]").isHidden(), `demo (${nome}): a pílula esconde-se com o diálogo modal aberto`);
+  ok((await dialogo.getByRole("group", { name: "Preencher (demonstração)" }).count()) === 1, `demo (${nome}): faixa «Preencher (demonstração)» dentro do diálogo`);
+  await dialogo.getByRole("button", { name: /Sem motivo/ }).click();
+  await p.waitForTimeout(200);
+  ok(await dialogo.getByText("Indique o motivo.").isVisible(), `demo (${nome}): cenário com erro submete e mostra o erro`);
+  const cenario = dialogo.getByRole("button", { name: /Motivo claro/ });
+  await cenario.focus();
+  await p.keyboard.press("Enter");
+  ok((await p.locator('textarea[name="motivo"]').inputValue()).startsWith("Faltam os estatutos"), `demo (${nome}): cenário aplicado pelo teclado`);
+  ok(await p.evaluate(() => !!document.activeElement?.closest('[role="dialog"]')), `demo (${nome}): o foco continua no diálogo`);
+  for (let i = 0; i < 8; i++) await p.keyboard.press("Tab");
+  ok(await p.evaluate(() => !!document.activeElement?.closest('[role="dialog"]')), `demo (${nome}): Tab não sai do diálogo`);
+  await dialogo.getByRole("button", { name: "Recusar", exact: true }).click();
+  await p.waitForTimeout(400);
+  ok(await p.locator('[data-teste="recusado"]').isVisible(), `demo (${nome}): decisão submetida`);
+  ok(await p.locator("[data-demo-preencher]").isVisible(), `demo (${nome}): a pílula volta depois de fechar o diálogo`);
+  ok((await p.locator("[data-demo-camada]").count()) === 0, `demo (${nome}): a faixa sai com o diálogo`);
+
+  // Sheet.
+  await p.locator('[data-abrir="painel-demo"]').click();
+  await p.waitForTimeout(400);
+  await p.getByRole("dialog", { name: "Nota interna" }).getByRole("button", { name: /Nota de exemplo/ }).click();
+  ok((await p.locator('textarea[name="nota"]').inputValue()).startsWith("Telefonar"), `demo (${nome}): faixa no painel lateral`);
+  await p.keyboard.press("Escape");
+  await p.waitForTimeout(300);
+}
+// Reduced motion: no scroll animation, no transition.
+await p.setViewportSize({ width: 1440, height: 900 });
+await p.goto(BASE + "?pagina=demo&movimento=reduzido");
+await p.waitForTimeout(400);
+const dur = await p.locator("[data-demo-preencher]").evaluate((e) => parseFloat(getComputedStyle(e).transitionDuration));
+ok(dur < 0.01, `demo: movimento reduzido sem transição (${dur}s)`);
 
 await b.close();
 if (falhas.length) process.exit(1);

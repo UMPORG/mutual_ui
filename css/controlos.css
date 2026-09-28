@@ -535,3 +535,56 @@ html.contraste .m-toast > * { border: 2px solid #000000; box-shadow: none; }
   .m-scroll-barra { opacity: 1; }
   .m-scroll-polegar { forced-color-adjust: none; background: CanvasText; }
 }
+
+/* ─── Modo demonstração (DemoPreencher, v0.8.7) ────────────────────────────
+   The floating pill docks away from the focused element and the forms' last
+   actions (data-doca="fim" | "inicio" | "meio", chosen by the component).
+   `<html data-demo>` gives pages `--demo-reserva`, the room the pill needs:
+   add it to the bottom padding of the scrolling area
+   (`pb-[calc(2rem+var(--demo-reserva))]`) or put `m-demo-reserva` on it. */
+html[data-demo] {
+  --demo-reserva: 5rem;
+  scroll-padding-bottom: var(--demo-reserva);
+}
+.m-demo-reserva { scroll-padding-bottom: var(--demo-reserva, 0px); }
+.m-demo-reserva::after {
+  content: "";
+  display: block;
+  flex-shrink: 0;
+  height: var(--demo-reserva, 0px);
+}
+.m-demo {
+  --m-demo-margem: 16px;
+  position: fixed;
+  z-index: 2147482000;
+  right: var(--m-demo-margem);
+  bottom: max(var(--m-demo-margem), env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  transition: opacity 150ms ease;
+}
+@media (min-width: 40rem) { .m-demo { --m-demo-margem: 20px; } }
+.m-demo[hidden] { display: none !important; }
+.m-demo[data-doca="inicio"] { right: auto; left: var(--m-demo-margem); align-items: flex-start; }
+.m-demo[data-doca="meio"] { bottom: auto; top: 50%; transform: translateY(-50%); }
+/* The panel and the notice float above the pill, so the pill never moves. */
+.m-demo > .m-demo-painel,
+.m-demo > .m-demo-aviso {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.5rem);
+  max-width: calc(100vw - 2 * var(--m-demo-margem));
+}
+.m-demo[data-doca="inicio"] > :is(.m-demo-painel, .m-demo-aviso) { right: auto; left: 0; }
+.m-demo > .m-demo-aviso { width: max-content; }
+/* The «Preencher (demonstração)» strip inside an open dialog or sheet. */
+.m-demo-camada {
+  order: 9999;
+  flex-shrink: 0;
+  border-top: 1px dashed var(--border);
+  background: color-mix(in oklab, var(--muted) 45%, transparent);
+}
+@media print { .m-demo, .m-demo-camada { display: none !important; } }
+html.contraste .m-demo-camada { background: #ffffff; border-top: 2px dashed #000000; }

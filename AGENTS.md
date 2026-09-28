@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.6"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.7"
 ```
 
 ```js
@@ -194,6 +194,16 @@ its root layout:
 - Non-native widgets (rich text, money cells, comboboxes) register with
   `registarPreenchedor(formId, fn)`.
 - The demo seed in the Cérebro (`DEMO_MODE`) provides the matching data.
+- Forms inside an open dialog or sheet (`role="dialog"`/`"alertdialog"`,
+  `<dialog open>`) get a «Preencher (demonstração)» strip at the bottom of
+  that dialog (v0.8.7) — nothing to add, just `data-demo-form` on the form.
+  The floating pill hides while a modal is open.
+- The floating pill docks away from the focused element and the forms' last
+  actions. Give the page's scrolling area room for it so the last actions
+  can scroll clear: `pb-[calc(2rem+var(--demo-reserva))]` (or the class
+  `m-demo-reserva`). `--demo-reserva` is `0px` outside demo mode. Mark
+  anything else it must never cover with `data-demo-evitar`. No
+  app-specific demo padding or offsets.
 
 ### `PreferenciasScript` must run before the first paint
 
@@ -762,3 +772,35 @@ devDependencies (one React copy); it only installs Tailwind.
   account with no associado record), `portalHref` (absolute Portal address
   for an app on another host) and `acoes` (extra buttons, e.g. «Sou
   associado»).
+
+## v0.8.7 — `DemoPreencher` in dialogs, never over the last actions (no API change)
+
+- Found in Protocolos: the floating «Demonstração» button could not be used
+  while a modal dialog/sheet was open (Base UI marks the rest of the page
+  `aria-hidden` and the backdrop takes the clicks), and it covered the
+  bottom-right corner of long forms (e2e had to submit with Enter).
+- Forms inside an open dialog/sheet now get a «Preencher (demonstração)»
+  strip appended **inside** that dialog (portal into the popup, CSS `order`
+  keeps it last): it is in the modal's focus trap, the page stays inert, and
+  the scenarios are buttons (Tab, Enter/Space). The status line
+  («… aplicado (n campos).») is a `role="status"` in the strip. The floating
+  pill hides while a modal makes the page inert (`aria-hidden`/`inert` on
+  its root, or a native `dialog:modal`) and comes back when it closes.
+- The floating control is a 48px pill (icon + number of forms; name
+  «Demonstração (n formulários)»), portalled to `<body>`. It docks
+  bottom-right, else bottom-left, else the middle of the right edge,
+  choosing the first spot that covers neither the focused element, nor the
+  forms' last actions (every submit button and its sibling buttons), nor
+  `[data-demo-evitar]` (pure logic in `src/demo-doca.ts`, unit-tested). The
+  panel and the notice open above the pill without moving it.
+- `<html data-demo>` while active: `--demo-reserva: 5rem` (0px otherwise) and
+  `scroll-padding-bottom`, so pages can reserve room at the end
+  (`m-demo-reserva` or `pb-[calc(…+var(--demo-reserva))]`). Apps drop their
+  own demo offsets (e.g. Backoffice `body:has(.demo-backoffice)` rules).
+- Keyboard: opening the panel focuses the first scenario, Escape closes and
+  returns focus to the pill, a press outside closes it. After a page
+  scenario the form scrolls into view without animation under Reduzir
+  movimento; the pill has no motion beyond a fade.
+- Showcase `?pagina=demo` (long form, decision dialog, sheet);
+  `node showcase/verificar.mjs` checks the strip, focus trap, the pill never
+  overlapping «Cancelar»/«Guardar» (desktop and phone) and reduced motion.
