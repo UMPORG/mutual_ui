@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.7"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.8"
 ```
 
 ```js
@@ -202,8 +202,10 @@ its root layout:
   actions. Give the page's scrolling area room for it so the last actions
   can scroll clear: `pb-[calc(2rem+var(--demo-reserva))]` (or the class
   `m-demo-reserva`). `--demo-reserva` is `0px` outside demo mode. Mark
-  anything else it must never cover with `data-demo-evitar`. No
-  app-specific demo padding or offsets.
+  anything else it must never cover with `data-demo-evitar`. An app with a
+  fixed bottom navigation bar lifts the pill with `--demo-fundo` (v0.8.8,
+  e.g. `:root { --demo-fundo: 4.5rem }` on phones). No other app-specific
+  demo padding or offsets.
 
 ### `PreferenciasScript` must run before the first paint
 
@@ -804,3 +806,15 @@ devDependencies (one React copy); it only installs Tailwind.
 - Showcase `?pagina=demo` (long form, decision dialog, sheet);
   `node showcase/verificar.mjs` checks the strip, focus trap, the pill never
   overlapping «Cancelar»/«Guardar» (desktop and phone) and reduced motion.
+
+## v0.8.8 — `--demo-fundo` (additive)
+
+- Found in the Cartão: its phones have a fixed bottom navigation bar, and the
+  old `className="max-md:bottom-[5.5rem]"` on `DemoPreencher` no longer wins
+  over the v0.8.7 pill position. Set `--demo-fundo` instead (on `:root`, or
+  as `[--demo-fundo:…]` in the `className`): the pill's corner docks sit that
+  much higher, and the component measures the pill's real distance from the
+  bottom edge, so docking away from the last actions stays correct.
+- `node showcase/verificar.mjs` checks it (a 72px fixed bar: pill at 88px,
+  still in a corner). The focus-trap check now asserts that Tab never lands
+  on a page control (Base UI's guards may hold focus for an instant).

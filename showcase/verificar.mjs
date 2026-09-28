@@ -178,8 +178,18 @@ for (const [nome, vp] of [["desktop", { width: 1440, height: 900 }], ["telemóve
   await p.keyboard.press("Enter");
   ok((await p.locator('textarea[name="motivo"]').inputValue()).startsWith("Faltam os estatutos"), `demo (${nome}): cenário aplicado pelo teclado`);
   ok(await p.evaluate(() => !!document.activeElement?.closest('[role="dialog"]')), `demo (${nome}): o foco continua no diálogo`);
-  for (let i = 0; i < 8; i++) await p.keyboard.press("Tab");
-  ok(await p.evaluate(() => !!document.activeElement?.closest('[role="dialog"]')), `demo (${nome}): Tab não sai do diálogo`);
+  // Base UI's focus guards (a span, then the body for an instant) wrap focus back in;
+  // what must never happen is a control of the page getting focus.
+  let fora = 0;
+  for (let i = 0; i < 12; i++) {
+    await p.keyboard.press("Tab");
+    await p.waitForTimeout(30);
+    fora += await p.evaluate(() => {
+      const a = document.activeElement;
+      return a && a.matches("button, a[href], input, textarea, select") && !a.closest('[role="dialog"]') ? 1 : 0;
+    });
+  }
+  ok(fora === 0, `demo (${nome}): Tab não leva o foco a controlos fora do diálogo`);
   await dialogo.getByRole("button", { name: "Recusar", exact: true }).click();
   await p.waitForTimeout(400);
   ok(await p.locator('[data-teste="recusado"]').isVisible(), `demo (${nome}): decisão submetida`);
@@ -194,6 +204,21 @@ for (const [nome, vp] of [["desktop", { width: 1440, height: 900 }], ["telemóve
   await p.keyboard.press("Escape");
   await p.waitForTimeout(300);
 }
+// --demo-fundo: the pill sits above a fixed bottom navigation bar and still docks right.
+await p.setViewportSize({ width: 390, height: 844 });
+await p.goto(BASE + "?pagina=demo");
+await p.waitForTimeout(400);
+await p.evaluate(() => {
+  document.documentElement.style.setProperty("--demo-fundo", "72px");
+  const nav = document.createElement("nav");
+  nav.setAttribute("data-demo-evitar", "");
+  nav.style.cssText = "position:fixed;left:0;right:0;bottom:0;height:72px;background:#ccc";
+  document.body.append(nav);
+});
+await p.waitForTimeout(400);
+const fundoPilula = await p.locator("[data-demo-preencher] > button[aria-expanded]").evaluate((e) => window.innerHeight - e.getBoundingClientRect().bottom);
+ok(Math.round(fundoPilula) === 88, `demo: --demo-fundo levanta a pílula (${Math.round(fundoPilula)}px do fundo)`);
+ok((await p.locator("[data-demo-preencher]").getAttribute("data-doca")) !== "meio", "demo: com --demo-fundo a barra de navegação não empurra a pílula para o meio");
 // Reduced motion: no scroll animation, no transition.
 await p.setViewportSize({ width: 1440, height: 900 });
 await p.goto(BASE + "?pagina=demo&movimento=reduzido");

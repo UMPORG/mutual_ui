@@ -541,7 +541,9 @@ html.contraste .m-toast > * { border: 2px solid #000000; box-shadow: none; }
    actions (data-doca="fim" | "inicio" | "meio", chosen by the component).
    `<html data-demo>` gives pages `--demo-reserva`, the room the pill needs:
    add it to the bottom padding of the scrolling area
-   (`pb-[calc(2rem+var(--demo-reserva))]`) or put `m-demo-reserva` on it. */
+   (`pb-[calc(2rem+var(--demo-reserva))]`) or put `m-demo-reserva` on it.
+   `--demo-fundo` (default 0) lifts the pill above a fixed bottom navigation
+   bar; the component measures the real position, so docking stays correct. */
 html[data-demo] {
   --demo-reserva: 5rem;
   scroll-padding-bottom: var(--demo-reserva);
@@ -558,7 +560,8 @@ html[data-demo] {
   position: fixed;
   z-index: 2147482000;
   right: var(--m-demo-margem);
-  bottom: max(var(--m-demo-margem), env(safe-area-inset-bottom, 0px));
+  /* --demo-fundo (set by an app, default 0): lift above a bottom navigation bar. */
+  bottom: calc(max(var(--m-demo-margem), env(safe-area-inset-bottom, 0px)) + var(--demo-fundo, 0px));
   display: flex;
   flex-direction: column;
   align-items: flex-end;

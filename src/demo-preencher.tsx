@@ -26,7 +26,9 @@ import { escolherDoca, type DocaDemo, type Retangulo } from "./demo-doca";
  *  - Forms on the page: a small floating pill. It docks away from what the
  *    person needs (the focused element, a form's last actions, anything with
  *    `data-demo-evitar`): bottom-right, else bottom-left, else the middle of
- *    the right edge. While active, `<html data-demo>` sets `--demo-reserva`
+ *    the right edge. An app with a bottom navigation bar lifts it with
+ *    `--demo-fundo` (e.g. `:root { --demo-fundo: 4.5rem }` on phones). While
+ *    active, `<html data-demo>` sets `--demo-reserva`
  *    (the room the pill needs) so layouts can keep their last actions clear
  *    of it (`m-demo-reserva`, or `pb-[calc(2rem+var(--demo-reserva))]`).
  *  - Forms inside an open dialog or sheet (`role="dialog"`/`"alertdialog"`,
@@ -312,6 +314,7 @@ function Flutuante({
   const painelRef = useRef<HTMLDivElement>(null);
   const abertoRef = useRef(aberto);
   abertoRef.current = aberto;
+  const fundoRef = useRef<number | null>(null);
 
   // Dock away from the focused element and the forms' last actions.
   useEffect(() => {
@@ -323,8 +326,14 @@ function Flutuante({
       const b = botaoRef.current?.getBoundingClientRect();
       const pilula = { w: b?.width || 48, h: b?.height || 48 };
       const vw = window.innerWidth;
-      const nova = escolherDoca(pilula, { w: vw, h: window.innerHeight }, obstaculos(raizRef.current), {
-        margem: vw < 640 ? 16 : 20,
+      const vh = window.innerHeight;
+      const margem = vw < 640 ? 16 : 20;
+      // The real distance from the bottom edge in a corner (the safe area, an app's
+      // `--demo-fundo` above a bottom navigation bar), measured where the pill is now.
+      if (b && b.height > 0 && raizRef.current?.dataset.doca !== "meio") fundoRef.current = Math.max(margem, vh - b.bottom);
+      const nova = escolherDoca(pilula, { w: vw, h: vh }, obstaculos(raizRef.current), {
+        fundo: fundoRef.current ?? margem,
+        margem,
       });
       setDoca(nova);
     };

@@ -47,3 +47,12 @@ test("escolherDoca takes the dock that covers least when every dock collides", (
 test("escolherDoca ignores empty rectangles (hidden elements)", () => {
   assert.equal(escolherDoca(PILULA, VP, [{ x: 1380, y: 840, w: 0, h: 0 }]), "fim");
 });
+
+test("escolherDoca with the pill lifted above a bottom navigation bar (fundo)", () => {
+  const mobile = { w: 390, h: 844 };
+  // A bottom nav 72px high: with fundo 88 the corners sit above it, so it is no obstacle.
+  const nav = { x: 0, y: 772, w: 390, h: 72 };
+  assert.equal(escolherDoca(PILULA, mobile, [nav], { margem: 16, fundo: 88 }), "fim");
+  assert.equal(escolherDoca(PILULA, mobile, [nav], { margem: 16 }), "meio");
+  assert.deepEqual(retanguloDaDoca("inicio", PILULA, 390, 844, 16, 88), { x: 16, y: 708, w: 48, h: 48 });
+});

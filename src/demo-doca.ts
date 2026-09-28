@@ -20,12 +20,23 @@ export interface Retangulo {
 
 export const DOCAS: readonly DocaDemo[] = ["fim", "inicio", "meio"];
 
-/** Rectangle of the pill at a dock, inside a viewport of `vw`×`vh`. */
-export function retanguloDaDoca(doca: DocaDemo, pilula: { w: number; h: number }, vw: number, vh: number, margem: number): Retangulo {
+/**
+ * Rectangle of the pill at a dock, inside a viewport of `vw`×`vh`. `fundo` is the
+ * distance from the bottom edge in the corner docks (default `margem`; larger when
+ * the app lifts the pill above a bottom navigation bar with `--demo-fundo`).
+ */
+export function retanguloDaDoca(
+  doca: DocaDemo,
+  pilula: { w: number; h: number },
+  vw: number,
+  vh: number,
+  margem: number,
+  fundo: number = margem,
+): Retangulo {
   const { w, h } = pilula;
-  if (doca === "inicio") return { x: margem, y: vh - margem - h, w, h };
+  if (doca === "inicio") return { x: margem, y: vh - fundo - h, w, h };
   if (doca === "meio") return { x: vw - margem - w, y: Math.round((vh - h) / 2), w, h };
-  return { x: vw - margem - w, y: vh - margem - h, w, h };
+  return { x: vw - margem - w, y: vh - fundo - h, w, h };
 }
 
 /** Area shared by two rectangles, after growing `b` by `folga` on every side. */
@@ -48,12 +59,16 @@ export function escolherDoca(
   pilula: { w: number; h: number },
   viewport: { w: number; h: number },
   obstaculos: readonly Retangulo[],
-  { margem = 20, folga = 8 }: { margem?: number | undefined; folga?: number | undefined } = {},
+  {
+    margem = 20,
+    folga = 8,
+    fundo,
+  }: { margem?: number | undefined; folga?: number | undefined; fundo?: number | undefined } = {},
 ): DocaDemo {
   let melhor: DocaDemo = "fim";
   let menor = Number.POSITIVE_INFINITY;
   for (const doca of DOCAS) {
-    const r = retanguloDaDoca(doca, pilula, viewport.w, viewport.h, margem);
+    const r = retanguloDaDoca(doca, pilula, viewport.w, viewport.h, margem, fundo ?? margem);
     let area = 0;
     for (const o of obstaculos) {
       if (o.w <= 0 || o.h <= 0) continue;
