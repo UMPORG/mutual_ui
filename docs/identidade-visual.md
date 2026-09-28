@@ -55,7 +55,7 @@ explica as decisões; os valores vivem em `css/tokens.css`.
 | Validador QR | `#0e7490` | `#7fd3e6` | igual à v1 |
 | Saúde | `#be185d` | `#f59ac2` | **mudou** — o verde-azulado colidia com o perfil Associação |
 | Servidores e DNS | `#475569` (ardósia, 7,6:1 sobre branco) | `#cbd5e1` (10,9:1 sobre a shell) | nova em 2026-09 (v0.6.0) — distinta das outras apps e dos perfis |
-| Monitor (proposta) | `#4d7c0f` (oliva, 5,0:1) | `#bef264` | reservada em v0.8, app ainda não existe |
+| Monitorização | `#4d7c0f` (musgo, 5,0:1) | `#bef264` | desde v0.9.0 (ADR 0007, `/monitor`) |
 | Assistente (proposta) | `#a21caf` (orquídea, 6,3:1) | `#f0abfc` | reservada em v0.8, app ainda não existe |
 
 ## Tons das shells (v0.8)
@@ -88,10 +88,9 @@ Em modo escuro os valores sobem (texto ≥ 16,6:1, secundário ≥ 10,1:1,
 acento ≥ 8,7:1). Na faixa do conteúdo o texto fica ≥ 15:1 (claro) e o texto
 secundário ≥ 7,4:1.
 
-**Propostas para apps futuras:** Monitor — oliva `#4d7c0f` (5,0:1 sobre
-branco; sobre a barra `#bef264`); Assistente — orquídea `#a21caf` (6,3:1;
-sobre a barra `#f0abfc`). Ficam reservadas em `data-app="monitor"` e
-`data-app="assistente"`; ainda não estão em `MUTUAL_APPS`.
+**Apps que nasceram depois:** Monitorização — musgo `#4d7c0f` (5,0:1 sobre
+branco; sobre a barra `#bef264`; em `MUTUAL_APPS` desde v0.9.0); Assistente —
+orquídea `#a21caf` (6,3:1; sobre a barra `#f0abfc`; desde v0.8.3).
 
 ## Rolagem (v0.8)
 

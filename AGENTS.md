@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.9"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.0"
 ```
 
 ```js
@@ -607,7 +607,7 @@ be custom, vertical and horizontal.
   | Validador QR | `#00242f` / `#031a22` | petrol |
   | Saúde | `#341220` / `#260e17` | wine |
   | Servidores e DNS | `#18202c` / `#111720` | slate |
-  | `monitor` (reserved) | `#19230b` / `#121a08`, accent `#4d7c0f` / on ink `#bef264` | moss |
+  | Monitorização (`monitor`, v0.9.0) | `#19230b` / `#121a08`, accent `#4d7c0f` / on ink `#bef264` | moss |
   | Assistente (`assistente`) | `#2d152e` / `#210f22`, accent `#a21caf` / on ink `#f0abfc` | plum |
   | Protocolos (`protocolos`) | `#33150f` / `#25100c`, accent `#b93a2e` / on ink `#fca99f` | brick |
 
@@ -863,3 +863,48 @@ hand in an app (the NIF check existed five times).
 - Showcase `?pagina=identificadores`; `node showcase/verificar.mjs` checks the
   mask, the country switch, the hidden E.164 value and the `tel:` hit area.
   Unit tests: `tests/identificadores.test.ts`.
+
+## v0.9.0 — app `monitor` and `@umporg/ui/monitor` (additive)
+
+ADR 0007: the MUTU@L has its own monitoring (the Cérebro module `monitor`
+and the app `UMPORG/mutual_monitor` at `/monitor`, port 3009, for the UMP
+IT team). Every app reports its errors to the Cérebro and passes the request
+id along.
+
+- `MUTUAL_APPS` gains **Monitorização** (`id: "monitor"`, login, icon
+  `Activity`), `CAMINHOS.monitor = "/monitor"`. Access comes from
+  `apps.monitor` of `/acessos/eu` (profiles `monitor.informatica`,
+  `monitor.consulta`, UMP only). The moss tint slot is no longer "reserved".
+  A `Record<MutualAppId, …>` in an app now needs a `monitor` entry.
+- **`@umporg/ui/monitor`** (no React; browser, Node and edge):
+  - `reportarErro(erro, { app, lado?, versao?, endpoint?, chave?, url?, pedidoId?, contexto? })`
+    → `POST /api/v1/monitor/erros`. Never throws, 3 s timeout. Browser: same
+    origin, with or without a session, deduped (same error at most once a
+    minute, 20 per page), browser noise ignored (ResizeObserver, "Script
+    error.", extensions, aborts, Next redirects). Server: needs the service
+    Machine Key `monitor` (`chave` → `X-Machine-Key`; env `MONITOR_CHAVE`,
+    server-only) — without it nothing is sent.
+  - `criarOnRequestError({ app, cerebroUrl, chave, versao })` → the
+    `onRequestError` export of `instrumentation.ts` (path, method, request
+    id, Next's `digest` and route context).
+  - `instalarReporteGlobal(opcoes)` (`error` + `unhandledrejection`),
+    `serializarErro`, `CABECALHO_PEDIDO` (`x-pedido-id`), `pedidoIdDe(headers)`,
+    `cabecalhosComPedido(id)`, `novoPedidoId()`: server code that calls the
+    Cérebro forwards the incoming `x-pedido-id` so the Monitorização links the
+    page, the API call, the logs and the error.
+- **`@umporg/ui/monitor/react`** (client): `<MonitorCliente app versao />`
+  once in the root layout; `<ErroReportado error reset app inicio? />` as the
+  body of `error.tsx` / `global-error.tsx` (plain pt-PT, «Tentar de novo»,
+  the error reference = `digest`); `useReportarErro(error, opcoes)`;
+  `<FronteiraErro app alternativa?>` for a part of a page that may fail on
+  its own.
+- Never report bodies, cookies or form values; the Cérebro redacts again and
+  keeps only the normalised path of `url`.
+
+```ts
+// instrumentation.ts
+import { criarOnRequestError } from "@umporg/ui/monitor";
+export const onRequestError = criarOnRequestError({
+  app: "eventos", cerebroUrl: process.env.CEREBRO_URL, chave: process.env.MONITOR_CHAVE,
+});
+```

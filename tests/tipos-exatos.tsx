@@ -22,6 +22,8 @@ import type * as Validar from "../src/validar";
 import type * as Calendario from "../src/calendario";
 import type * as Preferencias from "../src/preferencias";
 import type * as Apps from "../src/apps";
+import type * as Monitor from "../src/monitor";
+import type * as MonitorReact from "../src/monitor-react";
 import { buttonClasses } from "../src/basicos";
 import { Switch } from "../src/escolhas";
 
@@ -55,7 +57,9 @@ type Todas =
   | Falhas<typeof Validar>
   | Falhas<typeof Calendario>
   | Falhas<typeof Preferencias>
-  | Falhas<typeof Apps>;
+  | Falhas<typeof Apps>
+  | Falhas<typeof Monitor>
+  | Falhas<typeof MonitorReact>;
 
 // Se isto falhar, o erro diz que exports não aceitam `undefined` nas props opcionais.
 export const falhas: never = null as unknown as Todas;
