@@ -25,9 +25,9 @@ export function AppSwitcher({
   label = "Aplicações",
 }: {
   current: MutualAppId;
-  /** Apps the person can open in the active organisation — the keys of
-   *  `apps` from `GET /api/v1/acessos/eu` whose value is not null (public
-   *  apps such as the Validador QR are always listed). */
+  /** Apps the person can open in the active organisation:
+   *  `appsDisponiveis(eu.apps)` (the Validador QR comes with Eventos, v0.9.7;
+   *  the list is exactly what the Portal launcher shows). */
   disponiveis: readonly MutualAppId[];
   tone?: "ink" | "default" | undefined;
   className?: string | undefined;
@@ -35,7 +35,7 @@ export function AppSwitcher({
 }) {
   const id = useId().replace(/:/g, "");
   const popId = `mutual-apps-${id}`;
-  const apps = MUTUAL_APPS.filter((a) => a.id === current || a.publica || disponiveis.includes(a.id));
+  const apps = MUTUAL_APPS.filter((a) => a.id === current || disponiveis.includes(a.id));
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Place the popover under its button (flipping up near the bottom edge).

@@ -129,14 +129,16 @@ export function nomeDaApp(id: MutualAppId): string | undefined {
  * order: the keys of `apps` from `GET /api/v1/acessos/eu` whose value is not
  * null, plus the Portal (always). The `disponiveis` of `AppSwitcher` /
  * `ShellMarca` — every app uses this one function, so a new app appears in
- * every switcher by bumping `@umporg/ui` (v0.9.1). Public apps (Validador QR)
- * are always listed by the switcher itself.
+ * every switcher by bumping `@umporg/ui` (v0.9.1). The Validador QR is listed
+ * with Eventos, as in the Portal launcher (v0.9.7).
  */
 export function appsDisponiveis(apps: Readonly<Record<string, unknown>> | null | undefined): MutualAppId[] {
+  const tem = (id: string) => apps?.[id] !== null && apps?.[id] !== undefined;
   const lista: MutualAppId[] = ["portal"];
   for (const a of MUTUAL_APPS) {
-    const valor = apps?.[a.id];
-    if (valor !== null && valor !== undefined) lista.push(a.id);
+    // The Validador QR (public, no profile) comes with Eventos — the Portal's rule
+    // (v0.9.7): the door of an event is where it is used.
+    if (a.id === "qr" ? tem("eventos") : tem(a.id)) lista.push(a.id);
   }
   return lista;
 }

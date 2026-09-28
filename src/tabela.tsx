@@ -198,6 +198,7 @@ export function Pagination({
   onPageChange,
   LinkComponent = "a",
   pageSizeControl,
+  label = "Paginação",
   className,
 }: {
   /** 1-based. */
@@ -210,6 +211,9 @@ export function Pagination({
   LinkComponent?: ElementType | undefined;
   /** A select for "Linhas por página" (the app's own control). */
   pageSizeControl?: ReactNode | undefined;
+  /** Name of the navigation landmark — give each one its own when a page has two
+   *  paginated lists ("Paginação das associações"). */
+  label?: string | undefined;
   className?: string | undefined;
 }) {
   const Link = LinkComponent;
@@ -247,7 +251,7 @@ export function Pagination({
   };
   if (pageCount <= 1 && !intervalo) return null;
   return (
-    <nav aria-label="Paginação" className={cx("flex flex-wrap items-center justify-between gap-x-4 gap-y-2", className)}>
+    <nav aria-label={label} className={cx("flex flex-wrap items-center justify-between gap-x-4 gap-y-2", className)}>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.9375rem] text-muted-foreground">
         {intervalo && (
           <p>
@@ -463,7 +467,14 @@ export function DataTable<T>({
   ) : null;
 
   const tabela = (
-    <div className={cx(mobile === "cards" && "max-md:hidden", "m-tabela-rolo m-scroll-x relative")}>
+    // Reachable by keyboard: a table wider than its card scrolls sideways (WCAG 2.1.1,
+    // axe scrollable-region-focusable). Named by the caption when it is text.
+    <div
+      tabIndex={0}
+      role="region"
+      aria-label={typeof caption === "string" ? caption : undefined}
+      className={cx(mobile === "cards" && "max-md:hidden", "m-tabela-rolo m-scroll-x relative")}
+    >
       <table className="w-full border-collapse text-base">
         <caption className={cx(showCaption ? "px-5 pt-4 pb-2 text-left text-lg font-semibold" : "sr-only")}>{caption}</caption>
         <thead>

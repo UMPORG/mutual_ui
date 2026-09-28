@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.6"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.7"
 ```
 
 ```js
@@ -980,3 +980,14 @@ four sidebar widths/footers, and three content paddings.
   own header component use it instead of a hand-written size.
 - `ShellBarraLateral` children never shrink (`*:shrink-0`): a long menu
   scrolls the bar instead of squashing the filter field or the brand.
+
+## v0.9.7 — the switcher lists exactly what the Portal shows; table and pagination names
+
+- `appsDisponiveis` adds the Validador QR only with Eventos, and `AppSwitcher`
+  lists only `disponiveis` (+ the current app): the same set, in the same
+  order, as the Portal launcher (owner rule: each account sees only what it
+  can use). Before, the QR showed for everyone.
+- `DataTable`: the horizontal scroller is keyboard-reachable
+  (`tabIndex=0`, `role="region"`, named by a text caption).
+- `Pagination label` — name each landmark when a page has two paginated
+  lists.
