@@ -1,6 +1,6 @@
 {
   "name": "@umporg/ui",
-  "version": "0.9.8",
+  "version": "0.10.0",
   "description": "MUTU@L design system: tokens, brand, shell pieces, form controls, overlays, dates, cards, stats, charts, tables, conversation (assistant) components, decorative effects and SSO helpers shared by every MUTU@L app.",
   "license": "UNLICENSED",
   "type": "module",
@@ -16,6 +16,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./sso": "./src/sso.ts",
+    "./seguranca": "./src/seguranca.ts",
+    "./cerebro": "./src/cerebro.ts",
     "./apps": "./src/apps.ts",
     "./formatar": "./src/formatar.ts",
     "./validar": "./src/validar.ts",

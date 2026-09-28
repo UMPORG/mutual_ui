@@ -997,3 +997,51 @@ four sidebar widths/footers, and three content paddings.
 - v0.9.7 made it a `region` named by the caption; a page section with the
   same name then gave two landmarks with one name (axe landmark-unique, DNS
   Definições). It is now `role="group"` (focusable, named, not a landmark).
+
+## v0.10.0 — security headers and «Cérebro indisponível» (Wave 0, additive)
+
+Every app on the shared origin gets the SAME strict policy; an app only adds
+what it needs, never loosens the base.
+
+- **`@umporg/ui/seguranca`** (no Next import; Web Crypto + `Headers`):
+  - `cabecalhosNext({ producao, funcionalidades?, enquadrar? })` for
+    `next.config` `headers()`: `X-Content-Type-Options: nosniff`,
+    `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`
+    (camera, microphone, geolocation, payment, usb… all `()` unless the app asks,
+    e.g. `{ camera: ["self"] }` for a QR reader, `{ payment: ["self",
+    "https://js.stripe.com"] }` for Stripe), `Cross-Origin-Opener-Policy` and
+    `Cross-Origin-Resource-Policy: same-origin`, `X-Frame-Options: DENY`,
+    `Origin-Agent-Cluster`, and HSTS (2 years, subdomains) when `producao`.
+    Never put a CSP in `next.config` (two CSP headers intersect and the static
+    one has no nonce).
+  - `comCsp(request.headers, { dev, permissoes })` in `proxy.ts`, on EVERY page
+    request (the matcher must cover every page; skip `_next/static`, images and
+    `/api`): a fresh nonce, the policy (`script-src 'self' 'nonce-…'
+    'strict-dynamic'`, no `unsafe-eval` outside `next dev`, `style-src` keeps
+    `'unsafe-inline'` for `style` attributes, `frame-ancestors 'none'`,
+    `object-src 'none'`, `base-uri`/`form-action 'self'`, `frame-src 'none'`
+    unless `permissoes.frame`) and the REQUEST headers with `x-nonce` + the CSP.
+    Return `NextResponse.next({ request: { headers: cabecalhosPedido } })` (or a
+    rewrite with the same request headers) and set `Content-Security-Policy` on
+    the response. The root layout reads `(await headers()).get(NONCE_CABECALHO)`
+    and passes it to `<PreferenciasScript nonce>` (this makes every page dynamic,
+    which the nonce requires).
+  - `PermissoesCsp` per app: `script`, `connect`, `img`, `style`, `font`,
+    `frame`, `worker`, `media`, `frameAncestors`. The Cartão's Stripe list stays
+    in the Cartão.
+- **`@umporg/ui/cerebro`**: `pedirAoCerebro(url, { tempoLimiteMs, falharEm5xx,
+  ...fetchInit })` — `fetch` with `TEMPO_LIMITE_CEREBRO_MS` (`proxy` 5 s,
+  `servidor` 10 s, `browser` 15 s); no connection, timeout or (by default) a 5xx
+  throw `CerebroIndisponivel` (`motivo`: `rede` | `tempo-esgotado` | `estado`);
+  4xx are returned (401 is «sem sessão», never «indisponível»). A caller's own
+  abort stays an `AbortError`. `PAGINA_INDISPONIVEL` (`/indisponivel`),
+  `CABECALHOS_INDISPONIVEL` (`Retry-After: 120`, `no-store`) and
+  `TEXTOS_INDISPONIVEL` (the pt-PT title/text/button for pages and browser
+  states).
+- **`ServicoIndisponivel({ app, tentarHref })`** (main entry, server-safe): the
+  one «Serviço temporariamente indisponível» page. `proxy.ts` REWRITES to it
+  with status 503 when the Cérebro fails — never a redirect to the Portal login
+  (the Portal would see the valid session and send the person back: a loop). No
+  Portal link on it: the Portal depends on the Cérebro too.
+- CI: `.github/workflows/ci.yml` (GitHub-hosted): typecheck, tests, audit and
+  the showcase build.

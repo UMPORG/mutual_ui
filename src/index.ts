@@ -10,6 +10,7 @@ export { PreferenciasScript } from "./preferencias-script";
 export { AcessibilidadeMenu } from "./acessibilidade";
 export { AsciiFundo, iniciarAsciiFundo, type AsciiFundoProps } from "./ascii-fundo";
 export { SemAcesso, type MotivoSemAcesso } from "./sem-acesso";
+export { ServicoIndisponivel } from "./indisponivel";
 export { cx } from "./cx";
 export {
   DemoPreencher,

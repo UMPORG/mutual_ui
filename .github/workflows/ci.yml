@@ -1,0 +1,65 @@
+name: CI
+
+# Runners alojados do GitHub (ubuntu-latest), um só job: tipos (pacote e o
+# ficheiro solto), testes (node --test) e o build da página de revisão
+# (showcase: bun build + Tailwind), que prova que os componentes compilam como
+# as apps os usam. Só em push para main, PR e etiquetas de versão; mudanças só
+# de documentação não correm a CI.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths-ignore: ["**/*.md", "docs/**", "LICENSE"]
+  pull_request:
+    branches: [main]
+    paths-ignore: ["**/*.md", "docs/**", "LICENSE"]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: Tipos, testes e build do showcase
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Europe/Lisbon
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            showcase/pnpm-lock.yaml
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Instalar (lockfile congelado)
+        run: pnpm install --frozen-lockfile
+
+      - name: Tipos (tsc, pacote e ficheiro solto)
+        run: pnpm typecheck
+
+      - name: Testes (node --test)
+        run: pnpm test
+
+      - name: Auditoria de dependências (qualquer nível)
+        run: pnpm audit
+
+      - name: Build do showcase
+        working-directory: showcase
+        run: |
+          pnpm install --frozen-lockfile --ignore-workspace
+          pnpm build
