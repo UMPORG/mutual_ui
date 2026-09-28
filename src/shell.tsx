@@ -162,9 +162,8 @@ export function ShellConta({
   return (
     <div className={cx("flex flex-col gap-3 border-t border-sidebar-border pt-4", className)}>
       <div data-shell="conta" className="flex min-w-0 flex-col gap-0.5 px-3">
-        <p className="truncate font-semibold" title={nome}>
-          {nome}
-        </p>
+        {/* Wraps instead of truncating: no native tooltip (it does not exist on touch screens). */}
+        <p className="font-semibold break-words">{nome}</p>
         {perfil && <p className="text-sm text-sidebar-muted-foreground">{perfil}</p>}
         {organizacao && <p className="text-sm text-sidebar-muted-foreground">{organizacao}</p>}
       </div>
@@ -174,7 +173,7 @@ export function ShellConta({
             <AcessibilidadeMenu
               tone="ink"
               declaracaoHref={declaracaoHref}
-              className="w-full justify-start gap-3 [&>svg]:size-5"
+              className="min-h-12 w-full justify-start gap-3 [&>svg]:size-5"
             />
           </div>
         )}

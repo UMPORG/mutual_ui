@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.4"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.5"
 ```
 
 ```js
@@ -966,3 +966,9 @@ four sidebar widths/footers, and three content paddings.
 - `classeItemShell` (navigation, and the Ajuda / «Mudar de organização» /
   «Terminar sessão» items of `ShellConta`) is 48px high: navigation is a
   primary flow (Eventos holds 48px for its menu in e2e).
+
+## v0.9.5 — `ShellConta` without native tooltips (no API change)
+
+- The name in the account block wraps instead of truncating with a `title`
+  (native tooltips do not exist on touch screens; Simplex tests forbid them).
+- The Acessibilidade trigger in the block is 48px like the other items.
