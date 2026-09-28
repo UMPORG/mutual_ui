@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.2"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.3"
 ```
 
 ```js
@@ -953,3 +953,10 @@ four sidebar widths/footers, and three content paddings.
   `--ring-conteudo` (the content ring). Before, brand green on the dark
   sidebar was < 3:1 unless the app set its own `.superficie-tinta` rule —
   apps delete that rule now.
+
+## v0.9.3 — `ShellConta`: statement link and tour hooks (additive)
+
+- `ShellConta declaracaoHref` — passed to the Acessibilidade panel (the
+  app's accessibility statement, e.g. Eventos).
+- Stable tour targets on the account block: `[data-shell="conta"]` (who is
+  signed in), `"acessibilidade"`, `"ajuda"`, `"organizacao"`, `"sair"`.

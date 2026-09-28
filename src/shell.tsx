@@ -118,7 +118,8 @@ export function ShellMarca({
  * Bottom of the sidebar, identical in every app: who is signed in (name,
  * profile, organisation), then Acessibilidade, Ajuda (the Portal's help centre
  * for this app), «Mudar de organização» when the person belongs to more than
- * one, the app's own extra links, and «Terminar sessão».
+ * one, the app's own extra links, and «Terminar sessão». Guided tours target
+ * `[data-shell="conta" | "acessibilidade" | "ajuda" | "organizacao" | "sair"]`.
  */
 export function ShellConta({
   app,
@@ -130,6 +131,7 @@ export function ShellConta({
   aTerminar = false,
   ajudaHref,
   comAcessibilidade = true,
+  declaracaoHref,
   extra,
   className,
 }: {
@@ -148,6 +150,8 @@ export function ShellConta({
   ajudaHref?: string | undefined;
   /** Off where another Acessibilidade trigger is on screen (mobile top bar). */
   comAcessibilidade?: boolean | undefined;
+  /** The app's accessibility statement, linked from the Acessibilidade panel. */
+  declaracaoHref?: string | undefined;
   /** App-specific links (Definições, Contactar a UMP…), styled with `classeItemShell(false)`. */
   extra?: ReactNode | undefined;
   className?: string | undefined;
@@ -157,7 +161,7 @@ export function ShellConta({
   const item = classeItemShell(false);
   return (
     <div className={cx("flex flex-col gap-3 border-t border-sidebar-border pt-4", className)}>
-      <div className="flex min-w-0 flex-col gap-0.5 px-3">
+      <div data-shell="conta" className="flex min-w-0 flex-col gap-0.5 px-3">
         <p className="truncate font-semibold" title={nome}>
           {nome}
         </p>
@@ -165,20 +169,34 @@ export function ShellConta({
         {organizacao && <p className="text-sm text-sidebar-muted-foreground">{organizacao}</p>}
       </div>
       <div className="flex flex-col gap-0.5">
-        {comAcessibilidade && <AcessibilidadeMenu tone="ink" className="w-full justify-start gap-3 [&>svg]:size-5" />}
+        {comAcessibilidade && (
+          <div data-shell="acessibilidade">
+            <AcessibilidadeMenu
+              tone="ink"
+              declaracaoHref={declaracaoHref}
+              className="w-full justify-start gap-3 [&>svg]:size-5"
+            />
+          </div>
+        )}
         {/* Same origin (ADR 0004): the help centre and the organisation page are the Portal's. */}
-        <a href={ajuda} className={item}>
+        <a href={ajuda} data-shell="ajuda" className={item}>
           <HelpCircle aria-hidden />
           <span>Ajuda</span>
         </a>
         {variasOrganizacoes && (
-          <a href={organizacaoHref} className={item}>
+          <a href={organizacaoHref} data-shell="organizacao" className={item}>
             <ArrowLeftRight aria-hidden />
             <span>Mudar de organização</span>
           </a>
         )}
         {extra}
-        <button type="button" onClick={onTerminarSessao} disabled={aTerminar} className={cx(item, "disabled:opacity-70")}>
+        <button
+          type="button"
+          data-shell="sair"
+          onClick={onTerminarSessao}
+          disabled={aTerminar}
+          className={cx(item, "disabled:opacity-70")}
+        >
           <LogOut aria-hidden />
           <span>{aTerminar ? "A terminar…" : "Terminar sessão"}</span>
         </button>
