@@ -60,7 +60,7 @@ export function PageHeader({
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div className="flex min-w-0 flex-col gap-1.5">
           {eyebrow && <div className="text-sm font-medium text-muted-foreground">{eyebrow}</div>}
-          <h1 className="text-[1.75rem] leading-tight font-bold tracking-tight text-balance">{title}</h1>
+          <h1 className="text-pagina font-bold tracking-tight text-balance">{title}</h1>
           {description && <p className="max-w-3xl text-base text-muted-foreground">{description}</p>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}

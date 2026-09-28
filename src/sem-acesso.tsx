@@ -68,7 +68,7 @@ export function SemAcesso({
         <section className="m-surface flex w-full max-w-[34rem] flex-col gap-5 p-7 sm:p-8">
           <ShieldAlert aria-hidden className="size-9 text-warning" />
           <div className="flex flex-col gap-2">
-            <h1 className="text-[1.75rem] leading-tight font-bold tracking-tight text-balance">Não tem acesso à aplicação {nome}</h1>
+            <h1 className="text-pagina font-bold tracking-tight text-balance">Não tem acesso à aplicação {nome}</h1>
             <p className="text-base text-muted-foreground">{TEXTO[motivo](nome)}</p>
           </div>
           {(utilizador || organizacao) && (

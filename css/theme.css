@@ -9,6 +9,9 @@
  */
 
 @theme inline {
+  /* The page title of every app (`PageHeader`, v0.9.6): `text-pagina`. */
+  --text-pagina: 1.75rem;
+  --text-pagina--line-height: 1.25;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 

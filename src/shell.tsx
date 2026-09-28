@@ -64,7 +64,7 @@ export function ShellBarraLateral({
       aria-label={ariaLabel}
       className={cx(
         SHELL_LARGURA,
-        "flex h-full shrink-0 flex-col gap-4 overflow-y-auto bg-sidebar px-3 py-4 text-sidebar-foreground",
+        "flex h-full shrink-0 flex-col gap-4 overflow-y-auto bg-sidebar px-3 py-4 text-sidebar-foreground *:shrink-0",
         className,
       )}
       {...resto}

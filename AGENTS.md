@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.5"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.6"
 ```
 
 ```js
@@ -972,3 +972,11 @@ four sidebar widths/footers, and three content paddings.
 - The name in the account block wraps instead of truncating with a `title`
   (native tooltips do not exist on touch screens; Simplex tests forbid them).
 - The Acessibilidade trigger in the block is 48px like the other items.
+
+## v0.9.6 — `text-pagina`, sidebar items never shrink (no API change)
+
+- `--text-pagina` (1.75rem, line-height 1.25) → the `text-pagina` utility:
+  the page title of every app (`PageHeader`, `SemAcesso`). Apps with their
+  own header component use it instead of a hand-written size.
+- `ShellBarraLateral` children never shrink (`*:shrink-0`): a long menu
+  scrolls the bar instead of squashing the filter field or the brand.
