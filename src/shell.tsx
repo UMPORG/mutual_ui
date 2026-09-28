@@ -27,13 +27,13 @@ import { cx } from "./cx";
 export const SHELL_LARGURA = "w-64";
 
 /**
- * A navigation item of the desk sidebar. `ativo` = the current page (pair it
+ * A navigation item of the desk sidebar (48px: navigation is a primary flow). `ativo` = the current page (pair it
  * with `aria-current="page"`): tinted background, a bar in the app's accent on
  * the left and the icon in that accent. `nivel` 1 = inside a group.
  */
 export function classeItemShell(ativo: boolean, nivel: 0 | 1 = 0): string {
   return cx(
-    "flex min-h-11 w-full items-center rounded-lg text-left font-medium transition-colors",
+    "flex min-h-12 w-full items-center rounded-lg py-1.5 text-left font-medium transition-colors",
     "[&>svg]:shrink-0",
     nivel === 0 ? "gap-3 px-3 text-[0.9375rem] [&>svg]:size-5" : "gap-2.5 px-2.5 text-[0.9375rem] [&>svg]:size-4",
     ativo

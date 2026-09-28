@@ -14,7 +14,7 @@ npm publishing):
 
 ```jsonc
 // package.json of an app
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.3"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.9.4"
 ```
 
 ```js
@@ -928,7 +928,7 @@ four sidebar widths/footers, and three content paddings.
     `bg-sidebar`, `px-3 py-4`, `gap-4`, scrolls on its own.
   - `ShellMarca app disponiveis inicioHref LinkComponent onNavegar` —
     wordmark with the app name (link home) + «Aplicações».
-  - `classeItemShell(ativo, nivel?)` — the one nav item: 44px, 15px medium
+  - `classeItemShell(ativo, nivel?)` — the one nav item: 48px (v0.9.4), 15px medium
     text, 20px icon; current = `bg-sidebar-accent`, semibold, a 3px bar and
     the icon in `--app-accent-on-ink`. `ShellGrupo titulo` for a titled group.
   - `ShellConta app nome perfil organizacao variasOrganizacoes
@@ -960,3 +960,9 @@ four sidebar widths/footers, and three content paddings.
   app's accessibility statement, e.g. Eventos).
 - Stable tour targets on the account block: `[data-shell="conta"]` (who is
   signed in), `"acessibilidade"`, `"ajuda"`, `"organizacao"`, `"sair"`.
+
+## v0.9.4 — shell items are 48px (no API change)
+
+- `classeItemShell` (navigation, and the Ajuda / «Mudar de organização» /
+  «Terminar sessão» items of `ShellConta`) is 48px high: navigation is a
+  primary flow (Eventos holds 48px for its menu in e2e).
