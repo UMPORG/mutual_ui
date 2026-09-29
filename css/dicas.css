@@ -8,7 +8,7 @@
  * Colours come from the `--dica*` tokens (css/tokens.css, high contrast in
  * css/preferencias.css); apps with their own palette redefine those names.
  * Every rule is plain CSS so the note looks the same whether or not the app
- * scans the package with Tailwind.
+ * scans the package with Tailwind. Targets are 48 px (the primary-flow floor).
  */
 
 @layer components {
@@ -36,8 +36,8 @@
     min-width: 0;
     align-items: flex-start;
     gap: 0.625rem;
-    min-height: 2.75rem;
-    padding: 0.625rem 0.5rem;
+    min-height: 3rem;
+    padding: 0.75rem 0.5rem;
     color: inherit;
     font: inherit;
     font-weight: 600;
@@ -83,8 +83,8 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: 3rem;
+    height: 3rem;
     border: 0;
     border-radius: 0.5rem;
     background: transparent;
@@ -106,7 +106,7 @@
   }
   @media (min-width: 30rem) {
     .m-nota-corpo {
-      padding-inline-start: 2.625rem;
+      padding-inline-start: 2.75rem;
     }
   }
   .m-nota-corpo > * + * {
@@ -120,7 +120,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
-    min-height: 2.75rem;
+    min-height: 3rem;
     color: var(--dica-ligacao);
     font-weight: 600;
     text-decoration: underline;
@@ -135,7 +135,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    min-height: 2.75rem;
+    min-height: 3rem;
     padding: 0 0.5rem;
     border: 0;
     border-radius: 0.5rem;

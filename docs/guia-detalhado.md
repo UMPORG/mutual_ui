@@ -1120,3 +1120,8 @@ v0.10.1, not v0.10.0.
   on the note and on the page). Styles in `css/dicas.css` (`m-nota*`; the name
   `.m-dica` was already the sidebar tooltip), included by `css/index.css`;
   apps that import single sheets add `@umporg/ui/css/dicas.css`.
+
+## v0.12.1 — `Dica`: 48 px targets
+
+- The title line, «Fechar a dica», «Saber mais» and «reabrir» are 48 px tall (the
+  primary-flow floor of the Cartão and the desk apps), was 44 px. No API change.
