@@ -189,6 +189,28 @@
   --scroll-shadow: rgb(0 0 0 / 0.55);
 }
 
+/* ─── Dicas (v0.12, `Dica` in src/dicas.tsx, styles in css/dicas.css) ────
+   A calm note: a faint brand tint, a border that still reads (≥ 3:1 on the
+   note and on the page), body text ≥ 7:1. Measured in tests/dicas.test.ts;
+   high contrast in css/preferencias.css. Apps with their own palette (the
+   Cartão) redefine these six names in their tokens and re-measure them. */
+:root {
+  --dica: #f3f7f4;
+  --dica-foreground: #171717;   /* 16.6:1 */
+  --dica-texto: #3d3d3d;        /* 10.1:1 */
+  --dica-borda: #7a8f80;        /* 3.2:1 on the note, 3.3:1 on --background */
+  --dica-icone: #1f6f36;        /* 5.7:1 */
+  --dica-ligacao: #16502a;      /* 8.7:1 */
+}
+.dark {
+  --dica: #18221b;
+  --dica-foreground: #f5f5f5;   /* 15.0:1 */
+  --dica-texto: #d4d4d4;        /* 11.0:1 */
+  --dica-borda: #62806b;        /* 3.8:1 on the note, 3.9:1 on --card */
+  --dica-icone: #7cc97a;        /* 8.2:1 */
+  --dica-ligacao: #a6dca4;
+}
+
 /* ─── App identity ─────────────────────────────────────────────────────────
    Values kept from identidade-visual v1 so users still recognise their app,
    except Saúde, whose teal collided with the "Associação" role colour. */

@@ -1101,3 +1101,22 @@ v0.10.1, not v0.10.0.
 - Owner rule: everything demo-related lives in the widget — apps drop their
   «Demonstração» badges/pills, «Modo de demonstração» labels, demo notices and
   demo panels (QR sample codes, Saúde sample identifications now use this).
+
+## v0.12.0 — `Dica`: one calm tip for every app (additive)
+
+- New `Dica` (main entry, client) + `dicaDispensada` / `dispensarDica` /
+  `reporDica`. Replaces the apps' own tip boxes (Cartão `DicaContextual`,
+  Eventos `DicaEcra`/`AjudaCampo`): one line with an info icon and the title;
+  the explanation and «Saber mais» open on demand (`aria-expanded`); a 44 px
+  «Fechar a dica» icon button remembered on the device (`localStorage`, key =
+  `id`, `<app>.dica.<nome>`, never throws); `rotuloReabrir` leaves a quiet
+  button that brings it back; `avisoAoFechar` is read by screen readers;
+  `dispensavel={false}` = on-demand field help (renders on the server).
+- `role="note"` named by the title; no entrance animation, the chevron stops
+  under Reduzir movimento; not printed.
+- Tokens `--dica`, `--dica-foreground`, `--dica-texto`, `--dica-borda`,
+  `--dica-icone`, `--dica-ligacao` (light, `.dark`, `html.contraste`), measured
+  by `tests/dicas.test.ts` (title/body/link ≥ 7:1, icon ≥ 4.5:1, border ≥ 3:1
+  on the note and on the page). Styles in `css/dicas.css` (`m-nota*`; the name
+  `.m-dica` was already the sidebar tooltip), included by `css/index.css`;
+  apps that import single sheets add `@umporg/ui/css/dicas.css`.

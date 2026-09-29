@@ -1,0 +1,173 @@
+/*
+ * Dicas (v0.12) — `Dica` in src/dicas.tsx. Classes are `m-nota*` (`.m-dica` is
+ * the sidebar tooltip in css/controlos.css).
+ *
+ * One line by default: an info icon, a title that opens the explanation on
+ * demand, and a small close button. Nothing full width, no primary-looking
+ * buttons, no animation beyond the chevron (none under Reduzir movimento).
+ * Colours come from the `--dica*` tokens (css/tokens.css, high contrast in
+ * css/preferencias.css); apps with their own palette redefine those names.
+ * Every rule is plain CSS so the note looks the same whether or not the app
+ * scans the package with Tailwind.
+ */
+
+@layer components {
+  .m-nota {
+    display: block;
+    border: 1px solid var(--dica-borda);
+    border-radius: 0.75rem;
+    background: var(--dica);
+    color: var(--dica-foreground);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .m-nota-linha {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.125rem;
+    padding: 0 0.25rem;
+  }
+
+  .m-nota-alternar,
+  .m-nota-cabeca {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    align-items: flex-start;
+    gap: 0.625rem;
+    min-height: 2.75rem;
+    padding: 0.625rem 0.5rem;
+    color: inherit;
+    font: inherit;
+    font-weight: 600;
+    text-align: start;
+  }
+  .m-nota-alternar {
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    cursor: pointer;
+  }
+  .m-nota-alternar:hover .m-nota-titulo {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .m-nota-titulo {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow-wrap: anywhere;
+  }
+
+  .m-nota-icone {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.125rem;
+    color: var(--dica-icone);
+  }
+  .m-nota-seta {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.125rem;
+    color: var(--dica-texto);
+    transition: transform 160ms ease;
+  }
+  .m-nota-alternar[aria-expanded="true"] .m-nota-seta {
+    transform: rotate(180deg);
+  }
+
+  .m-nota-fechar {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--dica-texto);
+    cursor: pointer;
+  }
+  .m-nota-fechar:hover {
+    box-shadow: inset 0 0 0 1px var(--dica-borda);
+    color: var(--dica-foreground);
+  }
+  .m-nota-fechar svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .m-nota-corpo {
+    padding: 0 1rem 0.875rem;
+    color: var(--dica-texto);
+  }
+  @media (min-width: 30rem) {
+    .m-nota-corpo {
+      padding-inline-start: 2.625rem;
+    }
+  }
+  .m-nota-corpo > * + * {
+    margin-top: 0.5rem;
+  }
+  .m-nota-corpo[hidden] {
+    display: none;
+  }
+
+  .m-nota-mais {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 2.75rem;
+    color: var(--dica-ligacao);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .m-nota-mais svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .m-nota-reabrir {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 0.5rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--dica-texto);
+    font: inherit;
+    font-size: 0.9375rem;
+    cursor: pointer;
+  }
+  .m-nota-reabrir:hover {
+    color: var(--dica-foreground);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .m-nota-reabrir svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    color: var(--dica-icone);
+  }
+
+  .m-nota :where(button, a):focus-visible,
+  .m-nota-reabrir:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-nota-seta { transition: none; }
+}
+html[data-movimento="reduzido"] .m-nota-seta { transition: none; }
+html.contraste .m-nota { border-width: 2px; }
+@media print {
+  .m-nota, .m-nota-reabrir { display: none !important; }
+}

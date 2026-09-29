@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import {
+  Dica,
   Card,
   CardContent,
   CardFooter,
@@ -639,6 +640,23 @@ function App() {
                 onRetry={() => {}}
               />
             </Estado>
+          </div>
+        </Section>
+
+        <Section id="s-dicas" title="Dicas" description="Uma linha calma; a explicação abre a pedido e fecha-se com um toque.">
+          <div className="grid max-w-3xl items-start gap-4 lg:grid-cols-2">
+            <Dica id="showcase.dica.fechada" titulo="O que é o código de identificação" saberMais={{ href: "#s-dicas", rotulo: "Ver mais respostas na Ajuda" }} avisoAoFechar="Dica fechada. As respostas ficam na página de Ajuda.">
+              <p>Um código que muda a cada minuto e o identifica ao balcão.</p>
+              <p>Toque em «Mostrar o código» e mostre-o ao balcão.</p>
+            </Dica>
+            <Dica id="showcase.dica.aberta" aberta titulo="Os convites são para quem vai participar" rotuloReabrir="Mostrar a ajuda deste ecrã">
+              <p>Partilhe uma ligação ou envie convites por email a quem quer no evento.</p>
+              <p>Quem regista as presenças à entrada acrescenta-se em «Operadores».</p>
+            </Dica>
+            <Dica id="showcase.dica.campo" dispensavel={false} titulo="Onde encontro o meu NIF">
+              <p>No cartão de cidadão, no verso, ou em qualquer fatura em seu nome.</p>
+            </Dica>
+            <Dica id="showcase.dica.simples" titulo="Os valores são do ano até hoje." />
           </div>
         </Section>
 

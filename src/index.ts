@@ -5,6 +5,7 @@ export * from "./app-switcher";
 export { ShellBarraLateral, ShellMarca, ShellConta, ShellGrupo, classeItemShell, SHELL_LARGURA } from "./shell";
 export * from "./page-header";
 export * from "./feedback";
+export { Dica, dicaDispensada, dispensarDica, reporDica, type DicaProps } from "./dicas";
 export * from "./preferencias";
 export { PreferenciasScript } from "./preferencias-script";
 export { AcessibilidadeMenu } from "./acessibilidade";

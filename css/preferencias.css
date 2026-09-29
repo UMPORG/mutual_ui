@@ -120,6 +120,12 @@ html.contraste {
   --shadow-md: none;
   --shadow-lg: none;
   --shadow-xl: none;
+  --dica: #ffffff;
+  --dica-foreground: #000000;
+  --dica-texto: #000000;
+  --dica-borda: #000000;
+  --dica-icone: #000000;
+  --dica-ligacao: #0b2a8a;
 }
 /* v0.8: the app shell tints, the canvas band and the accent rule give way
    to plain black and white — every app looks the same here; the app name

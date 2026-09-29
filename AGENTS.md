@@ -1,7 +1,7 @@
 # MUTU@L UI (`@umporg/ui`) — AGENTS.md
 
 > Rules and "where is what" for AI coding agents (`CLAUDE.md` imports this
-> file). Examples, rationale and the per-version notes (v0.2 → v0.11.3) are in
+> file). Examples, rationale and the per-version notes (v0.2 → v0.12.0) are in
 > [docs/guia-detalhado.md](docs/guia-detalhado.md); colour decisions in
 > [docs/identidade-visual.md](docs/identidade-visual.md); the v0.6 adoption
 > survey in [docs/inventario-componentes.md](docs/inventario-componentes.md);
@@ -13,7 +13,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 ## Consuming it (no npm publishing)
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.11.3"   // app package.json — always a tag, never a branch
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.12.0"   // app package.json — always a tag, never a branch
 ```
 
 - Next apps: `transpilePackages: ["@umporg/ui"]`; `app/globals.css`:
@@ -22,7 +22,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 - Root layout: `<html lang="pt-PT" data-app="<id>" suppressHydrationWarning>`.
 - **Release:** bump `version` in `package.json`, commit, `git tag vX.Y.Z`,
   push the tag; then each app bumps its `#vX.Y.Z` ref and regenerates its
-  lockfile. Current: **v0.11.3**.
+  lockfile. Current: **v0.12.0**.
 - Peers: `react`/`react-dom` ≥ 19, `lucide-react`; optional `@base-ui/react`
   ≥ 1.6 < 2 (controls, dates, conversation) and `recharts` ≥ 3.1 (charts).
 
@@ -30,7 +30,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 
 | Import | What | Needs |
 | --- | --- | --- |
-| `@umporg/ui` | brand, shell, `PageHeader`, `StatusCallout`, `SemAcesso`, `ServicoIndisponivel`, `AcessibilidadeMenu`, `PreferenciasScript`, `DemoPreencher`, cards, stats, `DataTable` + toolbar/pagination, basic form controls, `Telefone`/`Campo*`, formatters | nothing |
+| `@umporg/ui` | brand, shell, `PageHeader`, `StatusCallout`, `Dica`, `SemAcesso`, `ServicoIndisponivel`, `AcessibilidadeMenu`, `PreferenciasScript`, `DemoPreencher`, cards, stats, `DataTable` + toolbar/pagination, basic form controls, `Telefone`/`Campo*`, formatters | nothing |
 | `/controlos` | `Select`, `Combobox`, `MultiSelect`, menus, `Tooltip`, `Popover`, `Dialog`, `ConfirmDialog`, `Sheet`, `Tabs`, `Switch`, `Checkbox`, `RadioGroup`, `NumberField`, `toast`… | `@base-ui/react` |
 | `/datas` · `/calendario` | `Calendar`, `DatePicker`, `DateRangePicker` · pure Lisbon date maths | `@base-ui/react` · nothing |
 | `/graficos` | `GraficoBarras`, `GraficoLinhas`, `GraficoArea`, `GraficoDonut`, `ChartFrame` | `recharts` |
@@ -194,6 +194,15 @@ same set and order as the Portal launcher; apps keep no own app lists. Show the
 - Status never by colour alone; errors of the person's own action and results
   are persistent `StatusCallout`s, toasts only confirm. Destructive actions:
   `ConfirmDialog`, verb «Eliminar», undo where reversible.
+- **Dicas** (tips about a screen or a field, v0.12): only `<Dica id="<app>.dica.<nome>" titulo …>`
+  — one calm line (info icon + title), the explanation and «Saber mais»
+  (`saberMais`, `LinkComponent`) open on demand, a small «Fechar a dica» icon
+  button remembered on the device (`rotuloReabrir` leaves a quiet way back;
+  `dispensavel={false}` for field help). Never a full-width «Percebi», never
+  between a card and its primary action — put it after the action. Colours:
+  `--dica*` tokens (body ≥ 7:1, border ≥ 3:1, `tests/dicas.test.ts`); apps with
+  their own palette redefine those six names and re-measure them. Classes
+  `m-nota*` (`css/dicas.css`; apps importing single sheets import it too).
 - Forms: `FormField` around every control (wires id, `aria-describedby`,
   `aria-invalid`, `aria-required`); mark `required` or `optional` via props,
   never "(opcional)" in the label text. No native `title` tooltips.
