@@ -1073,3 +1073,15 @@ v0.10.1, not v0.10.0.
   environment has no demo personas (the routes only exist with `DEMO_MODE=true`).
 
 ## v0.11.1 — «Entrar como…»: the group count never wraps (no API change)
+
+## v0.11.2 — «Entrar como…» moves into the «Demonstração» widget (replaces `EntrarComoDemo`)
+
+- Owner (2026-09-29): the one-click demo sign-in is not a panel on the login page. It is a section
+  at the top of the floating «Demonstração» panel (`DemoPreencher`), above the form scenarios; the
+  pill's badge counts it (+1) and its accessible name says «Entrar como…».
+- A login page registers its context: `useEntrarComoDemo({ destino: "portal" | "cartao", aoEntrar,
+  api? })` (client hook; pass `null` to register nothing) or `registarEntrarComo(ctx)` (returns the
+  unregister function). The widget loads `GET /api/v1/demo/personas?destino=…` and signs in with
+  `POST /api/v1/demo/entrar`; a 404/empty list shows no section.
+- `EntrarComoDemo` and `EntrarComoDemoProps` are removed (apps: delete the inline panel and its
+  «ou com email e palavra-passe» divider). Persona buttons carry `data-persona="<id>"` for e2e.

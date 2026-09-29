@@ -20,7 +20,8 @@ export {
   type CenarioDemo,
   type ValorDemo,
 } from "./demo-preencher";
-export { EntrarComoDemo, type EntrarComoDemoProps, type PersonaDemo } from "./demo-entrar";
+export { registarEntrarComo, type ContextoEntrarComo, type PersonaDemo } from "./demo-entrar-dados";
+export { useEntrarComoDemo } from "./demo-entrar";
 export * from "./formatar";
 export * from "./dados";
 export * from "./cartao";

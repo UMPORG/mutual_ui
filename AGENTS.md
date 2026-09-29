@@ -1,7 +1,7 @@
 # MUTU@L UI (`@umporg/ui`) — AGENTS.md
 
 > Rules and "where is what" for AI coding agents (`CLAUDE.md` imports this
-> file). Examples, rationale and the per-version notes (v0.2 → v0.11.1) are in
+> file). Examples, rationale and the per-version notes (v0.2 → v0.11.2) are in
 > [docs/guia-detalhado.md](docs/guia-detalhado.md); colour decisions in
 > [docs/identidade-visual.md](docs/identidade-visual.md); the v0.6 adoption
 > survey in [docs/inventario-componentes.md](docs/inventario-componentes.md);
@@ -13,7 +13,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 ## Consuming it (no npm publishing)
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.11.1"   // app package.json — always a tag, never a branch
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.11.2"   // app package.json — always a tag, never a branch
 ```
 
 - Next apps: `transpilePackages: ["@umporg/ui"]`; `app/globals.css`:
@@ -22,7 +22,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 - Root layout: `<html lang="pt-PT" data-app="<id>" suppressHydrationWarning>`.
 - **Release:** bump `version` in `package.json`, commit, `git tag vX.Y.Z`,
   push the tag; then each app bumps its `#vX.Y.Z` ref and regenerates its
-  lockfile. Current: **v0.11.1**.
+  lockfile. Current: **v0.11.2**.
 - Peers: `react`/`react-dom` ≥ 19, `lucide-react`; optional `@base-ui/react`
   ≥ 1.6 < 2 (controls, dates, conversation) and `recharts` ≥ 3.1 (charts).
 
@@ -256,6 +256,8 @@ realistic fictitious Portuguese data, never real people); custom widgets use
 (demonstração)» strip automatically. Reserve room with `m-demo-reserva` or
 `pb-[calc(2rem+var(--demo-reserva))]`, mark no-go areas `data-demo-evitar`,
 lift the pill over a fixed bottom bar with `--demo-fundo`. No other
-app-specific demo offsets. Logins: never hard-code demo accounts — the Portal and
-Cartão logins mount `<EntrarComoDemo destino aoEntrar />` (personas from the Cérebro,
-one click).
+app-specific demo offsets. Logins: never hard-code demo accounts and never put a
+sign-in panel on the login page — the Portal and Cartão logins only register
+`useEntrarComoDemo({ destino, aoEntrar })` (or `registarEntrarComo`) and the floating
+«Demonstração» widget shows «Entrar como…» (personas from the Cérebro, one click;
+nothing when the list is a 404).

@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { Sparkles, Wand2, X } from "lucide-react";
 import { cx } from "./cx";
 import { escolherDoca, type DocaDemo, type Retangulo } from "./demo-doca";
+import { SeccaoEntrarComo, usePersonasDemo } from "./demo-entrar";
 
 /**
  * Demonstration mode: fill forms with example data.
@@ -36,6 +37,12 @@ import { escolherDoca, type DocaDemo, type Retangulo } from "./demo-doca";
  *    that dialog. It lives inside the dialog, so the modal's focus trap and
  *    the inertness of the page stay intact; the floating pill hides while a
  *    modal makes the page inert.
+ *
+ * «Entrar como…» (v0.11.2): a login page that registers a demo sign-in
+ * context (`useEntrarComoDemo({ destino, aoEntrar })` or
+ * `registarEntrarComo`) gets an «Entrar como…» section at the top of the
+ * panel — the demo personas of the Cérebro in use, one click signs in. When
+ * the environment has no demo personas (404) the section is not shown.
  *
  * Scenarios are meant to show how each form reacts: valid data, a validation
  * error, an edge case (e.g. a full event, a negative amount).
@@ -315,6 +322,8 @@ function Flutuante({
   const abertoRef = useRef(aberto);
   abertoRef.current = aberto;
   const fundoRef = useRef<number | null>(null);
+  const entrarComo = usePersonasDemo(!escondido);
+  const contagem = forms.length + (entrarComo ? 1 : 0);
 
   // Dock away from the focused element and the forms' last actions.
   useEffect(() => {
@@ -427,7 +436,11 @@ function Flutuante({
                 <Sparkles aria-hidden className="size-[1.1em] text-app-accent" />
                 Demonstração
               </p>
-              <p className="text-sm text-muted-foreground">Preencha os formulários desta página com dados de exemplo.</p>
+              <p className="text-sm text-muted-foreground">
+                {entrarComo
+                  ? "Entre como uma pessoa de exemplo ou preencha os formulários com dados de exemplo."
+                  : "Preencha os formulários desta página com dados de exemplo."}
+              </p>
             </div>
             <button
               type="button"
@@ -438,12 +451,13 @@ function Flutuante({
               <X aria-hidden className="size-5" />
             </button>
           </div>
-          {forms.length === 0 ? (
+          {contagem === 0 ? (
             <p className="rounded-lg bg-muted px-3 py-3 text-[0.9375rem] text-muted-foreground">
               Não há formulários com dados de exemplo nesta página.
             </p>
           ) : (
             <div className="flex max-h-[min(60vh,calc(100dvh-12rem))] flex-col gap-4 overflow-y-auto">
+              {entrarComo && <SeccaoEntrarComo contexto={entrarComo.contexto} personas={entrarComo.personas} />}
               {forms.map((id) => (
                 <section key={id} className="flex flex-col gap-2">
                   <h3 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
@@ -482,14 +496,17 @@ function Flutuante({
         <Wand2 aria-hidden className="size-[1.25em]" />
         <span className="sr-only">
           Demonstração
-          {forms.length > 0 && ` (${forms.length} ${forms.length === 1 ? "formulário" : "formulários"})`}
+          {entrarComo && " (Entrar como…"}
+          {forms.length > 0 &&
+            `${entrarComo ? ", " : " ("}${forms.length} ${forms.length === 1 ? "formulário" : "formulários"}`}
+          {contagem > 0 && ")"}
         </span>
-        {forms.length > 0 && (
+        {contagem > 0 && (
           <span
             aria-hidden
             className="absolute -top-1 -right-1 grid min-w-6 place-items-center rounded-full border-2 border-background bg-foreground px-1 text-xs leading-5 font-semibold text-background"
           >
-            {forms.length}
+            {contagem}
           </span>
         )}
       </button>
