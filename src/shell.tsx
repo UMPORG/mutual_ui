@@ -5,6 +5,7 @@ import {
   useId,
   useRef,
   useState,
+  type CSSProperties,
   type ComponentType,
   type ElementType,
   type ReactNode,
@@ -288,8 +289,12 @@ export function MenuConta({ app, conta }: { app: AppNoEndereco; conta: ContaShel
           if (e.newState === "open") posicionarPopover(e.currentTarget, botaoRef.current);
         }}
       >
-        <ContaResumo conta={conta} />
-        <ContaAcoes app={app} conta={conta} />
+        <div className="m-menu-escalonado">
+          <ContaResumo conta={conta} />
+        </div>
+        <div className="m-menu-escalonado" style={{ "--i": 1 } as CSSProperties}>
+          <ContaAcoes app={app} conta={conta} />
+        </div>
       </div>
     </>
   );
@@ -490,6 +495,9 @@ export function AppShell({
   const gavetaRef = useRef<HTMLDialogElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const [gavetaAberta, setGavetaAberta] = useState(false);
+  // Mounted on the first open and kept, so the drawer can slide out (v0.14).
+  const [gavetaMontada, setGavetaMontada] = useState(false);
+  const primeiraRota = useRef(true);
   const [recolhida, setRecolhida] = useState(false);
   const [procuraAberta, setProcuraAberta] = useState(false);
   const chave = `${app}.navegacao-recolhida`;
@@ -504,10 +512,23 @@ export function AppShell({
     }
   }, [chave]);
 
-  // Every navigation: back to the top of the content, drawer closed.
+  // Every navigation: back to the top of the content, drawer closed, and the
+  // page fades in slightly (opacity only: no layout shift; nothing under
+  // Reduzir movimento or the OS setting; input is never delayed).
   useEffect(() => {
     mainRef.current?.scrollTo({ top: 0 });
     gavetaRef.current?.close();
+    if (primeiraRota.current) {
+      primeiraRota.current = false;
+      return;
+    }
+    const reduzido =
+      document.documentElement.dataset.movimento === "reduzido" ||
+      matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const pagina = mainRef.current?.firstElementChild;
+    if (!reduzido && pagina && "animate" in pagina) {
+      pagina.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: 180, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" });
+    }
   }, [caminhoAtual]);
 
   function alternarRecolhida() {
@@ -553,6 +574,7 @@ export function AppShell({
               aria-expanded={gavetaAberta}
               data-shell="menu"
               onClick={() => {
+                setGavetaMontada(true);
                 setGavetaAberta(true);
                 gavetaRef.current?.showModal();
               }}
@@ -635,7 +657,7 @@ export function AppShell({
             if (e.target === gavetaRef.current) fecharGaveta();
           }}
         >
-          {gavetaAberta && (
+          {gavetaMontada && (
             <>
               <div className="m-gaveta-topo">
                 {identidade(fecharGaveta)}

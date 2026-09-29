@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, type ReactNode } from "react";
+import { useId, useRef, type CSSProperties, type ReactNode } from "react";
 import { Check, LayoutGrid } from "lucide-react";
 import { MUTUAL_APPS, type MutualAppId } from "./apps";
 import { AppMark } from "./brand";
@@ -75,10 +75,10 @@ export function LancadorApps({
       >
         <p className="px-3 pt-2 pb-1 text-sm font-semibold text-muted-foreground">{rotulo}</p>
         <ul className="flex flex-col">
-          {apps.map((a) => {
+          {apps.map((a, i) => {
             const aqui = a.id === atual;
             return (
-              <li key={a.id}>
+              <li key={a.id} className="m-menu-escalonado" style={{ "--i": i } as CSSProperties}>
                 <a
                   href={CAMINHOS[a.id]}
                   aria-current={aqui ? "page" : undefined}

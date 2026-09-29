@@ -13,14 +13,16 @@
     font-weight: 600;
     letter-spacing: 0.005em;
     transition:
-      background-color 160ms ease,
-      box-shadow 160ms ease,
-      transform 120ms ease,
-      border-color 160ms ease,
-      color 160ms ease;
+      background-color var(--movimento-medio) var(--curva-padrao),
+      box-shadow var(--movimento-medio) var(--curva-padrao),
+      transform var(--movimento-rapido) var(--curva-padrao),
+      border-color var(--movimento-medio) var(--curva-padrao),
+      color var(--movimento-medio) var(--curva-padrao);
   }
+  /* v0.14: a gentle press (scale 0.98), the same curve everywhere. */
   .m-btn:active:not(:disabled):not([aria-disabled="true"]) {
-    transform: translateY(1px) scale(0.995);
+    transform: scale(0.98);
+    transition-duration: var(--movimento-rapido);
   }
 
   /* Primary — brand green with a top light and a soft coloured shadow. */
@@ -130,8 +132,12 @@
   }
   /* Clickable card: lifts toward the pointer. */
   .m-surface-interactive {
-    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    transition:
+      transform var(--movimento-medio) var(--curva-padrao),
+      box-shadow var(--movimento-medio) var(--curva-padrao),
+      border-color var(--movimento-medio) var(--curva-padrao);
   }
+  .m-surface-interactive:active { transform: translateY(0) scale(0.99); }
   .m-surface-interactive:hover {
     transform: translateY(-2px);
     border-color: color-mix(in oklab, var(--app-accent) 35%, var(--border));

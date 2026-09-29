@@ -171,3 +171,12 @@ html.contraste .m-nota { border-width: 2px; }
 @media print {
   .m-nota, .m-nota-reabrir { display: none !important; }
 }
+
+/* v0.14: the explanation opens with a short fade (no height animation — no
+   layout jump); instant under Reduzir movimento (the tokens are 0). */
+.m-nota-corpo:not([hidden]) {
+  animation: m-nota-abre var(--movimento-medio, 180ms) var(--curva-entrada, ease-out) both;
+}
+@keyframes m-nota-abre {
+  from { opacity: 0; transform: translateY(-2px); }
+}

@@ -67,3 +67,21 @@ test("shell G is wired: css/shell.css imported by index.css and exported; old si
   assert.match(shell, /\.m-nav-item \{[^}]*min-height: 3rem;/);
   assert.match(shell, /\.m-barra-botao \{[^}]*width: 2\.75rem;[^}]*height: 2\.75rem;/);
 });
+
+test("motion (v0.14): one set of tokens, zero under Reduzir movimento, only opacity/transform/colour move", () => {
+  const tokens = readFileSync(new URL("../css/tokens.css", import.meta.url), "utf8");
+  for (const nome of ["--movimento-rapido", "--movimento-medio", "--movimento-lento", "--curva-entrada", "--curva-saida"]) {
+    assert.match(tokens, new RegExp(`${nome}:`), `${nome} declared`);
+  }
+  assert.match(tokens, /html\[data-movimento="reduzido"\] \{[^}]*--movimento-medio: 0ms;/);
+  assert.match(tokens, /prefers-reduced-motion: reduce\)[^{]*\{\s*:root \{[^}]*--movimento-lento: 0ms;/);
+  const shell = readFileSync(new URL("../css/shell.css", import.meta.url), "utf8");
+  const permitidas = new Set(["opacity", "transform", "background-color", "color", "box-shadow", "overlay", "display"]);
+  for (const bloco of shell.matchAll(/transition:\s*([^;]+);/g)) {
+    for (const parte of bloco[1]!.split(",")) {
+      const propriedade = parte.trim().split(/\s+/)[0]!;
+      assert.ok(permitidas.has(propriedade), `transition of «${propriedade}» in css/shell.css (layout must not animate)`);
+    }
+  }
+  assert.doesNotMatch(shell, /\d{3,}ms/, "durations come from the tokens");
+});

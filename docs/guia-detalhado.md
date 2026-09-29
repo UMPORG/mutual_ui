@@ -1178,3 +1178,22 @@ Workspace structure + Fluent layering, replacing the v0.8 tinted sidebars.
   «/admin» (Início) no longer lights up next to it. Hover (14% of the app
   colour, normal weight) stays visibly different from the current pill (20%,
   bold, icon in the app colour).
+
+## v0.14.0 — motion (additive)
+
+- Tokens `--movimento-rapido` (120 ms), `--movimento-medio` (180 ms),
+  `--movimento-lento` (240 ms), `--curva-entrada` (decelerate),
+  `--curva-saida` (accelerate, exits), `--curva-padrao`; all 0 under Reduzir
+  movimento (`html[data-movimento="reduzido"]`) and `prefers-reduced-motion`.
+- Shell G: the launcher and the account menu fade and scale from their corner
+  (entries lightly staggered, `.m-menu-escalonado` + `--i`), close faster; the
+  phone drawer slides in over a fading backdrop and slides out (kept mounted
+  after the first open); the current pill and its icon fade between items;
+  the tab underline grows into the new tab; bar buttons, nav items, the
+  primary action and `.m-btn` press to 0.96–0.98; the content fades in
+  slightly on navigation (opacity only, Web Animations, skipped under reduced
+  motion); the Acessibilidade panel slides in from the right.
+- Base UI layers (`.m-pop`, `.m-dialog`, `.m-sheet`, `.m-backdrop`,
+  `.m-painel`) use the tokens; the Dica body fades open.
+- `tests/shell.test.ts` locks it: tokens present, 0 under reduced motion, no
+  layout property animated and no hand-written durations in `css/shell.css`.

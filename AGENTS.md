@@ -1,7 +1,7 @@
 # MUTU@L UI (`@umporg/ui`) — AGENTS.md
 
 > Rules and "where is what" for AI coding agents (`CLAUDE.md` imports this
-> file). Examples, rationale and the per-version notes (v0.2 → v0.13.2) are in
+> file). Examples, rationale and the per-version notes (v0.2 → v0.14.0) are in
 > [docs/guia-detalhado.md](docs/guia-detalhado.md); colour decisions in
 > [docs/identidade-visual.md](docs/identidade-visual.md); the v0.6 adoption
 > survey in [docs/inventario-componentes.md](docs/inventario-componentes.md);
@@ -13,7 +13,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 ## Consuming it (no npm publishing)
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.13.2"   // app package.json — always a tag, never a branch
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.14.0"   // app package.json — always a tag, never a branch
 ```
 
 - Next apps: `transpilePackages: ["@umporg/ui"]`; `app/globals.css`:
@@ -22,7 +22,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 - Root layout: `<html lang="pt-PT" data-app="<id>" suppressHydrationWarning>`.
 - **Release:** bump `version` in `package.json`, commit, `git tag vX.Y.Z`,
   push the tag; then each app bumps its `#vX.Y.Z` ref and regenerates its
-  lockfile. Current: **v0.13.2**.
+  lockfile. Current: **v0.14.0**.
 - Peers: `react`/`react-dom` ≥ 19, `lucide-react`; optional `@base-ui/react`
   ≥ 1.6 < 2 (controls, dates, conversation) and `recharts` ≥ 3.1 (charts).
 
@@ -118,7 +118,12 @@ Changes only to `**/*.md`, `docs/**` or `LICENSE` do not run CI.
    (`SemAcesso`, public pages) `m-canvas` (neutral; content greys are never
    tinted). Page title:
    `text-pagina`. High contrast flattens all of it.
-6. **Scrollbars** are global (`css/rolagem.css`). Never set
+6. **Motion** (v0.14): durations and curves only from the tokens
+   `--movimento-rapido|medio|lento` and `--curva-entrada|saida|padrao`
+   (`css/tokens.css`); only opacity and transform (and colours) move, never
+   layout; exits are faster than entries. Reduzir movimento and the OS
+   setting make them 0 (instant). Never set `ms` by hand in an app.
+7. **Scrollbars** are global (`css/rolagem.css`). Never set
    `scrollbar-width`/`scrollbar-color` in an app. Edge shadows: `m-scroll-x`/
    `m-scroll-y` (CSS) or `<ScrollShadow label>` (client).
 

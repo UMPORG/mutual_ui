@@ -81,8 +81,12 @@
     height: 2.75rem;
     border-radius: 999px;
     color: var(--moldura-foreground);
-    transition: background-color 120ms ease;
+    transition:
+      background-color var(--movimento-rapido) var(--curva-padrao),
+      transform var(--movimento-rapido) var(--curva-padrao);
   }
+  .m-barra-botao:active,
+  .m-barra-util:active { transform: scale(0.96); }
   .m-barra-botao:hover,
   .m-barra-botao:has(+ :popover-open) { background: var(--moldura-hover); }
   .m-barra-botao svg { width: 1.375rem; height: 1.375rem; }
@@ -101,6 +105,9 @@
     text-decoration: none;
     white-space: nowrap;
     flex: none;
+    transition:
+      background-color var(--movimento-rapido) var(--curva-padrao),
+      transform var(--movimento-rapido) var(--curva-padrao);
   }
   .m-barra-util:hover { background: var(--moldura-hover); }
   .m-barra-util svg { width: 1.25rem; height: 1.25rem; color: var(--moldura-muted-foreground); flex: none; }
@@ -146,7 +153,7 @@
     border-radius: 999px;
     background: var(--moldura-procura);
     color: var(--moldura-muted-foreground);
-    transition: background-color 120ms ease, box-shadow 120ms ease;
+    transition: background-color var(--movimento-rapido) var(--curva-padrao), box-shadow var(--movimento-rapido) var(--curva-padrao);
   }
   .m-procura svg { width: 1.25rem; height: 1.25rem; flex: none; }
   .m-procura input {
@@ -234,9 +241,21 @@
     color: var(--moldura-foreground);
     text-align: left;
     text-decoration: none;
-    transition: background-color 120ms ease;
+    /* The current pill fades in (and the old one out) instead of jumping;
+       hover (14%) stays lighter than the pill (20%, bold, icon in the colour). */
+    transition:
+      background-color var(--movimento-medio) var(--curva-padrao),
+      color var(--movimento-medio) var(--curva-padrao),
+      transform var(--movimento-rapido) var(--curva-padrao);
   }
-  .m-nav-item > svg { width: 1.25rem; height: 1.25rem; flex: none; color: var(--moldura-muted-foreground); }
+  .m-nav-item:active { transform: scale(0.98); }
+  .m-nav-item > svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    color: var(--moldura-muted-foreground);
+    transition: color var(--movimento-medio) var(--curva-padrao);
+  }
   .m-nav-item:hover { background: var(--moldura-hover); }
   .m-nav-item[aria-current="page"] {
     background: var(--moldura-selecao);
@@ -280,8 +299,12 @@
     font-weight: 600;
     text-decoration: none;
     box-shadow: 0 1px 3px rgb(20 20 20 / 0.18), 0 4px 10px rgb(20 20 20 / 0.08);
-    transition: box-shadow 160ms ease, background-color 160ms ease;
+    transition:
+      box-shadow var(--movimento-medio) var(--curva-padrao),
+      background-color var(--movimento-medio) var(--curva-padrao),
+      transform var(--movimento-rapido) var(--curva-padrao);
   }
+  .m-acao-principal:active { transform: scale(0.98); }
   .m-acao-principal > svg { width: 1.5rem; height: 1.5rem; flex: none; color: var(--brand); stroke-width: 2.4; }
   .m-acao-principal:hover {
     background: color-mix(in srgb, var(--brand) 6%, var(--card));
@@ -319,7 +342,34 @@
     overflow: hidden;
   }
   .m-gaveta[open] { display: flex; flex-direction: column; }
-  .m-gaveta::backdrop { background: rgb(0 0 0 / 0.5); }
+  /* Slides in from the left over a fading backdrop; leaves faster. */
+  .m-gaveta {
+    transform: translateX(-100%);
+    transition:
+      transform var(--movimento-medio) var(--curva-saida),
+      overlay var(--movimento-medio) allow-discrete,
+      display var(--movimento-medio) allow-discrete;
+  }
+  .m-gaveta[open] {
+    transform: none;
+    transition-duration: var(--movimento-lento);
+    transition-timing-function: var(--curva-entrada);
+  }
+  @starting-style {
+    .m-gaveta[open] { transform: translateX(-100%); }
+  }
+  .m-gaveta::backdrop {
+    background: rgb(0 0 0 / 0.5);
+    opacity: 0;
+    transition:
+      opacity var(--movimento-medio) var(--curva-padrao),
+      overlay var(--movimento-medio) allow-discrete,
+      display var(--movimento-medio) allow-discrete;
+  }
+  .m-gaveta[open]::backdrop { opacity: 1; }
+  @starting-style {
+    .m-gaveta[open]::backdrop { opacity: 0; }
+  }
   .m-gaveta-topo { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.5rem 0.5rem 0.75rem; }
   /* One scroller: the destinations first, then Ajuda, Acessibilidade and
      the account — nothing is squeezed on a short phone. */
@@ -343,6 +393,32 @@
     max-height: calc(100dvh - 1rem);
     overflow-y: auto;
     padding: 0.5rem;
+    /* Fade + scale from the corner of its button (top right); closes faster. */
+    transform-origin: top right;
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+    transition:
+      opacity var(--movimento-rapido) var(--curva-saida),
+      transform var(--movimento-rapido) var(--curva-saida),
+      overlay var(--movimento-rapido) allow-discrete,
+      display var(--movimento-rapido) allow-discrete;
+  }
+  .m-menu-barra:popover-open {
+    opacity: 1;
+    transform: none;
+    transition-duration: var(--movimento-medio);
+    transition-timing-function: var(--curva-entrada);
+  }
+  @starting-style {
+    .m-menu-barra:popover-open { opacity: 0; transform: scale(0.96) translateY(-4px); }
+  }
+  /* The entries follow, lightly staggered (--i set by the component). */
+  .m-menu-barra:popover-open .m-menu-escalonado {
+    animation: m-menu-item var(--movimento-medio) var(--curva-entrada) both;
+    animation-delay: calc(var(--i, 0) * 18ms);
+  }
+  @keyframes m-menu-item {
+    from { opacity: 0; transform: translateY(-3px); }
   }
   .m-menu-item {
     display: flex;
@@ -356,6 +432,7 @@
     color: var(--popover-foreground);
     text-align: left;
     text-decoration: none;
+    transition: background-color var(--movimento-rapido) var(--curva-padrao);
   }
   .m-menu-item:hover { background: var(--accent); }
   .m-menu-item > svg { width: 1.25rem; height: 1.25rem; flex: none; color: var(--muted-foreground); }
@@ -369,24 +446,39 @@
   }
   .m-separadores ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.25rem; }
   .m-separador {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     min-height: 2.75rem;
-    padding: 0.5rem 0.875rem;
-    margin-bottom: -1px;
-    border-bottom: 3px solid transparent;
+    padding: 0.5rem 0.875rem 0.6875rem;
     font-weight: 500;
     color: var(--muted-foreground);
     text-decoration: none;
     white-space: nowrap;
+    transition: color var(--movimento-medio) var(--curva-padrao);
   }
-  .m-separador:hover { color: var(--foreground); border-bottom-color: var(--border); }
+  /* The underline grows into the new tab and shrinks out of the old one
+     (transform only). */
+  .m-separador::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: var(--app-accent);
+    transform: scaleX(0);
+    transition:
+      transform var(--movimento-medio) var(--curva-entrada),
+      background-color var(--movimento-rapido) var(--curva-padrao);
+  }
+  .m-separador:hover { color: var(--foreground); }
+  .m-separador:not([aria-current="page"]):hover::after { background: var(--border); transform: scaleX(1); }
   .m-separador[aria-current="page"] {
     color: var(--foreground);
     font-weight: 650;
-    border-bottom-color: var(--app-accent);
   }
+  .m-separador[aria-current="page"]::after { transform: scaleX(1); }
   .m-separador:focus-visible { outline-offset: -3px; }
 }
 
@@ -396,12 +488,13 @@ html.contraste .m-app-barra { border-bottom: 2px solid #000000; }
 html.contraste .m-procura { border: 2px solid #000000; }
 html.contraste .m-acao-principal { border: 2px solid #000000; box-shadow: none; background: #ffffff; }
 html.contraste .m-acao-principal > svg { color: #000000; }
-html.contraste .m-separador[aria-current="page"] { border-bottom-color: #000000; }
+html.contraste .m-separador[aria-current="page"]::after { background: #000000; }
 html.contraste .m-nav-item:not([aria-current="page"]):hover { text-decoration: underline; }
 html.contraste .m-gaveta { border-right: 2px solid #000000; }
 @media (forced-colors: active) {
   .m-nav-item[aria-current="page"] { outline: 2px solid Highlight; outline-offset: -2px; }
-  .m-separador[aria-current="page"] { border-bottom-color: Highlight; }
+  .m-separador::after { forced-color-adjust: none; }
+  .m-separador[aria-current="page"]::after { background: Highlight; }
   .m-camada { border: 1px solid CanvasText; }
 }
 @media print {
@@ -409,4 +502,32 @@ html.contraste .m-gaveta { border-right: 2px solid #000000; }
   .m-app-barra, .m-app-nav, .m-acao-principal-flutuante, .m-gaveta { display: none !important; }
   .m-app-corpo { display: block; }
   .m-camada { margin: 0; overflow: visible; box-shadow: none; border-radius: 0; }
+}
+
+/* ─── Acessibilidade panel (native <dialog>): slides in from the right ──── */
+.mutual-a11y-dialog {
+  transform: translateX(100%);
+  transition:
+    transform var(--movimento-medio) var(--curva-saida),
+    overlay var(--movimento-medio) allow-discrete,
+    display var(--movimento-medio) allow-discrete;
+}
+.mutual-a11y-dialog[open] {
+  transform: none;
+  transition-duration: var(--movimento-lento);
+  transition-timing-function: var(--curva-entrada);
+}
+@starting-style {
+  .mutual-a11y-dialog[open] { transform: translateX(100%); }
+}
+.mutual-a11y-dialog::backdrop {
+  opacity: 0;
+  transition:
+    opacity var(--movimento-medio) var(--curva-padrao),
+    overlay var(--movimento-medio) allow-discrete,
+    display var(--movimento-medio) allow-discrete;
+}
+.mutual-a11y-dialog[open]::backdrop { opacity: 1; }
+@starting-style {
+  .mutual-a11y-dialog[open]::backdrop { opacity: 0; }
 }

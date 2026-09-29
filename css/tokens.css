@@ -323,3 +323,30 @@
 :where(.bg-sidebar, .bg-nav-background, .m-tinta) :where(.m-canvas, .m-float, .m-surface, .bg-popover, .bg-card, .bg-background) {
   --ring: var(--ring-conteudo);
 }
+
+/* ─── Motion (v0.14) ────────────────────────────────────────────────────
+   One set of durations and curves for every transition of the ecosystem
+   (Fluent / Material: quick, decelerating on enter, faster accelerating on
+   exit). Only opacity and transform move — never layout. Reduzir movimento
+   (html[data-movimento="reduzido"], the Acessibilidade menu) and the OS
+   setting set every duration to 0: state changes are instant. */
+:root {
+  --movimento-rapido: 120ms;
+  --movimento-medio: 180ms;
+  --movimento-lento: 240ms;
+  --curva-entrada: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --curva-saida: cubic-bezier(0.4, 0, 1, 1);
+  --curva-padrao: cubic-bezier(0.3, 0, 0.1, 1);
+}
+html[data-movimento="reduzido"] {
+  --movimento-rapido: 0ms;
+  --movimento-medio: 0ms;
+  --movimento-lento: 0ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --movimento-rapido: 0ms;
+    --movimento-medio: 0ms;
+    --movimento-lento: 0ms;
+  }
+}
