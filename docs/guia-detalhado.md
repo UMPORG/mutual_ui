@@ -1071,3 +1071,5 @@ v0.10.1, not v0.10.0.
 - `EntrarComoDemo` (`destino`, `aoEntrar`): the demonstration's one-click sign-in list, from the
   Cérebro (`GET /api/v1/demo/personas`, `POST /api/v1/demo/entrar`); renders nothing when the
   environment has no demo personas (the routes only exist with `DEMO_MODE=true`).
+
+## v0.11.1 — «Entrar como…»: the group count never wraps (no API change)

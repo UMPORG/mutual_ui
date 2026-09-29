@@ -152,7 +152,7 @@ export function EntrarComoDemo({ destino, aoEntrar, api = "/api/v1", gruposAbert
           <details key={grupo} open={filtro.trim() !== "" || i < gruposAbertos} className="group rounded-lg border border-border">
             <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 rounded-lg px-3 py-2 font-semibold hover:bg-foreground/[0.04] [&::-webkit-details-marker]:hidden">
               <span>{grupo}</span>
-              <span className="text-sm font-normal text-muted-foreground">
+              <span className="shrink-0 text-sm font-normal whitespace-nowrap text-muted-foreground">
                 {pessoas.length} <span aria-hidden className="inline-block transition-transform group-open:rotate-90">›</span>
               </span>
             </summary>
