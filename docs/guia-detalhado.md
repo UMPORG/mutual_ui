@@ -1056,3 +1056,18 @@ what it needs, never loosens the base.
 `next.config.mjs` imports it with Node, which does not strip types under
 `node_modules`. Keep the two files in step (the tests exercise the JS). Use
 v0.10.1, not v0.10.0.
+
+## v0.11.0 — neutral content, readable dark mode, «Entrar como…» (additive)
+
+- Owner (2026-09-29, `/dns` in dark on the demo): the content background was green. Canvas, cards,
+  popovers, secondary/muted/accent, borders, inputs, muted text are now PURE neutral greys in light
+  and dark (`r = g = b`); `--app-canvas-mix` is 0 % (no tinted band). The app identity is the
+  sidebar tint, the 3px top rule and the accents. Shadows/backdrops lost their green cast.
+- Contrast (tests/tokens.test.ts, both themes): body and muted text ≥ 7:1 on background, card,
+  muted and secondary; status, brand and soft pairs ≥ 4.5:1; `--input` (form borders and the switch
+  when off) and `--ring` ≥ 3:1 on card and background.
+- Disabled buttons are a flat neutral button with muted text (≥ 7.4:1) instead of a see-through
+  brand button; a pending (`aria-busy`) button keeps its colour; high contrast: dashed edge.
+- `EntrarComoDemo` (`destino`, `aoEntrar`): the demonstration's one-click sign-in list, from the
+  Cérebro (`GET /api/v1/demo/personas`, `POST /api/v1/demo/entrar`); renders nothing when the
+  environment has no demo personas (the routes only exist with `DEMO_MODE=true`).

@@ -104,3 +104,52 @@ test("DataTable scroller is a containing block (sr-only text cannot widen the pa
   const tabela = readFileSync(new URL("../src/tabela.tsx", import.meta.url), "utf8");
   assert.match(tabela, /"m-tabela-rolo m-scroll-x relative"/);
 });
+
+// ─── Content tokens (v0.11): neutral greys + contrast floor ─────────────
+// Owner (2026-09-29): the content (canvas, cards, borders, muted text,
+// inputs) must be NEUTRAL in every theme — the app identity lives only in
+// the sidebar tint, the top rule and the accents — and readable in dark.
+const NEUTROS = ["--background", "--card", "--popover", "--secondary", "--muted", "--accent", "--border", "--input", "--foreground", "--muted-foreground"];
+for (const [tema, t] of [["claro", raiz], ["escuro", { ...raiz, ...escuroRaiz }]] as const) {
+  test(`content tokens are neutral grey (${tema})`, () => {
+    for (const k of NEUTROS) {
+      const h = t[k]!;
+      assert.ok(h, `${k} declared`);
+      assert.ok(h.slice(1, 3) === h.slice(3, 5) && h.slice(3, 5) === h.slice(5, 7), `${k} ${h} is not neutral`);
+    }
+  });
+  test(`content text and controls keep the contrast floor (${tema})`, () => {
+    const pares: [string, string, number][] = [
+      ["--foreground", "--background", 7],
+      ["--foreground", "--card", 7],
+      ["--muted-foreground", "--background", 7],
+      ["--muted-foreground", "--card", 7],
+      ["--muted-foreground", "--muted", 7],
+      ["--muted-foreground", "--secondary", 7],
+      ["--secondary-foreground", "--secondary", 7],
+      ["--brand", "--card", 4.5],
+      ["--brand", "--background", 4.5],
+      ["--brand-foreground", "--brand", 4.5],
+      ["--brand-soft-foreground", "--brand-soft", 4.5],
+      ["--destructive", "--card", 4.5],
+      ["--destructive-foreground", "--destructive", 4.5],
+      ["--success", "--card", 4.5],
+      ["--warning", "--card", 4.5],
+      ["--info", "--card", 4.5],
+      ["--success-soft-foreground", "--success-soft", 4.5],
+      ["--warning-soft-foreground", "--warning-soft", 4.5],
+      ["--warning-soft-foreground", "--card", 4.5],
+      ["--info-soft-foreground", "--info-soft", 4.5],
+      ["--destructive-soft-foreground", "--destructive-soft", 4.5],
+      // UI components (WCAG 1.4.11): form borders, the switch when off, focus.
+      ["--input", "--card", 3],
+      ["--input", "--background", 3],
+      ["--ring", "--card", 3],
+      ["--ring", "--background", 3],
+    ];
+    for (const [a, b, min] of pares) {
+      const r = contraste(t[a]!, t[b]!);
+      assert.ok(r >= min, `${a} on ${b}: ${r.toFixed(2)} < ${min}`);
+    }
+  });
+}

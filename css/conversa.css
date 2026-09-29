@@ -156,7 +156,7 @@
       radial-gradient(circle at 30% 25%, rgb(255 255 255 / 0.9), transparent 70%),
       linear-gradient(145deg, color-mix(in oklab, var(--flag-green) 22%, var(--card)), color-mix(in oklab, var(--flag-red) 12%, var(--card)));
     border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
-    box-shadow: 0 1px 2px rgb(18 36 26 / 0.08);
+    box-shadow: 0 1px 2px rgb(20 20 20 / 0.08);
   }
   .dark .m-assistente-marca {
     background: linear-gradient(145deg, color-mix(in oklab, var(--flag-green) 20%, var(--card)), color-mix(in oklab, var(--flag-red) 10%, var(--card)));
@@ -192,15 +192,15 @@
     background: var(--card);
     border: 1px solid color-mix(in oklab, var(--input) 70%, var(--border));
     box-shadow:
-      0 1px 2px rgb(18 36 26 / 0.05),
-      0 10px 30px -14px rgb(18 36 26 / 0.22);
+      0 1px 2px rgb(20 20 20 / 0.05),
+      0 10px 30px -14px rgb(20 20 20 / 0.22);
     transition: border-color 160ms ease, box-shadow 160ms ease;
   }
   .m-compositor:focus-within {
     border-color: var(--ring);
     box-shadow:
       0 0 0 4px color-mix(in oklab, var(--ring) 18%, transparent),
-      0 10px 30px -14px rgb(18 36 26 / 0.25);
+      0 10px 30px -14px rgb(20 20 20 / 0.25);
   }
   .m-compositor textarea:focus-visible { outline: none; }
   .dark .m-compositor { box-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -14px rgb(0 0 0 / 0.6); }

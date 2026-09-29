@@ -111,7 +111,7 @@ Changes only to `**/*.md`, `docs/**` or `LICENSE` do not run CI.
 5. **Surfaces:** Button variants → `m-btn m-btn-primary|destructive|outline|secondary|ghost`;
    panels `m-surface` (+ `m-surface-interactive`); popovers/menus/dialogs
    `m-float`; inputs `m-field`; shell/page background `m-canvas` (3px accent
-   rule + light band; opt out with `m-canvas-neutro`). Page title:
+   rule on a neutral canvas since v0.11 — content greys are never tinted). Page title:
    `text-pagina`. High contrast flattens all of it.
 6. **Scrollbars** are global (`css/rolagem.css`). Never set
    `scrollbar-width`/`scrollbar-color` in an app. Edge shadows: `m-scroll-x`/

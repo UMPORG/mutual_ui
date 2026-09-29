@@ -32,7 +32,7 @@
     border: 1px solid color-mix(in oklab, var(--brand) 78%, black);
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.22),
-      0 1px 2px rgb(18 36 26 / 0.22),
+      0 1px 2px rgb(20 20 20 / 0.22),
       0 4px 12px -4px color-mix(in oklab, var(--brand) 55%, transparent);
   }
   .m-btn-primary:hover:not(:disabled) {
@@ -41,7 +41,7 @@
       var(--brand-hover);
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.26),
-      0 2px 4px rgb(18 36 26 / 0.22),
+      0 2px 4px rgb(20 20 20 / 0.22),
       0 8px 20px -6px color-mix(in oklab, var(--brand) 60%, transparent);
   }
   .m-btn-primary:active:not(:disabled) {
@@ -70,8 +70,8 @@
     border: 1px solid color-mix(in oklab, var(--border) 70%, var(--foreground) 12%);
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.7),
-      0 1px 2px rgb(18 36 26 / 0.08),
-      0 2px 6px -3px rgb(18 36 26 / 0.12);
+      0 1px 2px rgb(20 20 20 / 0.08),
+      0 2px 6px -3px rgb(20 20 20 / 0.12);
   }
   .dark .m-btn-outline,
   .dark .m-btn-secondary {
@@ -86,10 +86,28 @@
   }
   .m-btn-outline:active:not(:disabled),
   .m-btn-secondary:active:not(:disabled) {
-    box-shadow: inset 0 2px 3px rgb(18 36 26 / 0.12);
+    box-shadow: inset 0 2px 3px rgb(20 20 20 / 0.12);
   }
 
   .m-btn-ghost { color: var(--foreground); background: transparent; }
+
+  /* Disabled (v0.11): a flat neutral button with muted text (≥ 7.4:1 in
+     both themes) instead of a see-through brand button, which read as a
+     «dim green» nobody could read in dark mode. A pending button
+     (aria-busy, spinner) keeps its colour. */
+  .m-btn:is(:disabled, [aria-disabled="true"]):not([aria-busy="true"]) {
+    color: var(--muted-foreground);
+    background: var(--muted);
+    border: 1px solid var(--border);
+    box-shadow: none;
+    filter: none;
+    cursor: not-allowed;
+  }
+  .m-btn-ghost:is(:disabled, [aria-disabled="true"]):not([aria-busy="true"]) {
+    background: transparent;
+    border-color: transparent;
+  }
+  .m-btn[aria-busy="true"] { opacity: 0.85; }
   .m-btn-ghost:hover:not(:disabled) { background: color-mix(in oklab, var(--foreground) 7%, transparent); }
 
   /* ─── Surfaces ────────────────────────────────────────────────────────── */
@@ -101,8 +119,8 @@
     border-radius: var(--radius-xl, 14px);
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.65),
-      0 1px 2px rgb(18 36 26 / 0.05),
-      0 6px 20px -10px rgb(18 36 26 / 0.14);
+      0 1px 2px rgb(20 20 20 / 0.05),
+      0 6px 20px -10px rgb(20 20 20 / 0.14);
   }
   .dark .m-surface {
     box-shadow:
@@ -119,8 +137,8 @@
     border-color: color-mix(in oklab, var(--app-accent) 35%, var(--border));
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.65),
-      0 2px 4px rgb(18 36 26 / 0.06),
-      0 16px 32px -14px rgb(18 36 26 / 0.22);
+      0 2px 4px rgb(20 20 20 / 0.06),
+      0 16px 32px -14px rgb(20 20 20 / 0.22);
   }
   /* Floating layers: popovers, menus, dialogs. */
   .m-float {
@@ -129,8 +147,8 @@
     border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
     border-radius: var(--radius-xl, 14px);
     box-shadow:
-      0 2px 6px rgb(18 36 26 / 0.08),
-      0 24px 48px -16px rgb(18 36 26 / 0.28);
+      0 2px 6px rgb(20 20 20 / 0.08),
+      0 24px 48px -16px rgb(20 20 20 / 0.28);
   }
   /* Page canvas behind content: a quiet wash of brand light. Since v0.8 it
      also says which app this is: a thin rule in the app accent along the
@@ -177,14 +195,14 @@
   .m-field {
     background: var(--card);
     border: 1px solid var(--input);
-    box-shadow: inset 0 1px 2px rgb(18 36 26 / 0.06);
+    box-shadow: inset 0 1px 2px rgb(20 20 20 / 0.06);
     transition: border-color 160ms ease, box-shadow 160ms ease;
   }
   .m-field:hover { border-color: color-mix(in oklab, var(--input) 70%, var(--foreground)); }
   .m-field:focus-visible,
   .m-field:focus-within {
     border-color: var(--ring);
-    box-shadow: inset 0 1px 2px rgb(18 36 26 / 0.06), 0 0 0 4px color-mix(in oklab, var(--ring) 22%, transparent);
+    box-shadow: inset 0 1px 2px rgb(20 20 20 / 0.06), 0 0 0 4px color-mix(in oklab, var(--ring) 22%, transparent);
   }
 }
 
@@ -199,6 +217,12 @@ html.contraste .m-field {
 }
 html.contraste .m-btn.m-btn-primary:not(.m-btn-ghost) { background: var(--brand); color: #ffffff; border-color: #000000; }
 html.contraste .m-btn.m-btn-destructive:not(.m-btn-ghost) { background: var(--destructive); color: #ffffff; border-color: #000000; }
+/* Disabled in high contrast: plain text with a dashed edge (not see-through). */
+html.contraste .m-btn:not(.m-btn-ghost):is(:disabled, [aria-disabled="true"]):not([aria-busy="true"]) {
+  background: var(--card);
+  color: var(--foreground);
+  border-style: dashed;
+}
 html.contraste .m-canvas { background: var(--background); border-top: 0; }
 @media (forced-colors: active) {
   .m-canvas { border-top-color: CanvasText; }

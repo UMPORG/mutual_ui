@@ -40,7 +40,7 @@ export function buttonClasses({
 }: { variant?: ButtonVariant | undefined; size?: ButtonSize | undefined; iconOnly?: boolean | undefined; className?: string | undefined } = {}): string {
   return cx(
     "m-btn inline-flex shrink-0 items-center justify-center rounded-lg whitespace-nowrap select-none",
-    "disabled:pointer-events-none disabled:opacity-55 aria-disabled:pointer-events-none aria-disabled:opacity-55",
+    "disabled:pointer-events-none aria-disabled:pointer-events-none",
     VARIANTE[variant],
     TAMANHO[size],
     iconOnly ? SO_ICONE[size] : PADDING[size],

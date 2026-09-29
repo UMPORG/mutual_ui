@@ -27,22 +27,26 @@
   --flag-green: #6dba6a;
   --flag-red: #e8393c;
 
-  /* Surfaces and text — warm neutrals, unchanged from v1 so existing
-     contrast audits still hold. */
-  --background: #fafaf9;
-  --foreground: #1c1917;
+  /* Surfaces and text — PURE neutral greys (v0.11, owner 2026-09-29: no
+     green or warm cast in the content, so every app's own colours read
+     true). The app identity lives only in the sidebar tint, the top rule
+     and the accents. tests/tokens.test.ts keeps them neutral (r = g = b)
+     and re-measures: body 17.2:1 on --background, muted 8.1:1 / 8.5:1 on
+     --background / --card, 7.4:1 on --secondary. */
+  --background: #fafafa;
+  --foreground: #171717;
   --card: #ffffff;
-  --card-foreground: #1c1917;
+  --card-foreground: #171717;
   --popover: #ffffff;
-  --popover-foreground: #1c1917;
-  --secondary: #f1f0ee;
-  --secondary-foreground: #292524;
-  --muted: #f5f5f4;
-  --muted-foreground: #4f4b47; /* 7.8:1 on --muted */
-  --accent: #f1f0ee;
-  --accent-foreground: #292524;
-  --border: #d6d3d1;
-  --input: #8f8983; /* form borders: 3.46:1 on white, 3.31:1 on --background (WCAG 1.4.11) */
+  --popover-foreground: #171717;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #262626;
+  --muted: #f4f4f4;
+  --muted-foreground: #4d4d4d; /* 7.7:1 on --muted */
+  --accent: #f0f0f0;
+  --accent-foreground: #262626;
+  --border: #d4d4d4; /* decorative (dividers, card edges); state never relies on it */
+  --input: #8a8a8a; /* form borders: 3.45:1 on white, 3.31:1 on --background (WCAG 1.4.11) */
   --ring: #1f6f36;
   /* The ring of the content (cards, popovers, the canvas) — restored inside
      the dark shell, where --ring is --sidebar-ring (v0.9.2). */
@@ -97,19 +101,21 @@
      accent behind the page header, so the app is obvious even with the
      sidebar collapsed or on a phone. On the band body text keeps ≥ 15:1,
      --muted-foreground ≥ 7.4:1 and brand links ≥ 5.3:1 in every app. */
-  --app-canvas-mix: 5%; /* --app-canvas itself is derived below */
+  /* v0.11: 0% — the content canvas is neutral in every app (owner,
+     2026-09-29); the top rule and the sidebar carry the identity. */
+  --app-canvas-mix: 0%; /* --app-canvas itself is derived below */
   --app-rule-width: 3px;
 
   /* Scrollbars (v0.8, css/rolagem.css). Thumb 3.3:1 on --background,
      3.45:1 on --card; hover 4.8:1. The track stays transparent so the
      surface shows through. "-ink" = on the (tinted) sidebar and nav bar:
      ≥ 3.7:1 on --sidebar, hover ≥ 6.3:1, in every app. */
-  --scroll-thumb: #8b8a88;
-  --scroll-thumb-hover: #706f6d;
+  --scroll-thumb: #8a8a8a;
+  --scroll-thumb-hover: #6f6f6f;
   --scroll-track: transparent;
   --scroll-track-ink: transparent;
   /* Edge shadow that says "there is more this way" (.m-scroll-x / -y). */
-  --scroll-shadow: rgb(18 36 26 / 0.18);
+  --scroll-shadow: rgb(20 20 20 / 0.18);
 
   /* Role (who is signed in) — identical in every app, unchanged from v1. */
   --role-accent: var(--brand);
@@ -117,13 +123,13 @@
 
   /* --chart-1..5 and the chart palette (--serie-*) live in dados.css. */
 
-  --shadow-2xs: 0 1px 2px 0 rgb(18 36 26 / 0.05);
-  --shadow-xs: 0 1px 3px 0 rgb(18 36 26 / 0.08);
-  --shadow-sm: 0 1px 3px 0 rgb(18 36 26 / 0.08), 0 1px 2px -1px rgb(18 36 26 / 0.08);
-  --shadow: 0 4px 10px -2px rgb(18 36 26 / 0.08), 0 2px 4px -2px rgb(18 36 26 / 0.06);
+  --shadow-2xs: 0 1px 2px 0 rgb(20 20 20 / 0.05);
+  --shadow-xs: 0 1px 3px 0 rgb(20 20 20 / 0.08);
+  --shadow-sm: 0 1px 3px 0 rgb(20 20 20 / 0.08), 0 1px 2px -1px rgb(20 20 20 / 0.08);
+  --shadow: 0 4px 10px -2px rgb(20 20 20 / 0.08), 0 2px 4px -2px rgb(20 20 20 / 0.06);
   --shadow-md: var(--shadow);
-  --shadow-lg: 0 12px 24px -6px rgb(18 36 26 / 0.12), 0 4px 8px -4px rgb(18 36 26 / 0.08);
-  --shadow-xl: 0 24px 40px -12px rgb(18 36 26 / 0.18);
+  --shadow-lg: 0 12px 24px -6px rgb(20 20 20 / 0.12), 0 4px 8px -4px rgb(20 20 20 / 0.08);
+  --shadow-xl: 0 24px 40px -12px rgb(20 20 20 / 0.18);
 }
 
 .dark {
@@ -133,20 +139,22 @@
   --brand-soft: #1d3528;
   --brand-soft-foreground: #c9ecc7;
 
-  --background: #151a17;
-  --foreground: #f4f5f3;
-  --card: #1d231f;
-  --card-foreground: #f4f5f3;
-  --popover: #1d231f;
-  --popover-foreground: #f4f5f3;
-  --secondary: #2a322d;
-  --secondary-foreground: #f4f5f3;
-  --muted: #232a25;
-  --muted-foreground: #bcc5bf;
-  --accent: #2a322d;
-  --accent-foreground: #f4f5f3;
-  --border: #3a443e;
-  --input: #6b7770; /* 3.43:1 on --card, 3.77:1 on --background */
+  /* Neutral greys (v0.11): body 16.9:1 on --background, 15.6:1 on --card;
+     muted 10.3 / 9.6 / 8.7:1 on --background / --card / --muted. */
+  --background: #141414;
+  --foreground: #f5f5f5;
+  --card: #1c1c1c;
+  --card-foreground: #f5f5f5;
+  --popover: #1c1c1c;
+  --popover-foreground: #f5f5f5;
+  --secondary: #292929;
+  --secondary-foreground: #f5f5f5;
+  --muted: #242424;
+  --muted-foreground: #c2c2c2;
+  --accent: #292929;
+  --accent-foreground: #f5f5f5;
+  --border: #3d3d3d;
+  --input: #7a7a7a; /* 3.97:1 on --card, 4.29:1 on --background */
   --ring: #7cc97a;
   --ring-conteudo: #7cc97a;
 
@@ -174,11 +182,10 @@
   --app-accent-foreground: #12241a;
   --role-accent-foreground: #1c1917;
 
-  /* Text on the band: body ≥ 13.7:1, muted ≥ 8.4:1, brand ≥ 7.5:1. */
-  --app-canvas-mix: 7%;
+  --app-canvas-mix: 0%;
   /* Thumb 3.6:1 on --background, 3.3:1 on --card; hover 5.6:1. */
-  --scroll-thumb: #6e726f;
-  --scroll-thumb-hover: #909290;
+  --scroll-thumb: #707070;
+  --scroll-thumb-hover: #919191;
   --scroll-shadow: rgb(0 0 0 / 0.55);
 }
 

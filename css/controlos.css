@@ -28,7 +28,7 @@
   .m-backdrop {
     position: fixed;
     inset: 0;
-    background: rgb(12 22 16 / 0.42);
+    background: rgb(10 10 10 / 0.42);
     backdrop-filter: blur(2px);
     transition: opacity 180ms ease;
   }
@@ -121,7 +121,7 @@
   }
   .m-gatilho[data-popup-open] {
     border-color: var(--ring);
-    box-shadow: inset 0 1px 2px rgb(18 36 26 / 0.06), 0 0 0 4px color-mix(in oklab, var(--ring) 22%, transparent);
+    box-shadow: inset 0 1px 2px rgb(20 20 20 / 0.06), 0 0 0 4px color-mix(in oklab, var(--ring) 22%, transparent);
   }
   .m-gatilho[data-disabled],
   .m-field[data-disabled],
@@ -148,7 +148,7 @@
     height: 1.375rem;
     background: var(--card);
     border: 1.5px solid var(--input);
-    box-shadow: inset 0 1px 2px rgb(18 36 26 / 0.08);
+    box-shadow: inset 0 1px 2px rgb(20 20 20 / 0.08);
     color: var(--brand-foreground);
     transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
   }
@@ -159,7 +159,7 @@
   .m-radio[data-checked] {
     background: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0) 60%), var(--brand);
     border-color: color-mix(in oklab, var(--brand) 80%, black);
-    box-shadow: 0 1px 2px rgb(18 36 26 / 0.2);
+    box-shadow: 0 1px 2px rgb(20 20 20 / 0.2);
   }
   .m-item[data-selected] > .m-check-item {
     background: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0) 60%), var(--brand);
@@ -181,8 +181,9 @@
     height: 1.625rem;
     padding: 0.1875rem;
     border-radius: 999px;
-    background: color-mix(in oklab, var(--foreground) 22%, var(--card));
-    box-shadow: inset 0 1px 3px rgb(18 36 26 / 0.18);
+    /* Off: the form-border grey (≥ 3:1 on --card and --background, WCAG 1.4.11). */
+    background: var(--input);
+    box-shadow: inset 0 1px 3px rgb(20 20 20 / 0.18);
     transition: background-color 160ms ease;
   }
   .m-switch[data-checked] { background: var(--brand); }
@@ -195,14 +196,14 @@
     transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   .m-switch[data-checked] .m-switch-polegar { transform: translateX(1.125rem); }
-  .dark .m-switch-polegar { background: #f4f5f3; }
+  .dark .m-switch-polegar { background: #f5f5f5; }
 
   /* Radio cards: the whole card is the radio. */
   .m-radio-cartao {
     border: 1px solid color-mix(in oklab, var(--border) 80%, var(--foreground) 10%);
     background: var(--card);
     border-radius: var(--radius-xl, 14px);
-    box-shadow: 0 1px 2px rgb(18 36 26 / 0.05);
+    box-shadow: 0 1px 2px rgb(20 20 20 / 0.05);
     transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
   }
   .m-radio-cartao:hover:not([data-disabled]) { border-color: color-mix(in oklab, var(--brand) 40%, var(--border)); }
@@ -230,7 +231,7 @@
     padding: 0.25rem;
     border-radius: calc(var(--radius) + 2px);
     background: color-mix(in oklab, var(--foreground) 6%, var(--background));
-    box-shadow: inset 0 1px 2px rgb(18 36 26 / 0.08);
+    box-shadow: inset 0 1px 2px rgb(20 20 20 / 0.08);
     width: fit-content;
     max-width: 100%;
     overflow-x: auto;
@@ -254,7 +255,7 @@
     background: var(--card);
     color: var(--foreground);
     font-weight: 600;
-    box-shadow: 0 1px 2px rgb(18 36 26 / 0.12), 0 2px 8px -4px rgb(18 36 26 / 0.18);
+    box-shadow: 0 1px 2px rgb(20 20 20 / 0.12), 0 2px 8px -4px rgb(20 20 20 / 0.18);
   }
   .dark .m-segmento[data-checked] { background: var(--secondary); }
 
@@ -319,7 +320,7 @@
     width: 100%;
     border-radius: 999px;
     background: color-mix(in oklab, var(--foreground) 14%, var(--card));
-    box-shadow: inset 0 1px 2px rgb(18 36 26 / 0.12);
+    box-shadow: inset 0 1px 2px rgb(20 20 20 / 0.12);
   }
   .m-slider-indicador { height: 100%; border-radius: 999px; background: var(--brand); }
   .m-slider-polegar {
@@ -343,7 +344,7 @@
     line-height: 1.4;
     box-shadow: 0 6px 20px -8px rgb(0 0 0 / 0.45);
   }
-  .dark .m-dica { background: #f4f5f3; color: #12241a; }
+  .dark .m-dica { background: #f5f5f5; color: #12241a; }
 
   /* ─── Kbd ────────────────────────────────────────────────────────────── */
   .m-kbd {
