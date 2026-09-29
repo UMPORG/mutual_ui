@@ -1,8 +1,26 @@
 export * from "./apps";
 export * from "./sso";
 export * from "./brand";
-export * from "./app-switcher";
-export { ShellBarraLateral, ShellMarca, ShellConta, ShellGrupo, classeItemShell, SHELL_LARGURA } from "./shell";
+// v0.13 — shell G: top bar + tinted frame + navigation + one content layer.
+export { LancadorApps, posicionarPopover } from "./app-switcher";
+export {
+  AppShell,
+  NavApp,
+  AcaoPrincipal,
+  MenuConta,
+  ProcuraApp,
+  Separadores,
+  classeItemMenu,
+  classeItemNav,
+  hrefAtivo,
+  iniciais,
+  type AppShellProps,
+  type ItemNavApp,
+  type GrupoNavApp,
+  type AcaoPrincipalApp,
+  type ContaShell,
+  type IconeShell,
+} from "./shell";
 export * from "./page-header";
 export * from "./feedback";
 export { Dica, dicaDispensada, dispensarDica, reporDica, type DicaProps } from "./dicas";

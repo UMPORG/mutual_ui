@@ -18,6 +18,7 @@ export function PageHeader({
   actions,
   breadcrumbs,
   eyebrow,
+  separadores,
   className,
   LinkComponent = "a",
 }: {
@@ -27,6 +28,8 @@ export function PageHeader({
   breadcrumbs?: Crumb[] | undefined;
   /** Small label above the title (e.g. state or category). */
   eyebrow?: ReactNode | undefined;
+  /** Sub-pages of this page as tabs, under the title (`<Separadores …/>`, v0.13). */
+  separadores?: ReactNode | undefined;
   className?: string | undefined;
   /** Pass Next's `Link` for client-side navigation. */
   LinkComponent?: React.ElementType | undefined;
@@ -65,6 +68,7 @@ export function PageHeader({
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
       </div>
+      {separadores && <div className="mt-2">{separadores}</div>}
     </header>
   );
 }

@@ -3,30 +3,50 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 /**
- * v0.8 app shell tints: re-measure every pair documented in css/tokens.css,
- * so nobody can change a tint without keeping the contrast floor
- * (text ≥ 7:1, muted text and the app accent ≥ 4.5:1, flag red ≥ 3:1).
+ * v0.13 shell G: the frame (top bar + navigation) is a neutral grey mixed
+ * with 9% of the app's colour, the current page a pill with 20% (24% dark),
+ * hover and search 14%; the content one neutral layer. Re-measure every pair
+ * in every app, light and dark, mixing exactly as `color-mix(in srgb …)`
+ * does, and keep the app colours apart (OKLCH hue).
  */
 
 const css = readFileSync(new URL("../css/tokens.css", import.meta.url), "utf8");
 
+function canais(hex: string): number[] {
+  return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+}
 function luminancia(hex: string): number {
-  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  const [r, g, b] = canais(hex).map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
   return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
 }
 export function contraste(a: string, b: string): number {
   const [x, y] = [luminancia(a), luminancia(b)];
   return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
 }
+/** color-mix(in srgb, a p, b). */
+export function misturar(a: string, p: number, b: string): string {
+  const [x, y] = [canais(a), canais(b)];
+  return "#" + x.map((v, i) => Math.round((v * p + y[i]! * (1 - p)) * 255).toString(16).padStart(2, "0")).join("");
+}
+/** OKLCH hue in degrees. */
+function matiz(hex: string): number {
+  const [r, g, b] = canais(hex).map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  const l = Math.cbrt(0.4122214708 * r! + 0.5363325363 * g! + 0.0514459929 * b!);
+  const m = Math.cbrt(0.2119034982 * r! + 0.6806995451 * g! + 0.1073969566 * b!);
+  const s = Math.cbrt(0.0883024619 * r! + 0.2817188376 * g! + 0.6299787005 * b!);
+  const A = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
+  const B = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+  return ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360;
+}
 
-/** Every hex custom property declared in the rule(s) whose selector matches. */
+/** Every hex (or %) custom property declared in the rule(s) whose selector matches. */
 function declaracoes(seletor: RegExp): Record<string, string> {
   const out: Record<string, string> = {};
   const re = /([^{}]+)\{([^{}]*)\}/g;
   for (let m; (m = re.exec(css)); ) {
     const sel = m[1]!.replace(/\/\*[\s\S]*?\*\//g, "").trim();
     if (!seletor.test(sel)) continue;
-    for (const d of m[2]!.matchAll(/(--[\w-]+):\s*(#[0-9a-f]{6})/gi)) out[d[1]!] = d[2]!.toLowerCase();
+    for (const d of m[2]!.matchAll(/(--[\w-]+):\s*(#[0-9a-f]{6}|\d+%)/gi)) out[d[1]!] = d[2]!.toLowerCase();
   }
   return out;
 }
@@ -34,31 +54,69 @@ function declaracoes(seletor: RegExp): Record<string, string> {
 const raiz = declaracoes(/^:root$/);
 const escuroRaiz = declaracoes(/^\.dark$/);
 const APPS = ["portal", "backoffice", "eventos", "simplex", "qr", "saude", "dns", "monitor", "assistente", "protocolos"];
+const pct = (t: Record<string, string>, k: string) => parseFloat(t[k]!) / 100;
+
+function tema(app: string, escuro: boolean): Record<string, string> {
+  const claro = { ...raiz, ...declaracoes(new RegExp(`^\\[data-app="${app}"\\]`)) };
+  const t = escuro ? { ...claro, ...escuroRaiz, ...declaracoes(new RegExp(`^\\.dark\\[data-app="${app}"\\]`)) } : claro;
+  // Portal (and Cartão): the accent IS the brand (var(--brand)).
+  if (!t["--app-accent"] || app === "portal") t["--app-accent"] = t["--brand"]!;
+  if (!t["--app-marca"] || app === "portal") t["--app-marca"] = raiz["--brand"]!;
+  const cor = t["--app-accent"]!;
+  t["--moldura"] = misturar(cor, pct(t, "--moldura-mistura"), t["--moldura-base"]!);
+  t["--moldura-hover"] = misturar(cor, pct(t, "--moldura-hover-mistura"), t["--moldura-base"]!);
+  t["--moldura-selecao"] = misturar(cor, pct(t, "--moldura-selecao-mistura"), t["--moldura-base"]!);
+  t["--moldura-procura"] = misturar(cor, pct(t, "--moldura-procura-mistura"), t["--procura-base"]!);
+  return t;
+}
 
 for (const app of APPS) {
-  const claro = { ...raiz, ...declaracoes(new RegExp(`^\\[data-app="${app}"\\]`)) };
-  const escuro = { ...claro, ...escuroRaiz, ...declaracoes(new RegExp(`^\\.dark\\[data-app="${app}"\\]`)) };
-  if (app === "portal") Object.assign(escuro, { "--sidebar-foreground": raiz["--sidebar-foreground"] });
-  for (const [tema, t] of [["claro", claro], ["escuro", escuro]] as const) {
-    test(`${app} (${tema}): the tinted sidebar keeps the contrast floor`, () => {
-      const fundo = t["--sidebar"]!, ativo = t["--sidebar-accent"]!;
-      assert.ok(fundo && ativo, "tint declared");
-      for (const [nome, sobre] of [["--sidebar", fundo], ["--sidebar-accent", ativo]] as const) {
-        assert.ok(contraste(t["--sidebar-foreground"]!, sobre) >= 7, `text on ${nome}`);
-        assert.ok(contraste(t["--sidebar-muted-foreground"]!, sobre) >= 4.5, `muted on ${nome}`);
-        assert.ok(contraste(t["--app-accent-on-ink"]!, sobre) >= 4.5, `accent on ink on ${nome}`);
-        assert.ok(contraste("#7cc97a", sobre) >= 3, `focus ring on ${nome}`);
+  for (const escuro of [false, true]) {
+    const nomeTema = escuro ? "escuro" : "claro";
+    test(`${app} (${nomeTema}): the tinted frame of shell G keeps the contrast floor`, () => {
+      const t = tema(app, escuro);
+      const pares: [string, string, string, string, number][] = [];
+      for (const sup of ["--moldura", "--moldura-hover", "--moldura-selecao", "--moldura-procura"]) {
+        pares.push(["texto", t["--foreground"]!, sup, t[sup]!, 7]);
+        pares.push(["texto suave / títulos dos grupos / sugestão da procura", t["--muted-foreground"]!, sup, t[sup]!, 4.5]);
+        pares.push(["anel de foco", t["--ring"]!, sup, t[sup]!, 3]);
       }
-      assert.ok(contraste("#e8393c", fundo) >= 3, "flag red (logo) on the sidebar");
+      pares.push(["ícone da página atual", t["--app-accent"]!, "--moldura-selecao", t["--moldura-selecao"]!, 3]);
+      pares.push(["glifo branco no azulejo", "#ffffff", "--app-marca", t["--app-marca"]!, 4.5]);
+      pares.push(["traço do separador atual", t["--app-accent"]!, "--camada", t["--camada"]!, 3]);
+      pares.push(["texto na camada", t["--foreground"]!, "--camada", t["--camada"]!, 7]);
+      pares.push(["contador e iniciais do avatar", t["--camada"]!, "--foreground", t["--foreground"]!, 4.5]);
+      const fundoAcao = escuro ? t["--secondary"]! : t["--card"]!;
+      pares.push(["+ verde da ação principal", t["--brand"]!, "ação principal", fundoAcao, 3]);
+      pares.push(["texto da ação principal", t["--foreground"]!, "ação principal", fundoAcao, 7]);
+      if (!escuro) pares.push(["cor da app como texto", t["--app-accent"]!, "--background", t["--background"]!, 4.5]);
+      else pares.push(["cor da app como texto", t["--app-accent"]!, "--card", t["--card"]!, 4.5]);
+      for (const [nome, a, sobre, b, min] of pares) {
+        const r = contraste(a, b);
+        assert.ok(r >= min, `${nome} sobre ${sobre} (${a} / ${b}): ${r.toFixed(2)} < ${min}`);
+      }
     });
   }
 }
 
-test("the tints stay one family: same depth as the MUTU@L ink", () => {
-  const ink = luminancia("#12241a");
-  for (const app of APPS.slice(1)) {
-    const l = luminancia(declaracoes(new RegExp(`^\\[data-app="${app}"\\]`))["--sidebar"]!);
-    assert.ok(Math.abs(l - ink) < 0.006, `${app} sidebar luminance ${l.toFixed(4)} vs ink ${ink.toFixed(4)}`);
+test("the frame is 9% of the app colour, the content layer neutral", () => {
+  assert.equal(raiz["--moldura-mistura"], "9%");
+  for (const t of [raiz, { ...raiz, ...escuroRaiz }]) {
+    const c = t["--camada"]!;
+    assert.ok(c.slice(1, 3) === c.slice(3, 5) && c.slice(3, 5) === c.slice(5, 7), `--camada ${c} is not neutral`);
+  }
+  assert.doesNotMatch(css, /\[data-app="[a-z]+"\][^{]*\{[^}]*--sidebar:/, "no per-app sidebar tints any more");
+});
+
+test("the app colours stay apart: ≥ 30° of OKLCH hue in light, ≥ 28° in dark (DNS is the slate)", () => {
+  for (const escuro of [false, true]) {
+    const lista = APPS.filter((a) => a !== "dns").map((a) => [a, matiz(tema(a, escuro)["--app-accent"]!)] as const);
+    for (let i = 0; i < lista.length; i++)
+      for (let j = i + 1; j < lista.length; j++) {
+        const d = Math.abs(lista[i]![1] - lista[j]![1]);
+        const dist = Math.min(d, 360 - d);
+        assert.ok(dist >= (escuro ? 28 : 30), `${lista[i]![0]} / ${lista[j]![0]} (${escuro ? "escuro" : "claro"}): ${dist.toFixed(0)}°`);
+      }
   }
 });
 

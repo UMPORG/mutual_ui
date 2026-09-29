@@ -4,8 +4,9 @@
  * One brand for the whole ecosystem: every app shares the neutrals, the brand
  * green (from the MUTU@L flag), the type, the radius and the status colours.
  * An app is recognised by its accent (`--app-accent`, set by `data-app` on
- * <html>), used for its mark, its active navigation indicator and its tile in
- * the Portal — never for primary buttons, links or focus.
+ * <html>), used for its tile, the 9% tint of the shell frame (top bar and
+ * navigation, v0.13), the icon of the current page and its tile in the
+ * Portal — never for primary buttons, links or focus.
  *
  * All pairs below meet WCAG AA at the size they are used (most meet AAA).
  * Measured values are next to each pair; re-measure before changing one.
@@ -29,8 +30,7 @@
 
   /* Surfaces and text — PURE neutral greys (v0.11, owner 2026-09-29: no
      green or warm cast in the content, so every app's own colours read
-     true). The app identity lives only in the sidebar tint, the top rule
-     and the accents. tests/tokens.test.ts keeps them neutral (r = g = b)
+     true). The app identity lives only in the frame of the shell (v0.13). tests/tokens.test.ts keeps them neutral (r = g = b)
      and re-measures: body 17.2:1 on --background, muted 8.1:1 / 8.5:1 on
      --background / --card, 7.4:1 on --secondary. */
   --background: #fafafa;
@@ -75,10 +75,9 @@
   --destructive-soft: #fef2f2;
   --destructive-soft-foreground: #7f1d1d;
 
-  /* Shell — the dark "MUTU@L ink" used by the Portal's and the Cartão's dark
-     bars and by any page without `data-app`. Since v0.8 every other app
-     tints it with its own hue (see "App shell tints" below): same depth
-     (OKLCH lightness 0.241), same structure, only the hue changes. */
+  /* The dark "MUTU@L ink": tooltips (.m-dica) and the Cartão's own dark
+     bars. Since v0.13 no app shell is dark — the desk apps use the tinted
+     frame of shell G (--moldura, below). */
   --sidebar: #12241a;
   --sidebar-foreground: #f4f7f4; /* 15:1 */
   --sidebar-muted-foreground: #b8c4bc; /* 9.3:1 */
@@ -95,16 +94,7 @@
   --app-accent: var(--brand);
   --app-accent-foreground: #ffffff;
   --app-accent-soft: var(--brand-soft);
-  --app-accent-on-ink: #7cc97a; /* accent as seen on the dark sidebar */
-  /* App identity in the content area (v0.8), used by .m-canvas: a thin rule
-     in the accent along the top of the canvas and a very light band of the
-     accent behind the page header, so the app is obvious even with the
-     sidebar collapsed or on a phone. On the band body text keeps ≥ 15:1,
-     --muted-foreground ≥ 7.4:1 and brand links ≥ 5.3:1 in every app. */
-  /* v0.11: 0% — the content canvas is neutral in every app (owner,
-     2026-09-29); the top rule and the sidebar carry the identity. */
-  --app-canvas-mix: 0%; /* --app-canvas itself is derived below */
-  --app-rule-width: 3px;
+  --app-accent-on-ink: #7cc97a; /* the accent on a dark surface */
 
   /* Scrollbars (v0.8, css/rolagem.css). Thumb 3.3:1 on --background,
      3.45:1 on --card; hover 4.8:1. The track stays transparent so the
@@ -182,7 +172,6 @@
   --app-accent-foreground: #12241a;
   --role-accent-foreground: #1c1917;
 
-  --app-canvas-mix: 0%;
   /* Thumb 3.6:1 on --background, 3.3:1 on --card; hover 5.6:1. */
   --scroll-thumb: #707070;
   --scroll-thumb-hover: #919191;
@@ -211,88 +200,95 @@
   --dica-ligacao: #a6dca4;
 }
 
-/* ─── App identity ─────────────────────────────────────────────────────────
-   Values kept from identidade-visual v1 so users still recognise their app,
-   except Saúde, whose teal collided with the "Associação" role colour. */
+/* ─── App identity (v0.13: palette re-spaced) ─────────────────────────────
+   Each app is recognised by its colour in the frame of shell G (the top bar
+   and the navigation, tinted 9% — see "Frame" below), its tile and the icon
+   of the current page. v0.13 re-spaced the hues (OKLCH) so no two apps are
+   less than 33° apart (Eventos, Assistente and Saúde, Simplex and
+   Protocolos, Monitorização and the Portal were 17–25° apart):
+     Saúde 355 · Protocolos 29 · Simplex 69 · Monitorização 116 · Portal 149 ·
+     Assistente 187 · Validador QR 223 · Backoffice 264 · Eventos 303,
+     Servidores e DNS = slate (low chroma).
+   `--app-accent` ≥ 5.0:1 on white (light) / the light tone on dark;
+   `--app-marca` = the tile behind the app's white glyph (the light accent in
+   both themes, ≥ 5.0:1 with white). tests/tokens.test.ts measures them. */
 [data-app="backoffice"] { --app-accent: #1d4ed8; --app-accent-soft: #eef4ff; --app-accent-on-ink: #93b4fb; }
-[data-app="eventos"]    { --app-accent: #6d28d9; --app-accent-soft: #f3eefe; --app-accent-on-ink: #c4a8f7; }
-[data-app="simplex"]    { --app-accent: #b45309; --app-accent-soft: #fff4e5; --app-accent-on-ink: #f5b76a; }
+[data-app="eventos"]    { --app-accent: #7a1fc4; --app-accent-soft: #f5edfd; --app-accent-on-ink: #d4a5f9; }
+[data-app="simplex"]    { --app-accent: #9c6100; --app-accent-soft: #fbf3e4; --app-accent-on-ink: #f2bf5e; }
 [data-app="qr"]         { --app-accent: #0e7490; --app-accent-soft: #e7f6fa; --app-accent-on-ink: #7fd3e6; }
-[data-app="saude"]      { --app-accent: #be185d; --app-accent-soft: #fdf0f6; --app-accent-on-ink: #f59ac2; }
-/* Servidores e DNS: slate — 7.6:1 on white, #cbd5e1 10.9:1 on the ink sidebar. */
+[data-app="saude"]      { --app-accent: #b8166e; --app-accent-soft: #fdeff6; --app-accent-on-ink: #f59ecb; }
 [data-app="dns"]        { --app-accent: #475569; --app-accent-soft: #f1f5f9; --app-accent-on-ink: #cbd5e1; }
+[data-app="monitor"]    { --app-accent: #6b7500; --app-accent-soft: #f6f7e4; --app-accent-on-ink: #d9dc6a; }
+[data-app="assistente"] { --app-accent: #0b7a72; --app-accent-soft: #e7f6f4; --app-accent-on-ink: #72dfcf; }
+[data-app="protocolos"] { --app-accent: #b93a2e; --app-accent-soft: #fdf0ee; --app-accent-on-ink: #fca99f; }
 [data-app="portal"],
 [data-app="cartao"]     { --app-accent: var(--brand); }
 
 .dark[data-app="backoffice"], .dark [data-app="backoffice"] { --app-accent: #93b4fb; --app-accent-soft: #172544; }
-.dark[data-app="eventos"],    .dark [data-app="eventos"]    { --app-accent: #c4a8f7; --app-accent-soft: #2a1d45; }
-.dark[data-app="simplex"],    .dark [data-app="simplex"]    { --app-accent: #f5b76a; --app-accent-soft: #3a2a0c; }
+.dark[data-app="eventos"],    .dark [data-app="eventos"]    { --app-accent: #d4a5f9; --app-accent-soft: #2c1c44; }
+.dark[data-app="simplex"],    .dark [data-app="simplex"]    { --app-accent: #f2bf5e; --app-accent-soft: #352a10; }
 .dark[data-app="qr"],         .dark [data-app="qr"]         { --app-accent: #7fd3e6; --app-accent-soft: #0f2f38; }
-.dark[data-app="saude"],      .dark [data-app="saude"]      { --app-accent: #f59ac2; --app-accent-soft: #3a1426; }
+.dark[data-app="saude"],      .dark [data-app="saude"]      { --app-accent: #f59ecb; --app-accent-soft: #3a1429; }
 .dark[data-app="dns"],        .dark [data-app="dns"]        { --app-accent: #cbd5e1; --app-accent-soft: #1e2733; }
+.dark[data-app="monitor"],    .dark [data-app="monitor"]    { --app-accent: #d9dc6a; --app-accent-soft: #29290f; }
+.dark[data-app="assistente"], .dark [data-app="assistente"] { --app-accent: #72dfcf; --app-accent-soft: #0f2e2b; }
+.dark[data-app="protocolos"], .dark [data-app="protocolos"] { --app-accent: #fca99f; --app-accent-soft: #3a1712; }
 
-/* ─── App shell tints (v0.8) ─────────────────────────────────────────────
-   Owner feedback: switching apps "felt like I didn't even change app". Each
-   desk app now wears its own deep sidebar, derived from its accent: OKLCH
-   lightness 0.241 like the MUTU@L ink (0.204 in dark); only the hue (and a
-   little chroma) changes, so the family stays one. The Portal and the Cartão
-   keep the ink green. The mobile top bar (bg-sidebar / bg-nav-background)
-   follows automatically. `--sidebar-primary` is the app's accent on ink
-   (set in :root) and `--sidebar-ring` stays brand green (≥ 8:1 on every
-   tint). Ratios below: text = --sidebar-foreground, muted =
-   --sidebar-muted-foreground, accent = --app-accent-on-ink; each on
-   --sidebar, then on --sidebar-accent (hover and current item). Flag red
-   (the logo) ≥ 3.9:1 on every tint (graphics need 3:1). tests/tokens.test.ts
-   re-measures them and fails below 7 (text) / 4.5 (muted, accent).
-   High contrast replaces all of this with black (preferencias.css). */
-/* Backoffice — navy.        text 15.3 / 12.4, muted 9.3 / 7.6, accent 8.0 / 6.5 */
-[data-app="backoffice"] { --sidebar: #101e3b; --sidebar-accent: #1a2e53; --sidebar-border: #273c65; --sidebar-foreground: #f4f6fa; --sidebar-muted-foreground: #b8c3d7; }
-/* Eventos — aubergine.      text 15.3 / 12.7, muted 9.3 / 7.7, accent 8.1 / 6.7 */
-[data-app="eventos"]    { --sidebar: #221939; --sidebar-accent: #322650; --sidebar-border: #413461; --sidebar-foreground: #f6f5fa; --sidebar-muted-foreground: #c3bfd4; }
-/* Simplex — walnut.         text 15.3 / 12.5, muted 9.3 / 7.6, accent 9.4 / 7.7 */
-[data-app="simplex"]    { --sidebar: #301909; --sidebar-accent: #442712; --sidebar-border: #55351e; --sidebar-foreground: #f9f5f2; --sidebar-muted-foreground: #d0bfb4; }
-/* Validador QR — petrol.    text 15.0 / 12.2, muted 9.2 / 7.4, accent 9.6 / 7.8 */
-[data-app="qr"]         { --sidebar: #00242f; --sidebar-accent: #023543; --sidebar-border: #114453; --sidebar-foreground: #f2f7f9; --sidebar-muted-foreground: #b2c6ce; }
-/* Saúde — wine.             text 15.4 / 12.7, muted 9.3 / 7.7, accent 8.2 / 6.8 */
-[data-app="saude"]      { --sidebar: #341220; --sidebar-accent: #4a1e30; --sidebar-border: #5c2b3e; --sidebar-foreground: #faf4f6; --sidebar-muted-foreground: #d4bbc3; }
-/* Servidores e DNS — slate. text 15.1 / 12.3, muted 9.2 / 7.5, accent 11.0 / 9.0 */
-[data-app="dns"]        { --sidebar: #18202c; --sidebar-accent: #25303f; --sidebar-border: #323e4f; --sidebar-foreground: #f4f6fa; --sidebar-muted-foreground: #bdc3cc; }
-/* Reserved slots for apps not built yet (proposed accents, see
-   docs/identidade-visual.md). Monitor — olive #4d7c0f (5.0:1 on white), on
-   ink #bef264. Assistente — orchid #a21caf (6.3:1 on white), on ink #f0abfc. */
-/* Monitor — moss.           text 15.1 / 12.3, muted 9.3 / 7.5, accent 12.5 / 10.1 */
-[data-app="monitor"]    { --app-accent: #4d7c0f; --app-accent-soft: #f2f7e8; --app-accent-on-ink: #bef264;
-                          --sidebar: #19230b; --sidebar-accent: #273414; --sidebar-border: #344321; --sidebar-foreground: #f5f7f3; --sidebar-muted-foreground: #bec6b5; }
-/* Assistente — plum.        text 15.4 / 12.7, muted 9.3 / 7.7, accent 9.5 / 7.8 */
-[data-app="assistente"] { --app-accent: #a21caf; --app-accent-soft: #faf0fb; --app-accent-on-ink: #f0abfc;
-                          --sidebar: #2d152e; --sidebar-accent: #412143; --sidebar-border: #512f53; --sidebar-foreground: #f8f5f8; --sidebar-muted-foreground: #cdbccd; }
-/* Protocolos — brick.       coral accent #b93a2e (6.0:1 on white), on ink #fca99f. */
-[data-app="protocolos"] { --app-accent: #b93a2e; --app-accent-soft: #fdf0ee; --app-accent-on-ink: #fca99f;
-                          --sidebar: #33150f; --sidebar-accent: #4a241c; --sidebar-border: #5b3127; --sidebar-foreground: #faf5f4; --sidebar-muted-foreground: #d6bdb8; }
+/* The tile colour: the light accent in both themes (white glyph ≥ 5.0:1). */
+:root { --app-marca: var(--brand); }
+[data-app="backoffice"] { --app-marca: #1d4ed8; }
+[data-app="eventos"]    { --app-marca: #7a1fc4; }
+[data-app="simplex"]    { --app-marca: #9c6100; }
+[data-app="qr"]         { --app-marca: #0e7490; }
+[data-app="saude"]      { --app-marca: #b8166e; }
+[data-app="dns"]        { --app-marca: #475569; }
+[data-app="monitor"]    { --app-marca: #6b7500; }
+[data-app="assistente"] { --app-marca: #0b7a72; }
+[data-app="protocolos"] { --app-marca: #b93a2e; }
+[data-app="portal"],
+[data-app="cartao"]     { --app-marca: #1f6f36; }
 
-/* Dark theme: one step deeper (as #0e1a13 is for the ink); foregrounds as in
-   light. Ratios text / muted / accent on --sidebar · on --sidebar-accent. */
-.dark[data-app="backoffice"], .dark [data-app="backoffice"] { --sidebar: #0c162b; --sidebar-accent: #172643; --sidebar-border: #213457; } /* 16.7/10.1/8.7 · 13.9/8.5/7.3 */
-.dark[data-app="eventos"],    .dark [data-app="eventos"]    { --sidebar: #191229; --sidebar-accent: #2a2041; --sidebar-border: #372c54; } /* 16.7/10.1/8.9 · 14.0/8.5/7.4 */
-.dark[data-app="simplex"],    .dark [data-app="simplex"]    { --sidebar: #231307; --sidebar-accent: #382110; --sidebar-border: #492d19; } /* 16.6/10.1/10.2 · 13.9/8.5/8.5 */
-.dark[data-app="qr"],         .dark [data-app="qr"]         { --sidebar: #031a22; --sidebar-accent: #072c37; --sidebar-border: #0e3a47; } /* 16.6/10.1/10.5 · 13.7/8.3/8.7 */
-.dark[data-app="saude"],      .dark [data-app="saude"]      { --sidebar: #260e17; --sidebar-accent: #3d1a28; --sidebar-border: #4f2435; } /* 16.7/10.1/8.9 · 14.0/8.5/7.5 */
-.dark[data-app="dns"],        .dark [data-app="dns"]        { --sidebar: #111720; --sidebar-accent: #1f2834; --sidebar-border: #2b3544; } /* 16.6/10.1/12.1 · 13.8/8.4/10.0 */
-.dark[data-app="monitor"],    .dark [data-app="monitor"]    { --app-accent: #bef264; --app-accent-soft: #1f2a10; --sidebar: #121a08; --sidebar-accent: #212b12; --sidebar-border: #2c391b; } /* 16.6/10.1/13.7 · 13.7/8.4/11.3 */
-.dark[data-app="assistente"], .dark [data-app="assistente"] { --app-accent: #f0abfc; --app-accent-soft: #33163a; --sidebar: #210f22; --sidebar-accent: #351c37; --sidebar-border: #452747; } /* 16.8/10.1/10.3 · 14.1/8.5/8.7 */
-.dark[data-app="protocolos"], .dark [data-app="protocolos"] { --app-accent: #fca99f; --app-accent-soft: #3a1712; --sidebar: #25100c; --sidebar-accent: #3c1c16; --sidebar-border: #4e271f; }
+/* ─── Frame (shell G, v0.13) ─────────────────────────────────────────────
+   Google Workspace structure + Fluent layering (owner, 2026-09-29): the top
+   bar and the navigation share ONE surface, a neutral grey with 9% of the
+   app's colour («cor dinâmica»); the content sits on ONE neutral elevated
+   layer (--camada, rounded 8px). The current page is a pill with 20% (24%
+   in dark) of the colour and its icon in the colour; hover and the search
+   field 14%. Primary buttons stay brand green. Replaces the v0.8 tinted
+   sidebars. tests/tokens.test.ts mixes these exactly as the browser does
+   (sRGB) and measures every pair in every app, light and dark. */
+:root {
+  --moldura-base: #f2f2f2;
+  --procura-base: #f2f2f2;
+  --moldura-mistura: 9%;
+  --moldura-hover-mistura: 14%;
+  --moldura-selecao-mistura: 20%;
+  --moldura-procura-mistura: 14%;
+  --camada: #ffffff;
+}
+.dark {
+  --moldura-base: #1a1a1a;
+  --procura-base: #262626;
+  --moldura-selecao-mistura: 24%;
+  --camada: #141414;
+}
 
 /* ─── Derived per app ───────────────────────────────────────────────────
    Declared on :root AND on every [data-app] element, so a nested app context
-   (Portal tiles, the showcase, ActionCard) recomputes them with its own
-   colours. --sidebar-primary: the app's accent on ink (≥ 8:1 with
-   --sidebar in every app, text on it = --sidebar). */
+   (Portal tiles, the showcase) recomputes them with its own colours. */
 :root,
 [data-app] {
+  --moldura: color-mix(in srgb, var(--app-accent) var(--moldura-mistura), var(--moldura-base));
+  --moldura-hover: color-mix(in srgb, var(--app-accent) var(--moldura-hover-mistura), var(--moldura-base));
+  --moldura-selecao: color-mix(in srgb, var(--app-accent) var(--moldura-selecao-mistura), var(--moldura-base));
+  --moldura-procura: color-mix(in srgb, var(--app-accent) var(--moldura-procura-mistura), var(--procura-base));
+  --moldura-foreground: var(--foreground);
+  --moldura-muted-foreground: var(--muted-foreground);
+  --moldura-selecao-foreground: var(--foreground);
+  /* The icon of the current page, inside the pill (≥ 3:1). */
+  --app-icone-ativo: var(--app-accent);
   --sidebar-primary: var(--app-accent-on-ink);
   --sidebar-primary-foreground: var(--sidebar);
-  --app-canvas: color-mix(in srgb, var(--app-accent) var(--app-canvas-mix), var(--background));
-  --app-rule: var(--app-accent);
   --scroll-thumb-ink: color-mix(in srgb, var(--sidebar-muted-foreground) 55%, var(--sidebar));
   --scroll-thumb-ink-hover: color-mix(in srgb, var(--sidebar-muted-foreground) 80%, var(--sidebar));
 }

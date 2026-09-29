@@ -11,6 +11,8 @@
         var t = q.get("tema") || "claro";
         if (t === "escuro") h.classList.add("dark");
         if (t === "contraste") h.classList.add("contraste");
+        // The Acessibilidade menu (shell page) re-applies the saved choice: save this one.
+        if (q.get("tema")) document.cookie = "mutual_pref=" + encodeURIComponent("t=" + t) + "; path=/";
         h.style.colorScheme = t === "escuro" ? "dark" : "light";
         if (q.get("texto")) h.setAttribute("data-texto", q.get("texto"));
         if (q.get("app")) h.setAttribute("data-app", q.get("app"));

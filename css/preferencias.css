@@ -127,14 +127,24 @@ html.contraste {
   --dica-icone: #000000;
   --dica-ligacao: #0b2a8a;
 }
-/* v0.8: the app shell tints, the canvas band and the accent rule give way
-   to plain black and white — every app looks the same here; the app name
-   under the wordmark still says where you are. These selectors outrank
-   [data-app] and .dark[data-app]. Scrollbars: solid black thumb on white
-   (white on the black sidebar), thicker (css/rolagem.css). */
+/* The frame of shell G (v0.13) and the app colours give way to plain black
+   and white — every app looks the same here; the app name in the top bar
+   still says where you are. The current page is white on black. These
+   selectors outrank [data-app] and .dark[data-app]. Scrollbars: solid black
+   thumb, thicker (css/rolagem.css). */
 html.contraste,
 html.contraste[data-app],
 html.contraste [data-app] {
+  --moldura: #ffffff;
+  --moldura-hover: #e6e6e6;
+  --moldura-selecao: #000000;
+  --moldura-procura: #ffffff;
+  --moldura-foreground: #000000;
+  --moldura-muted-foreground: #000000;
+  --moldura-selecao-foreground: #ffffff;
+  --app-icone-ativo: #ffffff;
+  --app-marca: #000000;
+  --camada: #ffffff;
   --sidebar: #000000;
   --sidebar-foreground: #ffffff;
   --sidebar-muted-foreground: #ffffff;
@@ -147,13 +157,11 @@ html.contraste [data-app] {
   --scroll-thumb-ink-hover: #ffffff;
   --scroll-track-ink: #000000;
   --app-accent-on-ink: #ffffff;
-  /* v0.9.1: nested [data-app] (Portal tiles, app marks) and the role
-     badges also go black on white, so their text keeps ≥ 7:1 here. */
+  /* Nested [data-app] (Portal tiles, app marks) and the role badges also go
+     black on white, so their text keeps ≥ 7:1 here. */
   --app-accent: #000000;
   --app-accent-foreground: #ffffff;
   --app-accent-soft: #ffffff;
-  --app-canvas: #ffffff;
-  --app-rule-width: 0px;
   --scroll-thumb: #000000;
   --scroll-thumb-hover: #000000;
   --scroll-track: #ffffff;

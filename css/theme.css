@@ -5,7 +5,7 @@
  *   @import "@umporg/ui/css/index.css";
  *
  * Gives utilities such as bg-brand, text-success-soft-foreground,
- * border-app-accent, bg-role-accent, text-sidebar-muted-foreground.
+ * border-app-accent, bg-role-accent, bg-moldura, bg-camada.
  */
 
 @theme inline {
@@ -81,8 +81,17 @@
   --color-app-accent-foreground: var(--app-accent-foreground);
   --color-app-accent-soft: var(--app-accent-soft);
   --color-app-accent-on-ink: var(--app-accent-on-ink);
-  --color-app-canvas: var(--app-canvas);
-  --color-app-rule: var(--app-rule);
+  --color-app-marca: var(--app-marca);
+  --color-app-icone-ativo: var(--app-icone-ativo);
+  /* Shell G (v0.13): the tinted frame and the content layer. */
+  --color-moldura: var(--moldura);
+  --color-moldura-hover: var(--moldura-hover);
+  --color-moldura-selecao: var(--moldura-selecao);
+  --color-moldura-procura: var(--moldura-procura);
+  --color-moldura-foreground: var(--moldura-foreground);
+  --color-moldura-muted-foreground: var(--moldura-muted-foreground);
+  --color-moldura-selecao-foreground: var(--moldura-selecao-foreground);
+  --color-camada: var(--camada);
   --color-scroll-thumb: var(--scroll-thumb);
   --color-scroll-thumb-hover: var(--scroll-thumb-hover);
   --color-role-accent: var(--role-accent);

@@ -66,7 +66,8 @@ export function AcessibilidadeMenu({
   declaracaoHref,
   className,
 }: {
-  tone?: "default" | "ink" | undefined;
+  /** "moldura" = on the frame of shell G: the trigger takes only `className`. */
+  tone?: "default" | "ink" | "moldura" | undefined;
   /** Icon-only trigger (the name stays available to screen readers).
    *  "md" = icon only below the md breakpoint, label from md up. */
   compacto?: boolean | "md" | undefined;
@@ -128,15 +129,22 @@ export function AcessibilidadeMenu({
         aria-haspopup="dialog"
         aria-label={compacto ? "Acessibilidade" : undefined}
         title={compacto === true ? "Acessibilidade" : undefined}
-        className={cx(
-          "inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-[0.9375rem] font-medium transition-[background-color,transform] active:scale-[0.97] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring",
-          tone === "ink"
-            ? "text-sidebar-foreground hover:bg-sidebar-accent"
-            : "text-foreground hover:bg-accent",
-          compacto === true && "min-w-11 justify-center px-0",
-          compacto === "md" && "min-w-11 justify-center px-0 md:justify-start md:px-3",
-          className,
-        )}
+        className={
+          tone === "moldura"
+            ? cx(
+                "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                compacto === true && "!w-11 !justify-center !px-0",
+                compacto === "md" && "max-md:!w-11 max-md:!justify-center max-md:!px-0",
+                className,
+              )
+            : cx(
+                "inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-[0.9375rem] font-medium transition-[background-color,transform] active:scale-[0.97] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                tone === "ink" ? "text-sidebar-foreground hover:bg-sidebar-accent" : "text-foreground hover:bg-accent",
+                compacto === true && "min-w-11 justify-center px-0",
+                compacto === "md" && "min-w-11 justify-center px-0 md:justify-start md:px-3",
+                className,
+              )
+        }
       >
         {/* em-sized so it grows with "Tamanho do texto" */}
         <Accessibility aria-hidden className="size-[1.25em] shrink-0" />

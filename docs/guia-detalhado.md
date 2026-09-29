@@ -1125,3 +1125,39 @@ v0.10.1, not v0.10.0.
 
 - The title line, «Fechar a dica», «Saber mais» and «reabrir» are 48 px tall (the
   primary-flow floor of the Cartão and the desk apps), was 44 px. No API change.
+
+## v0.13.0 — shell G and the re-spaced palette (breaking)
+
+Owner decision (2026-09-29, `navegacao-identidade.md`, option G): Google
+Workspace structure + Fluent layering, replacing the v0.8 tinted sidebars.
+
+- **New:** `AppShell` (the whole frame), `NavApp`, `AcaoPrincipal`,
+  `MenuConta`, `ProcuraApp`, `Separadores`, `LancadorApps`,
+  `posicionarPopover`, `hrefAtivo`, `iniciais`, `classeItemMenu`,
+  `classeItemNav`; `PageHeader separadores`; `AcessibilidadeMenu
+  tone="moldura"`; `css/shell.css` (in `css/index.css`, also
+  `@umporg/ui/css/shell.css`).
+- **Removed:** `ShellBarraLateral`, `ShellMarca`, `ShellConta`, `ShellGrupo`,
+  `classeItemShell`, `SHELL_LARGURA`, `AppSwitcher` (→ `LancadorApps` inside
+  `AppShell`), the per-app `--sidebar*` tints, `--app-canvas*`, `--app-rule*`
+  and the accent rule of `.m-canvas` (now neutral, for screens without the
+  shell). The ink `--sidebar*` tokens stay for tooltips and the Cartão.
+- **Tokens:** `--moldura`, `--moldura-hover`, `--moldura-selecao`,
+  `--moldura-procura` (`color-mix` of the app colour at 9 / 14 / 20 (24 dark)
+  / 14 % into `--moldura-base` `#f2f2f2` / `#1a1a1a`), `--moldura-foreground`,
+  `--moldura-muted-foreground`, `--moldura-selecao-foreground`,
+  `--app-icone-ativo`, `--camada` (`#ffffff` / `#141414`), `--app-marca`
+  (tile, light accent in both themes); Tailwind `bg-moldura*`, `bg-camada`,
+  `bg-app-marca`. High contrast: white frame, black pill with white text,
+  2 px black edges.
+- **Palette re-spaced** (OKLCH hue ≥ 33° apart in light): Eventos `#7a1fc4`,
+  Simplex `#9c6100`, Saúde `#b8166e`, Monitorização `#6b7500`, Assistente
+  `#0b7a72` (dark `#d4a5f9`, `#f2bf5e`, `#f59ecb`, `#d9dc6a`, `#72dfcf`).
+  `AppMark` is now the saturated tile with a white glyph in both themes.
+- **Tests:** `tests/tokens.test.ts` mixes the frame like the browser and
+  measures every pair per app and theme, and the hue spacing;
+  `tests/shell.test.ts` covers `hrefAtivo`, `iniciais` and the wiring.
+- **Migrating an app:** replace the sidebar + mobile bar + canvas with one
+  `AppShell`; move sub-pages into `Separadores`; drop app CSS that targets
+  `bg-sidebar`/`m-canvas` in the shell; tour selectors → `[data-shell=…]`.
+  Showcase: `?pagina=shells&app=<id>` (full frame), `&vista=todas` (all apps).

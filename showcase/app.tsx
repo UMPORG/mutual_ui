@@ -85,7 +85,7 @@ const TITULOS: Record<string, [string, string]> = {
   controlos: ["Controlos", "Campos, seleção, datas, menus, diálogos e avisos — v0.7."],
   efeitos: ["Efeitos", "Fundos decorativos com lugar próprio — v0.7."],
   conversa: ["Assistente", "Componentes de conversa do assistente MUTU@L — v0.7."],
-  shells: ["Aplicações", "A barra lateral e o conteúdo de cada aplicação — v0.8."],
+  shells: ["Aplicações", "A moldura de cada aplicação (barra de topo, navegação e camada do conteúdo) — v0.13."],
   rolagem: ["Rolagem", "Barras de rolagem e sombras nas pontas — v0.8."],
   identificadores: ["Identificadores", "Telefones, NIF, código postal e IBAN: mostrar, escrever e validar — v0.8.9."],
   demo: ["Demonstração", "Preencher formulários com dados de exemplo, também dentro de diálogos — v0.8.7."],
@@ -292,10 +292,12 @@ function App() {
     { id: "nome", header: "Associação", cell: (r) => r.nome },
     { id: "associados", header: "Associados", cell: (r) => r.associados, numeric: true },
   ];
+  // v0.13: the shell page IS a whole app frame (AppShell), without the showcase header.
+  if (PAGINA === "shells") return <PaginaShells />;
   if (SO_CONTEUDO)
     return (
       <div className="min-h-dvh bg-background p-4">
-        {PAGINA === "shells" ? <PaginaShells /> : <PaginaRolagem />}
+        <PaginaRolagem />
       </div>
     );
   return (
@@ -313,7 +315,6 @@ function App() {
           {PAGINA === "controlos" && <PaginaControlos />}
           {PAGINA === "efeitos" && <PaginaEfeitos />}
           {PAGINA === "conversa" && <PaginaConversa />}
-          {PAGINA === "shells" && <PaginaShells />}
           {PAGINA === "rolagem" && <PaginaRolagem />}
           {PAGINA === "demo" && <PaginaDemo />}
           {PAGINA === "identificadores" && <PaginaIdentificadores />}

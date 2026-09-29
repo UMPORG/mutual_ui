@@ -35,62 +35,70 @@ explica as decisões; os valores vivem em `css/tokens.css`.
 4. **Estados semânticos partilhados** (`success`, `warning`, `info`,
    `destructive` + variantes `-soft`). Nunca classes de paleta crua para
    estado. Estado = ícone + palavras, nunca só cor.
-5. **Shell escura com o tom de cada app** (v0.8). A barra lateral das apps
-   de secretária é escura em todas, com a mesma profundidade da "MUTU@L ink"
-   (`#12241a`), mas cada app tem o seu tom (azul-noite, beringela, nogueira,
-   petróleo, vinho, ardósia). O Portal e o Cartão mantêm o verde da tinta.
-   Ver "Tons das shells".
+5. **Moldura com a cor da app — shell G** (v0.13, dono 2026-09-29: estrutura
+   do Google Workspace + camadas do Fluent). A barra de topo e a navegação
+   partilham uma superfície cinzenta com **9 %** da cor da app (`--moldura`);
+   o conteúdo assenta numa **só camada neutra** elevada (`--camada`, cantos
+   de 8 px). A cor da app só aparece saturada no azulejo da app, no ícone da
+   página atual (dentro da pílula de 20 %, 24 % no escuro) e no traço do
+   separador atual. Tudo o resto é neutro; botões principais verde-marca;
+   estados com as cores de estado. Substitui as barras laterais escuras da
+   v0.8. Ver "Moldura (shell G)".
 6. **Rótulos sem abreviaturas** (mantido da v1), texto base 16 px, alvos
    ≥ 44 px (48 px nos fluxos principais), WCAG AA em todos os pares (AAA onde
    já estava medido).
 
-## Cores de aplicação (`--app-accent`)
+## Cores de aplicação (`--app-accent`, `--app-marca`)
 
-| App | Claro | Sobre a shell / escuro | Nota |
-| --- | --- | --- | --- |
-| Portal, Cartão Digital | marca `#1f6f36` | `#7cc97a` | |
-| Backoffice | `#1d4ed8` | `#93b4fb` | igual à v1 |
-| Eventos | `#6d28d9` | `#c4a8f7` | igual à v1 |
-| Simplex | `#b45309` | `#f5b76a` | igual à v1 |
-| Validador QR | `#0e7490` | `#7fd3e6` | igual à v1 |
-| Saúde | `#be185d` | `#f59ac2` | **mudou** — o verde-azulado colidia com o perfil Associação |
-| Servidores e DNS | `#475569` (ardósia, 7,6:1 sobre branco) | `#cbd5e1` (10,9:1 sobre a shell) | nova em 2026-09 (v0.6.0) — distinta das outras apps e dos perfis |
-| Monitorização | `#4d7c0f` (musgo, 5,0:1) | `#bef264` | desde v0.9.0 (ADR 0007, `/monitor`) |
-| Assistente (proposta) | `#a21caf` (orquídea, 6,3:1) | `#f0abfc` | reservada em v0.8, app ainda não existe |
+v0.13 voltou a espaçar as cores (pedido do dono: Eventos, Assistente e Saúde
+pareciam iguais, tal como Simplex e Protocolos). Matiz OKLCH: nenhum par de
+apps a menos de **33°** no claro (28° no escuro; antes 17°). O Servidores e
+DNS é a ardósia (pouco croma). `tests/tokens.test.ts` falha se dois tons se
+aproximarem.
 
-## Tons das shells (v0.8)
-
-Pedido do dono: ao mudar de aplicação "parecia que não tinha mudado". Agora
-muda o fundo da barra lateral (e da barra de topo no telemóvel), e o
-conteúdo tem uma linha fina na cor da app no topo e uma faixa muito leve
-dessa cor atrás do cabeçalho da página (`--app-canvas`), para que a mudança
-se veja também com a barra fechada ou no telemóvel.
-
-Regras: a mesma luminosidade OKLCH da tinta (0,241; 0,204 em modo escuro),
-só muda o tom. Texto ≥ 7:1, texto secundário e acento ≥ 4,5:1 sobre a barra
-e sobre o item ativo; vermelho da bandeira ≥ 3,9:1. `tests/tokens.test.ts`
-volta a medir tudo. Em Alto contraste todas as barras ficam pretas e não há
-faixa nem linha.
-
-| App | Barra (claro) | Item ativo | Barra (escuro) | Texto · secundário · acento (barra / item ativo) |
+| App | Claro (azulejo e acento) | Escuro | Matiz | Nota |
 | --- | --- | --- | --- | --- |
-| Portal, Cartão | `#12241a` (tinta) | `#1d3528` | `#0e1a13` | 15,0 · 9,0 · 8,1 / 12,2 · 7,3 · 6,6 |
-| Backoffice | `#101e3b` azul-noite | `#1a2e53` | `#0c162b` | 15,3 · 9,3 · 8,0 / 12,4 · 7,6 · 6,5 |
-| Eventos | `#221939` beringela | `#322650` | `#191229` | 15,3 · 9,3 · 8,1 / 12,7 · 7,7 · 6,7 |
-| Simplex | `#301909` nogueira | `#442712` | `#231307` | 15,3 · 9,3 · 9,4 / 12,5 · 7,6 · 7,7 |
-| Validador QR | `#00242f` petróleo | `#023543` | `#031a22` | 15,0 · 9,2 · 9,6 / 12,2 · 7,4 · 7,8 |
-| Saúde | `#341220` vinho | `#4a1e30` | `#260e17` | 15,4 · 9,3 · 8,2 / 12,7 · 7,7 · 6,8 |
-| Servidores e DNS | `#18202c` ardósia | `#25303f` | `#111720` | 15,1 · 9,2 · 11,0 / 12,3 · 7,5 · 9,0 |
-| Monitor (proposta) | `#19230b` musgo | `#273414` | `#121a08` | 15,1 · 9,3 · 12,5 / 12,3 · 7,5 · 10,1 |
-| Assistente (proposta) | `#2d152e` ameixa | `#412143` | `#210f22` | 15,4 · 9,3 · 9,5 / 12,7 · 7,7 · 7,8 |
+| Portal, Cartão Digital | marca `#1f6f36` | `#7cc97a` | 149° | |
+| Backoffice | `#1d4ed8` | `#93b4fb` | 264° | igual |
+| Eventos | `#7a1fc4` púrpura | `#d4a5f9` | 303° | **mudou** (era `#6d28d9`, 293°) |
+| Simplex | `#9c6100` ocre | `#f2bf5e` | 69° | **mudou** (era `#b45309`, 49°) |
+| Validador QR | `#0e7490` | `#7fd3e6` | 223° | igual |
+| Saúde | `#b8166e` framboesa | `#f59ecb` | 355° | **ajustou** (era `#be185d`, 4°) |
+| Servidores e DNS | `#475569` ardósia | `#cbd5e1` | — | igual |
+| Monitorização | `#6b7500` oliva | `#d9dc6a` | 116° | **mudou** (era `#4d7c0f`, 132°, junto do verde do Portal) |
+| Assistente | `#0b7a72` verde-água | `#72dfcf` | 187° | **mudou** (era `#a21caf`, 324°, junto dos Eventos e da Saúde) |
+| Protocolos | `#b93a2e` tijolo | `#fca99f` | 29° | igual |
 
-Em modo escuro os valores sobem (texto ≥ 16,6:1, secundário ≥ 10,1:1,
-acento ≥ 8,7:1). Na faixa do conteúdo o texto fica ≥ 15:1 (claro) e o texto
-secundário ≥ 7,4:1.
+Todas as cores claras têm ≥ 5,0:1 sobre branco (servem de texto e do
+azulejo com glifo branco). O verde-água do Assistente fica perto do perfil
+«Associação» (`#0f766e`); os perfis só aparecem no crachá de perfil, que as
+apps já não mostram (mostram o nome do perfil).
 
-**Apps que nasceram depois:** Monitorização — musgo `#4d7c0f` (5,0:1 sobre
-branco; sobre a barra `#bef264`; em `MUTUAL_APPS` desde v0.9.0); Assistente —
-orquídea `#a21caf` (6,3:1; sobre a barra `#f0abfc`; desde v0.8.3).
+## Moldura (shell G, v0.13)
+
+Barra de topo e navegação numa só superfície: `color-mix(in srgb, <cor da
+app> 9 %, #f2f2f2)` no claro e `… 9 %, #1a1a1a` no escuro (a cor da app no
+escuro é a clara). Item atual: pílula com 20 % (24 % no escuro), texto a
+negrito e ícone na cor da app. Passar o ponteiro e a procura: 14 %. Conteúdo:
+`--camada` branca (claro) ou `#141414` (escuro), cantos de 8 px, sombra suave.
+
+Medido em todas as apps, claro e escuro (`tests/tokens.test.ts`):
+
+| Par | Mínimo exigido | Pior caso medido |
+| --- | --- | --- |
+| Texto sobre a moldura, a pílula, o hover e a procura | 7:1 | 8,5:1 (Monitorização escuro) |
+| Texto suave, títulos dos grupos e sugestão da procura | 4,5:1 | 5,2:1 (Monitorização escuro) |
+| Anel de foco sobre a moldura, a pílula e a procura | 3:1 | 3,96:1 (Eventos claro) |
+| Ícone da página atual (cor da app) sobre a pílula | 3:1 | 3,5:1 (Monitorização claro) |
+| Glifo branco no azulejo | 4,5:1 | 5,0:1 (Monitorização) |
+| Traço do separador atual sobre a camada | 3:1 | 5,0:1 |
+| Contador e iniciais do avatar | 4,5:1 | 16,9:1 |
+| + verde da ação principal | 3:1 | 6,2:1 |
+
+A moldura contra a camada é informativa (1,2–1,3:1): a separação faz-se pelo
+canto e pela sombra, como no Fluent e no Workspace. Em Alto contraste tudo
+fica preto sobre branco: moldura branca, item atual preto com texto branco,
+camada com contorno de 2 px.
 
 ## Rolagem (v0.8)
 
@@ -137,27 +145,26 @@ há mais conteúdo. Detalhes técnicos em `css/rolagem.css` e no AGENTS.md.
 | App | Público-alvo | Shell |
 | --- | --- | --- |
 | Portal MUTU@L | Equipas da UMP e das associações | Porta de entrada: único login, lançador das apps a que o perfil tem acesso. |
-| Backoffice | Serviços administrativos da UMP e dirigentes das associações | Secretária: barra lateral, tabelas primeiro. |
+| Backoffice | Serviços administrativos da UMP e dirigentes das associações | Secretária (shell G), tabelas primeiro. |
 | Eventos | Organizadores (UMP/associações) e participantes (associados e público) | Site público próprio + área de gestão de secretária. |
 | Validador QR | Funcionários à entrada de eventos e balcões | Ferramenta de ecrã inteiro, estados grandes, sem navegação. |
 | Simplex | Tesoureiros, contabilistas e direções | Secretária; formulários e mapas financeiros. |
 | Saúde | Rececionistas, profissionais de saúde e gestores de clínica | Secretária com seletor de unidade; Balcão como início da receção; navegação para tablet. |
 | Servidores e DNS | Equipa de informática da UMP | Secretária; lista de endereços e servidores, tabelas primeiro. |
 
-Anatomia comum das shells de secretária: logótipo + "MUTU@L" + nome da app →
-"Aplicações" (seletor, abre as outras apps pelo Portal) → navegação agrupada →
-cartão do utilizador (perfil, tema, terminar sessão). Página = cabeçalho de
-página (localização, título, descrição, ações) + conteúdo.
-
-Desde a v0.9.1 as peças são as mesmas em todas as apps de secretária
-(`ShellBarraLateral`, `ShellMarca`, `ShellConta`, `classeItemShell`): barra de
-16 rem, itens de 44 px, item atual com fundo, barra de 3 px e ícone na cor da
-app; no fim quem tem sessão iniciada (nome, perfil, organização),
-Acessibilidade, Ajuda, «Mudar de organização» (quando há mais de uma),
-ligações próprias da app e «Terminar sessão». O «Aplicações» lista sempre as
-mesmas apps pela mesma ordem, com a atual marcada («Está aqui»). O conteúdo
-usa `.m-pagina`: margens de 16 / 24 / 32 px (telemóvel / tablet / secretária),
-32 px no topo e largura máxima de 80 rem.
+Anatomia comum (shell G, v0.13, `AppShell`): **barra de topo** — ☰, azulejo
+da app + «MUTU@L» + nome da app, procura ao centro (quando a app a tem),
+Ajuda e Acessibilidade **com texto**, «Aplicações MUTU@L» (grelha, as mesmas
+apps que o Portal mostra, a atual marcada «Está aqui») e o avatar (nome,
+perfil, organização, «Mudar de organização», «Terminar sessão»);
+**navegação** à esquerda — uma só ação principal grande no topo («+ Criar
+evento»), no máximo 8 destinos em 2–3 grupos curtos com títulos pequenos,
+item atual em pílula; **subpáginas em separadores** na própria página
+(`Separadores`), nunca um segundo nível no menu; **conteúdo** numa só camada
+neutra com `.m-pagina` (margens de 16 / 24 / 32 px, largura máxima de
+80 rem). No telemóvel e no tablet (< 64 rem): barra de topo + gaveta (com
+Ajuda, Acessibilidade e a conta no fim) e a ação principal a flutuar em
+baixo à direita. Alvos de 44–48 px.
 
 ## Um só endereço e sessão única
 

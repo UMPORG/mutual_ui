@@ -85,7 +85,8 @@ export function MutualWordmark({
   );
 }
 
-/** Square app icon in the app's accent colour (Portal tiles, switcher). */
+/** Square app tile: the app's colour (`--app-marca`, the same in light and
+ *  dark) with a white glyph ≥ 4.8:1 — top bar, launcher, Portal tiles. */
 export function AppMark({ app, size = 40, className }: { app: MutualAppId; size?: number | undefined; className?: string | undefined }) {
   const Icon = APP_ICONS[app];
   const style: CSSProperties = { width: size, height: size };
@@ -94,7 +95,7 @@ export function AppMark({ app, size = 40, className }: { app: MutualAppId; size?
       data-app={app}
       style={style}
       className={cx(
-        "inline-flex shrink-0 items-center justify-center rounded-[28%] bg-app-accent text-white shadow-sm dark:text-[#12241a]",
+        "inline-flex shrink-0 items-center justify-center rounded-[28%] bg-app-marca text-white shadow-sm",
         className,
       )}
       aria-hidden

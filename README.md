@@ -15,7 +15,7 @@ DNS, Validador QR).
 ```
 
 ```tsx
-import { MutualWordmark, AppSwitcher, PageHeader, StatusCallout } from "@umporg/ui";
+import { AppShell, ProcuraApp, Separadores, PageHeader, StatusCallout } from "@umporg/ui";
 import { StatCard, StatGroup, Card, CardHeader, DataTable, formatarMoeda } from "@umporg/ui";
 import { GraficoBarras } from "@umporg/ui/graficos"; // needs recharts (optional peer)
 import { portalLoginUrl, safeReturnUrl } from "@umporg/ui/sso";

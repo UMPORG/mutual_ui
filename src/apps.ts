@@ -127,8 +127,8 @@ export function nomeDaApp(id: MutualAppId): string | undefined {
 /**
  * The apps a person can open in the active organisation, in the ecosystem's
  * order: the keys of `apps` from `GET /api/v1/acessos/eu` whose value is not
- * null, plus the Portal (always). The `disponiveis` of `AppSwitcher` /
- * `ShellMarca` — every app uses this one function, so a new app appears in
+ * null, plus the Portal (always). The `disponiveis` of `AppShell` /
+ * `LancadorApps` — every app uses this one function, so a new app appears in
  * every switcher by bumping `@umporg/ui` (v0.9.1). The Validador QR is listed
  * with Eventos, as in the Portal launcher (v0.9.7).
  */

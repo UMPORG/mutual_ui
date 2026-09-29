@@ -1,112 +1,105 @@
 "use client";
 
-import { useId, useRef } from "react";
-import { Check, ChevronDown, LayoutGrid } from "lucide-react";
+import { useId, useRef, type ReactNode } from "react";
+import { Check, LayoutGrid } from "lucide-react";
 import { MUTUAL_APPS, type MutualAppId } from "./apps";
 import { AppMark } from "./brand";
 import { CAMINHOS } from "./sso";
 import { cx } from "./cx";
 
 /**
- * "Mudar de aplicação" — the same menu in every app. Lists the apps the
- * person can use in the active organisation, always in the same order
- * (`MUTUAL_APPS`), the current one included and marked «Está aqui» (v0.9.1:
- * the list is identical in every app), and opens them at their fixed path.
- * With SSO the user lands signed in. Build `disponiveis` with
- * `appsDisponiveis(eu.apps)`.
+ * Places a popover of the top bar under its button, aligned to the button's
+ * right edge (the bar's utilities sit on the right) and kept on screen;
+ * flips above near the bottom edge.
+ */
+export function posicionarPopover(pop: HTMLElement, botao: HTMLElement | null, alinhar: "inicio" | "fim" = "fim") {
+  if (!botao) return;
+  const r = botao.getBoundingClientRect();
+  const h = pop.offsetHeight;
+  const w = pop.offsetWidth;
+  const abaixo = r.bottom + 8 + h <= window.innerHeight;
+  const esquerda = alinhar === "fim" ? r.right - w : r.left;
+  pop.style.top = `${abaixo ? r.bottom + 8 : Math.max(8, r.top - 8 - h)}px`;
+  pop.style.left = `${Math.min(Math.max(8, esquerda), window.innerWidth - w - 8)}px`;
+}
+
+/**
+ * The app launcher of the top bar («Aplicações MUTU@L», the waffle): the
+ * apps the person can use in the active organisation, always in the same
+ * order (`MUTUAL_APPS`) — exactly what the Portal launcher shows — the
+ * current one marked «Está aqui». With one origin (ADR 0004) the person
+ * lands signed in. Build `disponiveis` with `appsDisponiveis(eu.apps)`.
  *
  * Uses the native Popover API (light-dismiss, Esc, top layer) — no deps.
  */
-export function AppSwitcher({
-  current,
+export function LancadorApps({
+  atual,
   disponiveis,
-  tone = "ink",
   className,
-  label = "Aplicações",
+  rotulo = "Aplicações MUTU@L",
+  botao,
 }: {
-  current: MutualAppId;
-  /** Apps the person can open in the active organisation:
-   *  `appsDisponiveis(eu.apps)` (the Validador QR comes with Eventos, v0.9.7;
-   *  the list is exactly what the Portal launcher shows). */
+  atual: MutualAppId;
+  /** `appsDisponiveis(eu.apps)` (the Validador QR comes with Eventos). */
   disponiveis: readonly MutualAppId[];
-  tone?: "ink" | "default" | undefined;
   className?: string | undefined;
-  label?: string | undefined;
+  rotulo?: string | undefined;
+  /** Replaces the icon-only waffle (e.g. a labelled button in a drawer). */
+  botao?: ReactNode | undefined;
 }) {
   const id = useId().replace(/:/g, "");
   const popId = `mutual-apps-${id}`;
-  const apps = MUTUAL_APPS.filter((a) => a.id === current || disponiveis.includes(a.id));
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  // Place the popover under its button (flipping up near the bottom edge).
-  function place(e: React.ToggleEvent<HTMLDivElement>) {
-    if (e.newState !== "open" || !buttonRef.current) return;
-    const pop = e.currentTarget;
-    const r = buttonRef.current.getBoundingClientRect();
-    const h = pop.offsetHeight;
-    const w = pop.offsetWidth;
-    const below = r.bottom + 8 + h <= window.innerHeight;
-    pop.style.top = `${below ? r.bottom + 8 : Math.max(8, r.top - 8 - h)}px`;
-    pop.style.left = `${Math.min(Math.max(8, r.left), window.innerWidth - w - 8)}px`;
-  }
+  const apps = MUTUAL_APPS.filter((a) => a.id === atual || disponiveis.includes(a.id));
+  const botaoRef = useRef<HTMLButtonElement>(null);
 
   return (
     <>
       <button
-        ref={buttonRef}
+        ref={botaoRef}
         type="button"
         popoverTarget={popId}
-        className={cx(
-          "inline-flex min-h-11 items-center gap-2 rounded-md px-3 text-[0.9375rem] font-medium transition-colors",
-          tone === "ink"
-            ? "text-sidebar-foreground hover:bg-sidebar-accent"
-            : "border border-border bg-card text-foreground hover:bg-accent",
-          className,
-        )}
+        aria-label={botao ? undefined : rotulo}
+        data-shell="aplicacoes"
+        className={cx(botao ? "m-barra-util" : "m-barra-botao", className)}
       >
-        <LayoutGrid size={18} aria-hidden />
-        <span>{label}</span>
-        <ChevronDown size={16} aria-hidden className="opacity-70" />
+        {botao ?? <LayoutGrid aria-hidden />}
       </button>
       <div
         id={popId}
         popover="auto"
-        className="fixed m-0 max-h-[calc(100dvh-1rem)] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto m-float p-2"
-        onToggle={place}
+        aria-label={rotulo}
+        className="m-float m-menu-barra"
+        onToggle={(e) => {
+          if (e.newState === "open") posicionarPopover(e.currentTarget, botaoRef.current);
+        }}
       >
-        <p className="px-3 pt-2 pb-1 text-sm font-semibold text-muted-foreground">Mudar de aplicação</p>
+        <p className="px-3 pt-2 pb-1 text-sm font-semibold text-muted-foreground">{rotulo}</p>
         <ul className="flex flex-col">
           {apps.map((a) => {
-            const aqui = a.id === current;
+            const aqui = a.id === atual;
             return (
               <li key={a.id}>
                 <a
                   href={CAMINHOS[a.id]}
                   aria-current={aqui ? "page" : undefined}
-                  className={cx(
-                    "flex min-h-14 items-center gap-3 rounded-lg px-3 py-2 hover:bg-accent focus-visible:bg-accent",
-                    aqui && "bg-accent",
-                  )}
+                  className={cx("m-menu-item min-h-14", aqui && "bg-accent")}
                 >
                   <AppMark app={a.id} size={36} />
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="font-semibold">{a.nome}</span>
-                    <span className="truncate text-sm text-muted-foreground">
+                    <span className="truncate text-sm font-normal text-muted-foreground">
                       {aqui ? "Está aqui" : a.descricao}
                     </span>
                   </span>
-                  {aqui && <Check size={18} aria-hidden className="shrink-0 text-brand" />}
+                  {aqui && <Check aria-hidden className="!text-brand" />}
                 </a>
               </li>
             );
           })}
         </ul>
         <div className="mt-1 border-t border-border pt-1">
-          <a
-            href={CAMINHOS.portal}
-            className="flex min-h-11 items-center gap-2 rounded-lg px-3 font-medium text-brand hover:bg-accent"
-          >
-            <LayoutGrid size={18} aria-hidden />
+          <a href={CAMINHOS.portal} className="m-menu-item font-semibold text-brand">
+            <LayoutGrid aria-hidden className="!text-brand" />
             Todas as aplicações — Portal MUTU@L
           </a>
         </div>

@@ -1,7 +1,7 @@
 # MUTU@L UI (`@umporg/ui`) — AGENTS.md
 
 > Rules and "where is what" for AI coding agents (`CLAUDE.md` imports this
-> file). Examples, rationale and the per-version notes (v0.2 → v0.12.1) are in
+> file). Examples, rationale and the per-version notes (v0.2 → v0.13.0) are in
 > [docs/guia-detalhado.md](docs/guia-detalhado.md); colour decisions in
 > [docs/identidade-visual.md](docs/identidade-visual.md); the v0.6 adoption
 > survey in [docs/inventario-componentes.md](docs/inventario-componentes.md);
@@ -13,7 +13,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 ## Consuming it (no npm publishing)
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.12.1"   // app package.json — always a tag, never a branch
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.13.0"   // app package.json — always a tag, never a branch
 ```
 
 - Next apps: `transpilePackages: ["@umporg/ui"]`; `app/globals.css`:
@@ -22,7 +22,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 - Root layout: `<html lang="pt-PT" data-app="<id>" suppressHydrationWarning>`.
 - **Release:** bump `version` in `package.json`, commit, `git tag vX.Y.Z`,
   push the tag; then each app bumps its `#vX.Y.Z` ref and regenerates its
-  lockfile. Current: **v0.12.1**.
+  lockfile. Current: **v0.13.0**.
 - Peers: `react`/`react-dom` ≥ 19, `lucide-react`; optional `@base-ui/react`
   ≥ 1.6 < 2 (controls, dates, conversation) and `recharts` ≥ 3.1 (charts).
 
@@ -30,7 +30,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 
 | Import | What | Needs |
 | --- | --- | --- |
-| `@umporg/ui` | brand, shell, `PageHeader`, `StatusCallout`, `Dica`, `SemAcesso`, `ServicoIndisponivel`, `AcessibilidadeMenu`, `PreferenciasScript`, `DemoPreencher`, cards, stats, `DataTable` + toolbar/pagination, basic form controls, `Telefone`/`Campo*`, formatters | nothing |
+| `@umporg/ui` | brand, shell G (`AppShell`, `NavApp`, `ProcuraApp`, `Separadores`, `LancadorApps`), `PageHeader`, `StatusCallout`, `Dica`, `SemAcesso`, `ServicoIndisponivel`, `AcessibilidadeMenu`, `PreferenciasScript`, `DemoPreencher`, cards, stats, `DataTable` + toolbar/pagination, basic form controls, `Telefone`/`Campo*`, formatters | nothing |
 | `/controlos` | `Select`, `Combobox`, `MultiSelect`, menus, `Tooltip`, `Popover`, `Dialog`, `ConfirmDialog`, `Sheet`, `Tabs`, `Switch`, `Checkbox`, `RadioGroup`, `NumberField`, `toast`… | `@base-ui/react` |
 | `/datas` · `/calendario` | `Calendar`, `DatePicker`, `DateRangePicker` · pure Lisbon date maths | `@base-ui/react` · nothing |
 | `/graficos` | `GraficoBarras`, `GraficoLinhas`, `GraficoArea`, `GraficoDonut`, `ChartFrame` | `recharts` |
@@ -77,8 +77,11 @@ Changes only to `**/*.md`, `docs/**` or `LICENSE` do not run CI.
 - The main entry never imports Recharts or Base UI; new heavy deps go behind
   a sub-path and an optional peer.
 - Adding an app: `MUTUAL_APPS` (`src/apps.ts`), `CAMINHOS` (`src/sso.ts`),
-  its `[data-app]` accent + sidebar tint in `css/tokens.css` (contrast checked
-  by `tests/tokens.test.ts`: text ≥ 7:1, muted/accent ≥ 4.5:1). Apps with a
+  its `[data-app]` `--app-accent` (light + dark), `--app-accent-soft` and
+  `--app-marca` in `css/tokens.css`, an icon in `APP_ICONS`.
+  `tests/tokens.test.ts` measures the tinted frame in both themes (text ≥ 7:1,
+  muted ≥ 4.5:1, current icon and focus ≥ 3:1, white glyph ≥ 4.5:1) and keeps
+  every app ≥ 30° of OKLCH hue from the others. Apps with a
   `Record<MutualAppId, …>` then need the new id.
 - Every visible string is pt-PT production copy (below). Every new component
   gets a showcase state and, where it is logic, a unit test.
@@ -90,28 +93,30 @@ Changes only to `**/*.md`, `docs/**` or `LICENSE` do not run CI.
 
 1. **One brand:** neutrals, `--brand` `#1f6f36` as `--primary` (buttons,
    links, focus), Geist, radius, shadows, status colours — the same everywhere.
-2. **App accent** (`--app-accent`, from `data-app`): the app mark, the name
-   under the wordmark, the active nav indicator, its Portal tile. Never for
-   primary buttons or status.
+2. **App colour** (`--app-accent`, from `data-app`) goes ONLY on: the 9%
+   tint of the shell frame (`--moldura*`), the app tile (`--app-marca`, white
+   glyph), the icon of the current page in its pill, the current tab's
+   underline and the Portal tile. Never on buttons, links, focus, badges or
+   status — those are neutral, brand green or the status colours.
 
-   Accent light / on ink: `portal`,`cartao` brand `#1f6f36`/`#7cc97a` ·
-   `backoffice` `#1d4ed8`/`#93b4fb` · `eventos` `#6d28d9`/`#c4a8f7` ·
-   `simplex` `#b45309`/`#f5b76a` · `qr` `#0e7490`/`#7fd3e6` · `saude`
-   `#be185d`/`#f59ac2` · `dns` `#475569`/`#cbd5e1` · `monitor` `#4d7c0f`/`#bef264`
-   · `assistente` `#a21caf`/`#f0abfc` · `protocolos` `#b93a2e`/`#fca99f`. Each
-   `[data-app]` also tints the dark desk sidebar (`--sidebar*`; Portal/Cartão
-   keep the MUTU@L ink `#12241a`). All values: `css/tokens.css`.
+   Light / dark (v0.13 re-spaced, ≥ 33° apart): `portal`,`cartao` brand
+   `#1f6f36`/`#7cc97a` · `backoffice` `#1d4ed8`/`#93b4fb` · `eventos`
+   `#7a1fc4`/`#d4a5f9` · `simplex` `#9c6100`/`#f2bf5e` · `qr`
+   `#0e7490`/`#7fd3e6` · `saude` `#b8166e`/`#f59ecb` · `dns` `#475569`/`#cbd5e1`
+   · `monitor` `#6b7500`/`#d9dc6a` · `assistente` `#0b7a72`/`#72dfcf` ·
+   `protocolos` `#b93a2e`/`#fca99f`. All values: `css/tokens.css`.
 
 3. **Role colours** (`data-role`, only on the user's role badge): admin
    `#881337`, associação `#0f766e`, eventos `#3730a3`, saúde `#9d174d`.
 4. **Status is semantic:** `success`, `warning`, `info`, `destructive` (+
    `-soft`/`-soft-foreground`); always icon + words. No raw palette classes
-   (`bg-green-100`…) and no hex in apps — never hard-code the ink either; use
-   `bg-sidebar`, `bg-sidebar-accent`, `text-sidebar-*`, `text-app-accent-on-ink`.
+   (`bg-green-100`…) and no hex in apps. The frame is `bg-moldura` (+
+   `-hover`, `-selecao`, `-procura`), the content layer `bg-camada`.
 5. **Surfaces:** Button variants → `m-btn m-btn-primary|destructive|outline|secondary|ghost`;
    panels `m-surface` (+ `m-surface-interactive`); popovers/menus/dialogs
-   `m-float`; inputs `m-field`; shell/page background `m-canvas` (3px accent
-   rule on a neutral canvas since v0.11 — content greys are never tinted). Page title:
+   `m-float`; inputs `m-field`; full-page screens without the shell
+   (`SemAcesso`, public pages) `m-canvas` (neutral; content greys are never
+   tinted). Page title:
    `text-pagina`. High contrast flattens all of it.
 6. **Scrollbars** are global (`css/rolagem.css`). Never set
    `scrollbar-width`/`scrollbar-color` in an app. Edge shadows: `m-scroll-x`/
@@ -119,8 +124,11 @@ Changes only to `**/*.md`, `docs/**` or `LICENSE` do not run CI.
 
 ## One family, shells per audience
 
-Same anatomy everywhere: wordmark → app switcher → navigation → account block
-at the bottom; page = `PageHeader` + content.
+**Shell G** (v0.13, owner 2026-09-29: Google Workspace structure + Fluent
+layering) — one `AppShell` for every desk app, the same anatomy everywhere:
+top bar (tile + «MUTU@L» + app name, search, Ajuda, Acessibilidade, launcher,
+account) → navigation (one primary action, grouped destinations) → ONE
+content layer; page = `PageHeader` (+ `separadores`) + content.
 
 | App | Audience | Shell |
 | --- | --- | --- |
@@ -132,16 +140,30 @@ at the bottom; page = `PageHeader` + content.
 | Validador QR | Staff at the door | Full-screen tool, big result states, no navigation |
 | Cartão Digital | Associados | Own host (`CARTAO_URL_PRODUCAO`), not in `CAMINHOS`/`MUTUAL_APPS` |
 
-**Desk shell = the shared pieces, no local variants** (`src/shell.tsx`):
-`ShellBarraLateral` (`w-64`, `bg-sidebar`), `ShellMarca app disponiveis …`
-(wordmark + «Aplicações» switcher), `classeItemShell(ativo)` (48px items),
-`ShellGrupo`, `ShellConta` (who is signed in, Acessibilidade, Ajuda, «Mudar
-de organização», `extra`, «Terminar sessão»; `declaracaoHref`; tour targets
-`[data-shell="conta|acessibilidade|ajuda|organizacao|sair"]`). Content column:
-`.m-pagina` (`m-pagina-larga` without max width).
-`disponiveis = appsDisponiveis(eu.apps)` from `GET /api/v1/acessos/eu` — the
-same set and order as the Portal launcher; apps keep no own app lists. Show the
-**profile name** (`apps.<app>.nome`) and organisation, never a login role.
+**`AppShell` = the whole frame, no local variants** (`src/shell.tsx`,
+`css/shell.css`): `app`, `caminhoAtual` (`usePathname()`), `LinkComponent`,
+`disponiveis` (launcher), `conta` (`{ nome, perfil, organizacao,
+variasOrganizacoes, onTerminarSessao, aTerminar, extra }` → avatar menu),
+`navegacao` (`GrupoNavApp[]`: `{ titulo?, itens: { href, rotulo, icone,
+contador?, externo?, ativo? }[] }`; current = longest matching href,
+`hrefAtivo`), `acaoPrincipal` (`{ rotulo, href | onClick }`), `procura`
+(`<ProcuraApp rotulo action|onProcurar/>`), `antesDaNavegacao`/
+`depoisDaNavegacao` (e.g. a unit selector), `barraExtra`, `ajudaHref`,
+`declaracaoHref`. It renders `<main id="conteudo-principal">` (the scroller,
+back to the top on every navigation); wrap pages in `.m-pagina`
+(`m-pagina-larga` without max width). Below 64rem: drawer + floating action.
+Tour targets `[data-shell="menu|navegacao|acao-principal|ajuda|
+acessibilidade|aplicacoes|conta|organizacao|sair"]`. Screens without
+navigation (Validador QR, Portal launcher) omit `navegacao`; public screens
+omit `conta`/`disponiveis`.
+
+**Navigation rules (every app):** ≤ 8 destinations in 2–3 short groups with
+small titles; ONE primary action; sub-pages are **tabs on the page**
+(`<Separadores rotulo itens caminhoAtual LinkComponent/>`, in
+`PageHeader separadores`), never a second menu level; links to another
+MUTU@L app are `externo` (↗). `disponiveis = appsDisponiveis(eu.apps)` from
+`GET /api/v1/acessos/eu` — the same set and order as the Portal launcher.
+Show the **profile name** and organisation, never a login role.
 
 ## SSO, one origin, Cérebro, security, monitoring
 
