@@ -1169,3 +1169,12 @@ Workspace structure + Fluent layering, replacing the v0.8 tinted sidebars.
   `<main>` (AppShell) and landmarks must not nest.
 - The identity link of the top bar keeps a space between «MUTU@L» and the app
   name, so its accessible name is «MUTU@L Backoffice» in every engine.
+
+## v0.13.2 — one current entry (no API change)
+
+- `NavApp` and `Separadores` mark exactly ONE entry as current
+  (`hrefAtualDoMenu`): when an app marks an entry `ativo: true` (a section that
+  owns several paths), nothing is inferred any more, so a prefix such as
+  «/admin» (Início) no longer lights up next to it. Hover (14% of the app
+  colour, normal weight) stays visibly different from the current pill (20%,
+  bold, icon in the app colour).

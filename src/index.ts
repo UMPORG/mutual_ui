@@ -13,6 +13,7 @@ export {
   classeItemMenu,
   classeItemNav,
   hrefAtivo,
+  hrefAtualDoMenu,
   iniciais,
   type AppShellProps,
   type ItemNavApp,

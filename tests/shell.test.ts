@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { ajudaDaApp, hrefAtivo, iniciais } from "../src/shell-nav.ts";
+import { ajudaDaApp, hrefAtivo, hrefAtualDoMenu, iniciais } from "../src/shell-nav.ts";
 
 test("hrefAtivo: the longest matching entry wins; tabs keep their page current", () => {
   const hrefs = ["/admin", "/admin/associacoes", "/admin/caracterizacao", "/admin/licencas"];
@@ -19,6 +19,20 @@ test("hrefAtivo: a root «/» is current only on itself; no false prefix matches
   assert.equal(hrefAtivo(["/", "/eventos"], "/formacoes"), null);
   assert.equal(hrefAtivo(["/admin/kpi"], "/admin/kpis"), null);
   assert.equal(hrefAtivo(["/admin/kpis/"], "/admin/kpis?ano=2026#topo"), "/admin/kpis/");
+});
+
+test("hrefAtualDoMenu: one current entry — an explicit one beats a prefix like «/admin»", () => {
+  const menu = [
+    { href: "/admin" },
+    { href: "/admin/associacoes" },
+    { href: "/admin/caracterizacao/campanhas", ativo: true },
+    { href: "/protocolos", externo: true },
+  ];
+  assert.equal(hrefAtualDoMenu(menu, "/admin/caracterizacao/respostas"), "/admin/caracterizacao/campanhas");
+  const semExplicito = menu.map((i) => ({ ...i, ativo: i.href.includes("caracterizacao") ? false : undefined }));
+  assert.equal(hrefAtualDoMenu(semExplicito, "/admin/associacoes/3"), "/admin/associacoes");
+  assert.equal(hrefAtualDoMenu(semExplicito, "/admin/caracterizacao/respostas"), "/admin");
+  assert.equal(hrefAtualDoMenu([{ href: "/protocolos", externo: true }], "/protocolos"), null);
 });
 
 test("iniciais: first and last name, without particles", () => {

@@ -16,10 +16,10 @@ import { LancadorApps, posicionarPopover } from "./app-switcher";
 import { nomeDaApp, type AppNoEndereco, type MutualAppId } from "./apps";
 import { AppMark } from "./brand";
 import { CAMINHOS } from "./sso";
-import { ajudaDaApp, hrefAtivo, iniciais } from "./shell-nav";
+import { ajudaDaApp, hrefAtualDoMenu, iniciais } from "./shell-nav";
 import { cx } from "./cx";
 
-export { hrefAtivo, iniciais } from "./shell-nav";
+export { hrefAtivo, hrefAtualDoMenu, iniciais } from "./shell-nav";
 
 /**
  * Shell G (v0.13) — the frame of every MUTU@L desk app (owner, 2026-09-29:
@@ -66,7 +66,7 @@ export interface ItemNavApp {
   contadorRotulo?: string | undefined;
   /** Opens another MUTU@L app (an ↗ after the label; plain <a>, full load). */
   externo?: boolean | undefined;
-  /** Forces the current state; by default the longest matching `href` (`hrefAtivo`). */
+  /** Marks the current entry; with none marked, the longest matching `href` (`hrefAtualDoMenu`: only ONE entry is ever current). */
   ativo?: boolean | undefined;
   /** Tour/test hooks (`{ "data-tour": "associacoes" }`). */
   atributos?: Readonly<Record<`data-${string}`, string>> | undefined;
@@ -200,8 +200,9 @@ export function NavApp({
   className?: string | undefined;
 }) {
   const baseId = useId();
-  const hrefs = grupos.flatMap((g) => g.itens.filter((i) => !i.externo).map((i) => i.href));
-  const atual = hrefAtivo(hrefs, caminhoAtual);
+  // Exactly one current entry (v0.13.2): `hrefAtualDoMenu` never infers a prefix
+  // («/admin») next to an entry the app marked itself.
+  const atual = hrefAtualDoMenu(grupos.flatMap((g) => g.itens), caminhoAtual);
   return (
     <div className={cx("flex flex-col", className)}>
       {acaoPrincipal && <AcaoPrincipal acao={acaoPrincipal} LinkComponent={LinkComponent} onNavegar={onNavegar} />}
@@ -218,7 +219,7 @@ export function NavApp({
               )}
               <ul aria-labelledby={g.titulo ? tituloId : undefined}>
                 {g.itens.map((item) => {
-                  const ativo = item.ativo ?? (!item.externo && item.href === atual);
+                  const ativo = !item.externo && item.ativo !== false && item.href === atual;
                   const Icone = item.icone;
                   return (
                     <li key={item.href}>
@@ -406,12 +407,12 @@ export function Separadores({
   className?: string | undefined;
 }) {
   const L = LinkComponent;
-  const atual = caminhoAtual === undefined ? null : hrefAtivo(itens.map((i) => i.href), caminhoAtual);
+  const atual = caminhoAtual === undefined ? itens.find((i) => i.ativo === true)?.href ?? null : hrefAtualDoMenu(itens, caminhoAtual);
   return (
     <nav aria-label={rotulo} className={cx("m-separadores m-scroll-x", className)}>
       <ul>
         {itens.map((i) => {
-          const ativo = i.ativo ?? i.href === atual;
+          const ativo = i.ativo !== false && i.href === atual;
           return (
             <li key={i.href}>
               <L href={i.href} aria-current={ativo ? "page" : undefined} className="m-separador">

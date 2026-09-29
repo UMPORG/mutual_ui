@@ -29,6 +29,25 @@ export function hrefAtivo(hrefs: readonly string[], caminho: string): string | n
   return melhor;
 }
 
+/**
+ * The ONE current entry of a menu. An app may mark entries itself (`ativo`: a
+ * section that owns several paths, its tabs); then nothing is inferred, so a
+ * prefix like «/admin» (Início) never lights up next to it (v0.13.2). Without
+ * any explicit `ativo: true`, the longest matching href of the entries that
+ * leave `ativo` undefined wins; links to other apps never do.
+ */
+export function hrefAtualDoMenu(
+  itens: readonly { href: string; ativo?: boolean | undefined; externo?: boolean | undefined }[],
+  caminho: string,
+): string | null {
+  const explicito = itens.find((i) => i.ativo === true);
+  if (explicito) return explicito.href;
+  return hrefAtivo(
+    itens.filter((i) => i.ativo === undefined && !i.externo).map((i) => i.href),
+    caminho,
+  );
+}
+
 /** Initials for the account avatar: first and last name («Ana Maria Martins» → «AM»). */
 export function iniciais(nome: string): string {
   const partes = nome
