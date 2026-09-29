@@ -1045,3 +1045,10 @@ what it needs, never loosens the base.
   Portal link on it: the Portal depends on the Cérebro too.
 - CI: `.github/workflows/ci.yml` (GitHub-hosted): typecheck, tests, audit and
   the showcase build.
+
+## v0.10.1 — `@umporg/ui/seguranca` is JavaScript (no API change)
+
+`src/seguranca.js` + `src/seguranca.d.ts` instead of TypeScript: the apps'
+`next.config.mjs` imports it with Node, which does not strip types under
+`node_modules`. Keep the two files in step (the tests exercise the JS). Use
+v0.10.1, not v0.10.0.

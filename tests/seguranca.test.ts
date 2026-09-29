@@ -8,7 +8,7 @@ import {
   NONCE_CABECALHO,
   politicaCsp,
   politicaPermissoes,
-} from "../src/seguranca.ts";
+} from "../src/seguranca.js";
 
 const diretivas = (csp: string) =>
   Object.fromEntries(
