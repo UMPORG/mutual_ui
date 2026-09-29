@@ -1,11 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Sparkles, Wand2, X } from "lucide-react";
 import { cx } from "./cx";
 import { escolherDoca, type DocaDemo, type Retangulo } from "./demo-doca";
 import { SeccaoEntrarComo, usePersonasDemo } from "./demo-entrar";
+import { gruposAcoesDemo, ouvirAcoesDemo, registarAcoesDemo, type AcaoDemo, type GrupoAcoesDemo } from "./demo-acoes";
+
+const SEM_GRUPOS: readonly GrupoAcoesDemo[] = [];
+
+/**
+ * Registers a group of demo-only actions of the page (sample codes, sample
+ * identifications, «repor dados»…) in the floating «Demonstração» widget while
+ * the component is mounted. Pass `null` outside demo mode. The group is
+ * re-registered when its identity changes (memoise it).
+ */
+export function useAcoesDemo(grupo: GrupoAcoesDemo | null): void {
+  useEffect(() => (grupo ? registarAcoesDemo(grupo) : undefined), [grupo]);
+}
 
 /**
  * Demonstration mode: fill forms with example data.
@@ -323,7 +336,8 @@ function Flutuante({
   abertoRef.current = aberto;
   const fundoRef = useRef<number | null>(null);
   const entrarComo = usePersonasDemo(!escondido);
-  const contagem = forms.length + (entrarComo ? 1 : 0);
+  const grupos = useSyncExternalStore(ouvirAcoesDemo, gruposAcoesDemo, () => SEM_GRUPOS);
+  const contagem = forms.length + (entrarComo ? 1 : 0) + grupos.length;
 
   // Dock away from the focused element and the forms' last actions.
   useEffect(() => {
@@ -405,6 +419,11 @@ function Flutuante({
     setAviso(`«${cenario.nome}» aplicado (${n} ${n === 1 ? "campo" : "campos"}).`);
   };
 
+  const executar = async (acao: AcaoDemo) => {
+    fechar();
+    await acao.executar();
+  };
+
   // The panel opens above the pill; from the middle of the edge it opens at the corner.
   const docaVisivel: DocaDemo = aberto && doca === "meio" ? "fim" : doca;
 
@@ -439,7 +458,9 @@ function Flutuante({
               <p className="text-sm text-muted-foreground">
                 {entrarComo
                   ? "Entre como uma pessoa de exemplo ou preencha os formulários com dados de exemplo."
-                  : "Preencha os formulários desta página com dados de exemplo."}
+                  : grupos.length > 0 && forms.length === 0
+                    ? "Experimente esta página com exemplos."
+                    : "Preencha os formulários desta página com dados de exemplo."}
               </p>
             </div>
             <button
@@ -453,11 +474,30 @@ function Flutuante({
           </div>
           {contagem === 0 ? (
             <p className="rounded-lg bg-muted px-3 py-3 text-[0.9375rem] text-muted-foreground">
-              Não há formulários com dados de exemplo nesta página.
+              Não há exemplos para esta página.
             </p>
           ) : (
             <div className="flex max-h-[min(60vh,calc(100dvh-12rem))] flex-col gap-4 overflow-y-auto">
               {entrarComo && <SeccaoEntrarComo contexto={entrarComo.contexto} personas={entrarComo.personas} />}
+              {grupos.map((g) => (
+                <section key={g.id} className="flex flex-col gap-2" data-demo-acoes={g.id}>
+                  <h3 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">{g.titulo}</h3>
+                  {g.descricao && <p className="text-[0.9375rem] text-muted-foreground">{g.descricao}</p>}
+                  {g.acoes.map((a) => (
+                    <button
+                      key={a.id}
+                      type="button"
+                      data-cenario=""
+                      disabled={a.desativada}
+                      onClick={() => void executar(a)}
+                      className="m-btn m-btn-outline flex min-h-12 w-full shrink-0 flex-col items-start rounded-lg px-3.5 py-2 text-left whitespace-normal disabled:opacity-60"
+                    >
+                      <span className="font-semibold">{a.nome}</span>
+                      {a.descricao && <span className="text-sm font-normal text-muted-foreground">{a.descricao}</span>}
+                    </button>
+                  ))}
+                </section>
+              ))}
               {forms.map((id) => (
                 <section key={id} className="flex flex-col gap-2">
                   <h3 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
@@ -496,10 +536,14 @@ function Flutuante({
         <Wand2 aria-hidden className="size-[1.25em]" />
         <span className="sr-only">
           Demonstração
-          {entrarComo && " (Entrar como…"}
-          {forms.length > 0 &&
-            `${entrarComo ? ", " : " ("}${forms.length} ${forms.length === 1 ? "formulário" : "formulários"}`}
-          {contagem > 0 && ")"}
+          {contagem > 0 &&
+            ` (${[
+              entrarComo ? "Entrar como…" : "",
+              grupos.length > 0 ? grupos.map((g) => g.titulo).join(", ") : "",
+              forms.length > 0 ? `${forms.length} ${forms.length === 1 ? "formulário" : "formulários"}` : "",
+            ]
+              .filter(Boolean)
+              .join(", ")})`}
         </span>
         {contagem > 0 && (
           <span

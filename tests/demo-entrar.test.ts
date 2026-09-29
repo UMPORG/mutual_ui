@@ -52,3 +52,22 @@ test("agruparPersonas keeps the order of the groups and filters without accents"
   assert.deepEqual(agruparPersonas(lista, "TESOUREIRO")[0]![1].map((p) => p.id), ["b"]);
   assert.deepEqual(agruparPersonas(lista, "ninguém"), []);
 });
+
+test("registarAcoesDemo: register, replace by id, unregister only its own group", async () => {
+  const { registarAcoesDemo, gruposAcoesDemo, ouvirAcoesDemo } = await import("../src/demo-acoes.ts");
+  let avisos = 0;
+  const parar = ouvirAcoesDemo(() => avisos++);
+  const acoes = [{ id: "x", nome: "X", executar: () => {} }];
+  const a = registarAcoesDemo({ id: "g", titulo: "A", acoes });
+  const b = registarAcoesDemo({ id: "h", titulo: "B", acoes });
+  assert.deepEqual(gruposAcoesDemo().map((g) => g.titulo), ["A", "B"]);
+  const a2 = registarAcoesDemo({ id: "g", titulo: "A2", acoes });
+  assert.deepEqual(gruposAcoesDemo().map((g) => g.titulo), ["A2", "B"]);
+  a(); // stale unregister: the replaced group is gone already
+  assert.equal(gruposAcoesDemo().length, 2);
+  a2();
+  b();
+  assert.equal(gruposAcoesDemo().length, 0);
+  assert.equal(avisos, 5);
+  parar();
+});

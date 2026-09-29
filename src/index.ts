@@ -16,12 +16,14 @@ export {
   DemoPreencher,
   preencherFormulario,
   registarPreenchedor,
+  useAcoesDemo,
   type CatalogoDemo,
   type CenarioDemo,
   type ValorDemo,
 } from "./demo-preencher";
 export { registarEntrarComo, type ContextoEntrarComo, type PersonaDemo } from "./demo-entrar-dados";
 export { useEntrarComoDemo } from "./demo-entrar";
+export { registarAcoesDemo, type AcaoDemo, type GrupoAcoesDemo } from "./demo-acoes";
 export * from "./formatar";
 export * from "./dados";
 export * from "./cartao";

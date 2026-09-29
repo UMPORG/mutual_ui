@@ -1,7 +1,7 @@
 # MUTU@L UI (`@umporg/ui`) — AGENTS.md
 
 > Rules and "where is what" for AI coding agents (`CLAUDE.md` imports this
-> file). Examples, rationale and the per-version notes (v0.2 → v0.11.2) are in
+> file). Examples, rationale and the per-version notes (v0.2 → v0.11.3) are in
 > [docs/guia-detalhado.md](docs/guia-detalhado.md); colour decisions in
 > [docs/identidade-visual.md](docs/identidade-visual.md); the v0.6 adoption
 > survey in [docs/inventario-componentes.md](docs/inventario-componentes.md);
@@ -13,7 +13,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 ## Consuming it (no npm publishing)
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.11.2"   // app package.json — always a tag, never a branch
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.11.3"   // app package.json — always a tag, never a branch
 ```
 
 - Next apps: `transpilePackages: ["@umporg/ui"]`; `app/globals.css`:
@@ -22,7 +22,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 - Root layout: `<html lang="pt-PT" data-app="<id>" suppressHydrationWarning>`.
 - **Release:** bump `version` in `package.json`, commit, `git tag vX.Y.Z`,
   push the tag; then each app bumps its `#vX.Y.Z` ref and regenerates its
-  lockfile. Current: **v0.11.2**.
+  lockfile. Current: **v0.11.3**.
 - Peers: `react`/`react-dom` ≥ 19, `lucide-react`; optional `@base-ui/react`
   ≥ 1.6 < 2 (controls, dates, conversation) and `recharts` ≥ 3.1 (charts).
 
@@ -247,6 +247,17 @@ Desk apps (Backoffice, Simplex, Saúde, DNS): no backdrops on work pages; only
 `PontosFundo` on page-level empty states and `MomentoSucesso` after submissions.
 
 ## Demo mode (`DEMO_MODE=true`, server env, never in production)
+
+**Everything demo-only lives in the floating «Demonstração» widget** (owner
+rule, 2026-09-29): if the widget is visible, the app is in demonstration mode —
+no «Demonstração»/«Modo de demonstração» badges, pills, chips, banners, notices
+(«dados fictícios», «ambiente de demonstração»…) or demo-only panels/buttons on
+the pages. Demo-only things that are not forms (sample codes, sample
+identifications, «repor dados»…) register as widget actions with
+`useAcoesDemo({ id, titulo, acoes: [{ id, nome, descricao?, desativada?, executar }] })`
+(or `registarAcoesDemo`; memoise the group, pass `null` outside demo). Real
+states that are not the demo (e.g. DNS «Modo simulado» from `DNS_MODO`) are not
+covered by this rule.
 
 Each app renders `<DemoPreencher ativo cenarios={…} />` once in the root
 layout. Forms carry `data-demo-form="<id>"` and named fields; scenarios live

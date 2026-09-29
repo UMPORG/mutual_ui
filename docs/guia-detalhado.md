@@ -210,6 +210,10 @@ its root layout:
   fixed bottom navigation bar lifts the pill with `--demo-fundo` (v0.8.8,
   e.g. `:root { --demo-fundo: 4.5rem }` on phones). No other app-specific
   demo padding or offsets.
+- Nothing demo-related on the pages themselves (v0.11.3): no badges, pills,
+  banners or notices saying «Demonstração» — the widget being visible is the
+  signal. Demo-only actions that are not forms go into the widget with
+  `useAcoesDemo(grupo | null)` (see v0.11.3 below).
 
 ### `PreferenciasScript` must run before the first paint
 
@@ -1085,3 +1089,15 @@ v0.10.1, not v0.10.0.
   `POST /api/v1/demo/entrar`; a 404/empty list shows no section.
 - `EntrarComoDemo` and `EntrarComoDemoProps` are removed (apps: delete the inline panel and its
   «ou com email e palavra-passe» divider). Persona buttons carry `data-persona="<id>"` for e2e.
+
+## v0.11.3 — demo-only page actions move into the «Demonstração» widget
+
+- New `useAcoesDemo(grupo | null)` / `registarAcoesDemo(grupo)`: a page
+  registers a group `{ id, titulo, descricao?, acoes: [{ id, nome, descricao?,
+  desativada?, executar }] }` and the widget lists it as a section of its panel
+  (between «Entrar como…» and the forms; the pill's count includes it). The
+  panel closes before `executar` runs. Memoise the group; pass `null` outside
+  demo mode.
+- Owner rule: everything demo-related lives in the widget — apps drop their
+  «Demonstração» badges/pills, «Modo de demonstração» labels, demo notices and
+  demo panels (QR sample codes, Saúde sample identifications now use this).
