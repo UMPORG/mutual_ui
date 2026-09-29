@@ -526,8 +526,8 @@ export function AppShell({
     <Link href={inicioHref} onClick={onClick} className="m-app-identidade">
       <AppMark app={app} size={38} />
       <span className="m-app-nomes">
-        <small>MUTU@L</small>
-        <strong>{nome}</strong>
+        {/* The space keeps «MUTU@L Backoffice» as the link's name. */}
+        <small>MUTU@L</small> <strong>{nome}</strong>
       </span>
     </Link>
   );

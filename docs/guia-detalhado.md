@@ -1161,3 +1161,11 @@ Workspace structure + Fluent layering, replacing the v0.8 tinted sidebars.
   `AppShell`; move sub-pages into `Separadores`; drop app CSS that targets
   `bg-sidebar`/`m-canvas` in the shell; tour selectors → `[data-shell=…]`.
   Showcase: `?pagina=shells&app=<id>` (full frame), `&vista=todas` (all apps).
+
+## v0.13.1 — fixes (no API change)
+
+- `ChatLayout` no longer renders `<main>`/`<aside>`: a `<div>` and a labelled
+  `<section>` (the list of conversations), because it lives inside the app's
+  `<main>` (AppShell) and landmarks must not nest.
+- The identity link of the top bar keeps a space between «MUTU@L» and the app
+  name, so its accessible name is «MUTU@L Backoffice» in every engine.
