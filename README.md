@@ -6,7 +6,7 @@ MUTU@L application (Portal, Backoffice, Eventos, Simplex, Saúde, Servidores e
 DNS, Validador QR).
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.8.2"
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.10.1"
 ```
 
 ```css
@@ -28,5 +28,5 @@ import { ChatLayout, MessageList, Composer } from "@umporg/ui/conversa";
 
 Next.js apps must add `transpilePackages: ["@umporg/ui"]`.
 
-See [AGENTS.md](AGENTS.md) for the visual identity (v2), the shell per
-audience, the UX rules and the SSO contract.
+See [AGENTS.md](AGENTS.md) for the rules (visual identity v2, the shell per
+audience, UX, SSO, security headers) and [docs/guia-detalhado.md](docs/guia-detalhado.md) for examples and version notes.
