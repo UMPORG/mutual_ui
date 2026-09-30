@@ -12,7 +12,8 @@
  *   than `minAltura`, the chat takes the mirrored corner on the same edge
  *   (the person's chosen corner comes back as soon as there is room).
  * - At phone width it is a bottom sheet (`folha`): full width, anchored to
- *   the bottom edge, stacked above a widget docked at the bottom.
+ *   the bottom edge, stacked above a widget docked at the bottom; a widget
+ *   higher up (mid-edge) caps its height when a useful sheet is left.
  */
 
 export type CantoChat = "inf-dir" | "inf-esq" | "sup-dir" | "sup-esq";
@@ -169,7 +170,14 @@ export function posicaoDoChat(canto: CantoChat, o: OpcoesPosicao): PosicaoChat {
     for (const r of [...ocupados].sort((a, b) => b.y + b.h - (a.y + a.h))) {
       if (r.w > 0 && r.h > 0 && r.y + r.h + folga > fundo - minAltura && r.y < fundo) fundo = Math.min(fundo, r.y - folga);
     }
-    const h = Math.max(0, Math.min(o.tamanho.h, fundo - topo));
+    // Something higher up (the «Demonstração» pill docked mid-edge) caps the
+    // sheet's height, as long as a useful sheet is left (v0.18.2).
+    let teto = topo;
+    for (const r of ocupados) {
+      const base = r.y + r.h;
+      if (r.w > 0 && r.h > 0 && base + folga <= fundo && base + folga > teto && fundo - (base + folga) >= minAltura) teto = base + folga;
+    }
+    const h = Math.max(0, Math.min(o.tamanho.h, fundo - teto));
     return { x: 0, y: fundo - h, w: vw, h, canto, folha: true };
   }
   const margem = o.margem ?? 20;

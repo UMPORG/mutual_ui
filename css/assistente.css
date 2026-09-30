@@ -71,6 +71,13 @@
     border-bottom: 1px solid var(--border);
     background: color-mix(in oklab, var(--muted) 45%, transparent);
   }
+  /* The page/section name: shares the line with «Abrir no Assistente» when
+     it fits; with the page tools («O que falta?», «Com um documento») it has
+     a line of its own and the tools wrap below it (v0.18.2). */
+  .m-chat-contexto { min-width: 0; flex: 1 1 10rem; padding: 0.25rem 0; }
+  .m-chat-contexto[data-linha] { flex-basis: 100%; padding-bottom: 0; }
+  .m-chat-flutuante:focus { outline: none; }
+
   .m-chat-acao,
   .m-chat-preencher.m-btn {
     display: inline-flex;

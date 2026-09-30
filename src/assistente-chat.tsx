@@ -3,7 +3,11 @@
 /**
  * `@umporg/ui/assistente` (v0.18) — the floating assistant chat.
  *
- *   <AppShell … assistente={eu.assistenteNaPagina ? <ChatFlutuante app="simplex" LinkComponent={Link} /> : undefined}>
+ *   <AppShell … assistente={eu.assistenteNaPagina ? <ChatFlutuante app="simplex" /> : undefined}>
+ *
+ * The links in a reply (sources, markdown) are paths from the MUTU@L root
+ * (`/ajuda/…`, `/ir/…`), so they are always plain `<a>` — a router link
+ * would put the app's basePath in front (v0.18.2).
  *
  * Mounted by `AppShell` (it survives client navigation) and portalled to
  * `<body>`. Opened by «Assistente» in the top bar. The window:
@@ -94,6 +98,11 @@ export type { EntradaContexto, CampoContexto, ContextoPagina } from "./assistent
 export interface ChatFlutuanteProps {
   /** The app it is in (the page context and the conversation's origin). */
   app: AppNoEndereco;
+  /**
+   * @deprecated Ignored since v0.18.2: the links in a reply are paths from
+   * the MUTU@L root and are always plain `<a>` (a router `Link` would add
+   * the app's basePath — `/backoffice/ajuda/…`).
+   */
   LinkComponent?: ElementType | undefined;
   /** Default `/api/v1/assistente` (same origin). */
   api?: string | undefined;
@@ -168,7 +177,7 @@ function botaoDoAssistente(): HTMLElement | null {
   return document.querySelector<HTMLElement>('[data-shell="assistente"]');
 }
 
-function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMINHOS.assistente, aberto }: ChatFlutuanteProps & { aberto: boolean }) {
+function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMINHOS.assistente, aberto }: ChatFlutuanteProps & { aberto: boolean }) {
   const f: Fetch = useMemo(() => fetcher ?? ((i: string, init?: RequestInit) => fetch(i, init)), [fetcher]);
   const { canto, conversaId } = useEstadoChat();
   const registo = useRegistoPosicoes();
@@ -259,16 +268,46 @@ function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, ender
   }, [aberto, estado, conversaId, aResponder, f, api]);
 
   // Focus: the message box when it opens; «Assistente» when it closes.
+  // On the first open the message box is still disabled (GET /estado is
+  // loading): the window itself takes the focus (so Esc works) and the box
+  // gets it as soon as it can, unless the person moved the focus meanwhile.
   const primeiraVez = useRef(true);
+  const focoPendente = useRef(false);
+  const focarCaixa = useCallback(() => {
+    const raiz = raizRef.current;
+    if (!raiz || raiz.hidden) return;
+    const ativo = document.activeElement;
+    const livre = !ativo || ativo === document.body || ativo === raiz || ativo === botaoDoAssistente();
+    if (!livre) {
+      focoPendente.current = false;
+      return;
+    }
+    const alvo = raiz.querySelector<HTMLElement>("textarea:not(:disabled), [data-foco-inicial]");
+    if (alvo) {
+      alvo.focus();
+      focoPendente.current = false;
+    } else if (ativo !== raiz) {
+      raiz.focus();
+    }
+  }, []);
   useEffect(() => {
     if (primeiraVez.current) {
       primeiraVez.current = false;
       if (!aberto) return;
     }
-    if (aberto) {
-      requestAnimationFrame(() => raizRef.current?.querySelector<HTMLElement>("textarea, [data-foco-inicial]")?.focus());
+    focoPendente.current = aberto;
+    if (aberto) requestAnimationFrame(focarCaixa);
+  }, [aberto, focarCaixa]);
+  // The box became usable (state loaded, a document attached) or an error replaced it.
+  const caixaDisponivel = !!estado && !erroEstado;
+  useEffect(() => {
+    if (!aberto || !focoPendente.current) return;
+    if (erroEstado) {
+      focoPendente.current = false;
+      return;
     }
-  }, [aberto]);
+    if (caixaDisponivel) requestAnimationFrame(focarCaixa);
+  }, [aberto, caixaDisponivel, erroEstado, focarCaixa]);
 
   const minimizar = useCallback(() => {
     mudarChat({ aberto: false });
@@ -480,6 +519,9 @@ function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, ender
   const linkAssistente = `${enderecoAssistente.replace(/\/$/, "")}${conversaId ? `/c/${conversaId}` : ""}`;
   const ctxDestaApp = ctxPagina && ctxPagina.contexto.app === app ? ctxPagina : null;
   const nomeContexto = ctxDestaApp ? [ctxDestaApp.contexto.pagina, ctxDestaApp.contexto.seccao].filter(Boolean).join(" · ") : "";
+  const temFalta = !!ctxDestaApp?.contexto.formulario && pode("dados");
+  const temDocumento = !!ctxDestaApp?.contexto.alvo && !!ctxDestaApp.aoAplicar && pode("ficheiros") && pode("preencher");
+  const ferramentasPagina = temFalta || temDocumento;
   const bloqueado = estado?.limiteAtingido
     ? estado.limiteAtingido === "pessoa"
       ? "Chegou ao limite de perguntas de hoje. Pode voltar a perguntar amanhã."
@@ -494,10 +536,13 @@ function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, ender
       id={ID_CHAT_FLUTUANTE}
       role="dialog"
       aria-modal="false"
+      tabIndex={-1}
       aria-labelledby={tituloId}
       hidden={!aberto}
       data-canto={pos.canto}
       data-folha={pos.folha ? "" : undefined}
+      // The «Demonstração» pill docks at the bottom while the sheet is open; the sheet stacks above it.
+      data-demo-folha={pos.folha ? "" : undefined}
       data-arrastar={arrasto ? "" : undefined}
       data-animar={animar && !arrasto ? "" : undefined}
       onTransitionEnd={(e) => {
@@ -543,20 +588,21 @@ function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, ender
 
       <div className="m-chat-barra">
         {nomeContexto ? (
-          <p className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
+          // With the page tools the name gets its own line (never cut to «C…»).
+          <p className="m-chat-contexto truncate text-sm text-muted-foreground" data-linha={ferramentasPagina ? "" : undefined} title={nomeContexto}>
             <span className="sr-only">Página atual: </span>
             {nomeContexto}
           </p>
         ) : (
           <span className="flex-1" />
         )}
-        {ctxDestaApp?.contexto.formulario && pode("dados") && (
+        {temFalta && (
           <button type="button" className="m-chat-acao" onClick={verFalta}>
             <ListChecks aria-hidden />
             O que falta?
           </button>
         )}
-        {ctxDestaApp?.contexto.alvo && ctxDestaApp.aoAplicar && pode("ficheiros") && pode("preencher") && (
+        {temDocumento && ctxDestaApp?.contexto.alvo && ctxDestaApp.aoAplicar && (
           <PreencherComDocumento
             alvo={ctxDestaApp.contexto.alvo}
             nomeFormulario={nomeContexto || "este formulário"}
@@ -633,7 +679,6 @@ function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, ender
                 return (
                   <ChatMessage
                     message={m}
-                    LinkComponent={LinkComponent}
                     thinking={ultima && m.status === "streaming" ? { steps: passos } : undefined}
                     onFeedback={
                       m.role === "assistant" && m.status === "done" && !m.id.startsWith("resposta-")

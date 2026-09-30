@@ -205,10 +205,17 @@ function movimentoReduzido(): boolean {
 
 const SELETOR_ACOES = ':is(button, a[href], input[type="submit"], input[type="button"], input[type="reset"])';
 
-/** What the pill must not cover: the focused element, the forms' last actions, `data-demo-evitar`. */
+/**
+ * What the pill must not cover: the focused element, the forms' last actions, `data-demo-evitar`.
+ * While a bottom sheet marked `data-demo-folha` is open (the floating assistant at phone width),
+ * nothing: the page behind it is hidden anyway and the sheet stacks above the pill docked at the
+ * bottom (v0.18.2) — a pill mid-edge would sit on the sheet or leave it too short.
+ */
 function obstaculos(raiz: HTMLElement | null): Retangulo[] {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
+  const folha = document.querySelector("[data-demo-folha]");
+  if (folha && folha.getBoundingClientRect().height > 0) return [];
   const out: Retangulo[] = [];
   const vistos = new Set<Element>();
   const juntar = (el: Element, grandeOk = false) => {

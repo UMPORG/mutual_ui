@@ -141,6 +141,20 @@ test("phone width: a full-width bottom sheet, above a demo pill at the bottom", 
   assert.equal(p.y + p.h, pilula.y - 12);
 });
 
+test("phone width: a demo pill docked mid-edge caps the sheet (never covered)", () => {
+  const tel = { w: 390, h: 844 };
+  const meio: Retangulo = { x: 326, y: 398, w: 48, h: 48 };
+  const p = posicaoDoChat("inf-dir", { tamanho: CHAT, viewport: tel, topo: 56, ocupados: [meio] });
+  assert.equal(p.folha, true);
+  assert.equal(sobreposicao(p, meio), 0);
+  assert.equal(p.y, 398 + 48 + 12);
+  assert.equal(p.y + p.h, 844);
+  // Too little room left below it: the sheet keeps its useful height.
+  const baixo: Retangulo = { x: 326, y: 600, w: 48, h: 48 };
+  const q = posicaoDoChat("inf-dir", { tamanho: CHAT, viewport: tel, topo: 56, ocupados: [baixo] });
+  assert.ok(q.h >= 280);
+});
+
 test("uniao: the footprint around several rectangles; empty ones ignored", () => {
   assert.deepEqual(uniao([{ x: 10, y: 10, w: 10, h: 10 }, { x: 0, y: 30, w: 5, h: 5 }, { x: 99, y: 99, w: 0, h: 0 }]), { x: 0, y: 10, w: 20, h: 25 });
   assert.equal(uniao([]), null);

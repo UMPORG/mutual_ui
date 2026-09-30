@@ -1355,7 +1355,7 @@ Two causes, both here:
 
 ## v0.18.0 — the floating assistant (additive)
 
-- `AppShell` takes `assistente` (a node): pass `<ChatFlutuante app="…" LinkComponent={Link} />`
+- `AppShell` takes `assistente` (a node): pass `<ChatFlutuante app="…" />` (no `LinkComponent`, see v0.18.2)
   from the new entry `@umporg/ui/assistente` (needs `@base-ui/react`) only when
   `GET /api/v1/acessos/eu` says `assistenteNaPagina: true` (capability «assistente na página»,
   ADR 0006 §16). The shell then shows «Assistente» in the top bar (next to Ajuda; icon only on
@@ -1400,3 +1400,19 @@ Two causes, both here:
   `/assistente/transparencia`).
 - Esc inside a dialog or menu opened from the chat (e.g. «Com um documento») closes only that
   dialog, not the chat.
+
+## v0.18.2 — the floating assistant, fixes from the Backoffice pilot (no API change)
+
+- The links in a reply (sources and markdown links) are paths from the MUTU@L root, so the chat
+  always renders them as plain `<a>`. `ChatFlutuante`'s `LinkComponent` is deprecated and ignored:
+  with a Next `Link` an app with a basePath turned `/ajuda/backoffice/licenca` into
+  `/backoffice/ajuda/backoffice/licenca` (404). Apps pass only `app`.
+- First open: the message box is disabled while `GET /assistente/estado` loads, so the window
+  itself takes the focus (Esc works at once) and the box gets it as soon as it is enabled —
+  unless the person has moved the focus meanwhile.
+- Phone width: while the bottom sheet is open (`data-demo-folha`) the «Demonstração» pill ignores
+  the page behind it and docks at the bottom, so the sheet stacks above it at full height (it was
+  left mid-edge, under the sheet). `posicaoDoChat` also caps the sheet below anything docked higher
+  up (while at least 280px are left) instead of covering it.
+- The chat bar: with «O que falta?» or «Com um documento» the page/section name has its own line
+  (tools wrap below it; full name in `title`), never cut to «C…».
