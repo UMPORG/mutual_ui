@@ -54,7 +54,7 @@ The apps are used by the UMP and associações across the country; text is for t
 - Colours `--dica`, `--dica-foreground`, `--dica-texto`, `--dica-borda`, `--dica-icone`, `--dica-ligacao`
   (title/body/link ≥ 7:1, icon ≥ 4.5:1, border ≥ 3:1; `tests/dicas.test.ts`). An app with its own palette
   (Cartão) redefines those six names and re-measures them. Classes `m-nota*` in `css/dicas.css`
-  (`.m-dica` is the sidebar tooltip).
+  (`.m-dica` is the `Tooltip`).
 
 ## Tours
 

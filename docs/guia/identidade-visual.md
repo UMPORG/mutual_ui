@@ -29,9 +29,9 @@ testes em `tests/tokens.test.ts`. Classes e movimento: [superficies.md](superfic
 
 ## Cores de aplicação (`--app-accent`, `--app-marca`)
 
-Matiz OKLCH: nenhum par de apps a menos de **33°** no claro (28° no escuro).
-O Servidores e DNS é a ardósia (pouco croma). `tests/tokens.test.ts` falha se
-dois tons se aproximarem.
+Matiz OKLCH: o par de apps mais próximo fica a **33°**. O Servidores e DNS é
+a ardósia (pouco croma). `tests/tokens.test.ts` falha abaixo de 30° no claro
+(28° no escuro).
 
 | App | Claro (azulejo e acento) | Escuro | Matiz |
 | --- | --- | --- | --- |
@@ -112,7 +112,7 @@ para «Outros» e séries de contexto. Nunca um 9.º tom: o resto agrupa-se em
 | Modo | Superfície | Daltonismo, pior par adjacente | Visão normal, pior par | Contraste |
 | --- | --- | --- | --- | --- |
 | Claro | `#ffffff` | 9,1 | 19,6 | 3 tons abaixo de 3:1: há sempre «Ver dados» e legenda |
-| Escuro | `#1d231f` | 8,4 | 19,3 | todos ≥ 3:1 |
+| Escuro | `#1c1c1c` | 8,4 | 19,3 | todos ≥ 3:1 |
 | Alto contraste | `#ffffff` | 10,6 | 16,6 | todos ≥ 5:1 |
 
 Os quatro primeiros tons passam o teste em todos os pares nos dois modos

@@ -90,6 +90,10 @@ node showcase/verificar.mjs          # Playwright checks (server running)
 node showcase/shots*.mjs <outDir>    # screenshots
 ```
 
+The Playwright scripts (`verificar.mjs`, `shots*.mjs`, `scripts/gerar-icones.mjs`) load Playwright from
+`D:/Mutual/mutual_eventos/node_modules` and a local Chromium; only `gerar-icones.mjs` takes
+`PLAYWRIGHT_MODULE` / `CHROMIUM` to override them.
+
 Pages (`?pagina=`): `dados` (default), `controlos`, `efeitos`, `conversa`, `shells` (`&app=<id>`,
 `&vista=todas`), `rolagem`, `demo`, `identificadores`, `icones`, `icones-shell`; `/ssr`
 serves a server-rendered, hydrated fixture. The showcase resolves React, Recharts and Base UI from the
@@ -98,5 +102,5 @@ package's own devDependencies (one React copy); it installs only Tailwind.
 ## CI
 
 `.github/workflows/ci.yml` (GitHub-hosted; push to `main`, PRs, `v*` tags): frozen install,
-typecheck, tests, `pnpm audit`, showcase build, with `TZ=Europe/Lisbon`. Changes only to `**/*.md`,
-`docs/**` or `LICENSE` do not run it.
+typecheck, tests, `pnpm audit`, showcase build, with `TZ=Europe/Lisbon`. Changes only to `**/*.md` or
+`docs/**` do not run it.
