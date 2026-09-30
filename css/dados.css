@@ -95,7 +95,7 @@ html.contraste {
   /* DataTable scroller: the containing block of everything absolutely
      positioned inside the table (the visually hidden caption and header
      text, `sr-only`), so it can never escape the scroller and widen the page
-     at 150% text). The component also sets `relative`. */
+     at 150% text. The component also sets `relative`. */
   .m-tabela-rolo { position: relative; }
 
   /* DataTable: a column kept at the right edge while the table scrolls

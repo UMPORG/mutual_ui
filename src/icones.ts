@@ -1,6 +1,6 @@
 /**
- * The MUTU@L app icon family («folha» base). Plain data + a string renderer, no React: `IconeApp` (src/icone-app.tsx)
- * draws it in the page; `svgIconeApp` gives the standalone SVG for favicons
+ * The MUTU@L app icon family («folha» base). Plain data + a string renderer,
+ * no React: `IconeApp` (src/icone-app.tsx) draws it in the page; `svgIconeApp` gives the standalone SVG for favicons
  * and home-screen icons (scripts/gerar-icones.mjs → assets/icones/).
  *
  * One 24-unit grid for every app (the method of Google Workspace and Proton —

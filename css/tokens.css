@@ -31,8 +31,8 @@
   /* Surfaces and text — PURE neutral greys (no green or warm cast in the
      content, so every app's own colours read true); the app identity lives
      only in the frame of the shell. tests/tokens.test.ts keeps them neutral
-     (r = g = b) and re-measures: body 17.2:1 on --background, muted 8.1:1 / 8.5:1 on
-     --background / --card, 7.4:1 on --secondary. */
+     (r = g = b) and re-measures: body 17.2:1 on --background, muted
+     8.1:1 / 8.5:1 on --background / --card, 7.4:1 on --secondary. */
   --background: #fafafa;
   --foreground: #171717;
   --card: #ffffff;
@@ -202,8 +202,8 @@
 /* ─── App identity ─────────────────────────────────────────────────────────
    Each app is recognised by its colour in the frame of shell G (the top bar
    and the navigation, tinted 9% — see "Frame" below), its tile and the icon
-   of the current page. OKLCH hues, no two apps less than 33° apart (the
-   test fails below 30° light / 28° dark):
+   of the current page. OKLCH hues, no two apps less than 33° apart in light
+   (29° in dark; the test fails below 30° light / 28° dark):
      Saúde 355 · Protocolos 29 · Simplex 69 · Monitorização 116 · Portal 149 ·
      Assistente 187 · Validador QR 223 · Backoffice 264 · Eventos 303,
      Servidores e DNS = slate (low chroma).
