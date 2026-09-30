@@ -16,6 +16,7 @@ import {
   Pencil,
   Printer,
   Share2,
+  Plus,
   Trash2,
   Users,
   Wallet,
@@ -187,17 +188,34 @@ function CamposAlinhados() {
           <Input value={email} onChange={(e) => setEmail(e.target.value)} />
         </FormField>
       </div>
-      <div className="m-campos-alinhados m-campos-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
-        <FormField label="Serviço" count={{ value: 4, max: 120 }}>
-          <Input defaultValue="ERPI" />
-        </FormField>
-        <FormField label="N.º de telefone" error="Um número português tem 9 algarismos (por exemplo 912 345 678).">
-          <Input defaultValue="25300011" inputMode="tel" />
-        </FormField>
-        <div className="m-campos-acao">
-          <Button variant="ghost">
-            <Trash2 aria-hidden /> Retirar
+      {/* v0.16 — a sub-section: heading inside a neutral card (fieldset/legend kept). */}
+      <fieldset className="m-subseccao">
+        <legend>Outros contactos telefónicos</legend>
+        <p className="m-subseccao-ajuda">Um serviço por linha. Por exemplo: ERPI, Clínica, Centro Infantil, Farmácia.</p>
+        <div className="m-campos-alinhados m-campos-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+          <FormField label="Serviço" count={{ value: 4, max: 120 }}>
+            <Input defaultValue="ERPI" />
+          </FormField>
+          <FormField label="N.º de telefone" error="Um número português tem 9 algarismos (por exemplo 912 345 678).">
+            <Input defaultValue="25300011" inputMode="tel" />
+          </FormField>
+          <div className="m-campos-acao">
+            <Button variant="ghost">
+              <Trash2 aria-hidden /> Retirar
+            </Button>
+          </div>
+        </div>
+        <div>
+          <Button variant="outline">
+            <Plus aria-hidden /> Adicionar contacto
           </Button>
+        </div>
+      </fieldset>
+      {/* v0.16 — the actions of a step: in the flow, lifted only while stuck. */}
+      <div className="m-barra-acoes">
+        <div className="m-barra-acoes-corpo">
+          <Button variant="outline" size="lg">Anterior</Button>
+          <Button size="lg">Guardar e continuar</Button>
         </div>
       </div>
     </div>

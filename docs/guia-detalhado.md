@@ -1267,3 +1267,44 @@ Workspace-style grid.
   around an empty hint row); a Tailwind `grid-cols-*` on the grid still sets the
   tracks, but keep one field per line below 40rem (the first line is known from
   `m-campos-2|3|4`).
+
+## v0.16.0 — no action in the navigation; a neutral search field (breaking)
+
+Owner (2026-09-30): the big «+ Nova campanha» / «+ Criar evento» button in
+the navigation changed per page and app, was unclear and felt out of the
+page; the tinted search pill was hard to recognise as a field on
+low-contrast screens.
+
+- **Removed:** `AcaoPrincipal`, `AcaoPrincipalApp`, the `acaoPrincipal`
+  prop of `AppShell` and `NavApp`, the floating copy on phones, the
+  `m-acao-principal*` / `m-app-com-acao` CSS and the
+  `[data-shell="acao-principal"]` tour target. The navigation holds only
+  destinations.
+- **Migrating an app:** delete `acaoPrincipal`; put the action in the
+  `PageHeader actions` of the page it belongs to, as the brand-green primary
+  button (`buttonClasses()` / `m-btn m-btn-primary`, 44 px+), only on the
+  pages where it applies (Campanhas → «Nova campanha», the events list →
+  «Criar evento», the conversation header → «Nova conversa»). `PageHeader`
+  already wraps the actions under the title on phones. Tour steps that
+  pointed at `acao-principal` point at the page button.
+- **Search:** `.m-procura` is the neutral input surface
+  (`--procura-fundo`: `#ffffff` light, `#1c1c1c` dark — the form fields'
+  `--card`) with a 1 px `--procura-borda` (`#707070` / `#8a8a8a`, ≥ 3.5:1 on
+  every tinted bar and its hover), `--foreground` text, `--muted-foreground`
+  placeholder and icon, a darker border on hover and the ring on focus. Alto
+  contraste: white, 2 px black border, black text. `--moldura-procura`,
+  `--procura-base`, `--moldura-procura-mistura` and Tailwind
+  `bg-moldura-procura` are gone.
+- **Forms (additive, owner: «it looks like embedded HTML»):** `m-subseccao`
+  draws a `<fieldset>` as a neutral card with its `<legend>` floated INSIDE
+  (heading 17 px semibold, `m-subseccao-ajuda` under it; `m-subseccao-simples`
+  without the card; Alto contraste 2 px black edge) — never the legend cutting
+  the border. `m-barra-acoes` > `m-barra-acoes-corpo`: the actions at the end
+  of a form or step in the flow, on the page surface (no top rule, no grey
+  band), sticky at the bottom of the content layer and lifted (card surface +
+  soft shadow) only while stuck (`@container scroll-state(stuck: bottom)`;
+  flat where unsupported). Showcase: `?pagina=controlos` (campos alinhados).
+- **Tests:** `tests/tokens.test.ts` measures the search border on the bar
+  and its hover, text / placeholder / ring on the field, per app and theme,
+  and locks the wiring; `tests/shell.test.ts` checks nothing of the action
+  is left.

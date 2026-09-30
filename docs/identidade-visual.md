@@ -86,14 +86,15 @@ Medido em todas as apps, claro e escuro (`tests/tokens.test.ts`):
 
 | Par | Mínimo exigido | Pior caso medido |
 | --- | --- | --- |
-| Texto sobre a moldura, a pílula, o hover e a procura | 7:1 | 8,5:1 (Monitorização escuro) |
-| Texto suave, títulos dos grupos e sugestão da procura | 4,5:1 | 5,2:1 (Monitorização escuro) |
-| Anel de foco sobre a moldura, a pílula e a procura | 3:1 | 3,96:1 (Eventos claro) |
+| Texto sobre a moldura, a pílula e o hover | 7:1 | 8,5:1 (Monitorização escuro) |
+| Texto suave e títulos dos grupos | 4,5:1 | 5,2:1 (Monitorização escuro) |
+| Anel de foco sobre a moldura e a pílula | 3:1 | 3,96:1 (Eventos claro) |
+| Borda da procura (campo neutro, v0.16) sobre a moldura e o hover | 3:1 | 3,5:1 (Eventos claro), 3,6:1 (Monitorização escuro) |
+| Texto, sugestão e lupa no campo da procura | 7:1 / 4,5:1 | campo branco / `#1c1c1c`, como os campos dos formulários |
 | Ícone da página atual (cor da app) sobre a pílula | 3:1 | 3,5:1 (Monitorização claro) |
 | Glifo branco no azulejo | 4,5:1 | 5,0:1 (Monitorização) |
 | Traço do separador atual sobre a camada | 3:1 | 5,0:1 |
 | Contador e iniciais do avatar | 4,5:1 | 16,9:1 |
-| + verde da ação principal | 3:1 | 6,2:1 |
 
 A moldura contra a camada é informativa (1,2–1,3:1): a separação faz-se pelo
 canto e pela sombra, como no Fluent e no Workspace. Em Alto contraste tudo
@@ -157,14 +158,17 @@ da app + «MUTU@L» + nome da app, procura ao centro (quando a app a tem),
 Ajuda e Acessibilidade **com texto**, «Aplicações MUTU@L» (grelha, as mesmas
 apps que o Portal mostra, a atual marcada «Está aqui») e o avatar (nome,
 perfil, organização, «Mudar de organização», «Terminar sessão»);
-**navegação** à esquerda — uma só ação principal grande no topo («+ Criar
-evento»), no máximo 8 destinos em 2–3 grupos curtos com títulos pequenos,
-item atual em pílula; **subpáginas em separadores** na própria página
+**navegação** à esquerda — só destinos (v0.16: nenhum botão de criar no
+menu), no máximo 8 em 2–3 grupos curtos com títulos pequenos, item atual em
+pílula; a ação da página («Nova campanha», «Criar evento») é o botão verde
+principal do cabeçalho dessa página, junto ao título; **subpáginas em separadores** na própria página
 (`Separadores`), nunca um segundo nível no menu; **conteúdo** numa só camada
 neutra com `.m-pagina` (margens de 16 / 24 / 32 px, largura máxima de
 80 rem). No telemóvel e no tablet (< 64 rem): barra de topo + gaveta (com
-Ajuda, Acessibilidade e a conta no fim) e a ação principal a flutuar em
-baixo à direita. Alvos de 44–48 px.
+Ajuda, Acessibilidade e a conta no fim); a ação da página fica no seu
+cabeçalho, por baixo do título se não couber. A procura é um campo branco
+(no escuro, a superfície escura dos campos) com borda visível, nunca tingido
+com a cor da app. Alvos de 44–48 px.
 
 ## Um só endereço e sessão única
 

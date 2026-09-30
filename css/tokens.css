@@ -253,24 +253,28 @@
    bar and the navigation share ONE surface, a neutral grey with 9% of the
    app's colour («cor dinâmica»); the content sits on ONE neutral elevated
    layer (--camada, rounded 8px). The current page is a pill with 20% (24%
-   in dark) of the colour and its icon in the colour; hover and the search
-   field 14%. Primary buttons stay brand green. Replaces the v0.8 tinted
-   sidebars. tests/tokens.test.ts mixes these exactly as the browser does
+   in dark) of the colour and its icon in the colour; hover 14%. Primary
+   buttons stay brand green. Replaces the v0.8 tinted sidebars.
+   The search field is NOT tinted (owner, 2026-09-30: «a white background
+   means it's interactive»): the neutral input surface (white; the dark
+   input surface in dark) with a border ≥ 3:1 against the tinted bar. tests/tokens.test.ts mixes these exactly as the browser does
    (sRGB) and measures every pair in every app, light and dark. */
 :root {
   --moldura-base: #f2f2f2;
-  --procura-base: #f2f2f2;
   --moldura-mistura: 9%;
   --moldura-hover-mistura: 14%;
   --moldura-selecao-mistura: 20%;
-  --moldura-procura-mistura: 14%;
   --camada: #ffffff;
+  /* Search field of the top bar: = --card, border 3.5:1 on every tinted bar. */
+  --procura-fundo: #ffffff;
+  --procura-borda: #707070;
 }
 .dark {
   --moldura-base: #1a1a1a;
-  --procura-base: #262626;
   --moldura-selecao-mistura: 24%;
   --camada: #141414;
+  --procura-fundo: #1c1c1c;
+  --procura-borda: #8a8a8a;
 }
 
 /* ─── Derived per app ───────────────────────────────────────────────────
@@ -281,7 +285,6 @@
   --moldura: color-mix(in srgb, var(--app-accent) var(--moldura-mistura), var(--moldura-base));
   --moldura-hover: color-mix(in srgb, var(--app-accent) var(--moldura-hover-mistura), var(--moldura-base));
   --moldura-selecao: color-mix(in srgb, var(--app-accent) var(--moldura-selecao-mistura), var(--moldura-base));
-  --moldura-procura: color-mix(in srgb, var(--app-accent) var(--moldura-procura-mistura), var(--procura-base));
   --moldura-foreground: var(--foreground);
   --moldura-muted-foreground: var(--muted-foreground);
   --moldura-selecao-foreground: var(--foreground);

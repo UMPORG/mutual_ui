@@ -5,7 +5,8 @@ import { readFileSync } from "node:fs";
 /**
  * v0.13 shell G: the frame (top bar + navigation) is a neutral grey mixed
  * with 9% of the app's colour, the current page a pill with 20% (24% dark),
- * hover and search 14%; the content one neutral layer. Re-measure every pair
+ * hover 14%; the content one neutral layer. The search field (v0.16) is not
+ * tinted: the neutral input surface with a border ≥ 3:1 on the tinted bar. Re-measure every pair
  * in every app, light and dark, mixing exactly as `color-mix(in srgb …)`
  * does, and keep the app colours apart (OKLCH hue).
  */
@@ -66,7 +67,6 @@ function tema(app: string, escuro: boolean): Record<string, string> {
   t["--moldura"] = misturar(cor, pct(t, "--moldura-mistura"), t["--moldura-base"]!);
   t["--moldura-hover"] = misturar(cor, pct(t, "--moldura-hover-mistura"), t["--moldura-base"]!);
   t["--moldura-selecao"] = misturar(cor, pct(t, "--moldura-selecao-mistura"), t["--moldura-base"]!);
-  t["--moldura-procura"] = misturar(cor, pct(t, "--moldura-procura-mistura"), t["--procura-base"]!);
   return t;
 }
 
@@ -76,9 +76,9 @@ for (const app of APPS) {
     test(`${app} (${nomeTema}): the tinted frame of shell G keeps the contrast floor`, () => {
       const t = tema(app, escuro);
       const pares: [string, string, string, string, number][] = [];
-      for (const sup of ["--moldura", "--moldura-hover", "--moldura-selecao", "--moldura-procura"]) {
+      for (const sup of ["--moldura", "--moldura-hover", "--moldura-selecao"]) {
         pares.push(["texto", t["--foreground"]!, sup, t[sup]!, 7]);
-        pares.push(["texto suave / títulos dos grupos / sugestão da procura", t["--muted-foreground"]!, sup, t[sup]!, 4.5]);
+        pares.push(["texto suave / títulos dos grupos", t["--muted-foreground"]!, sup, t[sup]!, 4.5]);
         pares.push(["anel de foco", t["--ring"]!, sup, t[sup]!, 3]);
       }
       pares.push(["ícone da página atual", t["--app-accent"]!, "--moldura-selecao", t["--moldura-selecao"]!, 3]);
@@ -86,9 +86,15 @@ for (const app of APPS) {
       pares.push(["traço do separador atual", t["--app-accent"]!, "--camada", t["--camada"]!, 3]);
       pares.push(["texto na camada", t["--foreground"]!, "--camada", t["--camada"]!, 7]);
       pares.push(["contador e iniciais do avatar", t["--camada"]!, "--foreground", t["--foreground"]!, 4.5]);
-      const fundoAcao = escuro ? t["--secondary"]! : t["--card"]!;
-      pares.push(["+ verde da ação principal", t["--brand"]!, "ação principal", fundoAcao, 3]);
-      pares.push(["texto da ação principal", t["--foreground"]!, "ação principal", fundoAcao, 7]);
+      // The search field (v0.16): neutral input surface, border visible on the
+      // tinted bar (and on its hover shade, which sits right next to it).
+      for (const sup of ["--moldura", "--moldura-hover"]) {
+        pares.push(["borda da procura", t["--procura-borda"]!, sup, t[sup]!, 3]);
+      }
+      pares.push(["borda da procura sobre o próprio campo", t["--procura-borda"]!, "--procura-fundo", t["--procura-fundo"]!, 3]);
+      pares.push(["texto escrito na procura", t["--foreground"]!, "--procura-fundo", t["--procura-fundo"]!, 7]);
+      pares.push(["sugestão e lupa da procura", t["--muted-foreground"]!, "--procura-fundo", t["--procura-fundo"]!, 4.5]);
+      pares.push(["anel de foco da procura", t["--ring"]!, "--procura-fundo", t["--procura-fundo"]!, 3]);
       if (!escuro) pares.push(["cor da app como texto", t["--app-accent"]!, "--background", t["--background"]!, 4.5]);
       else pares.push(["cor da app como texto", t["--app-accent"]!, "--card", t["--card"]!, 4.5]);
       for (const [nome, a, sobre, b, min] of pares) {
@@ -118,6 +124,27 @@ test("the app colours stay apart: ≥ 30° of OKLCH hue in light, ≥ 28° in da
         assert.ok(dist >= (escuro ? 28 : 30), `${lista[i]![0]} / ${lista[j]![0]} (${escuro ? "escuro" : "claro"}): ${dist.toFixed(0)}°`);
       }
   }
+});
+
+test("the search field is the neutral input surface, never the tinted frame (v0.16)", () => {
+  const shell = readFileSync(new URL("../css/shell.css", import.meta.url), "utf8");
+  const regra = shell.match(/\.m-procura \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(regra, /background: var\(--procura-fundo\)/);
+  assert.match(regra, /border: 1px solid var\(--procura-borda\)/);
+  assert.doesNotMatch(shell + css, /--moldura-procura/);
+  // Light: the same white as the form fields; dark: the dark input surface.
+  assert.equal(raiz["--procura-fundo"], raiz["--card"]);
+  assert.equal(escuroRaiz["--procura-fundo"], escuroRaiz["--card"]);
+  // High contrast: white field, black border.
+  const pref = readFileSync(new URL("../css/preferencias.css", import.meta.url), "utf8");
+  assert.match(pref, /--procura-fundo: #ffffff;\s*--procura-borda: #000000;/);
+});
+
+test("the navigation holds no action (v0.16: page actions live in PageHeader)", () => {
+  const shell = readFileSync(new URL("../css/shell.css", import.meta.url), "utf8");
+  const tsx = readFileSync(new URL("../src/shell.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(shell, /m-acao-principal|m-app-com-acao/);
+  assert.doesNotMatch(tsx, /acaoPrincipal|AcaoPrincipal|acao-principal/);
 });
 
 // ─── useScrollShadow maths ───────────────────────────────────────────────

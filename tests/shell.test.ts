@@ -54,10 +54,10 @@ test("shell G is wired: css/shell.css imported by index.css and exported; old si
   const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as { exports: Record<string, string> };
   assert.equal(pkg.exports["./css/shell.css"], "./css/shell.css");
   const src = readFileSync(new URL("../src/index.ts", import.meta.url), "utf8");
-  for (const nome of ["AppShell", "NavApp", "AcaoPrincipal", "MenuConta", "ProcuraApp", "Separadores", "LancadorApps"]) {
+  for (const nome of ["AppShell", "NavApp", "MenuConta", "ProcuraApp", "Separadores", "LancadorApps"]) {
     assert.match(src, new RegExp(`\\b${nome}\\b`), `${nome} exported`);
   }
-  for (const nome of ["ShellBarraLateral", "ShellMarca", "ShellConta", "classeItemShell", "AppSwitcher", "AppMark", "APP_ICONS", "LancadorGrelha", "IconeApp.*direcao"]) {
+  for (const nome of ["ShellBarraLateral", "ShellMarca", "ShellConta", "classeItemShell", "AppSwitcher", "AppMark", "APP_ICONS", "LancadorGrelha", "IconeApp.*direcao", "AcaoPrincipal"]) {
     assert.doesNotMatch(src, new RegExp(`\\b${nome}\\b`), `${nome} removed`);
   }
   const shell = readFileSync(new URL("../css/shell.css", import.meta.url), "utf8");
@@ -76,7 +76,7 @@ test("motion (v0.14): one set of tokens, zero under Reduzir movimento, only opac
   assert.match(tokens, /html\[data-movimento="reduzido"\] \{[^}]*--movimento-medio: 0ms;/);
   assert.match(tokens, /prefers-reduced-motion: reduce\)[^{]*\{\s*:root \{[^}]*--movimento-lento: 0ms;/);
   const shell = readFileSync(new URL("../css/shell.css", import.meta.url), "utf8");
-  const permitidas = new Set(["opacity", "transform", "background-color", "color", "box-shadow", "overlay", "display"]);
+  const permitidas = new Set(["opacity", "transform", "background-color", "color", "border-color", "box-shadow", "overlay", "display"]);
   for (const bloco of shell.matchAll(/transition:\s*([^;]+);/g)) {
     for (const parte of bloco[1]!.split(",")) {
       const propriedade = parte.trim().split(/\s+/)[0]!;
@@ -84,4 +84,19 @@ test("motion (v0.14): one set of tokens, zero under Reduzir movimento, only opac
     }
   }
   assert.doesNotMatch(shell, /\d{3,}ms/, "durations come from the tokens");
+});
+
+test("form sub-sections and the actions bar (v0.16): legend inside the card, no rule or grey band", () => {
+  const sup = readFileSync(new URL("../css/superficies.css", import.meta.url), "utf8");
+  // The legend is floated into the card (it never cuts the border) and cleared.
+  assert.match(sup, /\.m-subseccao > legend \{[^}]*float: left;[^}]*width: 100%;/);
+  assert.match(sup, /\.m-subseccao > legend \+ \* \{ clear: both; \}/);
+  assert.match(sup, /\.m-subseccao \{[^}]*background: var\(--card\);/);
+  // The bar sits on the page surface; it lifts only while stuck.
+  const barra = sup.match(/\.m-barra-acoes-corpo \{([^}]*)\}/)?.[1] ?? "";
+  assert.match(barra, /background: var\(--camada/);
+  assert.doesNotMatch(barra, /border-top|--muted|--background\)/);
+  assert.match(sup, /container-type: scroll-state;/);
+  assert.match(sup, /@container scroll-state\(stuck: bottom\)/);
+  assert.match(sup, /html\.contraste \.m-subseccao:not\(\.m-subseccao-simples\) \{ border: 2px solid #000000;/);
 });

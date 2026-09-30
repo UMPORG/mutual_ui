@@ -138,7 +138,8 @@ html.contraste [data-app] {
   --moldura: #ffffff;
   --moldura-hover: #e6e6e6;
   --moldura-selecao: #000000;
-  --moldura-procura: #ffffff;
+  --procura-fundo: #ffffff;
+  --procura-borda: #000000;
   --moldura-foreground: #000000;
   --moldura-muted-foreground: #000000;
   --moldura-selecao-foreground: #ffffff;

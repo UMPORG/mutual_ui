@@ -11,7 +11,7 @@ import {
   type ReactNode,
   type SVGProps,
 } from "react";
-import { ArrowLeftRight, ExternalLink, HelpCircle, LogOut, Menu, Plus, Search, X } from "lucide-react";
+import { ArrowLeftRight, ExternalLink, HelpCircle, LogOut, Menu, Search, X } from "lucide-react";
 import { AcessibilidadeMenu } from "./acessibilidade";
 import { LancadorApps, posicionarPopover } from "./app-switcher";
 import { nomeDaApp, type AppNoEndereco, type MutualAppId } from "./apps";
@@ -25,14 +25,12 @@ export { hrefAtivo, hrefAtualDoMenu, iniciais } from "./shell-nav";
 /**
  * Shell G (v0.13) — the frame of every MUTU@L desk app (owner, 2026-09-29:
  * Google Workspace structure + Fluent layering). One component, same
- * anatomy everywhere; only the navigation, the search and the primary
- * action are the app's:
+ * anatomy everywhere; only the navigation and the search are the app's:
  *
  *   <AppShell
  *     app="backoffice" caminhoAtual={usePathname()} LinkComponent={Link}
  *     disponiveis={appsDisponiveis(eu.apps)}
  *     conta={{ nome, perfil, organizacao, variasOrganizacoes, onTerminarSessao }}
- *     acaoPrincipal={{ rotulo: "Nova campanha", href: "/admin/caracterizacao/campanhas/nova" }}
  *     navegacao={[{ itens: [{ href: "/admin", rotulo: "Início", icone: House }] },
  *                 { titulo: "Rede mutualista", itens: [...] }]}
  *     procura={<ProcuraApp rotulo="Procurar no Backoffice" action="/backoffice/admin/procurar" />}
@@ -43,14 +41,16 @@ export { hrefAtivo, hrefAtualDoMenu, iniciais } from "./shell-nav";
  * Top bar: ☰, the app's tile + «MUTU@L» + its name (link to the app's home),
  * the search (centre), Ajuda and Acessibilidade WITH text, the app launcher
  * (waffle) and the account (avatar → name, profile, organisation, «Mudar de
- * organização», «Terminar sessão»). Left: ONE big primary action, then ≤ 8
- * destinations in 2–3 short groups; the current page is a pill. Sub-pages
+ * organização», «Terminar sessão»). Left: ONLY navigation, ≤ 8
+ * destinations in 2–3 short groups; the current page is a pill. A page's
+ * own action («Nova campanha», «Criar evento») is the primary button of its
+ * `PageHeader actions`, on that page only (v0.16). Sub-pages
  * are tabs on the page (`Separadores`), never a second navigation level.
  * The content is ONE neutral layer (`<main id="conteudo-principal">`, the
  * scroller; back to the top on every navigation). Below 64rem the
- * navigation is a drawer (native <dialog>) and the primary action floats
- * bottom-right. Tour targets: `[data-shell="navegacao|acao-principal|
- * ajuda|acessibilidade|aplicacoes|conta|organizacao|sair|menu"]`.
+ * navigation is a drawer (native <dialog>). Tour targets:
+ * `[data-shell="navegacao|ajuda|acessibilidade|aplicacoes|conta|organizacao|
+ * sair|menu"]`.
  */
 
 // Lucide icons (their props do not accept `undefined`, hence no `| undefined`).
@@ -77,14 +77,6 @@ export interface GrupoNavApp {
   /** Small section title («Rede mutualista»); the first group usually has none. */
   titulo?: string | undefined;
   itens: readonly ItemNavApp[];
-}
-
-export interface AcaoPrincipalApp {
-  /** One or two words after the +: «Criar evento», «Nova campanha». */
-  rotulo: string;
-  href?: string | undefined;
-  onClick?: (() => void) | undefined;
-  icone?: IconeShell | undefined;
 }
 
 export interface ContaShell {
@@ -117,70 +109,14 @@ function Ligacao({ LinkComponent, externo, ...props }: LinkProps & { LinkCompone
   return <L {...props} />;
 }
 
-/** The big primary action (Workspace «Escrever»/«Novo»): white, a brand-green +. */
-export function AcaoPrincipal({
-  acao,
-  LinkComponent = "a",
-  flutuante = false,
-  onNavegar,
-  className,
-}: {
-  acao: AcaoPrincipalApp;
-  LinkComponent?: ElementType | undefined;
-  /** Floating bottom-right (phones; hidden from 64rem). */
-  flutuante?: boolean | undefined;
-  onNavegar?: (() => void) | undefined;
-  className?: string | undefined;
-}) {
-  const Icone = acao.icone ?? Plus;
-  const classe = cx("m-acao-principal", flutuante && "m-acao-principal-flutuante", className);
-  const conteudo = (
-    <>
-      <Icone aria-hidden />
-      <span>{acao.rotulo}</span>
-    </>
-  );
-  const extra = { "data-shell": "acao-principal", ...(flutuante ? { "data-demo-evitar": "" } : {}) };
-  if (acao.href) {
-    return (
-      <Ligacao
-        LinkComponent={LinkComponent}
-        href={acao.href}
-        className={classe}
-        onClick={() => {
-          acao.onClick?.();
-          onNavegar?.();
-        }}
-        {...extra}
-      >
-        {conteudo}
-      </Ligacao>
-    );
-  }
-  return (
-    <button
-      type="button"
-      className={classe}
-      onClick={() => {
-        acao.onClick?.();
-        onNavegar?.();
-      }}
-      {...extra}
-    >
-      {conteudo}
-    </button>
-  );
-}
-
 /**
- * The navigation: the primary action on top (optional), then the groups.
+ * The navigation: only destinations, in groups (no actions, v0.16).
  * `aria-current="page"` on the current entry (pill, bold, icon in the app's
  * colour).
  */
 export function NavApp({
   grupos,
   caminhoAtual,
-  acaoPrincipal,
   LinkComponent = "a",
   onNavegar,
   rotulo = "Menu principal",
@@ -190,7 +126,6 @@ export function NavApp({
 }: {
   grupos: readonly GrupoNavApp[];
   caminhoAtual: string;
-  acaoPrincipal?: AcaoPrincipalApp | undefined;
   LinkComponent?: ElementType | undefined;
   onNavegar?: (() => void) | undefined;
   rotulo?: string | undefined;
@@ -206,7 +141,6 @@ export function NavApp({
   const atual = hrefAtualDoMenu(grupos.flatMap((g) => g.itens), caminhoAtual);
   return (
     <div className={cx("flex flex-col", className)}>
-      {acaoPrincipal && <AcaoPrincipal acao={acaoPrincipal} LinkComponent={LinkComponent} onNavegar={onNavegar} />}
       {antes}
       <nav aria-label={rotulo} data-shell="navegacao" className="m-nav">
         {grupos.map((g, gi) => {
@@ -444,8 +378,6 @@ export interface AppShellProps {
   conta?: ContaShell | undefined;
   /** The destinations (≤ 8, in 2–3 groups). Omit for a screen without navigation (Validador QR, Portal launcher). */
   navegacao?: readonly GrupoNavApp[] | undefined;
-  /** The ONE primary action of the app («Criar evento»), on top of the navigation. */
-  acaoPrincipal?: AcaoPrincipalApp | undefined;
   /** `<ProcuraApp …/>` when the app has a search. */
   procura?: ReactNode | undefined;
   /** Above / below the destinations (Saúde's unit selector…). */
@@ -475,7 +407,6 @@ export function AppShell({
   disponiveis,
   conta,
   navegacao,
-  acaoPrincipal,
   procura,
   antesDaNavegacao,
   depoisDaNavegacao,
@@ -555,7 +486,7 @@ export function AppShell({
   );
 
   return (
-    <div data-shell-app={app} className={cx("m-app", temNav && "m-app-com-nav", acaoPrincipal && temNav && "m-app-com-acao")}>
+    <div data-shell-app={app} className={cx("m-app", temNav && "m-app-com-nav")}>
       <a
         href={`#${idConteudo}`}
         className="sr-only rounded-md bg-background px-4 py-2 font-medium text-foreground shadow focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-60"
@@ -632,7 +563,6 @@ export function AppShell({
             <NavApp
               grupos={navegacao}
               caminhoAtual={caminhoAtual}
-              acaoPrincipal={acaoPrincipal}
               LinkComponent={LinkComponent}
               rotulo={rotuloNavegacao}
               antes={antesDaNavegacao}
@@ -644,8 +574,6 @@ export function AppShell({
           {children}
         </main>
       </div>
-
-      {temNav && acaoPrincipal && <AcaoPrincipal acao={acaoPrincipal} LinkComponent={LinkComponent} flutuante />}
 
       {temNav && (
         <dialog
@@ -670,7 +598,6 @@ export function AppShell({
                 <NavApp
                   grupos={navegacao}
                   caminhoAtual={caminhoAtual}
-                  acaoPrincipal={acaoPrincipal}
                   LinkComponent={LinkComponent}
                   onNavegar={fecharGaveta}
                   rotulo={rotuloNavegacao}

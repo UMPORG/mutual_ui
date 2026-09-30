@@ -1,7 +1,7 @@
 # MUTU@L UI (`@umporg/ui`) — AGENTS.md
 
 > Rules and "where is what" for AI coding agents (`CLAUDE.md` imports this
-> file). Examples, rationale and the per-version notes (v0.2 → v0.15.2) are in
+> file). Examples, rationale and the per-version notes (v0.2 → v0.16.0) are in
 > [docs/guia-detalhado.md](docs/guia-detalhado.md); colour decisions in
 > [docs/identidade-visual.md](docs/identidade-visual.md); the v0.6 adoption
 > survey in [docs/inventario-componentes.md](docs/inventario-componentes.md);
@@ -13,7 +13,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 ## Consuming it (no npm publishing)
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.15.2"   // app package.json — always a tag, never a branch
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.16.0"   // app package.json — always a tag, never a branch
 ```
 
 - Next apps: `transpilePackages: ["@umporg/ui"]`; `app/globals.css`:
@@ -22,7 +22,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 - Root layout: `<html lang="pt-PT" data-app="<id>" suppressHydrationWarning>`.
 - **Release:** bump `version` in `package.json`, commit, `git tag vX.Y.Z`,
   push the tag; then each app bumps its `#vX.Y.Z` ref and regenerates its
-  lockfile. Current: **v0.15.2**.
+  lockfile. Current: **v0.16.0**.
 - Peers: `react`/`react-dom` ≥ 19, `lucide-react`; optional `@base-ui/react`
   ≥ 1.6 < 2 (controls, dates, conversation) and `recharts` ≥ 3.1 (charts).
 
@@ -135,8 +135,8 @@ Changes only to `**/*.md`, `docs/**` or `LICENSE` do not run CI.
 **Shell G** (v0.13, owner 2026-09-29: Google Workspace structure + Fluent
 layering) — one `AppShell` for every desk app, the same anatomy everywhere:
 top bar (tile + «MUTU@L» + app name, search, Ajuda, Acessibilidade, launcher,
-account) → navigation (one primary action, grouped destinations) → ONE
-content layer; page = `PageHeader` (+ `separadores`) + content.
+account) → navigation (grouped destinations ONLY) → ONE content layer;
+page = `PageHeader` (+ `separadores`, + the page's own action) + content.
 
 | App | Audience | Shell |
 | --- | --- | --- |
@@ -154,14 +154,17 @@ content layer; page = `PageHeader` (+ `separadores`) + content.
 variasOrganizacoes, onTerminarSessao, aTerminar, extra }` → avatar menu),
 `navegacao` (`GrupoNavApp[]`: `{ titulo?, itens: { href, rotulo, icone,
 contador?, externo?, ativo? }[] }`; current = longest matching href,
-`hrefAtualDoMenu`: exactly ONE current entry — once an app marks one `ativo`, nothing is inferred), `acaoPrincipal` (`{ rotulo, href | onClick }`), `procura`
+`hrefAtualDoMenu`: exactly ONE current entry — once an app marks one `ativo`, nothing is inferred), `procura`
 (`<ProcuraApp rotulo action|onProcurar/>`), `antesDaNavegacao`/
 `depoisDaNavegacao` (e.g. a unit selector), `barraExtra`, `ajudaHref`,
 `declaracaoHref`. It renders `<main id="conteudo-principal">` (the scroller,
 back to the top on every navigation); wrap pages in `.m-pagina`
-(`m-pagina-larga` without max width). Below 64rem: drawer + floating action.
-Tour targets `[data-shell="menu|navegacao|acao-principal|ajuda|
-acessibilidade|aplicacoes|conta|organizacao|sair"]`. Screens without
+(`m-pagina-larga` without max width). Below 64rem: drawer.
+Tour targets `[data-shell="menu|navegacao|ajuda|acessibilidade|aplicacoes|
+conta|organizacao|sair"]`. The search (`ProcuraApp`) is never tinted: the
+neutral input surface (`--procura-fundo`: white / the dark input surface)
+with a border ≥ 3:1 on the bar (`--procura-borda`), black/white in Alto
+contraste. Screens without
 navigation (Validador QR, Portal launcher) omit `navegacao`; public screens
 omit `conta`/`disponiveis`.
 
@@ -173,7 +176,11 @@ can use; the Cartão Digital is never in it (only its favicon/PWA icons use
 its `IconeApp`). Favicons: copy `assets/icones/<app>/` (see the guide).
 
 **Navigation rules (every app):** ≤ 8 destinations in 2–3 short groups with
-small titles; ONE primary action; sub-pages are **tabs on the page**
+small titles; **no actions in the navigation** (v0.16, owner 2026-09-30:
+no «+ Nova campanha» / «+ Criar evento» button there) — a page's own action
+(«Nova campanha», «Criar evento», «Nova conversa») is the brand-green primary
+button in `PageHeader actions`, next to the title, on the pages where it
+applies only (it wraps under the title on phones); sub-pages are **tabs on the page**
 (`<Separadores rotulo itens caminhoAtual LinkComponent/>`, in
 `PageHeader separadores`), never a second menu level; links to another
 MUTU@L app are `externo` (↗). `disponiveis = appsDisponiveis(eu.apps)` from
@@ -247,6 +254,12 @@ Show the **profile name** and organisation, never a login role.
   (v0.15.1): each field takes four subgrid rows (label, hint, control,
   message), so wrapped hints or a «26 de 254» count never misalign the
   controls of a line; a line's button (e.g. «Retirar») in `m-campos-acao`.
+- Sub-sections of a form (v0.16): `<fieldset class="m-subseccao">` +
+  `<legend>` + `<p class="m-subseccao-ajuda">` — heading inside a neutral
+  card, never the classic box with the legend cutting the border
+  (`m-subseccao-simples`: no card). The actions at the end of a form or a
+  step: `<div class="m-barra-acoes"><div class="m-barra-acoes-corpo">…` —
+  in the flow, no rule and no grey band; lifted only while stuck.
 
 ## Production copy (pt-PT, all of Portugal)
 

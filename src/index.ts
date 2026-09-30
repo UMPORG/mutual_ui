@@ -10,7 +10,6 @@ export { indiceNaGrelha } from "./grelha-teclado";
 export {
   AppShell,
   NavApp,
-  AcaoPrincipal,
   MenuConta,
   ProcuraApp,
   Separadores,
@@ -22,7 +21,6 @@ export {
   type AppShellProps,
   type ItemNavApp,
   type GrupoNavApp,
-  type AcaoPrincipalApp,
   type ContaShell,
   type IconeShell,
 } from "./shell";

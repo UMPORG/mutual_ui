@@ -8,6 +8,7 @@ import {
   Handshake,
   House,
   Inbox,
+  Plus,
   Settings,
   ShieldCheck,
   Users,
@@ -86,6 +87,13 @@ function Conteudo({ nome }: { nome: string }) {
         breadcrumbs={[{ label: "Acompanhamento" }]}
         title="Caracterização"
         description={`Questionário anual às associações — exemplo da moldura de ${nome}.`}
+        actions={
+          /* v0.16: the page's own action is the primary button of its header
+             (never in the navigation); on phones it wraps under the title. */
+          <a href="#nova" className="m-btn m-btn-primary inline-flex min-h-11 items-center gap-2 rounded-lg px-4">
+            <Plus aria-hidden size={20} /> Nova campanha
+          </a>
+        }
         separadores={
           <Separadores
             rotulo="Secções da caracterização"
@@ -105,7 +113,7 @@ function Conteudo({ nome }: { nome: string }) {
             {c} <ChevronDown aria-hidden size={16} />
           </button>
         ))}
-        <button type="button" className="m-btn m-btn-primary ml-auto inline-flex min-h-11 items-center rounded-lg px-4">
+        <button type="button" className="m-btn m-btn-outline ml-auto inline-flex min-h-11 items-center rounded-lg px-4">
           Exportar respostas
         </button>
       </div>
@@ -191,7 +199,6 @@ export function PaginaShells() {
             }
       }
       navegacao={semNav ? undefined : app === "backoffice" ? NAV_BACKOFFICE : NAV_SIMPLES}
-      acaoPrincipal={semNav ? undefined : { rotulo: app === "backoffice" ? "Nova campanha" : "Criar evento", href: "/nova" }}
       procura={app === "qr" ? undefined : <ProcuraApp rotulo={`Procurar em ${nome}`} onProcurar={() => undefined} />}
       inicioHref="#"
     >

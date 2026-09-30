@@ -7,9 +7,10 @@
  * the left share ONE surface, --moldura (neutral grey + 9% of the app's
  * colour); the content sits on ONE neutral elevated layer (--camada, 8px
  * corners, soft shadow). The current page is a pill (--moldura-selecao,
- * bold, icon in the app's colour). One big «+ Criar…» action at the top of
- * the navigation (floating bottom-right on phones). Below 64rem the
- * navigation is a drawer (native <dialog>). Colours: css/tokens.css
+ * bold, icon in the app's colour). The navigation holds only destinations
+ * (v0.16: a page's action is in its PageHeader). The search field is the
+ * neutral input surface, never tinted. Below 64rem the navigation is a
+ * drawer (native <dialog>). Colours: css/tokens.css
  * ("Frame"), measured in tests/tokens.test.ts.
  */
 
@@ -116,7 +117,6 @@
   .m-barra-util:focus-visible,
   .m-app-identidade:focus-visible,
   .m-nav-item:focus-visible,
-  .m-acao-principal:focus-visible,
   .m-separador:focus-visible,
   .m-menu-item:focus-visible {
     outline: 3px solid var(--ring);
@@ -142,7 +142,9 @@
   }
   .m-avatar-grande { width: 3rem; height: 3rem; font-size: 1rem; }
 
-  /* Search: a pill in the middle of the bar. */
+  /* Search: a pill in the middle of the bar, on the neutral input surface
+     (white; the dark input surface in dark) with a visible border, so it
+     reads as a field on any screen (owner, 2026-09-30). Never tinted. */
   .m-procura {
     display: flex;
     align-items: center;
@@ -150,11 +152,16 @@
     height: 3rem;
     min-width: 0;
     padding: 0 1.125rem;
+    border: 1px solid var(--procura-borda);
     border-radius: 999px;
-    background: var(--moldura-procura);
-    color: var(--moldura-muted-foreground);
-    transition: background-color var(--movimento-rapido) var(--curva-padrao), box-shadow var(--movimento-rapido) var(--curva-padrao);
+    background: var(--procura-fundo);
+    color: var(--muted-foreground);
+    box-shadow: inset 0 1px 2px rgb(20 20 20 / 0.06);
+    transition:
+      border-color var(--movimento-rapido) var(--curva-padrao),
+      box-shadow var(--movimento-rapido) var(--curva-padrao);
   }
+  .m-procura:hover { border-color: color-mix(in oklab, var(--procura-borda) 60%, var(--foreground)); }
   .m-procura svg { width: 1.25rem; height: 1.25rem; flex: none; }
   .m-procura input {
     flex: 1;
@@ -163,13 +170,13 @@
     border: 0;
     outline: 0;
     background: transparent;
-    color: var(--moldura-foreground);
+    color: var(--foreground);
     font-size: 1rem;
   }
-  .m-procura input::placeholder { color: var(--moldura-muted-foreground); opacity: 1; }
+  .m-procura input::placeholder { color: var(--muted-foreground); opacity: 1; }
   .m-procura input::-webkit-search-cancel-button { cursor: pointer; }
   .m-procura:focus-within {
-    background: var(--camada);
+    border-color: var(--ring);
     box-shadow: 0 0 0 2px var(--ring), 0 1px 3px rgb(20 20 20 / 0.12);
   }
   .m-app-procura-centro { flex: 1 1 45rem; min-width: 0; max-width: 45rem; margin-left: 0.5rem; }
@@ -210,10 +217,6 @@
   }
   .dark .m-camada {
     box-shadow: 0 0 0 1px rgb(255 255 255 / 0.05), 0 1px 2px rgb(0 0 0 / 0.5), 0 4px 16px rgb(0 0 0 / 0.35);
-  }
-  /* Room for the floating «+ Criar…» on phones. */
-  @media (max-width: 63.99rem) {
-    .m-app-com-acao .m-camada { padding-bottom: 5.5rem; }
   }
 
   /* ─── Navigation ──────────────────────────────────────────────────────── */
@@ -281,49 +284,6 @@
   .m-nav-externo { display: inline-grid; color: var(--moldura-muted-foreground); }
   .m-nav-externo svg { width: 1rem; height: 1rem; }
 
-  /* The one primary action («+ Nova campanha»): an extended FAB. The + is
-     brand green; the label is the page's text colour. */
-  .m-acao-principal {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    width: fit-content;
-    max-width: calc(100% - 0.75rem);
-    min-height: 3.5rem;
-    margin: 0.25rem 0 0.75rem 0.75rem;
-    padding: 0 1.375rem 0 1.125rem;
-    border-radius: 1rem;
-    background: var(--card);
-    color: var(--foreground);
-    font-size: 0.96875rem;
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 1px 3px rgb(20 20 20 / 0.18), 0 4px 10px rgb(20 20 20 / 0.08);
-    transition:
-      box-shadow var(--movimento-medio) var(--curva-padrao),
-      background-color var(--movimento-medio) var(--curva-padrao),
-      transform var(--movimento-rapido) var(--curva-padrao);
-  }
-  .m-acao-principal:active { transform: scale(0.98); }
-  .m-acao-principal > svg { width: 1.5rem; height: 1.5rem; flex: none; color: var(--brand); stroke-width: 2.4; }
-  .m-acao-principal:hover {
-    background: color-mix(in srgb, var(--brand) 6%, var(--card));
-    box-shadow: 0 2px 4px rgb(20 20 20 / 0.2), 0 8px 18px rgb(20 20 20 / 0.12);
-  }
-  .dark .m-acao-principal {
-    background: var(--secondary);
-    box-shadow: 0 1px 3px rgb(0 0 0 / 0.6), 0 4px 10px rgb(0 0 0 / 0.35);
-  }
-  .m-acao-principal-flutuante {
-    position: fixed;
-    right: 1rem;
-    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
-    z-index: 30;
-    margin: 0;
-  }
-  @media (min-width: 64rem) {
-    .m-acao-principal-flutuante { display: none; }
-  }
 
   /* ─── Drawer (phones and tablets) ─────────────────────────────────────── */
   .m-gaveta {
@@ -485,9 +445,8 @@
 /* ─── High contrast, forced colours, print ─────────────────────────────── */
 html.contraste .m-camada { border: 2px solid #000000; box-shadow: none; }
 html.contraste .m-app-barra { border-bottom: 2px solid #000000; }
-html.contraste .m-procura { border: 2px solid #000000; }
-html.contraste .m-acao-principal { border: 2px solid #000000; box-shadow: none; background: #ffffff; }
-html.contraste .m-acao-principal > svg { color: #000000; }
+html.contraste .m-procura { border: 2px solid #000000; background: #ffffff; color: #000000; box-shadow: none; }
+html.contraste .m-procura input::placeholder { color: #000000; }
 html.contraste .m-separador[aria-current="page"]::after { background: #000000; }
 html.contraste .m-nav-item:not([aria-current="page"]):hover { text-decoration: underline; }
 html.contraste .m-gaveta { border-right: 2px solid #000000; }
@@ -499,7 +458,7 @@ html.contraste .m-gaveta { border-right: 2px solid #000000; }
 }
 @media print {
   .m-app { display: block; height: auto; overflow: visible; background: none; }
-  .m-app-barra, .m-app-nav, .m-acao-principal-flutuante, .m-gaveta { display: none !important; }
+  .m-app-barra, .m-app-nav, .m-gaveta { display: none !important; }
   .m-app-corpo { display: block; }
   .m-camada { margin: 0; overflow: visible; box-shadow: none; border-radius: 0; }
 }
