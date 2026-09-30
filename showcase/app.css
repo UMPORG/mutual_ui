@@ -6,5 +6,6 @@
 @source "./conversa.tsx";
 @source "./shells.tsx";
 @source "./rolagem.tsx";
+@source "./icones.tsx";
 
 :root { --font-geist-sans: "Geist"; }

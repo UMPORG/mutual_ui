@@ -49,6 +49,7 @@ import { PaginaShells } from "./shells.tsx";
 import { PaginaRolagem } from "./rolagem.tsx";
 import { PaginaDemo } from "./demo.tsx";
 import { PaginaIdentificadores } from "./identificadores.tsx";
+import { PaginaIcones, PaginaIconesShell } from "./icones.tsx";
 import { useAppAtual } from "./app-atual.ts";
 
 const PAGINA = new URLSearchParams(location.search).get("pagina") ?? "dados";
@@ -76,7 +77,7 @@ function Paginas() {
   };
   return (
     <nav aria-label="Páginas" className="flex flex-wrap gap-1">
-      {[link("dados", "Dados"), link("controlos", "Controlos"), link("efeitos", "Efeitos"), link("conversa", "Assistente"), link("shells", "Aplicações"), link("rolagem", "Rolagem"), link("demo", "Demonstração"), link("identificadores", "Identificadores")]}
+      {[link("dados", "Dados"), link("controlos", "Controlos"), link("efeitos", "Efeitos"), link("conversa", "Assistente"), link("shells", "Aplicações"), link("rolagem", "Rolagem"), link("demo", "Demonstração"), link("identificadores", "Identificadores"), link("icones", "Ícones")]}
     </nav>
   );
 }
@@ -88,6 +89,7 @@ const TITULOS: Record<string, [string, string]> = {
   shells: ["Aplicações", "A moldura de cada aplicação (barra de topo, navegação e camada do conteúdo) — v0.13."],
   rolagem: ["Rolagem", "Barras de rolagem e sombras nas pontas — v0.8."],
   identificadores: ["Identificadores", "Telefones, NIF, código postal e IBAN: mostrar, escrever e validar — v0.8.9."],
+  icones: ["Ícones das apps", "Pré-visualização: uma família de ícones original e o lançador em grelha — ramo icones-preview."],
   demo: ["Demonstração", "Preencher formulários com dados de exemplo, também dentro de diálogos — v0.8.7."],
 };
 
@@ -294,6 +296,7 @@ function App() {
   ];
   // v0.13: the shell page IS a whole app frame (AppShell), without the showcase header.
   if (PAGINA === "shells") return <PaginaShells />;
+  if (PAGINA === "icones-shell") return <PaginaIconesShell />;
   if (SO_CONTEUDO)
     return (
       <div className="min-h-dvh bg-background p-4">
@@ -318,6 +321,7 @@ function App() {
           {PAGINA === "rolagem" && <PaginaRolagem />}
           {PAGINA === "demo" && <PaginaDemo />}
           {PAGINA === "identificadores" && <PaginaIdentificadores />}
+          {PAGINA === "icones" && <PaginaIcones />}
         </main>
       ) : (
       <main className="mx-auto flex max-w-[84rem] flex-col gap-12 px-4 py-8 sm:px-8">
