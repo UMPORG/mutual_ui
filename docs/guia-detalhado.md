@@ -1308,3 +1308,8 @@ low-contrast screens.
   and its hover, text / placeholder / ring on the field, per app and theme,
   and locks the wiring; `tests/shell.test.ts` checks nothing of the action
   is left.
+
+## v0.16.1 — sub-section buttons keep their width (no API change)
+
+- A button or link placed directly in `.m-subseccao` (a flex column) no
+  longer stretches to the full width (`align-self: flex-start`).

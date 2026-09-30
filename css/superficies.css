@@ -222,6 +222,8 @@
     border-radius: 0.75rem;
     background: var(--card);
   }
+  /* Buttons and links placed directly in it keep their own width. */
+  .m-subseccao > :is(button, a, .m-btn) { align-self: flex-start; }
   .m-subseccao.m-subseccao-simples { padding: 0; border: 0; border-radius: 0; background: transparent; }
   .m-subseccao > legend {
     float: left;
