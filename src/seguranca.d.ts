@@ -1,5 +1,5 @@
 /**
- * Cabeçalhos de segurança de TODAS as apps MUTU@L (Onda 0, 2026-09-29).
+ * Cabeçalhos de segurança de TODAS as apps MUTU@L.
  *
  * As apps dos funcionários partilham UMA origem (ADR 0004): um XSS numa delas
  * vale a sessão de todas. Por isso a política é a mesma em todas e estrita por

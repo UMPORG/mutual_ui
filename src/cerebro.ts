@@ -1,6 +1,6 @@
 /**
  * Pedidos das apps ao Cérebro com tempo-limite e UMA semântica para «o Cérebro
- * está em baixo» (Onda 0, 2026-09-29).
+ * está em baixo».
  *
  * Regra de todas as apps: uma falha do SERVIDOR (Cérebro inalcançável, sem
  * resposta dentro do tempo-limite, ou 5xx) nunca manda a pessoa para o login do

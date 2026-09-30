@@ -1,7 +1,7 @@
 // JavaScript (com os tipos em seguranca.d.ts), não TypeScript: o `next.config.mjs`
 // das apps importa este ficheiro com o Node, que não tira tipos em node_modules.
 /**
- * Cabeçalhos de segurança de TODAS as apps MUTU@L (Onda 0, 2026-09-29).
+ * Cabeçalhos de segurança de TODAS as apps MUTU@L.
  *
  * As apps dos funcionários partilham UMA origem (ADR 0004): um XSS numa delas
  * vale a sessão de todas. Por isso a política é a mesma em todas e estrita por

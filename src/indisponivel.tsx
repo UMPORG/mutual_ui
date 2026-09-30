@@ -6,7 +6,7 @@ import { TEXTOS_INDISPONIVEL } from "./cerebro";
 import { cx } from "./cx";
 
 /**
- * A página «Serviço temporariamente indisponível» de todas as apps (Onda 0).
+ * A página «Serviço temporariamente indisponível» de todas as apps.
  * O `proxy.ts` mostra-a com 503 (`PAGINA_INDISPONIVEL`, `CABECALHOS_INDISPONIVEL`)
  * quando o Cérebro não responde — nunca o login do Portal, que faria um ciclo.
  * Server-safe (sem hooks); não lê sessão nem configuração, para se desenhar
