@@ -29,9 +29,8 @@ testes em `tests/tokens.test.ts`. Classes e movimento: [superficies.md](superfic
 
 ## Cores de aplicação (`--app-accent`, `--app-marca`)
 
-Matiz OKLCH: o par de apps mais próximo fica a **33°** no claro (29° no
-escuro). O Servidores e DNS é a ardósia (pouco croma). `tests/tokens.test.ts` falha abaixo de 30° no claro
-(28° no escuro).
+Matiz OKLCH: `tests/tokens.test.ts` falha se dois apps ficarem a menos de 30° no claro (28° no
+escuro); hoje o par mais próximo está a 34° / 28,9°. O Servidores e DNS é a ardósia (pouco croma).
 
 | App | Claro (azulejo e acento) | Escuro | Matiz |
 | --- | --- | --- | --- |

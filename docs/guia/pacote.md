@@ -25,8 +25,8 @@ transpilePackages: ["@umporg/ui"],
 ```
 
 Peers: `react` ≥ 19, `lucide-react`; optional `@base-ui/react` ≥ 1.6 < 2 and `recharts` ≥ 3.1 (only
-for the sub-paths that need them). `css/index.css` imports every sheet; an app that imports single
-sheets must also import `css/dicas.css` and `css/shell.css`.
+for the sub-paths that need them). `css/index.css` imports every sheet; import it whole. Importing single
+sheets is not supported (`css/icones.css`, needed by `IconeApp`, has no `exports` entry).
 
 ## Entry points
 
@@ -102,5 +102,5 @@ package's own devDependencies (one React copy); it installs only Tailwind.
 ## CI
 
 `.github/workflows/ci.yml` (GitHub-hosted; push to `main`, PRs, `v*` tags): frozen install,
-typecheck, tests, `pnpm audit`, showcase build, with `TZ=Europe/Lisbon`. Changes only to `**/*.md` or
-`docs/**` do not run it.
+typecheck, tests, `pnpm audit`, showcase build, with `TZ=Europe/Lisbon`. Changes only to `**/*.md`, `docs/**` or `LICENSE`
+do not run it.

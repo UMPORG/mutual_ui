@@ -26,7 +26,7 @@ export interface ContextoEntrarComo {
   destino: "portal" | "cartao";
   /** Called after the session cookies are set (navigate from here). */
   aoEntrar: (r: { persona: PersonaDemo; twoFactor: boolean }) => void;
-  /** Prefix of the Cérebro proxy on this host (default: same origin, `/api/v1`). */
+  /** Prefix of the Cérebro on this origin (default `/api/v1`). */
   api?: string | undefined;
 }
 

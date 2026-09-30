@@ -202,8 +202,8 @@
 /* ─── App identity ─────────────────────────────────────────────────────────
    Each app is recognised by its colour in the frame of shell G (the top bar
    and the navigation, tinted 9% — see "Frame" below), its tile and the icon
-   of the current page. OKLCH hues, no two apps less than 33° apart in light
-   (29° in dark; the test fails below 30° light / 28° dark):
+   of the current page. OKLCH hues at least 30° apart in light / 28° in dark
+   (tests/tokens.test.ts):
      Saúde 355 · Protocolos 29 · Simplex 69 · Monitorização 116 · Portal 149 ·
      Assistente 187 · Validador QR 223 · Backoffice 264 · Eventos 303,
      Servidores e DNS = slate (low chroma).
