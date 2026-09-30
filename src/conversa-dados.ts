@@ -39,6 +39,8 @@ export interface ChatThread {
   id: string;
   title: string;
   updatedAt: string | Date;
+  /** A second, quieter line (v0.18: where it was started — «Iniciada em Simplex · Balanço»). */
+  subtitle?: string | undefined;
 }
 
 function diaLisboa(d: string | Date): DataIso {

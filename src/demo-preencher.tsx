@@ -7,6 +7,11 @@ import { cx } from "./cx";
 import { escolherDoca, type DocaDemo, type Retangulo } from "./demo-doca";
 import { SeccaoEntrarComo, usePersonasDemo } from "./demo-entrar";
 import { gruposAcoesDemo, ouvirAcoesDemo, registarAcoesDemo, type AcaoDemo, type GrupoAcoesDemo } from "./demo-acoes";
+import { useRegistoPosicoes } from "./assistente";
+import { uniao, type Retangulo as RetanguloPosicao } from "./assistente-posicao";
+
+/** Id of the widget in the position registry (the floating assistant yields to it). */
+export const ID_POSICAO_DEMO = "demo";
 
 const SEM_GRUPOS: readonly GrupoAcoesDemo[] = [];
 
@@ -379,6 +384,46 @@ function Flutuante({
       obs.disconnect();
     };
   }, [escondido, raizRef]);
+
+  // The whole footprint (pill + open panel + notice) in the position registry:
+  // the floating assistant stacks above it and never covers it (v0.18). The
+  // widget never moves for the chat.
+  const registo = useRegistoPosicoes();
+  useLayoutEffect(() => {
+    const raiz = raizRef.current;
+    if (escondido || !raiz) {
+      registo.publicar(ID_POSICAO_DEMO, null);
+      return;
+    }
+    let quadro = 0;
+    const medir = () => {
+      quadro = 0;
+      const els = [botaoRef.current, painelRef.current, aviso ? raiz.querySelector(".m-demo-aviso") : null];
+      const rs: RetanguloPosicao[] = els.flatMap((el) => {
+        if (!el) return [];
+        const r = el.getBoundingClientRect();
+        return [{ x: r.left, y: r.top, w: r.width, h: r.height }];
+      });
+      registo.publicar(ID_POSICAO_DEMO, uniao(rs));
+    };
+    const agendar = () => {
+      if (!quadro) quadro = requestAnimationFrame(medir);
+    };
+    medir();
+    const ro = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(agendar);
+    ro?.observe(raiz);
+    if (painelRef.current) ro?.observe(painelRef.current);
+    window.addEventListener("resize", agendar);
+    // The dock may move with an opacity/transform transition: measure once more after it.
+    raiz.addEventListener("transitionend", agendar);
+    return () => {
+      cancelAnimationFrame(quadro);
+      ro?.disconnect();
+      window.removeEventListener("resize", agendar);
+      raiz.removeEventListener("transitionend", agendar);
+    };
+  }, [escondido, aberto, aviso, doca, registo, raizRef]);
+  useEffect(() => () => registo.publicar(ID_POSICAO_DEMO, null), [registo]);
 
   // A modal opened over the page: close the panel.
   useEffect(() => {

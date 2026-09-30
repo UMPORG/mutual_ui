@@ -13,6 +13,7 @@ import {
 } from "react";
 import { ArrowLeftRight, ExternalLink, HelpCircle, LogOut, Menu, Search, X } from "lucide-react";
 import { AcessibilidadeMenu } from "./acessibilidade";
+import { BotaoAssistente } from "./assistente";
 import { LancadorApps, posicionarPopover } from "./app-switcher";
 import { nomeDaApp, type AppNoEndereco, type MutualAppId } from "./apps";
 import { IconeApp } from "./icone-app";
@@ -391,6 +392,14 @@ export interface AppShellProps {
   ajudaHref?: string | undefined;
   /** The app's accessibility statement, linked from the Acessibilidade panel. */
   declaracaoHref?: string | undefined;
+  /**
+   * The floating assistant (v0.18): `<ChatFlutuante …/>` from
+   * `@umporg/ui/assistente`, only when the person has the capability
+   * «assistente na página» (`eu.assistenteNaPagina`). Adds «Assistente» to the
+   * top bar and keeps the chat mounted across client navigation. Ignored in
+   * the Assistente app itself.
+   */
+  assistente?: ReactNode | undefined;
   LinkComponent?: ElementType | undefined;
   /** Name of the navigation landmark. */
   rotuloNavegacao?: string | undefined;
@@ -414,6 +423,7 @@ export function AppShell({
   inicioHref = "/",
   ajudaHref,
   declaracaoHref,
+  assistente,
   LinkComponent = "a",
   rotuloNavegacao = "Menu principal",
   idConteudo = "conteudo-principal",
@@ -423,6 +433,7 @@ export function AppShell({
   const nome = nomeDaApp(app) ?? "";
   const ajuda = ajudaHref ?? ajudaDaApp(app, CAMINHOS.ajuda);
   const temNav = navegacao !== undefined && navegacao.length > 0;
+  const comAssistente = assistente !== undefined && assistente !== null && assistente !== false && app !== "assistente";
   const gavetaRef = useRef<HTMLDialogElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const [gavetaAberta, setGavetaAberta] = useState(false);
@@ -539,6 +550,7 @@ export function AppShell({
           </button>
         ) : null}
         {barraExtra}
+        {comAssistente && <BotaoAssistente />}
         {/* With a navigation, phones find Ajuda and Acessibilidade in the drawer;
             without one (Validador QR, Portal) they stay in the bar, icon only. */}
         <a
@@ -624,6 +636,7 @@ export function AppShell({
           )}
         </dialog>
       )}
+      {comAssistente && assistente}
     </div>
   );
 }

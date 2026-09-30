@@ -868,11 +868,11 @@ export function ThreadList<T extends ChatThread>({ threads, activeId, hrefFor, o
                     <li key={t.id} className="group relative flex items-center">
                       {hrefFor ? (
                         <L href={hrefFor(t)} aria-current={ativa ? "page" : undefined} className={classe}>
-                          <span className="truncate">{t.title}</span>
+                          <TituloConversa titulo={t.title} subtitulo={t.subtitle} />
                         </L>
                       ) : (
                         <button type="button" aria-current={ativa ? "page" : undefined} onClick={() => onSelect?.(t)} className={classe}>
-                          <span className="truncate">{t.title}</span>
+                          <TituloConversa titulo={t.title} subtitulo={t.subtitle} />
                         </button>
                       )}
                       {(onRename || onDelete) && (
@@ -914,6 +914,16 @@ export function ThreadList<T extends ChatThread>({ threads, activeId, hrefFor, o
         }}
       />
     </nav>
+  );
+}
+
+function TituloConversa({ titulo, subtitulo }: { titulo: string; subtitulo?: string | undefined }) {
+  if (!subtitulo) return <span className="truncate">{titulo}</span>;
+  return (
+    <span className="flex min-w-0 flex-col py-1.5">
+      <span className="truncate">{titulo}</span>
+      <span className="truncate text-sm font-normal text-muted-foreground">{subtitulo}</span>
+    </span>
   );
 }
 

@@ -23,6 +23,8 @@ import type * as Calendario from "../src/calendario";
 import type * as Preferencias from "../src/preferencias";
 import type * as Apps from "../src/apps";
 import type * as Monitor from "../src/monitor";
+import type * as Assistente from "../src/assistente-chat";
+import type * as AssistenteApi from "../src/assistente-api";
 import type * as MonitorReact from "../src/monitor-react";
 import { buttonClasses } from "../src/basicos";
 import { Switch } from "../src/escolhas";
@@ -59,6 +61,8 @@ type Todas =
   | Falhas<typeof Preferencias>
   | Falhas<typeof Apps>
   | Falhas<typeof Monitor>
+  | Falhas<typeof Assistente>
+  | Falhas<typeof AssistenteApi>
   | Falhas<typeof MonitorReact>;
 
 // Se isto falhar, o erro diz que exports não aceitam `undefined` nas props opcionais.

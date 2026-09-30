@@ -1352,3 +1352,41 @@ Two causes, both here:
 - The calls are same-origin (`/api/v1/assistente/*`, proxied by every app); errors come back as
   pt-PT messages (`mensagemDoErro`).
 
+
+## v0.18.0 — the floating assistant (additive)
+
+- `AppShell` takes `assistente` (a node): pass `<ChatFlutuante app="…" LinkComponent={Link} />`
+  from the new entry `@umporg/ui/assistente` (needs `@base-ui/react`) only when
+  `GET /api/v1/acessos/eu` says `assistenteNaPagina: true` (capability «assistente na página»,
+  ADR 0006 §16). The shell then shows «Assistente» in the top bar (next to Ajuda; icon only on
+  phones; a dot when a reply arrived while minimised) and keeps the chat mounted across client
+  navigation. Ignored in the Assistente app itself.
+- `ChatFlutuante` (portalled to `<body>`, z-index 45, non-modal `role="dialog"`):
+  - dragged by its header (mouse, pen, touch), released → the nearest of four corners with a soft
+    spring (`transform` only, `--movimento-lento` + the new token `--curva-mola`; instant with
+    Reduzir movimento). «Mover» (grip button) moves it with the arrow keys; the new corner is
+    announced. Below 40rem it is a bottom sheet.
+  - Esc minimises it and gives the focus back to «Assistente»; replies are announced by the
+    message list's live region.
+  - «Conversas» (all the person's conversations with where each was started — `ChatThread.subtitle`,
+    new, shown by `ThreadList`), «Nova conversa», «Abrir no Assistente» (`/assistente/c/<id>`),
+    documents (`AttachButton`, capability `ficheiros`), drafted texts (`RascunhoTexto`), proposed
+    drafts (`ActionCard`, «Criar rascunho»).
+  - Kept on the device, same origin for every app: `assistente.flutuante.aberto|canto|conversa`
+    (guarded; the one shared `localStorage` prefix). The messages always come from the server.
+- Stacking with `DemoPreencher`: the widget publishes its footprint (pill + open panel + notice)
+  in the position registry (`useRegistoPosicoes()`; a React context whose default is one registry
+  per page — no provider needed; `ProvedorPosicoes` isolates one). The widget never moves for the
+  chat; the chat stacks ABOVE it with a 12px gap, shrinks, or takes the mirrored corner when there
+  is no room (`posicaoDoChat`, pure, `tests/assistente.test.ts`).
+- `useContextoAssistente({ app, pagina, seccao?, dados | campos, formulario?, alvo?, aoAplicar? })`
+  (main entry): the page publishes what is on screen. `dados` maps a draft path to a value or
+  `{ valor, rotulo, sensivel, editavel }`; mark personal data `sensivel` (the model then only learns
+  it is filled) and the fields the assistant may propose `editavel`. Normalised (`normalizarContexto`:
+  ≤ 80 fields, values ≤ 300 characters, record ids out of the route), hashed (`hashContexto`), and
+  sent with the next question only when it changed (`contextoAEnviar`); the server gives the model
+  only the difference (`diferencaContexto` is the client twin). With `formulario` the chat offers
+  «O que falta?»; with `alvo` + `aoAplicar` (and the capabilities) «Com um documento»
+  (`PreencherComDocumento`); with `aoAplicar`, values the assistant proposes for the section (SSE
+  `propostas`) are reviewed like a document's (`RevisaoPropostas`) and «Aplicar N valores» calls
+  `aoAplicar` — only on the page they were proposed for; nothing is submitted.

@@ -1,7 +1,7 @@
 # MUTU@L UI (`@umporg/ui`) — AGENTS.md
 
 > Rules and "where is what" for AI coding agents (`CLAUDE.md` imports this
-> file). Examples, rationale and the per-version notes (v0.2 → v0.17.0) are in
+> file). Examples, rationale and the per-version notes (v0.2 → v0.18.0) are in
 > [docs/guia-detalhado.md](docs/guia-detalhado.md); colour decisions in
 > [docs/identidade-visual.md](docs/identidade-visual.md); the v0.6 adoption
 > survey in [docs/inventario-componentes.md](docs/inventario-componentes.md);
@@ -13,7 +13,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 ## Consuming it (no npm publishing)
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.17.0"   // app package.json — always a tag, never a branch
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.18.0"   // app package.json — always a tag, never a branch
 ```
 
 - Next apps: `transpilePackages: ["@umporg/ui"]`; `app/globals.css`:
@@ -22,7 +22,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 - Root layout: `<html lang="pt-PT" data-app="<id>" suppressHydrationWarning>`.
 - **Release:** bump `version` in `package.json`, commit, `git tag vX.Y.Z`,
   push the tag; then each app bumps its `#vX.Y.Z` ref and regenerates its
-  lockfile. Current: **v0.17.0**.
+  lockfile. Current: **v0.18.0**.
 - Peers: `react`/`react-dom` ≥ 19, `lucide-react`; optional `@base-ui/react`
   ≥ 1.6 < 2 (controls, dates, conversation) and `recharts` ≥ 3.1 (charts).
 
@@ -30,13 +30,14 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 
 | Import | What | Needs |
 | --- | --- | --- |
-| `@umporg/ui` | brand, app icons (`IconeApp`), shell G (`AppShell`, `NavApp`, `ProcuraApp`, `Separadores`, `LancadorApps` grid launcher), `PageHeader`, `StatusCallout`, `Dica`, `SemAcesso`, `ServicoIndisponivel`, `AcessibilidadeMenu`, `PreferenciasScript`, `DemoPreencher`, cards, stats, `DataTable` + toolbar/pagination, basic form controls, `Telefone`/`Campo*`, formatters | nothing |
+| `@umporg/ui` | brand, app icons (`IconeApp`), shell G (`AppShell`, `NavApp`, `ProcuraApp`, `Separadores`, `LancadorApps` grid launcher), `BotaoAssistente` + `useContextoAssistente` + position registry (v0.18), `PageHeader`, `StatusCallout`, `Dica`, `SemAcesso`, `ServicoIndisponivel`, `AcessibilidadeMenu`, `PreferenciasScript`, `DemoPreencher`, cards, stats, `DataTable` + toolbar/pagination, basic form controls, `Telefone`/`Campo*`, formatters | nothing |
 | `/controlos` | `Select`, `Combobox`, `MultiSelect`, menus, `Tooltip`, `Popover`, `Dialog`, `ConfirmDialog`, `Sheet`, `Tabs`, `Switch`, `Checkbox`, `RadioGroup`, `NumberField`, `toast`… | `@base-ui/react` |
 | `/datas` · `/calendario` | `Calendar`, `DatePicker`, `DateRangePicker` · pure Lisbon date maths | `@base-ui/react` · nothing |
 | `/graficos` | `GraficoBarras`, `GraficoLinhas`, `GraficoArea`, `GraficoDonut`, `ChartFrame` | `recharts` |
 | `/efeitos` | backdrops and celebrations (below) | nothing |
 | `/conversa` · `/markdown` | assistant UI (`ChatLayout`, `MessageList`, `Composer`, `AttachButton`, `RascunhoTexto`, …) · safe Markdown renderer | `@base-ui/react` · nothing |
 | `/preencher` | the assistant inside forms (ADR 0006 §12–13): `PreencherComDocumento` (upload → Cérebro proposals → review current/proposed per field → apply to the DRAFT, never submits), `RevisaoPropostas`, `ProgressoLeitura`, `ListaDoQueFalta`, `RascunhoTexto`; pure helpers `aplicarValores`, `valoresDoRascunho`, `pedirOQueFalta`, `pedirTexto` | `@base-ui/react` |
+| `/assistente` | `ChatFlutuante` — the floating assistant (v0.18, ADR 0006 §16): drag + spring to 4 corners, stacks above the demo widget, page context, proposals for the section, «O que falta?», conversations list, «Abrir no Assistente» | `@base-ui/react` |
 | `/formatar` · `/validar` | pt-PT formatters · identifier validators/normalisers | nothing |
 | `/icones` | `GLIFOS_APPS`, `COR_MARCA_APP`, `svgIconeApp` (favicons: `pnpm icones` → `assets/icones/<app>/`) | nothing |
 | `/sso` · `/apps` | `CAMINHOS`, `portalLoginUrl`, `safeReturnUrl`, `urlAbsoluta`, `urlCartao` · `MUTUAL_APPS`, `appsDisponiveis`, `nomeDaApp` | nothing |
@@ -124,6 +125,7 @@ Changes only to `**/*.md`, `docs/**` or `LICENSE` do not run CI.
    `text-pagina`. High contrast flattens all of it.
 6. **Motion** (v0.14): durations and curves only from the tokens
    `--movimento-rapido|medio|lento` and `--curva-entrada|saida|padrao`
+   (+ `--curva-mola`, v0.18, a soft spring for things settling in place)
    (`css/tokens.css`); only opacity and transform (and colours) move, never
    layout; exits are faster than entries. Reduzir movimento and the OS
    setting make them 0 (instant). Never set `ms` by hand in an app.
@@ -158,11 +160,13 @@ contador?, externo?, ativo? }[] }`; current = longest matching href,
 `hrefAtualDoMenu`: exactly ONE current entry — once an app marks one `ativo`, nothing is inferred), `procura`
 (`<ProcuraApp rotulo action|onProcurar/>`), `antesDaNavegacao`/
 `depoisDaNavegacao` (e.g. a unit selector), `barraExtra`, `ajudaHref`,
-`declaracaoHref`. It renders `<main id="conteudo-principal">` (the scroller,
+`declaracaoHref`, `assistente` (v0.18: `<ChatFlutuante app LinkComponent/>`
+only when `eu.assistenteNaPagina` — adds «Assistente» next to Ajuda; ignored
+in the Assistente app). It renders `<main id="conteudo-principal">` (the scroller,
 back to the top on every navigation); wrap pages in `.m-pagina`
 (`m-pagina-larga` without max width). Below 64rem: drawer.
 Tour targets `[data-shell="menu|navegacao|ajuda|acessibilidade|aplicacoes|
-conta|organizacao|sair"]`. The search (`ProcuraApp`) is never tinted: the
+conta|organizacao|sair|assistente"]`. The search (`ProcuraApp`) is never tinted: the
 neutral input surface (`--procura-fundo`: white / the dark input surface)
 with a border ≥ 3:1 on the bar (`--procura-borda`), black/white in Alto
 contraste. Screens without
@@ -196,7 +200,9 @@ Show the **profile name** and organisation, never a login role.
   `/assistente`, `/protocolos`, `/monitor`, `/ajuda`, Cérebro `/api`). Next
   apps set `basePath`; browsers call `/api/v1` same-origin; server code uses
   `CEREBRO_URL_INTERNO` or `${MUTUAL_URL}/api`. Cookies are host-only;
-  `localStorage` keys are prefixed `<app>.`.
+  `localStorage` keys are prefixed `<app>.` (the floating assistant's
+  `assistente.flutuante.*` is shared by every app on purpose: open, corner,
+  conversation id — never message contents).
 - **Login** is the Portal's: `portalLoginUrl(caminhoDoPedido(request.url), "sem-sessao")`;
   `safeReturnUrl` accepts same-origin paths only; logout →
   `portalAfterLogoutUrl()`; out-of-band links → `urlAbsoluta(MUTUAL_URL, caminho)`.
@@ -309,6 +315,20 @@ forms.**
 
 Desk apps (Backoffice, Simplex, Saúde, DNS): no backdrops on work pages; only
 `PontosFundo` on page-level empty states and `MomentoSucesso` after submissions.
+
+## Floating assistant (v0.18)
+
+- The app passes `assistente={eu.assistenteNaPagina ? <ChatFlutuante app="…" LinkComponent={Link} /> : undefined}`
+  to `AppShell`; nothing else is mounted by hand. Not in the Assistente app, not in the
+  Cartão Digital (associados).
+- Pages where the context matters call `useContextoAssistente({ app, pagina, seccao, dados,
+  formulario?, alvo?, aoAplicar? })`: mark personal data `sensivel`, the fields the assistant
+  may fill `editavel`; `aoAplicar` writes the DRAFT (`aplicarValores`), never submits. Saúde
+  never publishes fields (clinical data; the server drops them anyway).
+- Floating widgets publish their footprint with `useRegistoPosicoes().publicar(id, rect)`; the
+  chat yields (stacks above, shrinks or mirrors). `DemoPreencher` already does it.
+- Pure logic (corners, stacking, context hash/diff, SSE reader) is in `src/assistente-posicao.ts`,
+  `src/assistente-contexto.ts`, `src/assistente-api.ts` — tested in `tests/assistente.test.ts`.
 
 ## Demo mode (`DEMO_MODE=true`, server env, never in production)
 

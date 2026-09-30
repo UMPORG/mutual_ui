@@ -46,6 +46,28 @@ export {
 export { registarEntrarComo, type ContextoEntrarComo, type PersonaDemo } from "./demo-entrar-dados";
 export { useEntrarComoDemo } from "./demo-entrar";
 export { registarAcoesDemo, type AcaoDemo, type GrupoAcoesDemo } from "./demo-acoes";
+// v0.18 — the floating assistant: the top-bar button, the page context hook and
+// the position registry (the chat itself is `@umporg/ui/assistente`).
+export {
+  BotaoAssistente,
+  ID_CHAT_FLUTUANTE,
+  ProvedorPosicoes,
+  useContextoAssistente,
+  useEstadoChat,
+  useRegistoPosicoes,
+  type OpcoesContextoAssistente,
+} from "./assistente";
+export { RegistoPosicoes, type EstadoChat } from "./assistente-estado";
+export {
+  diferencaContexto,
+  hashContexto,
+  normalizarContexto,
+  type CampoContexto,
+  type ContextoPagina,
+  type EntradaContexto,
+  type EntradaDado,
+} from "./assistente-contexto";
+export { cantoMaisProximo, posicaoDoChat, type CantoChat } from "./assistente-posicao";
 export * from "./formatar";
 export * from "./dados";
 export * from "./cartao";
