@@ -1197,3 +1197,41 @@ Workspace structure + Fluent layering, replacing the v0.8 tinted sidebars.
   `.m-painel`) use the tokens; the Dica body fades open.
 - `tests/shell.test.ts` locks it: tokens present, 0 under reduced motion, no
   layout property animated and no hand-written durations in `css/shell.css`.
+
+## v0.15.0 — one icon per app and the grid launcher (breaking)
+
+Owner, 2026-09-30: every app gets its own ORIGINAL icon (method of Google
+Workspace and Proton — one base, one glyph per product — never their
+drawings), in its own colour, and the launcher of the top bar becomes a
+Workspace-style grid.
+
+- **`IconeApp({ app, tamanho?, titulo? })`** (`src/icone-app.tsx`): the
+  «folha» base (a square with alternating 7 / 2.5 corners on a 24 grid) in
+  `--app-marca`, white glyph (stroke 2, live area 4.5–19.5, legible at
+  16 px). Glyphs: Portal arch + door, Backoffice pediment + columns, Eventos
+  calendar, Simplex pie with a slice out, Saúde cross, QR scan frame, DNS two
+  servers, Assistente bubble + spark, Protocolos linked rings,
+  Monitorização pulse, Cartão ID card. Forced colours: Canvas / CanvasText.
+  Replaces **`AppMark`** and **`APP_ICONS`** (removed): `<AppMark app size>`
+  → `<IconeApp app tamanho>`.
+- **Data + standalone SVG** (`@umporg/ui/icones`, also in the main entry):
+  `GLIFOS_APPS`, `COR_MARCA_APP` (= `--app-marca`, tested), `BASE_ICONE`,
+  `svgIconeApp(app, { mascaravel })`.
+- **Favicons and home-screen icons**: `pnpm icones` (scripts/gerar-icones.mjs)
+  writes `assets/icones/<app>/` — `icon.svg`, `favicon.ico` (16/32/48),
+  `icone-16.png`, `icone-32.png`, `apple-icon.png` (180, full-bleed),
+  `icone-192.png`/`icone-512.png` (purpose any) and
+  `icone-mascaravel-192.png`/`-512.png` (purpose maskable). Apps copy
+  `icon.svg`, `favicon.ico` and `apple-icon.png` into `app/`, the PNGs into
+  `public/icones/`, and list 192/512 (any + maskable) in `app/manifest.ts`
+  with their basePath.
+- **`LancadorApps`** is now the grid: round nine-dot button (tooltip
+  «Aplicações MUTU@L», shown on hover and keyboard focus, hidden while open
+  and after Esc), rounded panel, 3 columns of icon + name (names wrap), only
+  `disponiveis` (Portal first; the Cartão never), the current app with a
+  tick + outline + «(está aqui)». Keyboard: focus on the current app when it
+  opens, arrows (`indiceNaGrelha`, tested), Home/End, Enter, Esc returns focus
+  to the button. Motion: `m-menu-barra` (tokens v0.14). The `botao` prop is
+  gone. `AppShell`'s tile is the `IconeApp`.
+- Showcase: `?pagina=icones` (family at 16–48 px, top bar, tab strip) and
+  `?pagina=icones-shell&app=<id>`; `node showcase/shots-icones.mjs <dir>`.

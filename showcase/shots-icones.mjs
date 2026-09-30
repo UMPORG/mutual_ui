@@ -1,4 +1,4 @@
-// Preview screenshots of the app icon family and the grid launcher (icones-preview):
+// Screenshots of the app icon family and the grid launcher (v0.15):
 // `node shots-icones.mjs <outDir>` with `PORT=5198 bun serve.ts` running.
 import { chromium } from "file:///D:/Mutual/mutual_eventos/node_modules/@playwright/test/index.mjs";
 const OUT = process.argv[2] ?? "shots";
@@ -14,28 +14,28 @@ async function pagina(q, vp = { width: 1440, height: 900 }, { forcado = false, d
   await p.waitForTimeout(300);
   return p;
 }
-for (const d of ["a", "b"]) {
+for (const d of ["a"]) {
   for (const [tema, forcado] of [["claro", false], ["escuro", false], ["forcado", true]]) {
-    const p = await pagina(`?pagina=icones&direcao=${d}&tema=${tema === "forcado" ? "claro" : tema}`, undefined, { forcado });
-    await p.locator('[data-seccao="s-grelha"]').screenshot({ path: `${OUT}/grelha-${d}-${tema}.png` });
-    if (tema !== "forcado") await p.locator('[data-seccao="s-barra"]').screenshot({ path: `${OUT}/barra-${d}-${tema}.png` });
-    if (tema === "claro") await p.locator('[data-seccao="s-separadores"]').screenshot({ path: `${OUT}/separadores-${d}.png` });
-    if (tema === "forcado") await p.locator('[data-seccao="s-separadores"]').screenshot({ path: `${OUT}/separadores-${d}-forcado.png` });
+    const p = await pagina(`?pagina=icones&tema=${tema === "forcado" ? "claro" : tema}`, undefined, { forcado });
+    await p.locator('[data-seccao="s-grelha"]').screenshot({ path: `${OUT}/grelha-${tema}.png` });
+    if (tema !== "forcado") await p.locator('[data-seccao="s-barra"]').screenshot({ path: `${OUT}/barra-${tema}.png` });
+    if (tema === "claro") await p.locator('[data-seccao="s-separadores"]').screenshot({ path: `${OUT}/separadores.png` });
+    if (tema === "forcado") await p.locator('[data-seccao="s-separadores"]').screenshot({ path: `${OUT}/separadores-forcado.png` });
     await p.close();
   }
   for (const tema of ["claro", "escuro"]) {
     for (const [w, h] of [[1440, 900], [390, 844]]) {
-      const p = await pagina(`?pagina=icones-shell&app=eventos&direcao=${d}&tema=${tema}`, { width: w, height: h });
+      const p = await pagina(`?pagina=icones-shell&app=eventos&tema=${tema}`, { width: w, height: h });
       await p.locator(".m-waffle").click();
       await p.waitForTimeout(250);
-      await p.screenshot({ path: `${OUT}/lancador-${d}-${tema}-${w}.png` });
+      await p.screenshot({ path: `${OUT}/lancador-${tema}-${w}.png` });
       await p.close();
     }
   }
 }
 // Forced colours: the launcher open.
 {
-  const p = await pagina(`?pagina=icones-shell&app=eventos&direcao=a&tema=claro`, undefined, { forcado: true });
+  const p = await pagina(`?pagina=icones-shell&app=eventos&tema=claro`, undefined, { forcado: true });
   await p.locator(".m-waffle").click();
   await p.waitForTimeout(250);
   await p.screenshot({ path: `${OUT}/lancador-forcado-1440.png` });
@@ -43,7 +43,7 @@ for (const d of ["a", "b"]) {
 }
 // Keyboard: focus lands on the current app, arrows move, Esc closes and returns focus.
 {
-  const p = await pagina(`?pagina=icones-shell&app=eventos&direcao=a&tema=claro`);
+  const p = await pagina(`?pagina=icones-shell&app=eventos&tema=claro`);
   const foco = () => p.evaluate(() => (document.activeElement?.textContent || document.activeElement?.getAttribute("aria-label") || document.activeElement?.tagName || "").trim());
   await p.locator(".m-waffle").focus();
   await p.keyboard.press("Enter");

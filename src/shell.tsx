@@ -15,7 +15,7 @@ import { ArrowLeftRight, ExternalLink, HelpCircle, LogOut, Menu, Plus, Search, X
 import { AcessibilidadeMenu } from "./acessibilidade";
 import { LancadorApps, posicionarPopover } from "./app-switcher";
 import { nomeDaApp, type AppNoEndereco, type MutualAppId } from "./apps";
-import { AppMark } from "./brand";
+import { IconeApp } from "./icone-app";
 import { CAMINHOS } from "./sso";
 import { ajudaDaApp, hrefAtualDoMenu, iniciais } from "./shell-nav";
 import { cx } from "./cx";
@@ -466,10 +466,6 @@ export interface AppShellProps {
   idConteudo?: string | undefined;
   /** Extra classes on the content layer. */
   classeConteudo?: string | undefined;
-  /** Preview (icones-preview): replaces the app tile of the top bar. */
-  marcaApp?: ReactNode | undefined;
-  /** Preview (icones-preview): replaces the launcher (`LancadorApps`) of the top bar. */
-  lancador?: ReactNode | undefined;
   children: ReactNode;
 }
 
@@ -491,8 +487,6 @@ export function AppShell({
   rotuloNavegacao = "Menu principal",
   idConteudo = "conteudo-principal",
   classeConteudo,
-  marcaApp,
-  lancador,
   children,
 }: AppShellProps) {
   const nome = nomeDaApp(app) ?? "";
@@ -552,7 +546,7 @@ export function AppShell({
 
   const identidade = (onClick?: () => void) => (
     <Link href={inicioHref} onClick={onClick} className="m-app-identidade">
-      {marcaApp ?? <AppMark app={app} size={38} />}
+      <IconeApp app={app} tamanho={38} />
       <span className="m-app-nomes">
         {/* The space keeps «MUTU@L Backoffice» as the link's name. */}
         <small>MUTU@L</small> <strong>{nome}</strong>
@@ -627,7 +621,7 @@ export function AppShell({
         <span data-shell="acessibilidade" className={cx("contents", temNav && "max-md:[&>button]:!hidden")}>
           <AcessibilidadeMenu tone="moldura" compacto={temNav ? false : "md"} declaracaoHref={declaracaoHref} className="m-barra-util" />
         </span>
-        {lancador ?? (disponiveis && <LancadorApps atual={app} disponiveis={disponiveis} />)}
+        {disponiveis && <LancadorApps atual={app} disponiveis={disponiveis} />}
         {conta && <MenuConta app={app} conta={conta} />}
       </header>
       {procura && procuraAberta ? <div className="m-app-procura-telefone lg:hidden">{procura}</div> : null}

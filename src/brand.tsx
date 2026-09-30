@@ -1,25 +1,6 @@
-import type { ComponentType, CSSProperties, SVGProps } from "react";
-import { Activity, Building2, CalendarDays, CreditCard, Handshake, Landmark, LayoutGrid, MessagesSquare, QrCode, Server, Stethoscope } from "lucide-react";
 import { nomeDaApp, type MutualAppId } from "./apps";
 import { MUTUAL_FLAG_DATA_URI, MUTUAL_FLAG_RATIO } from "./logo-data";
 import { cx } from "./cx";
-
-// Sem `| undefined`: descreve os ícones Lucide que recebemos (cujas props não o aceitam).
-type Icon = ComponentType<SVGProps<SVGSVGElement> & { size?: number | string; strokeWidth?: number | string }>;
-
-export const APP_ICONS: Record<MutualAppId, Icon> = {
-  portal: LayoutGrid,
-  backoffice: Building2,
-  eventos: CalendarDays,
-  simplex: Landmark,
-  saude: Stethoscope,
-  qr: QrCode,
-  dns: Server,
-  assistente: MessagesSquare,
-  protocolos: Handshake,
-  monitor: Activity,
-  cartao: CreditCard,
-};
 
 /** The MUTU@L flag. Decorative by default (the wordmark carries the name). */
 export function MutualFlag({ height = 24, className, title }: { height?: number | undefined; className?: string | undefined; title?: string | undefined }) {
@@ -81,26 +62,6 @@ export function MutualWordmark({
           </span>
         )}
       </span>
-    </span>
-  );
-}
-
-/** Square app tile: the app's colour (`--app-marca`, the same in light and
- *  dark) with a white glyph ≥ 4.8:1 — top bar, launcher, Portal tiles. */
-export function AppMark({ app, size = 40, className }: { app: MutualAppId; size?: number | undefined; className?: string | undefined }) {
-  const Icon = APP_ICONS[app];
-  const style: CSSProperties = { width: size, height: size };
-  return (
-    <span
-      data-app={app}
-      style={style}
-      className={cx(
-        "inline-flex shrink-0 items-center justify-center rounded-[28%] bg-app-marca text-white shadow-sm",
-        className,
-      )}
-      aria-hidden
-    >
-      <Icon size={Math.round(size * 0.52)} strokeWidth={2} />
     </span>
   );
 }

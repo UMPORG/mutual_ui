@@ -57,7 +57,7 @@ test("shell G is wired: css/shell.css imported by index.css and exported; old si
   for (const nome of ["AppShell", "NavApp", "AcaoPrincipal", "MenuConta", "ProcuraApp", "Separadores", "LancadorApps"]) {
     assert.match(src, new RegExp(`\\b${nome}\\b`), `${nome} exported`);
   }
-  for (const nome of ["ShellBarraLateral", "ShellMarca", "ShellConta", "classeItemShell", "AppSwitcher"]) {
+  for (const nome of ["ShellBarraLateral", "ShellMarca", "ShellConta", "classeItemShell", "AppSwitcher", "AppMark", "APP_ICONS", "LancadorGrelha", "IconeApp.*direcao"]) {
     assert.doesNotMatch(src, new RegExp(`\\b${nome}\\b`), `${nome} removed`);
   }
   const shell = readFileSync(new URL("../css/shell.css", import.meta.url), "utf8");

@@ -1,9 +1,10 @@
 "use client";
 
-import { useId, useRef, type CSSProperties, type ReactNode } from "react";
-import { Check, LayoutGrid } from "lucide-react";
+import { useId, useRef, type CSSProperties, type KeyboardEvent } from "react";
+import { ArrowUpRight, Check } from "lucide-react";
 import { MUTUAL_APPS, type MutualAppId } from "./apps";
-import { AppMark } from "./brand";
+import { IconeApp, IconeWaffle } from "./icone-app";
+import { indiceNaGrelha } from "./grelha-teclado";
 import { CAMINHOS } from "./sso";
 import { cx } from "./cx";
 
@@ -24,33 +25,51 @@ export function posicionarPopover(pop: HTMLElement, botao: HTMLElement | null, a
 }
 
 /**
- * The app launcher of the top bar («Aplicações MUTU@L», the waffle): the
- * apps the person can use in the active organisation, always in the same
- * order (`MUTUAL_APPS`) — exactly what the Portal launcher shows — the
- * current one marked «Está aqui». With one origin (ADR 0004) the person
- * lands signed in. Build `disponiveis` with `appsDisponiveis(eu.apps)`.
+ * The app launcher of the top bar (v0.15, Google Workspace style): a round
+ * nine-dot button (tooltip «Aplicações MUTU@L») opening a rounded panel with
+ * a 3-column grid of app icon + name — only the apps the person can use in
+ * the active organisation (`appsDisponiveis(eu.apps)`, the Portal first),
+ * the current one marked (tick + outline + «está aqui» for screen readers).
+ * The Cartão Digital (the associados' own app) is never listed. With one
+ * origin (ADR 0004) the person lands signed in.
  *
- * Uses the native Popover API (light-dismiss, Esc, top layer) — no deps.
+ * Keyboard: on open, focus goes to the current app; arrows move in the grid
+ * (←/→ one, ↑/↓ one row), Home/End; Enter opens; Esc closes and gives focus
+ * back to the button. Every link is also reachable with Tab. Native Popover
+ * API (light-dismiss, top layer) — no deps; motion of `m-menu-barra`.
  */
 export function LancadorApps({
   atual,
   disponiveis,
-  className,
   rotulo = "Aplicações MUTU@L",
-  botao,
+  className,
 }: {
   atual: MutualAppId;
   /** `appsDisponiveis(eu.apps)` (the Validador QR comes with Eventos). */
   disponiveis: readonly MutualAppId[];
-  className?: string | undefined;
   rotulo?: string | undefined;
-  /** Replaces the icon-only waffle (e.g. a labelled button in a drawer). */
-  botao?: ReactNode | undefined;
+  className?: string | undefined;
 }) {
   const id = useId().replace(/:/g, "");
   const popId = `mutual-apps-${id}`;
-  const apps = MUTUAL_APPS.filter((a) => a.id === atual || disponiveis.includes(a.id));
   const botaoRef = useRef<HTMLButtonElement>(null);
+  const listaRef = useRef<HTMLUListElement>(null);
+  const apps: { id: Exclude<MutualAppId, "cartao">; nome: string }[] = [
+    ...(atual === "portal" || disponiveis.includes("portal") ? [{ id: "portal" as const, nome: "Portal" }] : []),
+    ...MUTUAL_APPS.filter((a) => a.id === atual || disponiveis.includes(a.id)).map((a) => ({ id: a.id, nome: a.nome })),
+  ];
+
+  const ligacoes = () => Array.from(listaRef.current?.querySelectorAll<HTMLAnchorElement>("a") ?? []);
+
+  function teclas(e: KeyboardEvent<HTMLUListElement>) {
+    const todas = ligacoes();
+    const i = todas.indexOf(document.activeElement as HTMLAnchorElement);
+    if (i < 0) return;
+    const j = indiceNaGrelha(i, e.key, todas.length, 3);
+    if (j === null) return;
+    e.preventDefault();
+    todas[j]?.focus();
+  }
 
   return (
     <>
@@ -58,49 +77,69 @@ export function LancadorApps({
         ref={botaoRef}
         type="button"
         popoverTarget={popId}
-        aria-label={botao ? undefined : rotulo}
+        aria-label={rotulo}
         data-shell="aplicacoes"
-        className={cx(botao ? "m-barra-util" : "m-barra-botao", className)}
+        className={cx("m-barra-botao m-waffle", className)}
+        onPointerLeave={(e) => e.currentTarget.removeAttribute("data-dica")}
+        onBlur={(e) => e.currentTarget.removeAttribute("data-dica")}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") e.currentTarget.setAttribute("data-dica", "oculta");
+        }}
       >
-        {botao ?? <LayoutGrid aria-hidden />}
+        <IconeWaffle />
+        <span className="m-waffle-dica" aria-hidden>
+          {rotulo}
+        </span>
       </button>
       <div
         id={popId}
         popover="auto"
         aria-label={rotulo}
-        className="m-float m-menu-barra"
+        className="m-float m-menu-barra m-grelha-apps"
         onToggle={(e) => {
-          if (e.newState === "open") posicionarPopover(e.currentTarget, botaoRef.current);
+          const botao = botaoRef.current;
+          if (e.newState === "open") {
+            posicionarPopover(e.currentTarget, botao);
+            const alvo = ligacoes().find((a) => a.getAttribute("aria-current") === "page") ?? ligacoes()[0];
+            alvo?.focus();
+          } else if (botao) {
+            // Esc or a click outside: focus back on the button unless the
+            // person clicked something focusable.
+            const foco = document.activeElement;
+            if (!foco || foco === document.body || e.currentTarget.contains(foco)) {
+              botao.setAttribute("data-dica", "oculta");
+              botao.focus();
+            }
+          }
         }}
       >
-        <p className="px-3 pt-2 pb-1 text-sm font-semibold text-muted-foreground">{rotulo}</p>
-        <ul className="flex flex-col">
-          {apps.map((a, i) => {
-            const aqui = a.id === atual;
-            return (
-              <li key={a.id} className="m-menu-escalonado" style={{ "--i": i } as CSSProperties}>
-                <a
-                  href={CAMINHOS[a.id]}
-                  aria-current={aqui ? "page" : undefined}
-                  className={cx("m-menu-item min-h-14", aqui && "bg-accent")}
-                >
-                  <AppMark app={a.id} size={36} />
-                  <span className="flex min-w-0 flex-1 flex-col">
-                    <span className="font-semibold">{a.nome}</span>
-                    <span className="truncate text-sm font-normal text-muted-foreground">
-                      {aqui ? "Está aqui" : a.descricao}
+        <div className="m-grelha-apps-rolagem">
+          <ul ref={listaRef} onKeyDown={teclas}>
+            {apps.map((a, i) => {
+              const aqui = a.id === atual;
+              return (
+                <li key={a.id} className="m-menu-escalonado" style={{ "--i": i } as CSSProperties}>
+                  <a href={CAMINHOS[a.id]} aria-current={aqui ? "page" : undefined} className="m-grelha-app">
+                    <IconeApp app={a.id} tamanho={44} />
+                    <span>
+                      {a.nome}
+                      {aqui ? <span className="sr-only"> (está aqui)</span> : null}
                     </span>
-                  </span>
-                  {aqui && <Check aria-hidden className="!text-brand" />}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-        <div className="mt-1 border-t border-border pt-1">
-          <a href={CAMINHOS.portal} className="m-menu-item font-semibold text-brand">
-            <LayoutGrid aria-hidden className="!text-brand" />
-            Todas as aplicações — Portal MUTU@L
+                    {aqui ? (
+                      <span className="m-grelha-app-aqui" aria-hidden>
+                        <Check strokeWidth={3} />
+                      </span>
+                    ) : null}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        <div className="m-grelha-apps-rodape">
+          <a href={CAMINHOS.portal}>
+            Todas as aplicações no Portal
+            <ArrowUpRight aria-hidden size={18} />
           </a>
         </div>
       </div>

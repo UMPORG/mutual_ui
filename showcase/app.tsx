@@ -89,7 +89,7 @@ const TITULOS: Record<string, [string, string]> = {
   shells: ["Aplicações", "A moldura de cada aplicação (barra de topo, navegação e camada do conteúdo) — v0.13."],
   rolagem: ["Rolagem", "Barras de rolagem e sombras nas pontas — v0.8."],
   identificadores: ["Identificadores", "Telefones, NIF, código postal e IBAN: mostrar, escrever e validar — v0.8.9."],
-  icones: ["Ícones das apps", "Pré-visualização: uma família de ícones original e o lançador em grelha — ramo icones-preview."],
+  icones: ["Ícones das apps", "Uma família de ícones, um por aplicação, e o lançador em grelha — v0.15."],
   demo: ["Demonstração", "Preencher formulários com dados de exemplo, também dentro de diálogos — v0.8.7."],
 };
 

@@ -3,9 +3,9 @@ export * from "./sso";
 export * from "./brand";
 // v0.13 — shell G: top bar + tinted frame + navigation + one content layer.
 export { LancadorApps, posicionarPopover } from "./app-switcher";
-// Pré-visualização (ramo icones-preview): família de ícones e lançador em grelha.
-export { IconeApp, IconeWaffle, GLIFOS_APPS, type DirecaoIcone } from "./icones-apps";
-export { LancadorGrelha } from "./lancador-grelha";
+// v0.15 — the app icon family and the grid launcher.
+export { IconeApp, IconeWaffle } from "./icone-app";
+export { BASE_ICONE, COR_MARCA_APP, GLIFOS_APPS, svgIconeApp, type FormaGlifo, type PapelGlifo } from "./icones";
 export { indiceNaGrelha } from "./grelha-teclado";
 export {
   AppShell,

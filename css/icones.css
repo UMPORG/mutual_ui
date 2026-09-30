@@ -1,11 +1,11 @@
 /*
- * PRÉ-VISUALIZAÇÃO (ramo icones-preview) — cores da família de ícones das
- * apps (src/icones-apps.tsx) e do lançador em grelha (src/lancador-grelha.tsx).
+ * The app icon family (v0.15, src/icones.ts + src/icone-app.tsx) and the grid
+ * launcher (`LancadorApps`, src/app-switcher.tsx).
  *
- * Papéis: base, p (forma principal), r (destaque), s (secundário), k (recorte
- * = cor da base). Direção A: base na cor da app, glifo branco. Direção B: base
- * neutra com um contorno, glifo na paleta da marca. Cores forçadas: base
- * Canvas com contorno CanvasText, glifo CanvasText (monocromático).
+ * Roles: base (the app's colour, --app-marca, the same in light and dark),
+ * p (main shape), r (highlight), s (secondary, white at 72 %), k (cut-out =
+ * the base colour). Forced colours: base Canvas with a CanvasText edge,
+ * glyph CanvasText (monochrome).
  */
 .m-icone-app {
   display: inline-block;
@@ -21,8 +21,7 @@
 .m-icone-app .m-ic-cheio { fill: var(--ic-c); }
 .m-icone-app .m-ic-traco { fill: none; stroke: var(--ic-c); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* A — a cor da app (a mesma nos dois temas, como o `AppMark`). */
-.m-icone-app[data-direcao="a"] {
+.m-icone-app {
   --ic-base: var(--app-marca);
   --ic-borda: transparent;
   --ic-borda-largura: 0;
@@ -31,27 +30,9 @@
   --ic-s: rgb(255 255 255 / 0.72);
 }
 
-/* B — uma paleta da marca para todas as apps (multi-tom). O que diz o que é
-   (p, r) tem ≥ 3:1 com a base; o verde claro (s) é só decoração. */
-.m-icone-app[data-direcao="b"] {
-  --ic-base: #ffffff;
-  --ic-borda: #cfcfcf;
-  --ic-borda-largura: 1.5px;
-  --ic-p: #1f6f36; /* 6.2:1 */
-  --ic-r: #d42f33; /* 4.9:1 — o vermelho da bandeira, um pouco mais fundo */
-  --ic-s: #6dba6a; /* 2.4:1, decorativo */
-}
-.dark .m-icone-app[data-direcao="b"] {
-  --ic-base: #262626;
-  --ic-borda: #474747;
-  --ic-p: #8fd68c; /* 9.1:1 em #262626 */
-  --ic-r: #ff7a7a; /* 6.0:1 */
-  --ic-s: #4f9a55;
-}
-
 @media (forced-colors: active) {
   .m-icone-app { forced-color-adjust: none; }
-  .m-icone-app[data-direcao] {
+  .m-icone-app {
     --ic-base: Canvas;
     --ic-borda: CanvasText;
     --ic-borda-largura: 1.5px;

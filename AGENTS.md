@@ -1,7 +1,7 @@
 # MUTU@L UI (`@umporg/ui`) — AGENTS.md
 
 > Rules and "where is what" for AI coding agents (`CLAUDE.md` imports this
-> file). Examples, rationale and the per-version notes (v0.2 → v0.14.0) are in
+> file). Examples, rationale and the per-version notes (v0.2 → v0.15.0) are in
 > [docs/guia-detalhado.md](docs/guia-detalhado.md); colour decisions in
 > [docs/identidade-visual.md](docs/identidade-visual.md); the v0.6 adoption
 > survey in [docs/inventario-componentes.md](docs/inventario-componentes.md);
@@ -13,7 +13,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 ## Consuming it (no npm publishing)
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.14.0"   // app package.json — always a tag, never a branch
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.15.0"   // app package.json — always a tag, never a branch
 ```
 
 - Next apps: `transpilePackages: ["@umporg/ui"]`; `app/globals.css`:
@@ -22,7 +22,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 - Root layout: `<html lang="pt-PT" data-app="<id>" suppressHydrationWarning>`.
 - **Release:** bump `version` in `package.json`, commit, `git tag vX.Y.Z`,
   push the tag; then each app bumps its `#vX.Y.Z` ref and regenerates its
-  lockfile. Current: **v0.14.0**.
+  lockfile. Current: **v0.15.0**.
 - Peers: `react`/`react-dom` ≥ 19, `lucide-react`; optional `@base-ui/react`
   ≥ 1.6 < 2 (controls, dates, conversation) and `recharts` ≥ 3.1 (charts).
 
@@ -30,13 +30,14 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 
 | Import | What | Needs |
 | --- | --- | --- |
-| `@umporg/ui` | brand, shell G (`AppShell`, `NavApp`, `ProcuraApp`, `Separadores`, `LancadorApps`), `PageHeader`, `StatusCallout`, `Dica`, `SemAcesso`, `ServicoIndisponivel`, `AcessibilidadeMenu`, `PreferenciasScript`, `DemoPreencher`, cards, stats, `DataTable` + toolbar/pagination, basic form controls, `Telefone`/`Campo*`, formatters | nothing |
+| `@umporg/ui` | brand, app icons (`IconeApp`), shell G (`AppShell`, `NavApp`, `ProcuraApp`, `Separadores`, `LancadorApps` grid launcher), `PageHeader`, `StatusCallout`, `Dica`, `SemAcesso`, `ServicoIndisponivel`, `AcessibilidadeMenu`, `PreferenciasScript`, `DemoPreencher`, cards, stats, `DataTable` + toolbar/pagination, basic form controls, `Telefone`/`Campo*`, formatters | nothing |
 | `/controlos` | `Select`, `Combobox`, `MultiSelect`, menus, `Tooltip`, `Popover`, `Dialog`, `ConfirmDialog`, `Sheet`, `Tabs`, `Switch`, `Checkbox`, `RadioGroup`, `NumberField`, `toast`… | `@base-ui/react` |
 | `/datas` · `/calendario` | `Calendar`, `DatePicker`, `DateRangePicker` · pure Lisbon date maths | `@base-ui/react` · nothing |
 | `/graficos` | `GraficoBarras`, `GraficoLinhas`, `GraficoArea`, `GraficoDonut`, `ChartFrame` | `recharts` |
 | `/efeitos` | backdrops and celebrations (below) | nothing |
 | `/conversa` · `/markdown` | assistant UI (`ChatLayout`, `MessageList`, `Composer`, …) · safe Markdown renderer | `@base-ui/react` · nothing |
 | `/formatar` · `/validar` | pt-PT formatters · identifier validators/normalisers | nothing |
+| `/icones` | `GLIFOS_APPS`, `COR_MARCA_APP`, `svgIconeApp` (favicons: `pnpm icones` → `assets/icones/<app>/`) | nothing |
 | `/sso` · `/apps` | `CAMINHOS`, `portalLoginUrl`, `safeReturnUrl`, `urlAbsoluta`, `urlCartao` · `MUTUAL_APPS`, `appsDisponiveis`, `nomeDaApp` | nothing |
 | `/cerebro` | `pedirAoCerebro`, `CerebroIndisponivel`, `TEMPO_LIMITE_CEREBRO_MS`, `PAGINA_INDISPONIVEL` | nothing |
 | `/seguranca` | `cabecalhosNext`, `comCsp`, `NONCE_CABECALHO` (plain JS + `.d.ts`) | nothing |
@@ -47,7 +48,8 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 `src/` one file per area (`src/index.ts` = main entry) · `css/` (`tokens.css`
 holds every colour; `index.css` imports all sheets) · `tests/` (`node --test`;
 `tokens.test.ts` contrast, `tipos-exatos.tsx` type test) · `showcase/` visual
-review page (not published) · `assets/` flag images.
+review page (not published) · `assets/` flag images and `assets/icones/<app>/`
+(generated favicons and home-screen icons, `pnpm icones`).
 
 ## Commands
 
@@ -78,7 +80,8 @@ Changes only to `**/*.md`, `docs/**` or `LICENSE` do not run CI.
   a sub-path and an optional peer.
 - Adding an app: `MUTUAL_APPS` (`src/apps.ts`), `CAMINHOS` (`src/sso.ts`),
   its `[data-app]` `--app-accent` (light + dark), `--app-accent-soft` and
-  `--app-marca` in `css/tokens.css`, an icon in `APP_ICONS`.
+  `--app-marca` in `css/tokens.css`, an original glyph in `GLIFOS_APPS` and
+  its colour in `COR_MARCA_APP` (`src/icones.ts`), then `pnpm icones`.
   `tests/tokens.test.ts` measures the tinted frame in both themes (text ≥ 7:1,
   muted ≥ 4.5:1, current icon and focus ≥ 3:1, white glyph ≥ 4.5:1) and keeps
   every app ≥ 30° of OKLCH hue from the others. Apps with a
@@ -161,6 +164,13 @@ Tour targets `[data-shell="menu|navegacao|acao-principal|ajuda|
 acessibilidade|aplicacoes|conta|organizacao|sair"]`. Screens without
 navigation (Validador QR, Portal launcher) omit `navegacao`; public screens
 omit `conta`/`disponiveis`.
+
+**App icons and launcher (v0.15):** every app is shown by its `IconeApp`
+(top bar, launcher, Portal tiles, lists of apps, favicon, home screen) —
+never a Lucide icon on a coloured square. The launcher (`LancadorApps`,
+inside `AppShell`) is a Google Workspace-style grid of the apps the account
+can use; the Cartão Digital is never in it (only its favicon/PWA icons use
+its `IconeApp`). Favicons: copy `assets/icones/<app>/` (see the guide).
 
 **Navigation rules (every app):** ≤ 8 destinations in 2–3 short groups with
 small titles; ONE primary action; sub-pages are **tabs on the page**
