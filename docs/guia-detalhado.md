@@ -1331,3 +1331,24 @@ Two causes, both here:
   bate certo com os outros oito. Verifique se há algum algarismo trocado
   (certidão permanente ou cartão de pessoa coletiva).» (NIF: «…(cartão de
   cidadão)»). The Cérebro mirror carries the same words.
+
+## v0.17.0 — the assistant inside the forms (additive)
+
+- New entry `@umporg/ui/preencher` (needs `@base-ui/react`):
+  - `PreencherComDocumento({ alvo, nomeFormulario, valoresAtuais, aoAplicar })` — the «Preencher com
+    um documento» button and dialog: choose/drag a file (PDF, Word, Excel, CSV, image — scans too),
+    the Cérebro reads it (`POST /api/v1/assistente/ficheiros` + `/extracoes`, polled with a
+    progress bar), then a review: per field the current value, the proposed value, where it came
+    from (page/line or cell, with the document line) and a confidence badge. New values with
+    high/medium confidence start ticked; replacing a value the person wrote or a low-confidence one
+    starts unticked. «Aplicar N valores ao rascunho» calls `aoAplicar({ caminho: valor })` — the
+    app writes its DRAFT (use `aplicarValores(rascunho, valores)`); nothing is ever submitted.
+  - `ListaDoQueFalta({ dados })` — «O que falta?» by chapter with a link per field
+    (`pedirOQueFalta(fetch, "caracterizacao" | "simplex")`).
+  - `RascunhoTexto({ tipo, titulo, texto, onUsar })` — an editable drafted text with «Copiar» and
+    «Usar» (also exported by `/conversa` for the SSE `rascunho` event); `pedirTexto(fetch, …)` asks
+    the Cérebro to draft one (`POST /redigir`).
+- `/conversa`: `AttachButton` («Anexar documento») for the Composer's `actions` slot.
+- The calls are same-origin (`/api/v1/assistente/*`, proxied by every app); errors come back as
+  pt-PT messages (`mensagemDoErro`).
+

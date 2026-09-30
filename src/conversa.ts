@@ -22,7 +22,8 @@ export {
   type WorkStep,
   type ActionStatus,
 } from "./conversa-componentes";
-export { Composer, AttachmentChip, type ComposerProps } from "./conversa-compositor";
+export { Composer, AttachmentChip, AttachButton, type ComposerProps } from "./conversa-compositor";
+export { RascunhoTexto } from "./preencher";
 export { Markdown, CopyButton, type Citation, type MarkdownProps } from "./markdown";
 export {
   agruparConversas,

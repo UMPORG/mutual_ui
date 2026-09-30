@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowUp, FileText, Loader2, Square, X } from "lucide-react";
+import { ArrowUp, FileText, Loader2, Paperclip, Square, X } from "lucide-react";
 import { cx } from "./cx";
 import { Kbd } from "./basicos";
 import { formatarNumero } from "./formatar";
@@ -212,5 +212,54 @@ export function AttachmentChip({
         </button>
       )}
     </span>
+  );
+}
+
+/**
+ * «Anexar documento» for the Composer's `actions` slot (v0.17): opens the file
+ * picker; the app uploads the files and shows them as `AttachmentChip`s.
+ */
+export function AttachButton({
+  onFiles,
+  accept,
+  multiple = true,
+  disabled,
+  label = "Anexar documento",
+}: {
+  onFiles: (files: File[]) => void;
+  /** e.g. ".pdf,.docx,.xlsx,.csv,.jpg,.jpeg,.png" */
+  accept?: string | undefined;
+  multiple?: boolean | undefined;
+  disabled?: boolean | undefined;
+  label?: string | undefined;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => ref.current?.click()}
+        disabled={disabled}
+        aria-label={label}
+        title={label}
+        className="grid size-10 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-foreground/8 hover:text-foreground disabled:opacity-40"
+      >
+        <Paperclip aria-hidden size={19} />
+      </button>
+      <input
+        ref={ref}
+        type="file"
+        tabIndex={-1}
+        aria-hidden
+        className="sr-only"
+        accept={accept}
+        multiple={multiple}
+        onChange={(e) => {
+          const files = [...(e.target.files ?? [])];
+          e.target.value = "";
+          if (files.length > 0) onFiles(files);
+        }}
+      />
+    </>
   );
 }
