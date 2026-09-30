@@ -595,3 +595,64 @@ html[data-demo] {
 }
 @media print { .m-demo, .m-demo-camada { display: none !important; } }
 html.contraste .m-demo-camada { background: #ffffff; border-top: 2px dashed #000000; }
+
+/* ─── Form fields (FormField) and fields side by side (v0.15.1) ──────────
+   `.m-campo` is the FormField wrapper: a column (label, hint, control,
+   message). In a grid with `.m-campos-alinhados` each field takes FOUR rows
+   of the grid through `subgrid` — label / hint / control / message — so the
+   controls of one line always start at the same height: a label or a hint
+   that wraps, or a count («26 de 254») under one field, only grows its own
+   row. Fields per line from 40rem: `.m-campos-2|3|4` (one per line below);
+   a Tailwind `grid-cols-*` utility on the same element overrides the tracks
+   (utilities beat this layer). The grid's own row gap stays 0 (an empty
+   hint row would otherwise add a gap); lines are spaced by padding. */
+@layer components {
+  .m-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 0;
+  }
+
+  .m-campos-alinhados {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 1.5rem;
+    row-gap: 0;
+    align-items: start;
+  }
+  .m-campos-alinhados > * {
+    grid-row: span 4;
+    min-width: 0;
+  }
+  /* Lines after the first: one field per line below 40rem… */
+  .m-campos-alinhados > * + * { padding-top: 1.5rem; }
+  @media (width >= 40rem) {
+    .m-campos-alinhados.m-campos-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .m-campos-alinhados.m-campos-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .m-campos-alinhados.m-campos-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    /* …and N per line from 40rem: the first line has no padding. */
+    .m-campos-alinhados.m-campos-2 > :nth-child(-n + 2),
+    .m-campos-alinhados.m-campos-3 > :nth-child(-n + 3),
+    .m-campos-alinhados.m-campos-4 > :nth-child(-n + 4) { padding-top: 0; }
+  }
+
+  /* The field (or the element around it, e.g. an anchor `<div id>`) shares the
+     grid's four rows. */
+  .m-campos-alinhados > .m-campo,
+  .m-campos-alinhados > :has(> .m-campo),
+  .m-campos-alinhados > * > .m-campo,
+  .m-campos-alinhados > .m-campos-acao {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 4;
+    row-gap: 0;
+    align-content: start;
+  }
+  .m-campos-alinhados .m-campo > .m-campo-rotulo { grid-row: 1; align-self: end; padding-bottom: 0.375rem; }
+  .m-campos-alinhados .m-campo > .m-campo-ajuda { grid-row: 2; padding-bottom: 0.375rem; }
+  .m-campos-alinhados .m-campo > .m-campo-mensagem { grid-row: 4; padding-top: 0.375rem; }
+  .m-campos-alinhados .m-campo > :not(.m-campo-rotulo, .m-campo-ajuda, .m-campo-mensagem) { grid-row: 3; }
+  /* A button of the line («Retirar») on the controls' row, centred on them. */
+  .m-campos-alinhados > .m-campos-acao > * { grid-row: 3; align-self: center; justify-self: start; }
+}

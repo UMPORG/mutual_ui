@@ -21,6 +21,15 @@ import { formatarNumero } from "./formatar";
  * wires ids and ARIA; it never owns the value.
  *
  * Server-safe (useId only).
+ *
+ * Fields side by side (v0.15.1): put them in a grid with the class
+ * `m-campos-alinhados` (+ `m-campos-2|3|4`, the fields per line from 40rem;
+ * one per line below). Each field then takes four rows of the grid (label,
+ * hint, control, message), so a label or a hint that wraps, or a character
+ * count under one field, never pushes the control of the field next to it.
+ * A field wrapped in its own element (an anchor `<div id>`) still aligns; a
+ * button that belongs to the line (e.g. «Retirar») goes in an element with
+ * `m-campos-acao` and sits on the controls' row. See `css/controlos.css`.
  */
 
 /** Props the wrapper hands to its control. */
@@ -94,19 +103,19 @@ export function FormField({
   const perto = count ? count.value >= count.max * 0.9 : false;
 
   return (
-    <div className={cx("flex min-w-0 flex-col gap-1.5", className)}>
-      <label htmlFor={campoId} className={cx("flex flex-wrap items-baseline gap-x-1.5 text-base font-medium", hideLabel && "sr-only")}>
+    <div className={cx("m-campo", className)}>
+      <label htmlFor={campoId} className={cx("m-campo-rotulo flex flex-wrap items-baseline gap-x-1.5 text-base font-medium", hideLabel && "sr-only")}>
         {label}
         <Marca required={required} optional={optional} />
       </label>
       {hint && (
-        <p id={hintId} className="-mt-0.5 text-[0.9375rem] text-muted-foreground">
+        <p id={hintId} className="m-campo-ajuda -mt-0.5 text-[0.9375rem] text-muted-foreground">
           {hint}
         </p>
       )}
       {corpo}
       {(error || count) && (
-        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
+        <div className="m-campo-mensagem flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
           {error ? (
             <p id={erroId} className="flex items-start gap-1.5 text-[0.9375rem] font-medium text-destructive">
               <AlertCircle aria-hidden size={18} className="mt-0.5 shrink-0" />

@@ -240,11 +240,24 @@ export function validarNif(texto: string | null | undefined, opcoes: { tipo?: Ti
   const nome = opcoes.tipo === "coletiva" ? "O NIPC" : "O NIF";
   if (!nif) return falha(`${nome} tem 9 algarismos.`);
   const tipo = tipoDeNif(nif);
-  if (!tipo || !digitoControloNif(nif)) return falha(`${nome} não é válido. Verifique os algarismos.`);
+  if (!tipo) return falha(`${nome} não pode começar por ${nif.startsWith("4") ? nif.slice(0, 2) : nif[0]}. Verifique os primeiros algarismos.`);
   if (opcoes.tipo === "singular" && tipo !== "singular") return falha("Indique o NIF de uma pessoa (começa por 1, 2, 3 ou 45).");
   if (opcoes.tipo === "coletiva" && tipo !== "coletiva") return falha("Indique o NIPC de uma entidade (começa por 5, 6, 7, 8 ou 9).");
+  if (!digitoControloNif(nif)) return falha(MSG_CONTROLO_NIF[opcoes.tipo ?? "qualquer"]);
   return ok(nif);
 }
+
+/**
+ * The last digit of a NIF is a check digit (mod 11): a typo in any digit makes
+ * it disagree. The message says where to confirm the number.
+ */
+const MSG_CONTROLO_NIF: Record<TipoNif, string> = {
+  coletiva:
+    "O último algarismo não confere com os anteriores. Confirme o NIPC na certidão permanente ou no cartão de pessoa coletiva.",
+  singular: "O último algarismo não confere com os anteriores. Confirme o NIF no cartão de cidadão.",
+  qualquer:
+    "O último algarismo não confere com os anteriores. Confirme o NIF no cartão de cidadão ou no cartão de pessoa coletiva.",
+};
 
 /** Checks an organisation's NIPC: `validarNif(texto, { tipo: "coletiva" })`. */
 export function validarNipc(texto: string | null | undefined): ResultadoValidacao {

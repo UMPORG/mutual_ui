@@ -169,6 +169,41 @@ function Campos() {
   );
 }
 
+/** v0.15.1 — fields side by side keep their controls on one line (`m-campos-alinhados`). */
+function CamposAlinhados() {
+  const [email, setEmail] = useState("geral@auroradominho.pt");
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="m-campos-alinhados m-campos-2">
+        <FormField label="Telefone geral" required hint="O número por onde qualquer pessoa liga para a associação.">
+          <Input defaultValue="253 000 111" inputMode="tel" />
+        </FormField>
+        <FormField
+          label="Email principal"
+          required
+          hint="O endereço para onde a UMP e o público escrevem à associação, e onde recebem as respostas."
+          count={{ value: email.length, max: 254 }}
+        >
+          <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+        </FormField>
+      </div>
+      <div className="m-campos-alinhados m-campos-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+        <FormField label="Serviço" count={{ value: 4, max: 120 }}>
+          <Input defaultValue="ERPI" />
+        </FormField>
+        <FormField label="N.º de telefone" error="Um número português tem 9 algarismos (por exemplo 912 345 678).">
+          <Input defaultValue="25300011" inputMode="tel" />
+        </FormField>
+        <div className="m-campos-acao">
+          <Button variant="ghost">
+            <Trash2 aria-hidden /> Retirar
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Escolhas() {
   const [vista, setVista] = useState("lista");
   const [plano, setPlano] = useState("anual");
@@ -625,6 +660,11 @@ export function PaginaControlos() {
         <Card>
           <CardContent className="p-5 sm:p-6">
             <Campos />
+          </CardContent>
+        </Card>
+        <Card className="mt-6">
+          <CardContent className="p-5 sm:p-6">
+            <CamposAlinhados />
           </CardContent>
         </Card>
       </Section>

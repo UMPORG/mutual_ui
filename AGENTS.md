@@ -1,7 +1,7 @@
 # MUTU@L UI (`@umporg/ui`) — AGENTS.md
 
 > Rules and "where is what" for AI coding agents (`CLAUDE.md` imports this
-> file). Examples, rationale and the per-version notes (v0.2 → v0.15.0) are in
+> file). Examples, rationale and the per-version notes (v0.2 → v0.15.1) are in
 > [docs/guia-detalhado.md](docs/guia-detalhado.md); colour decisions in
 > [docs/identidade-visual.md](docs/identidade-visual.md); the v0.6 adoption
 > survey in [docs/inventario-componentes.md](docs/inventario-componentes.md);
@@ -13,7 +13,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 ## Consuming it (no npm publishing)
 
 ```jsonc
-"@umporg/ui": "github:UMPORG/mutual_ui#v0.15.0"   // app package.json — always a tag, never a branch
+"@umporg/ui": "github:UMPORG/mutual_ui#v0.15.1"   // app package.json — always a tag, never a branch
 ```
 
 - Next apps: `transpilePackages: ["@umporg/ui"]`; `app/globals.css`:
@@ -22,7 +22,7 @@ The shared design system and helpers of every MUTU@L app. **Public repo**
 - Root layout: `<html lang="pt-PT" data-app="<id>" suppressHydrationWarning>`.
 - **Release:** bump `version` in `package.json`, commit, `git tag vX.Y.Z`,
   push the tag; then each app bumps its `#vX.Y.Z` ref and regenerates its
-  lockfile. Current: **v0.15.0**.
+  lockfile. Current: **v0.15.1**.
 - Peers: `react`/`react-dom` ≥ 19, `lucide-react`; optional `@base-ui/react`
   ≥ 1.6 < 2 (controls, dates, conversation) and `recharts` ≥ 3.1 (charts).
 
@@ -243,6 +243,10 @@ Show the **profile name** and organisation, never a login role.
 - Forms: `FormField` around every control (wires id, `aria-describedby`,
   `aria-invalid`, `aria-required`); mark `required` or `optional` via props,
   never "(opcional)" in the label text. No native `title` tooltips.
+  Fields side by side go in a grid with `m-campos-alinhados m-campos-2|3|4`
+  (v0.15.1): each field takes four subgrid rows (label, hint, control,
+  message), so wrapped hints or a «26 de 254» count never misalign the
+  controls of a line; a line's button (e.g. «Retirar») in `m-campos-acao`.
 
 ## Production copy (pt-PT, all of Portugal)
 

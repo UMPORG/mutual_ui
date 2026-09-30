@@ -1235,3 +1235,24 @@ Workspace-style grid.
   gone. `AppShell`'s tile is the `IconeApp`.
 - Showcase: `?pagina=icones` (family at 16–48 px, top bar, tab strip) and
   `?pagina=icones-shell&app=<id>`; `node showcase/shots-icones.mjs <dir>`.
+
+## v0.15.1 — aligned fields and clearer NIF messages (no API change)
+
+- **Fields side by side** (`css/controlos.css`): a grid with
+  `m-campos-alinhados` (+ `m-campos-2|3|4`, fields per line from 40rem, one
+  per line below; a Tailwind `grid-cols-*` on the same element replaces the
+  tracks) gives each `FormField` four `subgrid` rows — label, hint, control,
+  message. A label or hint that wraps, an error, or a «26 de 254» count only
+  grows its own row: the controls of one line always start at the same
+  height. A field inside its own element (the apps' anchor `<div id>`) still
+  aligns; a button of the line goes in `<div class="m-campos-acao">` and sits
+  on the controls' row. `FormField` now renders `m-campo` (its column
+  layout moved from utilities to that class) and marks its parts
+  `m-campo-rotulo`, `m-campo-ajuda`, `m-campo-mensagem`.
+- **NIF / NIPC messages** (`validarNif`, `validarNipc`): a prefix that is not
+  issued says so («O NIPC não pode começar por 0. Verifique os primeiros
+  algarismos.»), a wrong kind is checked before the check digit, and a failed
+  check digit explains it and where to confirm the number («O último algarismo
+  não confere com os anteriores. Confirme o NIPC na certidão permanente ou no
+  cartão de pessoa coletiva.»). The Cérebro mirror (`src/lib/identificadores.ts`)
+  carries the same words.

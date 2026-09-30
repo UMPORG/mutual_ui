@@ -92,7 +92,21 @@ test("NIF / NIPC", () => {
   assert.deepEqual(validarNif("501 234 560"), { valido: true, valor: "501234560" });
   assert.deepEqual(validarNif("123456789"), { valido: true, valor: "123456789" });
   const mau = validarNif("123456788");
-  assert.ok(!mau.valido && mau.erro.includes("não é válido"));
+  assert.ok(!mau.valido && mau.erro.startsWith("O último algarismo não confere"));
+  // The NIPC reported by the association (526 705 245: the check digit would be 8).
+  assert.deepEqual(validarNipc("526 705 245"), {
+    valido: false,
+    erro: "O último algarismo não confere com os anteriores. Confirme o NIPC na certidão permanente ou no cartão de pessoa coletiva.",
+  });
+  assert.equal(validarNipc("526705248").valido, true);
+  assert.deepEqual(validarNif("401234567"), {
+    valido: false,
+    erro: "O NIF não pode começar por 40. Verifique os primeiros algarismos.",
+  });
+  assert.deepEqual(validarNipc("023456789"), {
+    valido: false,
+    erro: "O NIPC não pode começar por 0. Verifique os primeiros algarismos.",
+  });
   assert.equal(validarNif("12345").valido, false);
   assert.equal(validarNif("401234567").valido, false); // prefix 40 is not issued
   assert.equal(validarNif("501234560", { tipo: "singular" }).valido, false);
