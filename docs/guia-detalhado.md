@@ -1416,3 +1416,9 @@ Two causes, both here:
   up (while at least 280px are left) instead of covering it.
 - The chat bar: with «O que falta?» or «Com um documento» the page/section name has its own line
   (tools wrap below it; full name in `title`), never cut to «C…».
+
+## v0.18.3 — page context survives dialogs (no API change)
+
+- `useContextoAssistente` keeps a stack of publishers: a dialog (or any child) that publishes
+  its own context and then closes gives the page's latest context back to the chat. Apps no
+  longer need to pass `null` from the page while one of its dialogs is open.

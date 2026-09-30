@@ -289,6 +289,20 @@ test("contexto da página: the last page wins; an old page leaving does not clea
   assert.equal(contextoPagina.ler(), null);
 });
 
+test("contexto da página: a dialog publishes and closes — the page's latest context comes back", () => {
+  const pagina = normalizarContexto(ENTRADA, "/a");
+  const dialogo = normalizarContexto({ ...ENTRADA, pagina: "Diálogo" }, "/a");
+  const p = publicarContextoPagina({ contexto: pagina, hash: hashContexto(pagina) });
+  const d = publicarContextoPagina({ contexto: dialogo, hash: hashContexto(dialogo) });
+  const paginaNova = normalizarContexto({ ...ENTRADA, pagina: "Página atualizada" }, "/a");
+  p.atualizar({ contexto: paginaNova, hash: hashContexto(paginaNova) });
+  assert.equal(contextoPagina.ler()?.contexto.pagina, "Diálogo");
+  d.retirar();
+  assert.equal(contextoPagina.ler()?.contexto.pagina, "Página atualizada");
+  p.retirar();
+  assert.equal(contextoPagina.ler(), null);
+});
+
 // ─── Stream and shapes ───────────────────────────────────────────────────────
 
 test("LeitorSse: pieces of any size, CRLF, comments, multi-line data", () => {

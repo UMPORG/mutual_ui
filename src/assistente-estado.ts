@@ -175,25 +175,38 @@ export interface ContextoPublicado {
 }
 
 const lojaContexto = criarLoja<ContextoPublicado | null>(null);
-let dono: symbol | null = null;
+/**
+ * Publishers still on screen, oldest first. The newest one is shown; when it
+ * withdraws (e.g. a dialog closes) the previous one's latest context returns.
+ */
+const pilhaContexto: { eu: symbol; contexto: ContextoPublicado }[] = [];
+
+function mostrarTopo(): void {
+  lojaContexto.definir(pilhaContexto.at(-1)?.contexto ?? null);
+}
 
 /**
- * Publishes the page's context (the last page to publish wins). `atualizar`
- * replaces it while this publisher is still the current one; `retirar`
- * withdraws it (page left).
+ * Publishes the page's context (the last publisher still on screen wins).
+ * `atualizar` replaces this publisher's context (shown when it is on top);
+ * `retirar` withdraws it and the previous publisher's context comes back.
  */
 export function publicarContextoPagina(c: ContextoPublicado): { atualizar: (c: ContextoPublicado) => void; retirar: () => void } {
   const eu = Symbol("contexto");
-  dono = eu;
-  lojaContexto.definir(c);
+  pilhaContexto.push({ eu, contexto: c });
+  mostrarTopo();
   return {
     atualizar: (novo) => {
-      if (dono === eu) lojaContexto.definir(novo);
+      const entrada = pilhaContexto.find((e) => e.eu === eu);
+      if (!entrada) return;
+      entrada.contexto = novo;
+      if (pilhaContexto.at(-1) === entrada) lojaContexto.definir(novo);
     },
     retirar: () => {
-      if (dono !== eu) return;
-      dono = null;
-      lojaContexto.definir(null);
+      const i = pilhaContexto.findIndex((e) => e.eu === eu);
+      if (i < 0) return;
+      const eraTopo = i === pilhaContexto.length - 1;
+      pilhaContexto.splice(i, 1);
+      if (eraTopo) mostrarTopo();
     },
   };
 }
