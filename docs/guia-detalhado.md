@@ -1256,3 +1256,14 @@ Workspace-style grid.
   não confere com os anteriores. Confirme o NIPC na certidão permanente ou no
   cartão de pessoa coletiva.»). The Cérebro mirror (`src/lib/identificadores.ts`)
   carries the same words.
+
+## v0.15.2 — aligned fields: only a lone field shares the rows (no API change)
+
+- `m-campos-alinhados`: an element around a field shares the four subgrid rows
+  only when the field is its ONLY child (`:has(> .m-campo:only-child)`); a group
+  of controls (a field plus a «Não disponível» box) just takes the four rows of
+  its line — before, its extra children piled into the last row.
+- Lines are spaced by the items' top padding (not a row gap, which also sat
+  around an empty hint row); a Tailwind `grid-cols-*` on the grid still sets the
+  tracks, but keep one field per line below 40rem (the first line is known from
+  `m-campos-2|3|4`).

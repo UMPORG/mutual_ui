@@ -604,8 +604,10 @@ html.contraste .m-demo-camada { background: #ffffff; border-top: 2px dashed #000
    that wraps, or a count («26 de 254») under one field, only grows its own
    row. Fields per line from 40rem: `.m-campos-2|3|4` (one per line below);
    a Tailwind `grid-cols-*` utility on the same element overrides the tracks
-   (utilities beat this layer). The grid's own row gap stays 0 (an empty
-   hint row would otherwise add a gap); lines are spaced by padding. */
+   (utilities beat this layer) — then keep one field per line below 40rem,
+   because the lines are spaced by the items' top padding, which the first
+   line (1 item below 40rem, N from 40rem) does not get. The grid has no row
+   gap: a gap would also sit around an empty hint row. */
 @layer components {
   .m-campo {
     display: flex;
@@ -625,23 +627,22 @@ html.contraste .m-demo-camada { background: #ffffff; border-top: 2px dashed #000
     grid-row: span 4;
     min-width: 0;
   }
-  /* Lines after the first: one field per line below 40rem… */
   .m-campos-alinhados > * + * { padding-top: 1.5rem; }
   @media (width >= 40rem) {
     .m-campos-alinhados.m-campos-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .m-campos-alinhados.m-campos-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .m-campos-alinhados.m-campos-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    /* …and N per line from 40rem: the first line has no padding. */
     .m-campos-alinhados.m-campos-2 > :nth-child(-n + 2),
     .m-campos-alinhados.m-campos-3 > :nth-child(-n + 3),
     .m-campos-alinhados.m-campos-4 > :nth-child(-n + 4) { padding-top: 0; }
   }
 
-  /* The field (or the element around it, e.g. an anchor `<div id>`) shares the
-     grid's four rows. */
+  /* The field — or an element around it and nothing else (e.g. an anchor
+     `<div id>`) — shares the grid's four rows. Anything else in the grid
+     (a group of controls, a note) just takes the four rows of its line. */
   .m-campos-alinhados > .m-campo,
-  .m-campos-alinhados > :has(> .m-campo),
-  .m-campos-alinhados > * > .m-campo,
+  .m-campos-alinhados > :has(> .m-campo:only-child),
+  .m-campos-alinhados > :has(> .m-campo:only-child) > .m-campo,
   .m-campos-alinhados > .m-campos-acao {
     display: grid;
     grid-template-rows: subgrid;
