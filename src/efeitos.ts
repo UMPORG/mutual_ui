@@ -2,7 +2,7 @@
 
 /**
  * `@umporg/ui/efeitos` — decorative effects. Which one goes where:
- * AGENTS.md → "Efeitos: onde usar cada um". `AsciiFundo` stays in the main
+ * docs/guia/superficies.md → "Effects". `AsciiFundo` stays in the main
  * entry (entry and login screens).
  */
 export {

@@ -1,6 +1,6 @@
 /*
  * Depth: buttons and surfaces with light, elevation and a tactile press.
- * Apps map their Button variants onto these classes (see AGENTS.md), so the
+ * Apps map their Button variants onto these classes (docs/guia/superficies.md), so the
  * whole ecosystem shares one feel. Colours come from the tokens, so dark and
  * high-contrast themes follow automatically (html.contraste flattens them).
  */

@@ -9,7 +9,7 @@ import { dentroDoPoligono, ILHAS, LOCAIS_ASSOCIACOES, PORTUGAL_CONTINENTAL } fro
 
 /**
  * Decorative effects (v0.7). Each has its own look and its own place (see
- * AGENTS.md → "Efeitos: onde usar cada um"), so the apps do not all wear the
+ * docs/guia/superficies.md → "Effects"), so the apps do not all wear the
  * same backdrop. All are `aria-hidden`, pointer-transparent, masked away
  * from text, capped in DPR and frame rate, paused off screen and in hidden
  * tabs, still under "Reduzir movimento" and gone in "Alto contraste".

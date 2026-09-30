@@ -14,7 +14,7 @@
 
 :root {
   /* Room the floating «Demonstração» pill needs at the bottom of the page
-     (0 outside demo mode; see .m-demo below and AGENTS.md). */
+     (0 outside demo mode; see .m-demo below and docs/guia/demo.md). */
   --demo-reserva: 0px;
   --radius: 0.625rem;
 
