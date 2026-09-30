@@ -15,6 +15,7 @@ import { cx } from "./cx";
 import {
   INDICATIVO_PT,
   INDICATIVOS,
+  digitosAoEscrever,
   mascaraCodigoPostal,
   mascaraIban,
   mascaraNif,
@@ -95,6 +96,8 @@ interface Mascara {
   mostrar: (texto: string) => string;
   /** Normalised value from the typed text ("" when empty; best effort when incomplete). */
   valor: (texto: string) => string;
+  /** Fixed number of digits: typing into a full field overtypes (`digitosAoEscrever`). */
+  maxDigitos?: number | undefined;
 }
 
 function CampoMascarado({
@@ -137,7 +140,15 @@ function CampoMascarado({
         value={texto}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
           const el = e.currentTarget;
-          const sig = significativosAte(el.value, el.selectionStart ?? el.value.length);
+          const cursor = el.selectionStart ?? el.value.length;
+          if (mascara.maxDigitos) {
+            // A full NIF / código postal: the new digit replaces the next one
+            // instead of pushing the last one (the check digit) out.
+            const r = digitosAoEscrever(texto, el.value, cursor, mascara.maxDigitos);
+            repor(el, aplicar(r.digitos), r.cursor);
+            return;
+          }
+          const sig = significativosAte(el.value, cursor);
           const formatado = aplicar(el.value);
           repor(el, formatado, sig);
         }}
@@ -153,6 +164,7 @@ function CampoMascarado({
 const MASCARA_NIF: Mascara = {
   mostrar: (t) => mascaraNif(t.trim().toUpperCase().replace(/^PT/, "")),
   valor: (t) => normalizarNif(t) ?? soDigitos(t),
+  maxDigitos: 9,
 };
 
 /** NIF / NIPC: "501 234 560" on screen, 9 digits in the value. Pair with `validarNif`. */
@@ -163,6 +175,7 @@ export function CampoNif(props: CampoMascaradoProps) {
 const MASCARA_CP: Mascara = {
   mostrar: mascaraCodigoPostal,
   valor: (t) => normalizarCodigoPostal(t) ?? mascaraCodigoPostal(t),
+  maxDigitos: 7,
 };
 
 /** Código postal: types "4000123", shows and stores "4000-123". Pair with `validarCodigoPostal`. */

@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   comZod,
+  digitosAoEscrever,
   eTelemovel,
   mascaraCodigoPostal,
   mascaraIban,
@@ -92,11 +93,11 @@ test("NIF / NIPC", () => {
   assert.deepEqual(validarNif("501 234 560"), { valido: true, valor: "501234560" });
   assert.deepEqual(validarNif("123456789"), { valido: true, valor: "123456789" });
   const mau = validarNif("123456788");
-  assert.ok(!mau.valido && mau.erro.startsWith("O último algarismo não confere"));
+  assert.ok(!mau.valido && mau.erro.startsWith("Este NIF não é válido: o último algarismo, de controlo"));
   // The NIPC reported by the association (526 705 245: the check digit would be 8).
   assert.deepEqual(validarNipc("526 705 245"), {
     valido: false,
-    erro: "O último algarismo não confere com os anteriores. Confirme o NIPC na certidão permanente ou no cartão de pessoa coletiva.",
+    erro: "Este NIPC não é válido: o último algarismo, de controlo, não bate certo com os outros oito. Verifique se há algum algarismo trocado (certidão permanente ou cartão de pessoa coletiva).",
   });
   assert.equal(validarNipc("526705248").valido, true);
   assert.deepEqual(validarNif("401234567"), {
@@ -148,6 +149,41 @@ test("máscaras: o cursor fica depois dos mesmos algarismos", () => {
   assert.equal(posicaoAposMascara("912 345 678", 0), 0);
   assert.equal(significativosAte("912 34", 6), 5);
   assert.equal(posicaoAposMascara("4000-1", 5), 6);
+});
+
+test("NIF cheio: um algarismo escrito no meio substitui o seguinte (nunca empurra o de controlo para fora)", () => {
+  // The bug (owner, 2026-09-30): "501 234 560" + "7" after the 5 → the mask alone
+  // cut the END ("570 123 456") and the check digit failed on a number being corrected.
+  assert.equal(validarNif(mascaraNif("5701 234 560"), { tipo: "coletiva" }).valido, false);
+  assert.deepEqual(digitosAoEscrever("501 234 560", "5701 234 560", 2, 9), {
+    digitos: "571234560",
+    cursor: 2,
+  });
+  // Typing at the end of a full field does nothing (like maxLength).
+  assert.deepEqual(digitosAoEscrever("501 234 560", "501 234 5607", 12, 9), {
+    digitos: "501234560",
+    cursor: 9,
+  });
+  // Pasting a whole NIF replaces the field (at the end or at the start).
+  assert.deepEqual(digitosAoEscrever("501 234 560", "501 234 560526 705 248", 22, 9), {
+    digitos: "526705248",
+    cursor: 9,
+  });
+  assert.deepEqual(digitosAoEscrever("501 234 560", "526705248501 234 560", 9, 9), {
+    digitos: "526705248",
+    cursor: 9,
+  });
+  // Not full: nothing changes; a selection replaced by a digit is ordinary typing.
+  assert.deepEqual(digitosAoEscrever("501 234", "5071 234", 3, 9), { digitos: "5071234", cursor: 3 });
+  assert.deepEqual(digitosAoEscrever("501 234 560", "5 234 560", 1, 9), { digitos: "5234560", cursor: 1 });
+  // Código postal (7): "4000-123", a 5 typed after "400" replaces the next 0.
+  assert.deepEqual(digitosAoEscrever("4000-123", "40050-123", 4, 7), { digitos: "4005123", cursor: 4 });
+});
+
+test("NIF: a mensagem do algarismo de controlo não fala de «anteriores»", () => {
+  const r = validarNif("526705245", { tipo: "coletiva" });
+  assert.equal(r.valido, false);
+  assert.ok(!r.valido && !r.erro.includes("anteriores"));
 });
 
 test("comZod: valor normalizado ou a mensagem como problema", () => {

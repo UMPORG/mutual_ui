@@ -1313,3 +1313,21 @@ low-contrast screens.
 
 - A button or link placed directly in `.m-subseccao` (a flex column) no
   longer stretches to the full width (`align-self: flex-start`).
+
+## v0.16.2 — correcting a full NIF no longer breaks it (no API change)
+
+Owner (2026-09-30): after typing a NIPC, going back to change a digit made
+the Caracterização say the number was wrong «compared to the previous ones».
+Two causes, both here:
+
+- **`CampoNif` / `CampoCodigoPostal` overtype when full** (new pure helper
+  `digitosAoEscrever` in `@umporg/ui/validar`). Typing a digit into a full
+  field used to insert it and let the mask cut the END — for a NIF, the check
+  digit — so a number being corrected turned invalid on the first key. Now a
+  digit typed in the middle replaces the next one, pasting a whole number
+  replaces the field, and typing at the end of a full field does nothing.
+- **Check-digit message without «anteriores»** (it read as «previous
+  editions»): «Este NIPC não é válido: o último algarismo, de controlo, não
+  bate certo com os outros oito. Verifique se há algum algarismo trocado
+  (certidão permanente ou cartão de pessoa coletiva).» (NIF: «…(cartão de
+  cidadão)»). The Cérebro mirror carries the same words.

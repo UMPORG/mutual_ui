@@ -253,10 +253,10 @@ export function validarNif(texto: string | null | undefined, opcoes: { tipo?: Ti
  */
 const MSG_CONTROLO_NIF: Record<TipoNif, string> = {
   coletiva:
-    "O último algarismo não confere com os anteriores. Confirme o NIPC na certidão permanente ou no cartão de pessoa coletiva.",
-  singular: "O último algarismo não confere com os anteriores. Confirme o NIF no cartão de cidadão.",
+    "Este NIPC não é válido: o último algarismo, de controlo, não bate certo com os outros oito. Verifique se há algum algarismo trocado (certidão permanente ou cartão de pessoa coletiva).",
+  singular: "Este NIF não é válido: o último algarismo, de controlo, não bate certo com os outros oito. Verifique se há algum algarismo trocado (cartão de cidadão).",
   qualquer:
-    "O último algarismo não confere com os anteriores. Confirme o NIF no cartão de cidadão ou no cartão de pessoa coletiva.",
+    "Este NIF não é válido: o último algarismo, de controlo, não bate certo com os outros oito. Verifique se há algum algarismo trocado (cartão de cidadão ou de pessoa coletiva).",
 };
 
 /** Checks an organisation's NIPC: `validarNif(texto, { tipo: "coletiva" })`. */
@@ -350,6 +350,41 @@ export function posicaoAposMascara(textoFormatado: string, significativosAntes: 
     if (vistos === significativosAntes) return i + 1;
   }
   return textoFormatado.length;
+}
+
+/**
+ * Typing into a FULL fixed-length field (a NIF has 9 digits, a código postal
+ * 7). The browser inserts the key, so the text has one digit too many; cutting
+ * the END — what the mask alone would do — silently drops the last digit (for
+ * a NIF, the check digit) and a number the person was correcting turns
+ * invalid. Instead:
+ *
+ * - digits typed in the middle REPLACE the ones after the caret (overtype);
+ * - pasting a whole number (≥ `max` digits) replaces the field with it;
+ * - typing at the end of a full field does nothing (like `maxLength`).
+ *
+ * `anterior` is the text before the change, `novo` the input's text and
+ * `cursor` its `selectionStart`. Returns the digits to show and the caret as
+ * a count of digits (for `posicaoAposMascara`).
+ */
+export function digitosAoEscrever(
+  anterior: string,
+  novo: string,
+  cursor: number,
+  max: number,
+): { digitos: string; cursor: number } {
+  const d = soDigitos(novo);
+  const antes = soDigitos(novo.slice(0, cursor)).length;
+  if (d.length <= max) return { digitos: d, cursor: antes };
+  const inseridos = d.length - soDigitos(anterior).length;
+  if (inseridos >= max) {
+    const colado = d.slice(Math.max(0, antes - inseridos), antes).slice(0, max);
+    return { digitos: colado, cursor: colado.length };
+  }
+  const excesso = d.length - max;
+  const depois = Math.min(excesso, d.length - antes);
+  const resto = excesso - depois;
+  return { digitos: d.slice(0, antes - resto) + d.slice(antes + depois), cursor: antes - resto };
 }
 
 /** Significant characters (letters and digits) before a position. */

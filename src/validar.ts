@@ -8,6 +8,7 @@ export {
   INDICATIVO_PT,
   INDICATIVOS,
   comZod,
+  digitosAoEscrever,
   eTelemovel,
   maxDigitosNacionais,
   mascaraCodigoPostal,
