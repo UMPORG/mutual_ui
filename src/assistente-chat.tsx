@@ -184,6 +184,7 @@ function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, ender
   const [arrasto, setArrasto] = useState<{ dx: number; dy: number } | null>(null);
   const inicio = useRef<{ x: number; y: number; id: number } | null>(null);
   const [anuncio, setAnuncio] = useState("");
+  const [animar, setAnimar] = useState(false);
 
   // ─── Data ───
   const [estado, setEstado] = useState<EstadoAssistente | null>(null);
@@ -423,6 +424,10 @@ function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, ender
 
   // ─── Moving ───
   const mover = (novo: CantoChat) => {
+    // Only a move the person made springs into place; a change of room (the
+    // demo panel opening, a resize) is instant, so the chat never crosses
+    // what it yields to on the way.
+    setAnimar(true);
     mudarChat({ canto: novo });
     setAnuncio(`Assistente no ${NOMES_CANTO[novo]}.`);
   };
@@ -461,6 +466,9 @@ function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, ender
 
   const aoTeclar = (e: ReactKeyboardEvent<HTMLDivElement>) => {
     if (e.key !== "Escape" || e.defaultPrevented) return;
+    // Esc inside a dialog or menu opened from the chat (portalled elsewhere,
+    // but bubbling through React) closes that dialog only.
+    if (!(e.target instanceof Node) || !raizRef.current?.contains(e.target)) return;
     e.preventDefault();
     e.stopPropagation();
     if (vista !== "conversa") setVista("conversa");
@@ -491,6 +499,10 @@ function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, ender
       data-canto={pos.canto}
       data-folha={pos.folha ? "" : undefined}
       data-arrastar={arrasto ? "" : undefined}
+      data-animar={animar && !arrasto ? "" : undefined}
+      onTransitionEnd={(e) => {
+        if (e.target === e.currentTarget && e.propertyName === "transform") setAnimar(false);
+      }}
       onKeyDown={aoTeclar}
       className="m-chat-flutuante m-float print:hidden"
       style={{ width: pos.w, height: pos.h, transform: `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)` }}
@@ -657,7 +669,14 @@ function Janela({ app, LinkComponent = "a", api = API_ASSISTENTE, fetcher, ender
             disabled={!estado || bloqueado !== null || anexos.some((a) => a.estado === "a-carregar")}
             disabledReason={bloqueado ?? (anexos.some((a) => a.estado === "a-carregar") ? "A anexar o documento…" : undefined)}
             placeholder={nomeContexto ? "Pergunte sobre esta página" : "Escreva a sua pergunta"}
-            disclaimer={false}
+            disclaimer={
+              <>
+                As respostas podem conter erros.{" "}
+                <a href={`${enderecoAssistente.replace(/\/$/, "")}/transparencia`} className="underline underline-offset-4">
+                  O que é enviado
+                </a>
+              </>
+            }
             attachments={
               anexos.length > 0
                 ? anexos.map((a) => (

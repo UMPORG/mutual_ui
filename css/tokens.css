@@ -341,7 +341,7 @@
   --curva-saida: cubic-bezier(0.4, 0, 1, 1);
   --curva-padrao: cubic-bezier(0.3, 0, 0.1, 1);
   /* A soft spring (a small overshoot) — the floating assistant settling in its corner (v0.18). */
-  --curva-mola: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --curva-mola: cubic-bezier(0.34, 1.12, 0.64, 1);
 }
 html[data-movimento="reduzido"] {
   --movimento-rapido: 0ms;

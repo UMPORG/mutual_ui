@@ -6,7 +6,7 @@
  * covers — it stacks above it, src/assistente-posicao.ts). Placed with
  * `transform` only; when released it springs to its corner
  * (--movimento-lento + --curva-mola), instantly with Reduzir movimento
- * (the tokens are 0). At phone width it is a bottom sheet.
+ * (the tokens are 0); the chat only animates after a move the person made. At phone width it is a bottom sheet.
  */
 
 @layer components {
@@ -19,11 +19,12 @@
     flex-direction: column;
     overflow: hidden;
     border-radius: var(--radius-xl, 14px);
-    transition:
-      transform var(--movimento-lento) var(--curva-mola),
-      opacity var(--movimento-medio) var(--curva-entrada);
     will-change: transform;
   }
+  /* Only after the person moved it (drag released, arrows): a soft spring.
+     Changes of room (the demo panel opening, a resize) are instant, so the
+     chat never crosses what it yields to. */
+  .m-chat-flutuante[data-animar] { transition: transform var(--movimento-lento) var(--curva-mola); }
   .m-chat-flutuante[hidden] { display: none !important; }
   .m-chat-flutuante[data-arrastar] { transition: none; cursor: grabbing; user-select: none; }
   .m-chat-flutuante[data-folha] {

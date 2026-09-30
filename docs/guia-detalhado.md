@@ -1390,3 +1390,13 @@ Two causes, both here:
   (`PreencherComDocumento`); with `aoAplicar`, values the assistant proposes for the section (SSE
   `propostas`) are reviewed like a document's (`RevisaoPropostas`) and «Aplicar N valores» calls
   `aoAplicar` — only on the page they were proposed for; nothing is submitted.
+
+## v0.18.1 — the floating assistant, refined (no API change)
+
+- The chat springs only after a move the person made (drag released, arrows); a change of room
+  (the demo panel opening, a resize) repositions it instantly, so it never crosses the widget it
+  yields to. `--curva-mola` is softer (≈ 0.4% overshoot, a few pixels, inside the 12px gap).
+- The Composer line reads «As respostas podem conter erros. O que é enviado» (link to
+  `/assistente/transparencia`).
+- Esc inside a dialog or menu opened from the chat (e.g. «Com um documento») closes only that
+  dialog, not the chat.
