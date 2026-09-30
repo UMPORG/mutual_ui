@@ -40,7 +40,7 @@ const alvos = await p.$$eval('ul[aria-label="Filtros ativos"] :is(a, button)', (
   }),
 );
 for (const [n, w, h] of alvos) ok(w >= 44 && h >= 44, `alvo ${Math.round(w)}×${Math.round(h)} — ${n}`);
-// ─── v0.8.2 ──────────────────────────────────────────────────────────────
+// ─── Hit areas, invalid fields, table width, control labels ─────────────
 // Tag remove buttons: 44px hit area.
 await p.goto(BASE + "?pagina=controlos");
 await p.waitForTimeout(500);
@@ -129,7 +129,7 @@ ok((await ativas.count()) === 1 && (await ativas.getAttribute("role")) === "chec
 await p.getByText("Só associações ativas", { exact: true }).click();
 ok((await ativas.getAttribute("aria-checked")) === "false", "showcase (popover): clique no rótulo desmarca");
 
-// ─── v0.8.7 — DemoPreencher: dialogs and long forms ──────────────────────
+// ─── DemoPreencher: dialogs and long forms ───────────────────────────────
 const retangulo = (loc) => loc.evaluate((e) => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
 const sobrepoe = (a, b) => Math.min(a.x + a.w, b.x + b.w) > Math.max(a.x, b.x) && Math.min(a.y + a.h, b.y + b.h) > Math.max(a.y, b.y);
 for (const [nome, vp] of [["desktop", { width: 1440, height: 900 }], ["telemóvel", { width: 390, height: 844 }]]) {
@@ -226,7 +226,7 @@ await p.waitForTimeout(400);
 const dur = await p.locator("[data-demo-preencher]").evaluate((e) => parseFloat(getComputedStyle(e).transitionDuration));
 ok(dur < 0.01, `demo: movimento reduzido sem transição (${dur}s)`);
 
-// ─── v0.8.9 — identificadores ─────────────────────────────────────────────
+// ─── Identificadores ─────────────────────────────────────────────────────
 await p.setViewportSize({ width: 1440, height: 900 });
 await p.goto(BASE + "?pagina=identificadores");
 await p.waitForTimeout(500);

@@ -1,6 +1,6 @@
 /** Scrolling maths shared by useScrollShadow (pure, testable). */
 
-/** Which edges have more content beyond them have more content beyond them (1px tolerance for zoom rounding). */
+/** Which edges have more content beyond them (1px tolerance for zoom rounding). */
 export function bordasComMais(m: {
   scrollLeft: number;
   scrollWidth: number;

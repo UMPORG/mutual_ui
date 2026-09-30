@@ -45,7 +45,7 @@ import {
 } from "./conversa-dados";
 
 /**
- * Conversation components for the MUTU@L assistant (v0.7).
+ * Conversation components for the MUTU@L assistant.
  *
  * The app owns the data (threads, messages, streaming, tools); these render
  * it with the MUTU@L look and the accessibility the pattern needs:
@@ -985,7 +985,7 @@ export function ChatLayout({
   const [aberto, setAberto] = useState(false);
   return (
     <div className={cx("flex min-h-0 w-full overflow-hidden bg-background", className)}>
-      {/* v0.13.1: a <section> and a <div>, not <aside>/<main> — the layout lives inside
+      {/* A <section> and a <div>, not <aside>/<main> — the layout lives inside
           the app's own <main> (AppShell), and landmarks must not nest. */}
       {threads && (
         <section aria-label={threadsTitle} className="hidden w-72 shrink-0 flex-col border-r border-border bg-card/60 lg:flex">

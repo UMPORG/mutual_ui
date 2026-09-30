@@ -469,7 +469,7 @@ export function DataTable<T>({
   const tabela = (
     // Reachable by keyboard: a table wider than its card scrolls sideways (WCAG 2.1.1,
     // axe scrollable-region-focusable). A named group, not a region: the page's own
-    // section often has the same name as the caption (v0.9.8).
+    // section often has the same name as the caption.
     <div
       tabIndex={0}
       role="group"

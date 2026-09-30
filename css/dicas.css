@@ -1,6 +1,6 @@
 /*
- * Dicas (v0.12) — `Dica` in src/dicas.tsx. Classes are `m-nota*` (`.m-dica` is
- * the sidebar tooltip in css/controlos.css).
+ * Dicas — `Dica` in src/dicas.tsx. Classes are `m-nota*` (`.m-dica` is
+ * the Tooltip in css/controlos.css).
  *
  * One line by default: an info icon, a title that opens the explanation on
  * demand, and a small close button. Nothing full width, no primary-looking
@@ -172,7 +172,7 @@ html.contraste .m-nota { border-width: 2px; }
   .m-nota, .m-nota-reabrir { display: none !important; }
 }
 
-/* v0.14: the explanation opens with a short fade (no height animation — no
+/* The explanation opens with a short fade (no height animation — no
    layout jump); instant under Reduzir movimento (the tokens are 0). */
 .m-nota-corpo:not([hidden]) {
   animation: m-nota-abre var(--movimento-medio, 180ms) var(--curva-entrada, ease-out) both;

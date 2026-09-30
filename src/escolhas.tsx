@@ -11,7 +11,7 @@ import { Check, Minus, Plus } from "lucide-react";
 import { cx } from "./cx";
 
 /**
- * On/off and one-of-many controls (v0.7), built on Base UI:
+ * On/off and one-of-many controls, built on Base UI:
  *
  * - Switch — a setting that applies at once ("Receber avisos por email").
  *   In a form that is saved with a button, use Checkbox instead.
@@ -38,11 +38,11 @@ type Aria = {
 /**
  * The visible label of a Base UI checkbox / switch / radio. Base UI renders
  * the focusable control as a `<span role=…>` plus a hidden native input that
- * takes our `id`, so a `<label for>` named the hidden input, not the control:
- * in server HTML the control had no name and getByLabel found the hidden
- * input; after hydration getByLabel found both. The control now names itself
- * with `aria-labelledby` (server HTML included) and a click on the label
- * clicks the control.
+ * takes our `id`, so a `<label for>` would name the hidden input, not the
+ * control (in server HTML the control would have no name, and getByLabel
+ * would find the hidden input). The control names itself with
+ * `aria-labelledby` (server HTML included) and a click on the label clicks
+ * the control.
  */
 function Rotulo({ id, alvo, className, children }: { id: string; alvo: { current: HTMLElement | null }; className: string; children: ReactNode }) {
   return (

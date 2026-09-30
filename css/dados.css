@@ -1,5 +1,5 @@
 /*
- * Data surfaces — chart palette, chart chrome, skeletons (v0.6).
+ * Data surfaces — chart palette, chart chrome, skeletons.
  *
  * Categorical palette "MUTU@L": brand green leads, then fixed hue order.
  * Validated with the dataviz six-checks script (OKLab ΔE×100, Machado 2009):
@@ -32,7 +32,7 @@
   --grafico-cursor: color-mix(in oklab, var(--foreground) 22%, transparent);
   --grafico-faixa: color-mix(in oklab, var(--foreground) 5%, transparent);
 
-  /* The old shadcn slots follow the validated palette. */
+  /* The shadcn chart slots follow the validated palette. */
   --chart-1: var(--serie-1);
   --chart-2: var(--serie-2);
   --chart-3: var(--serie-3);
@@ -95,7 +95,7 @@ html.contraste {
   /* DataTable scroller: the containing block of everything absolutely
      positioned inside the table (the visually hidden caption and header
      text, `sr-only`), so it can never escape the scroller and widen the page
-     (it did at 150% text before v0.8.2). The component also sets `relative`. */
+     at 150% text). The component also sets `relative`. */
   .m-tabela-rolo { position: relative; }
 
   /* DataTable: a column kept at the right edge while the table scrolls

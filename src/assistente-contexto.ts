@@ -1,5 +1,5 @@
 /**
- * Page context for the floating assistant (v0.18) — pure, no React, no DOM,
+ * Page context for the floating assistant — pure, no React, no DOM,
  * tested in `tests/assistente.test.ts`.
  *
  * A page publishes what the person is looking at (`useContextoAssistente`):

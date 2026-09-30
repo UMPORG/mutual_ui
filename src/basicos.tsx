@@ -3,7 +3,7 @@ import { Check, ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
 import { cx } from "./cx";
 
 /**
- * Small, server-safe building blocks (v0.7): Button, Kbd, Badge, Tag,
+ * Small, server-safe building blocks: Button, Kbd, Badge, Tag,
  * Separator, Spinner, Breadcrumbs, Stepper. No hooks, no Base UI — safe in
  * server components and in the main entry.
  */

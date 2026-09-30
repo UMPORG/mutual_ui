@@ -217,7 +217,7 @@ function Tabela() {
     },
     { id: "atualizada", header: "Atualizada em", cell: (r) => formatarData(r.atualizada), hideOnMobile: true, sortable: true },
     // A visually hidden header, as the apps do for row actions: verificar.mjs
-    // checks it cannot widen the page at 150% text (v0.8.2).
+    // checks it cannot widen the page at 150% text.
     {
       id: "acoes",
       header: <span className="sr-only">Ações</span>,
@@ -294,7 +294,7 @@ function App() {
     { id: "nome", header: "Associação", cell: (r) => r.nome },
     { id: "associados", header: "Associados", cell: (r) => r.associados, numeric: true },
   ];
-  // v0.13: the shell page IS a whole app frame (AppShell), without the showcase header.
+  // The shell page IS a whole app frame (AppShell), without the showcase header.
   if (PAGINA === "shells") return <PaginaShells />;
   if (PAGINA === "icones-shell") return <PaginaIconesShell />;
   if (SO_CONTEUDO)

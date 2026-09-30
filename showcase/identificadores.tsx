@@ -26,7 +26,7 @@ import {
   type CatalogoDemo,
 } from "../src/index.ts";
 
-/** v0.8.9 — phone numbers, NIF, código postal and IBAN: display, inputs and validation. */
+/** Phone numbers, NIF, código postal and IBAN: display, inputs and validation. */
 
 const CENARIOS: CatalogoDemo = {
   "ficha-contactos": {

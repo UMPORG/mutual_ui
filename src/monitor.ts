@@ -5,12 +5,12 @@
  *
  *   // instrumentation.ts (servidor)
  *   export const onRequestError = criarOnRequestError({
- *     app: "eventos", cerebroUrl: env.CEREBRO_URL, chave: env.MONITOR_CHAVE,
+ *     app: "eventos", cerebroUrl: env.CEREBRO_URL_INTERNO ?? env.MUTUAL_URL, chave: env.MONITOR_CHAVE,
  *   });
  *
  *   // browser (layout raiz): <MonitorCliente app="eventos" /> de "@umporg/ui/monitor/react"
  *
- * Contrato do Cérebro: `POST /api/v1/monitor/erros` (docs §7.15). O browser
+ * Contrato do Cérebro: `POST /api/v1/monitor/erros` (mutual_cerebro, docs/documentacao.md §7.15). O browser
  * envia para o mesmo endereço (`/api/v1/monitor/erros`), com ou sem sessão, e
  * só pode dizer `lado: "browser"`; o servidor da app envia com a Machine Key
  * de serviço `monitor` (`X-Machine-Key`, variável `MONITOR_CHAVE`). Sem

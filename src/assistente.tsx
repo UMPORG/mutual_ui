@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * The floating assistant — main-entry pieces (v0.18), no Base UI:
+ * The floating assistant — main-entry pieces, no Base UI:
  *
  * - `BotaoAssistente`: «Assistente» in the shell's top bar (next to Ajuda).
  *   `AppShell` renders it when the app passes its `assistente` slot (the

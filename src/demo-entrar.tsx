@@ -13,7 +13,7 @@ import {
 } from "./demo-entrar-dados";
 
 /**
- * «Entrar como…» inside the floating «Demonstração» widget (v0.11.2). Not
+ * «Entrar como…» inside the floating «Demonstração» widget. Not
  * exported: pages register a context (`registarEntrarComo` /
  * `useEntrarComoDemo`) and `DemoPreencher` shows this section in its panel.
  */

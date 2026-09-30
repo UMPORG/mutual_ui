@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, DataTable, formatarData, formatarMoeda, 
 import { ScrollArea, ScrollShadow, Tabs } from "../src/controlos.ts";
 import { Markdown } from "../src/markdown.tsx";
 
-/** v0.8 — scrollbars and edge shadows, vertical and horizontal. */
+/** Scrollbars and edge shadows, vertical and horizontal. */
 
 type Linha = { id: string; nome: string; nif: string; distrito: string; concelho: string; associados: number; quota: number; estado: string; atualizada: string; email: string };
 

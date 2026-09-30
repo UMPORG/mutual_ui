@@ -1,5 +1,5 @@
 /**
- * Pure helpers of «Preencher com um documento» (v0.17): comparing the
+ * Pure helpers of «Preencher com um documento»: comparing the
  * assistant's proposals with the form's current values, what is kept by
  * default, reading/writing a dotted path in a draft, the Cérebro calls and
  * the pt-PT error messages. No React, no DOM — tested in tests/preencher.test.ts.

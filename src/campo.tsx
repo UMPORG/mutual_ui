@@ -14,7 +14,7 @@ import { cx } from "./cx";
 import { formatarNumero } from "./formatar";
 
 /**
- * Form fields (v0.7): one wrapper for label, hint, error, required/optional
+ * Form fields: one wrapper for label, hint, error, required/optional
  * and a character count, plus the three native controls with the MUTU@L
  * look. Works with react-hook-form (`{...register("nome")}`), with zod
  * messages, with server actions and with plain `<form>`s — the wrapper only
@@ -22,7 +22,7 @@ import { formatarNumero } from "./formatar";
  *
  * Server-safe (useId only).
  *
- * Fields side by side (v0.15.1): put them in a grid with the class
+ * Fields side by side: put them in a grid with the class
  * `m-campos-alinhados` (+ `m-campos-2|3|4`, the fields per line from 40rem;
  * one per line below). Each field then takes four rows of the grid (label,
  * hint, control, message), so a label or a hint that wraps, or a character

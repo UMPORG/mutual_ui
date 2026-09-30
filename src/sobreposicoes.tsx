@@ -12,7 +12,7 @@ import { StatusCallout } from "./feedback";
 import { CLASSE_FLUTUANTE, CLASSE_POSICIONADOR } from "./controlos-comum";
 
 /**
- * Layers over the page (v0.7), built on Base UI: Tooltip, Popover, Dialog,
+ * Layers over the page, built on Base UI: Tooltip, Popover, Dialog,
  * ConfirmDialog (with the typed-confirmation variant) and Sheet.
  *
  * - Tooltip: a short name for an icon-only button. Never essential

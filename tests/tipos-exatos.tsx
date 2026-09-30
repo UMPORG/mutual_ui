@@ -68,7 +68,7 @@ type Todas =
 // Se isto falhar, o erro diz que exports não aceitam `undefined` nas props opcionais.
 export const falhas: never = null as unknown as Todas;
 
-// Os casos concretos que motivaram a regra (v0.8.4).
+// Os casos concretos que motivaram a regra.
 declare const talvez: boolean | undefined;
 declare const texto: string | undefined;
 export const classes = buttonClasses({ iconOnly: talvez, className: texto, variant: undefined, size: undefined });

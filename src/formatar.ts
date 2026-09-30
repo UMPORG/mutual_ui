@@ -253,7 +253,7 @@ export function contar(n: number, singular: string, plural: string): string {
   return `${formatarNumero(n, { casas: 0 })} ${Math.abs(n) === 1 ? singular : plural}`;
 }
 
-// ─── Identificadores (v0.8.9) ─────────────────────────────────────────────
+// ─── Identificadores ─────────────────────────────────────────────
 // Stored values are normalised (see `@umporg/ui/validar`); these show them.
 // A value that cannot be read is shown as it came (never lost), empty is "—".
 

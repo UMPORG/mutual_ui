@@ -1,6 +1,6 @@
 /**
- * The floating assistant's calls to the Cérebro (v0.18) — same origin
- * (`/api/v1/assistente/*`, proxied by every app), `fetch` injected, no React:
+ * The floating assistant's calls to the Cérebro — same origin
+ * (`/api/v1/assistente/*`, no app proxy), `fetch` injected, no React:
  * tested in `tests/assistente.test.ts` (the SSE reader and the shapes).
  *
  * Contract: ADR 0006 in the Cérebro (`src/routes/assistente/assistente.ts`).

@@ -8,7 +8,7 @@ import { formatarNumero } from "./formatar";
 import { teclaEnvia } from "./conversa-dados";
 
 /**
- * Composer (v0.7): where the person writes to the assistant.
+ * Composer: where the person writes to the assistant.
  *
  * - Grows with the text up to ~8 lines, then scrolls.
  * - Enter sends, Shift + Enter starts a new line (IME-safe).
@@ -16,7 +16,7 @@ import { teclaEnvia } from "./conversa-dados";
  *   already typed is kept.
  * - Character limit with a counter from 80%; sending is blocked above it.
  * - An attachments slot (`attachments`) and a leading actions slot
- *   (`actions`, e.g. an "Anexar" button) for later.
+ *   (`actions`, e.g. `AttachButton`).
  * - Focus stays in the text box after sending and after "Parar".
  */
 export interface ComposerProps {
@@ -216,7 +216,7 @@ export function AttachmentChip({
 }
 
 /**
- * «Anexar documento» for the Composer's `actions` slot (v0.17): opens the file
+ * «Anexar documento» for the Composer's `actions` slot: opens the file
  * picker; the app uploads the files and shows them as `AttachmentChip`s.
  */
 export function AttachButton({

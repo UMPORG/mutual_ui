@@ -1,14 +1,14 @@
 /*
- * Shell G (v0.13) — the frame of every desk app (src/shell.tsx).
+ * Shell G — the frame of every desk app (src/shell.tsx).
  *
- * Google Workspace structure + Fluent layering (owner, 2026-09-29): a top
+ * Google Workspace structure + Fluent layering: a top
  * bar (app tile + «MUTU@L» + app name, search in the middle, Ajuda,
  * Acessibilidade, the app launcher and the account) and the navigation on
  * the left share ONE surface, --moldura (neutral grey + 9% of the app's
  * colour); the content sits on ONE neutral elevated layer (--camada, 8px
  * corners, soft shadow). The current page is a pill (--moldura-selecao,
  * bold, icon in the app's colour). The navigation holds only destinations
- * (v0.16: a page's action is in its PageHeader). The search field is the
+ * (a page's action is in its PageHeader). The search field is the
  * neutral input surface, never tinted. Below 64rem the navigation is a
  * drawer (native <dialog>). Colours: css/tokens.css
  * ("Frame"), measured in tests/tokens.test.ts.
@@ -144,7 +144,7 @@
 
   /* Search: a pill in the middle of the bar, on the neutral input surface
      (white; the dark input surface in dark) with a visible border, so it
-     reads as a field on any screen (owner, 2026-09-30). Never tinted. */
+     reads as a field on any screen. Never tinted. */
   .m-procura {
     display: flex;
     align-items: center;

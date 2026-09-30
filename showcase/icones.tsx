@@ -2,7 +2,7 @@ import { House, Plus, RotateCw, X } from "lucide-react";
 import { AppShell, IconeApp, LancadorApps, ProcuraApp, nomeDaApp, type MutualAppId } from "../src/index.ts";
 
 /**
- * v0.15 — the app icon family and the grid launcher. `?pagina=icones` shows
+ * The app icon family and the grid launcher. `?pagina=icones` shows
  * the family at every size, the top bar and a browser tab strip;
  * `?pagina=icones-shell&app=<id>` is the real frame (AppShell).
  */

@@ -152,7 +152,7 @@ test("máscaras: o cursor fica depois dos mesmos algarismos", () => {
 });
 
 test("NIF cheio: um algarismo escrito no meio substitui o seguinte (nunca empurra o de controlo para fora)", () => {
-  // The bug (owner, 2026-09-30): "501 234 560" + "7" after the 5 → the mask alone
+  // The bug this guards: "501 234 560" + "7" after the 5 → the mask alone
   // cut the END ("570 123 456") and the check digit failed on a number being corrected.
   assert.equal(validarNif(mascaraNif("5701 234 560"), { tipo: "coletiva" }).valido, false);
   assert.deepEqual(digitosAoEscrever("501 234 560", "5701 234 560", 2, 9), {

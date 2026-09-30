@@ -24,8 +24,8 @@ import { cx } from "./cx";
 export { hrefAtivo, hrefAtualDoMenu, iniciais } from "./shell-nav";
 
 /**
- * Shell G (v0.13) — the frame of every MUTU@L desk app (owner, 2026-09-29:
- * Google Workspace structure + Fluent layering). One component, same
+ * Shell G — the frame of every MUTU@L desk app (Google Workspace structure +
+ * Fluent layering). One component, same
  * anatomy everywhere; only the navigation and the search are the app's:
  *
  *   <AppShell
@@ -45,13 +45,13 @@ export { hrefAtivo, hrefAtualDoMenu, iniciais } from "./shell-nav";
  * organização», «Terminar sessão»). Left: ONLY navigation, ≤ 8
  * destinations in 2–3 short groups; the current page is a pill. A page's
  * own action («Nova campanha», «Criar evento») is the primary button of its
- * `PageHeader actions`, on that page only (v0.16). Sub-pages
+ * `PageHeader actions`, on that page only. Sub-pages
  * are tabs on the page (`Separadores`), never a second navigation level.
  * The content is ONE neutral layer (`<main id="conteudo-principal">`, the
  * scroller; back to the top on every navigation). Below 64rem the
  * navigation is a drawer (native <dialog>). Tour targets:
  * `[data-shell="navegacao|ajuda|acessibilidade|aplicacoes|conta|organizacao|
- * sair|menu"]`.
+ * sair|menu|assistente"]`.
  */
 
 // Lucide icons (their props do not accept `undefined`, hence no `| undefined`).
@@ -111,7 +111,7 @@ function Ligacao({ LinkComponent, externo, ...props }: LinkProps & { LinkCompone
 }
 
 /**
- * The navigation: only destinations, in groups (no actions, v0.16).
+ * The navigation: only destinations, in groups (no actions).
  * `aria-current="page"` on the current entry (pill, bold, icon in the app's
  * colour).
  */
@@ -137,7 +137,7 @@ export function NavApp({
   className?: string | undefined;
 }) {
   const baseId = useId();
-  // Exactly one current entry (v0.13.2): `hrefAtualDoMenu` never infers a prefix
+  // Exactly one current entry: `hrefAtualDoMenu` never infers a prefix
   // («/admin») next to an entry the app marked itself.
   const atual = hrefAtualDoMenu(grupos.flatMap((g) => g.itens), caminhoAtual);
   return (
@@ -328,7 +328,7 @@ export function ProcuraApp({
 
 /**
  * Sub-pages of one page as tabs (links, `aria-current="page"`), under the
- * page title — the third navigation level of the old sidebars. Use
+ * page title, never a second navigation level. Use
  * `/controlos` `Tabs` instead for views that are not separate addresses.
  */
 export function Separadores({
@@ -393,7 +393,7 @@ export interface AppShellProps {
   /** The app's accessibility statement, linked from the Acessibilidade panel. */
   declaracaoHref?: string | undefined;
   /**
-   * The floating assistant (v0.18): `<ChatFlutuante …/>` from
+   * The floating assistant: `<ChatFlutuante …/>` from
    * `@umporg/ui/assistente`, only when the person has the capability
    * «assistente na página» (`eu.assistenteNaPagina`). Adds «Assistente» to the
    * top bar and keeps the chat mounted across client navigation. Ignored in
@@ -437,7 +437,7 @@ export function AppShell({
   const gavetaRef = useRef<HTMLDialogElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const [gavetaAberta, setGavetaAberta] = useState(false);
-  // Mounted on the first open and kept, so the drawer can slide out (v0.14).
+  // Mounted on the first open and kept, so the drawer can slide out.
   const [gavetaMontada, setGavetaMontada] = useState(false);
   const primeiraRota = useRef(true);
   const [recolhida, setRecolhida] = useState(false);

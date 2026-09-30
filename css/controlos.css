@@ -1,5 +1,5 @@
 /*
- * Controls (v0.7) — the look of @umporg/ui/controlos and /datas.
+ * Controls — the look of @umporg/ui/controlos and /datas.
  *
  * Behaviour (focus, keyboard, ARIA) comes from @base-ui/react; this file only
  * gives the parts their MUTU@L look, driven by the tokens so Claro, Escuro and
@@ -540,7 +540,7 @@ html.contraste .m-toast > * { border: 2px solid #000000; box-shadow: none; }
   .m-scroll-polegar { forced-color-adjust: none; background: CanvasText; }
 }
 
-/* ─── Modo demonstração (DemoPreencher, v0.8.7) ────────────────────────────
+/* ─── Modo demonstração (DemoPreencher) ────────────────────────────
    The floating pill docks away from the focused element and the forms' last
    actions (data-doca="fim" | "inicio" | "meio", chosen by the component).
    `<html data-demo>` gives pages `--demo-reserva`, the room the pill needs:
@@ -596,7 +596,7 @@ html[data-demo] {
 @media print { .m-demo, .m-demo-camada { display: none !important; } }
 html.contraste .m-demo-camada { background: #ffffff; border-top: 2px dashed #000000; }
 
-/* ─── Form fields (FormField) and fields side by side (v0.15.1) ──────────
+/* ─── Form fields (FormField) and fields side by side ──────────
    `.m-campo` is the FormField wrapper: a column (label, hint, control,
    message). In a grid with `.m-campos-alinhados` each field takes FOUR rows
    of the grid through `subgrid` — label / hint / control / message — so the

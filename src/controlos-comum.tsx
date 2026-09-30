@@ -5,7 +5,7 @@ import { partesDestacadas } from "./filtrar";
 
 /** Classes of every floating layer (menus, selects, popovers). */
 export const CLASSE_FLUTUANTE = "m-float m-pop outline-none";
-/** Positioner layer: above sticky headers and the desk sidebar. */
+/** Positioner layer: above sticky headers and the shell. */
 export const CLASSE_POSICIONADOR = "z-50 outline-none";
 
 /** Controlled/uncontrolled state, the usual way. */

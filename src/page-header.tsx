@@ -28,7 +28,7 @@ export function PageHeader({
   breadcrumbs?: Crumb[] | undefined;
   /** Small label above the title (e.g. state or category). */
   eyebrow?: ReactNode | undefined;
-  /** Sub-pages of this page as tabs, under the title (`<Separadores …/>`, v0.13). */
+  /** Sub-pages of this page as tabs, under the title (`<Separadores …/>`). */
   separadores?: ReactNode | undefined;
   className?: string | undefined;
   /** Pass Next's `Link` for client-side navigation. */

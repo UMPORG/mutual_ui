@@ -1,6 +1,5 @@
 /**
- * The MUTU@L app icon family (v0.15, owner 2026-09-30: direction A, «folha»
- * base). Plain data + a string renderer, no React: `IconeApp` (src/icone-app.tsx)
+ * The MUTU@L app icon family («folha» base). Plain data + a string renderer, no React: `IconeApp` (src/icone-app.tsx)
  * draws it in the page; `svgIconeApp` gives the standalone SVG for favicons
  * and home-screen icons (scripts/gerar-icones.mjs → assets/icones/).
  *
@@ -13,7 +12,7 @@
  * - roles: `p` the shape that says what it is, `r` the highlight, `s`
  *   secondary (white at 72 %), `k` a cut-out in the colour of the base.
  * The base is the app's colour (`--app-marca`, the same in light and dark),
- * the glyph white (≥ 4.8:1). Forced colours: Canvas / CanvasText.
+ * the glyph white (≥ 5.0:1). Forced colours: Canvas / CanvasText.
  */
 import type { MutualAppId } from "./apps";
 

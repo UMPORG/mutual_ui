@@ -1,5 +1,5 @@
 /**
- * Where the floating «Demonstração» pill sits (v0.8.7) — pure geometry, no
+ * Where the floating «Demonstração» pill sits — pure geometry, no
  * DOM, so it is unit-tested.
  *
  * The pill prefers the bottom-right corner ("fim"). When that spot would

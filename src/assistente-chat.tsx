@@ -1,13 +1,13 @@
 "use client";
 
 /**
- * `@umporg/ui/assistente` (v0.18) — the floating assistant chat.
+ * `@umporg/ui/assistente` — the floating assistant chat.
  *
  *   <AppShell … assistente={eu.assistenteNaPagina ? <ChatFlutuante app="simplex" /> : undefined}>
  *
  * The links in a reply (sources, markdown) are paths from the MUTU@L root
  * (`/ajuda/…`, `/ir/…`), so they are always plain `<a>` — a router link
- * would put the app's basePath in front (v0.18.2).
+ * would put the app's basePath in front.
  *
  * Mounted by `AppShell` (it survives client navigation) and portalled to
  * `<body>`. Opened by «Assistente» in the top bar. The window:

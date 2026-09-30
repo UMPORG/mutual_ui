@@ -1,5 +1,5 @@
 /**
- * Where the floating assistant chat sits (v0.18) — pure geometry, no DOM, so
+ * Where the floating assistant chat sits — pure geometry, no DOM, so
  * it is unit-tested (`tests/assistente.test.ts`).
  *
  * - The chat lives in one of four CORNERS. Dragged and released, it goes to
@@ -171,7 +171,7 @@ export function posicaoDoChat(canto: CantoChat, o: OpcoesPosicao): PosicaoChat {
       if (r.w > 0 && r.h > 0 && r.y + r.h + folga > fundo - minAltura && r.y < fundo) fundo = Math.min(fundo, r.y - folga);
     }
     // Something higher up (the «Demonstração» pill docked mid-edge) caps the
-    // sheet's height, as long as a useful sheet is left (v0.18.2).
+    // sheet's height, as long as a useful sheet is left.
     let teto = topo;
     for (const r of ocupados) {
       const base = r.y + r.h;

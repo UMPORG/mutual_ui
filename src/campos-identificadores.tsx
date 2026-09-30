@@ -32,7 +32,7 @@ import {
 } from "./identificadores";
 
 /**
- * Inputs for Portuguese identifiers (v0.8.9): `CampoTelefone`, `CampoNif`,
+ * Inputs for Portuguese identifiers: `CampoTelefone`, `CampoNif`,
  * `CampoCodigoPostal`, `CampoIban`. Each one shows a mask while the person
  * types ("912 345 678", "4000-123", "PT50 0002 …"), keeps the caret where it
  * was, and hands the app the NORMALISED value (`onValueChange`): E.164 for

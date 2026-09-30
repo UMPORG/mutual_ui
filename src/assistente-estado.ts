@@ -1,5 +1,5 @@
 /**
- * Shared state of the floating assistant (v0.18) — plain stores, no React, no
+ * Shared state of the floating assistant — plain stores, no React, no
  * DOM (only `localStorage`, guarded), so they are unit-tested:
  *
  * - `estadoChat`: open or closed, corner and active conversation, kept in

@@ -1,5 +1,5 @@
-// Screenshots of the v0.8 pages: every app's shell (tinted sidebar, phone top
-// bar, canvas) in each theme and size, and the scrolling states.
+// Screenshots of every app's shell (top bar, tinted frame, content layer) in
+// each theme and size, and the scrolling states.
 // `node shots-v08.mjs <outDir> [filtro]` with `bun serve.ts` running.
 // If %TEMP% is on a full disk, run with TEMP/TMP pointing elsewhere.
 import { chromium } from "file:///D:/Mutual/mutual_eventos/node_modules/@playwright/test/index.mjs";

@@ -9,7 +9,7 @@
  */
 
 @theme inline {
-  /* The page title of every app (`PageHeader`, v0.9.6): `text-pagina`. */
+  /* The page title of every app (`PageHeader`): `text-pagina`. */
   --text-pagina: 1.75rem;
   --text-pagina--line-height: 1.25;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -83,7 +83,7 @@
   --color-app-accent-on-ink: var(--app-accent-on-ink);
   --color-app-marca: var(--app-marca);
   --color-app-icone-ativo: var(--app-icone-ativo);
-  /* Shell G (v0.13): the tinted frame and the content layer. */
+  /* Shell G: the tinted frame and the content layer. */
   --color-moldura: var(--moldura);
   --color-moldura-hover: var(--moldura-hover);
   --color-moldura-selecao: var(--moldura-selecao);

@@ -1,5 +1,5 @@
 /**
- * Page ACTIONS of the DEMONSTRATION (v0.11.3) — the plain registry, no DOM, so
+ * Page ACTIONS of the DEMONSTRATION — the plain registry, no DOM, so
  * it is unit-tested. Everything demo-only lives in the floating «Demonstração»
  * widget (`DemoPreencher`): never a badge, banner or panel on the page. A page
  * with demo-only things to offer that are not forms (sample codes to read,

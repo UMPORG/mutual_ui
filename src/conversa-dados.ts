@@ -1,5 +1,5 @@
 /**
- * Pure helpers of the conversation components (v0.7): grouping threads by
+ * Pure helpers of the conversation components: grouping threads by
  * date, the text announced to screen readers, the Enter-to-send rule.
  */
 
@@ -39,7 +39,7 @@ export interface ChatThread {
   id: string;
   title: string;
   updatedAt: string | Date;
-  /** A second, quieter line (v0.18: where it was started — «Iniciada em Simplex · Balanço»). */
+  /** A second, quieter line (where it was started — «Iniciada em Simplex · Balanço»). */
   subtitle?: string | undefined;
 }
 

@@ -32,7 +32,7 @@ export function hrefAtivo(hrefs: readonly string[], caminho: string): string | n
 /**
  * The ONE current entry of a menu. An app may mark entries itself (`ativo`: a
  * section that owns several paths, its tabs); then nothing is inferred, so a
- * prefix like «/admin» (Início) never lights up next to it (v0.13.2). Without
+ * prefix like «/admin» (Início) never lights up next to it. Without
  * any explicit `ativo: true`, the longest matching href of the entries that
  * leave `ativo` undefined wins; links to other apps never do.
  */

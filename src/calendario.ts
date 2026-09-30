@@ -1,5 +1,5 @@
 /**
- * Calendar maths for the date pickers (v0.7). Pure and framework-free.
+ * Calendar maths for the date pickers. Pure and framework-free.
  *
  * Dates are ISO calendar days ("2026-10-03") — no time, no time zone — so a
  * date never shifts a day between the server, the browser and the Cérebro.

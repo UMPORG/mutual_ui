@@ -1,4 +1,4 @@
-// Screenshots of the app icon family and the grid launcher (v0.15):
+// Screenshots of the app icon family and the grid launcher:
 // `node shots-icones.mjs <outDir>` with `PORT=5198 bun serve.ts` running.
 import { chromium } from "file:///D:/Mutual/mutual_eventos/node_modules/@playwright/test/index.mjs";
 const OUT = process.argv[2] ?? "shots";

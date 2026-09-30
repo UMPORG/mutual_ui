@@ -1,4 +1,4 @@
-// Screenshots of the v0.7 pages (controls, effects, assistant) in every theme
+// Screenshots of the controls, effects and assistant pages in every theme
 // and size, plus the interactive states (open popups, dialogs, streaming…).
 // `node shots-v07.mjs <outDir> [filtro]` with `bun serve.ts` running.
 import { chromium } from "file:///D:/Mutual/mutual_eventos/node_modules/@playwright/test/index.mjs";

@@ -25,7 +25,7 @@ export function posicionarPopover(pop: HTMLElement, botao: HTMLElement | null, a
 }
 
 /**
- * The app launcher of the top bar (v0.15, Google Workspace style): a round
+ * The app launcher of the top bar (Google Workspace style): a round
  * nine-dot button (tooltip «Aplicações MUTU@L») opening a rounded panel with
  * a 3-column grid of app icon + name — only the apps the person can use in
  * the active organisation (`appsDisponiveis(eu.apps)`, the Portal first),

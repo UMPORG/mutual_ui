@@ -7,7 +7,7 @@ import { bordasComMais } from "./rolagem-bordas";
 export { bordasComMais };
 
 /**
- * Scrolling helpers (v0.8). The look lives in css/rolagem.css:
+ * Scrolling helpers. The look lives in css/rolagem.css:
  *
  * - `.m-scroll-x` / `.m-scroll-y` (CSS only, server-safe): styled scrollbar
  *   plus a soft shadow at each edge while there is more content that way.

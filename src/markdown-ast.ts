@@ -1,5 +1,5 @@
 /**
- * A small, safe Markdown parser for assistant replies and help text (v0.7).
+ * A small, safe Markdown parser for assistant replies and help text.
  *
  * Safety by construction: the parser produces a tree of plain objects and the
  * renderer (`markdown.tsx`) turns it into React elements. There is no HTML

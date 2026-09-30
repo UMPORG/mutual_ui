@@ -25,7 +25,7 @@ import {
 } from "./calendario";
 
 /**
- * Dates (v0.7): `Calendar`, `DatePicker`, `DateRangePicker`.
+ * Dates: `Calendar`, `DatePicker`, `DateRangePicker`.
  *
  * Values are ISO calendar days ("2026-10-03"): no time, no time zone, so a
  * date never moves a day. pt-PT names, weeks start on Monday, "today" is the

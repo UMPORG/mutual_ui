@@ -10,7 +10,7 @@ function Forma({ f }: { f: FormaGlifo }) {
 }
 
 /**
- * The icon of a MUTU@L app (v0.15): the «folha» base in the app's colour
+ * The icon of a MUTU@L app: the «folha» base in the app's colour
  * (`--app-marca`) with its white glyph (src/icones.ts). Top bar, launcher,
  * Portal tiles, lists of apps. Decorative by default (the app's name is
  * next to it); `titulo` gives it an accessible name (`true` = the app's

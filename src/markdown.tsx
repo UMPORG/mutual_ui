@@ -8,7 +8,7 @@ import { analisarMarkdown, estabilizarParcial, type Block, type Inline } from ".
 export { analisarMarkdown, analisarInline, estabilizarParcial, markdownParaTexto, sanitizarUrl, type Block, type Inline } from "./markdown-ast";
 
 /**
- * Safe Markdown for assistant replies and help text (v0.7). The text is
+ * Safe Markdown for assistant replies and help text. The text is
  * parsed into a tree and rendered as React elements — never as HTML — so a
  * reply cannot inject markup or scripts. Links are limited to http(s),
  * mailto, tel and relative paths; images are shown as links, never loaded.

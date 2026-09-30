@@ -92,7 +92,7 @@ test("form sub-sections and the actions bar (v0.16): legend inside the card, no 
   assert.match(sup, /\.m-subseccao > legend \{[^}]*float: left;[^}]*width: 100%;/);
   assert.match(sup, /\.m-subseccao > legend \+ \* \{ clear: both; \}/);
   assert.match(sup, /\.m-subseccao \{[^}]*background: var\(--card\);/);
-  // Buttons placed directly in it keep their width (v0.16.1).
+  // Buttons placed directly in it keep their width.
   assert.match(sup, /\.m-subseccao > :is\(button, a, \.m-btn\) \{ align-self: flex-start; \}/);
   // The bar sits on the page surface; it lifts only while stuck.
   const barra = sup.match(/\.m-barra-acoes-corpo \{([^}]*)\}/)?.[1] ?? "";

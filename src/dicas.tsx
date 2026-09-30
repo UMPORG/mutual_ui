@@ -8,7 +8,7 @@ import { dicaDispensada, dispensarDica, reporDica, subscreverDicas } from "./dic
 export { dicaDispensada, dispensarDica, reporDica } from "./dicas-estado";
 
 /**
- * Dica (v0.12) — a tip about the screen, calm and out of the way.
+ * Dica — a tip about the screen, calm and out of the way.
  *
  * - One line by default: info icon + `titulo`. The explanation (`children`)
  *   and «Saber mais» open on demand (`aria-expanded`), so the tip never pushes

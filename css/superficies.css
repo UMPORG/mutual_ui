@@ -19,7 +19,7 @@
       border-color var(--movimento-medio) var(--curva-padrao),
       color var(--movimento-medio) var(--curva-padrao);
   }
-  /* v0.14: a gentle press (scale 0.98), the same curve everywhere. */
+  /* A gentle press (scale 0.98), the same curve everywhere. */
   .m-btn:active:not(:disabled):not([aria-disabled="true"]) {
     transform: scale(0.98);
     transition-duration: var(--movimento-rapido);
@@ -93,7 +93,7 @@
 
   .m-btn-ghost { color: var(--foreground); background: transparent; }
 
-  /* Disabled (v0.11): a flat neutral button with muted text (≥ 7.4:1 in
+  /* Disabled: a flat neutral button with muted text (≥ 7.4:1 in
      both themes) instead of a see-through brand button, which read as a
      «dim green» nobody could read in dark mode. A pending button
      (aria-busy, spinner) keeps its colour. */
@@ -158,8 +158,8 @@
   }
   /* Page canvas behind full-page screens without the shell (SemAcesso,
      ServicoIndisponivel, public pages): a quiet wash of brand light on the
-     neutral background. v0.13: no accent rule or band any more — the app
-     identity lives in the frame of the shell (css/shell.css).
+     neutral background, no accent rule or band — the app identity lives in
+     the frame of the shell (css/shell.css).
      `m-canvas-neutro` is kept as an alias. */
   .m-canvas {
     background-color: var(--background);
@@ -168,7 +168,7 @@
       radial-gradient(900px 500px at 110% 10%, color-mix(in oklab, var(--app-accent) 6%, transparent), transparent 60%);
     background-repeat: no-repeat;
   }
-  /* The content column of a desk shell (v0.9.1): the same gutters, top
+  /* The content column of a desk shell: the same gutters, top
      space, bottom room (demo pill) and maximum width in every app — 16px
      on phones, 24px from 40rem, 32px from 64rem; 80rem wide at most,
      centred. `m-pagina-larga` drops the maximum (maps, planners, wide
@@ -200,8 +200,7 @@
     box-shadow: inset 0 1px 2px rgb(20 20 20 / 0.06), 0 0 0 4px color-mix(in oklab, var(--ring) 22%, transparent);
   }
 
-  /* A sub-section of a form (v0.16, owner 2026-09-30: «it looks like
-     embedded HTML»): a <fieldset> drawn as a neutral card with its heading
+  /* A sub-section of a form: a <fieldset> drawn as a neutral card with its heading
      INSIDE — never the classic box with the legend cutting the border. The
      <fieldset>/<legend> semantics stay (the float takes the legend out of
      the border; the first thing after it clears it).
@@ -241,7 +240,7 @@
   .m-subseccao-ajuda { font-size: 0.9375rem; color: var(--muted-foreground); }
 
   /* The actions at the end of a form or of a step («Anterior», «Guardar e
-     continuar»; v0.16): in the content flow, no rule and no grey band. On
+     continuar»): in the content flow, no rule and no grey band. On
      a long screen it stays at the bottom of the content layer; only while
      it is stuck there does it lift, on the surface of the page with a soft
      shadow (`scroll-state` query; without it, it stays flat).

@@ -4,8 +4,8 @@ import { getMutualApp, type MutualAppId } from "../src/apps.ts";
 /**
  * The app whose tint the page wears (`data-app` on <html>). Read live, not
  * once at render: the screenshot scripts and the browser tools switch
- * `data-app` after load, and the header must follow the tint (it used to keep
- * saying "Backoffice" on the Saúde tint).
+ * `data-app` after load, and the header must follow the tint (never
+ * "Backoffice" on the Saúde tint).
  */
 function subscrever(aviso: () => void) {
   const o = new MutationObserver(aviso);

@@ -1,5 +1,5 @@
 /**
- * Portuguese identifiers (v0.8.9): phone numbers, NIF/NIPC, código postal and
+ * Portuguese identifiers: phone numbers, NIF/NIPC, código postal and
  * IBAN. Pure functions, no dependencies (server, client, edge, Bun).
  *
  * Three verbs for each identifier:

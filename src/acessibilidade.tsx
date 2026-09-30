@@ -89,7 +89,7 @@ export function AcessibilidadeMenu({
     };
     sync();
     window.addEventListener("focus", sync);
-    // Other copies of this menu on the same page (sidebar, top bar, a
+    // Other copies of this menu on the same page (top bar, drawer, a
     // settings page) announce their changes; follow them.
     const onOutro = (e: Event) => {
       const p = (e as CustomEvent<Preferencias>).detail;

@@ -41,7 +41,7 @@ export function useAcoesDemo(grupo: GrupoAcoesDemo | null): void {
  *  - Widgets that are not native inputs (rich text, custom selects, money
  *    cells) register a filler with `registarPreenchedor(formId, fn)`.
  *
- * Where the controls appear (v0.8.7):
+ * Where the controls appear:
  *  - Forms on the page: a small floating pill. It docks away from what the
  *    person needs (the focused element, a form's last actions, anything with
  *    `data-demo-evitar`): bottom-right, else bottom-left, else the middle of
@@ -56,7 +56,7 @@ export function useAcoesDemo(grupo: GrupoAcoesDemo | null): void {
  *    the inertness of the page stay intact; the floating pill hides while a
  *    modal makes the page inert.
  *
- * «Entrar como…» (v0.11.2): a login page that registers a demo sign-in
+ * «Entrar como…»: a login page that registers a demo sign-in
  * context (`useEntrarComoDemo({ destino, aoEntrar })` or
  * `registarEntrarComo`) gets an «Entrar como…» section at the top of the
  * panel — the demo personas of the Cérebro in use, one click signs in. When
@@ -209,7 +209,7 @@ const SELETOR_ACOES = ':is(button, a[href], input[type="submit"], input[type="bu
  * What the pill must not cover: the focused element, the forms' last actions, `data-demo-evitar`.
  * While a bottom sheet marked `data-demo-folha` is open (the floating assistant at phone width),
  * nothing: the page behind it is hidden anyway and the sheet stacks above the pill docked at the
- * bottom (v0.18.2) — a pill mid-edge would sit on the sheet or leave it too short.
+ * bottom — a pill mid-edge would sit on the sheet or leave it too short.
  */
 function obstaculos(raiz: HTMLElement | null): Retangulo[] {
   const vw = window.innerWidth;
@@ -393,7 +393,7 @@ function Flutuante({
   }, [escondido, raizRef]);
 
   // The whole footprint (pill + open panel + notice) in the position registry:
-  // the floating assistant stacks above it and never covers it (v0.18). The
+  // the floating assistant stacks above it and never covers it. The
   // widget never moves for the chat.
   const registo = useRegistoPosicoes();
   useLayoutEffect(() => {

@@ -1,24 +1,23 @@
 /*
- * Scrolling (v0.8): one scrollbar look for the whole ecosystem, vertical and
+ * Scrolling: one scrollbar look for every app, vertical and
  * horizontal, plus edge shadows that say "there is more this way".
  *
  * - Thin (6px thumb in a 12px lane) and rounded; the thumb grows to 8px and
  *   darkens under the pointer, so the lane stays easy to grab.
  * - Colours come from tokens (css/tokens.css): --scroll-thumb,
- *   --scroll-thumb-hover, --scroll-track, and the "-ink" set on the tinted
- *   sidebar and nav bar (.bg-sidebar, .bg-nav-background, .m-tinta).
+ *   --scroll-thumb-hover, --scroll-track, and the "-ink" set on the dark ink
+ *   surfaces (.bg-sidebar, .bg-nav-background, .m-tinta).
  * - Chrome, Edge and Safari use ::-webkit-scrollbar (Chrome ignores those
  *   rules on any element that sets scrollbar-width / scrollbar-color, so
  *   they are only set for Firefox, which has no ::-webkit-scrollbar).
- * - Alto contraste: 16px lane, solid black thumb (white on the sidebar).
+ * - Alto contraste: 16px lane, solid black thumb (white on ink surfaces).
  *   Forced colours (Windows): system colours. Nothing here animates.
  * - Sizes are px on purpose: they follow page zoom like everything else,
  *   and keyboard scrolling is untouched.
  */
 
-/* Which colours apply here. Surfaces placed inside the sidebar DOM (menus,
-   popovers) and the content canvas (desk shells wrap it in bg-sidebar) go
-   back to the light set. */
+/* Which colours apply here. Surfaces placed inside an ink surface (menus,
+   popovers, cards, a canvas) go back to the light set. */
 :root {
   --m-polegar: var(--scroll-thumb);
   --m-polegar-hover: var(--scroll-thumb-hover);

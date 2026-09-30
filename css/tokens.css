@@ -1,11 +1,11 @@
 /*
- * MUTU@L design tokens — identidade visual v2 (2026-09-25).
+ * MUTU@L design tokens (docs/guia/identidade-visual.md).
  *
  * One brand for the whole ecosystem: every app shares the neutrals, the brand
  * green (from the MUTU@L flag), the type, the radius and the status colours.
  * An app is recognised by its accent (`--app-accent`, set by `data-app` on
  * <html>), used for its tile, the 9% tint of the shell frame (top bar and
- * navigation, v0.13), the icon of the current page and its tile in the
+ * navigation), the icon of the current page and its tile in the
  * Portal — never for primary buttons, links or focus.
  *
  * All pairs below meet WCAG AA at the size they are used (most meet AAA).
@@ -28,10 +28,10 @@
   --flag-green: #6dba6a;
   --flag-red: #e8393c;
 
-  /* Surfaces and text — PURE neutral greys (v0.11, owner 2026-09-29: no
-     green or warm cast in the content, so every app's own colours read
-     true). The app identity lives only in the frame of the shell (v0.13). tests/tokens.test.ts keeps them neutral (r = g = b)
-     and re-measures: body 17.2:1 on --background, muted 8.1:1 / 8.5:1 on
+  /* Surfaces and text — PURE neutral greys (no green or warm cast in the
+     content, so every app's own colours read true); the app identity lives
+     only in the frame of the shell. tests/tokens.test.ts keeps them neutral
+     (r = g = b) and re-measures: body 17.2:1 on --background, muted 8.1:1 / 8.5:1 on
      --background / --card, 7.4:1 on --secondary. */
   --background: #fafafa;
   --foreground: #171717;
@@ -49,7 +49,7 @@
   --input: #8a8a8a; /* form borders: 3.45:1 on white, 3.31:1 on --background (WCAG 1.4.11) */
   --ring: #1f6f36;
   /* The ring of the content (cards, popovers, the canvas) — restored inside
-     the dark shell, where --ring is --sidebar-ring (v0.9.2). */
+     ink surfaces, where --ring is --sidebar-ring (see "Focus" below). */
   --ring-conteudo: #1f6f36;
 
   /* shadcn contract: primary IS the brand. */
@@ -76,8 +76,8 @@
   --destructive-soft-foreground: #7f1d1d;
 
   /* The dark "MUTU@L ink": tooltips (.m-dica) and the Cartão's own dark
-     bars. Since v0.13 no app shell is dark — the desk apps use the tinted
-     frame of shell G (--moldura, below). */
+     bars. No app shell is dark — the desk apps use the tinted frame of
+     shell G (--moldura, below). */
   --sidebar: #12241a;
   --sidebar-foreground: #f4f7f4; /* 15:1 */
   --sidebar-muted-foreground: #b8c4bc; /* 9.3:1 */
@@ -96,10 +96,9 @@
   --app-accent-soft: var(--brand-soft);
   --app-accent-on-ink: #7cc97a; /* the accent on a dark surface */
 
-  /* Scrollbars (v0.8, css/rolagem.css). Thumb 3.3:1 on --background,
-     3.45:1 on --card; hover 4.8:1. The track stays transparent so the
-     surface shows through. "-ink" = on the (tinted) sidebar and nav bar:
-     ≥ 3.7:1 on --sidebar, hover ≥ 6.3:1, in every app. */
+  /* Scrollbars (css/rolagem.css). Thumb 3.3:1 on --background, 3.45:1 on
+     --card; hover 4.8:1. The track stays transparent so the surface shows
+     through. "-ink" = on ink surfaces: ≥ 3.7:1 on --sidebar, hover ≥ 6.3:1. */
   --scroll-thumb: #8a8a8a;
   --scroll-thumb-hover: #6f6f6f;
   --scroll-track: transparent;
@@ -107,7 +106,7 @@
   /* Edge shadow that says "there is more this way" (.m-scroll-x / -y). */
   --scroll-shadow: rgb(20 20 20 / 0.18);
 
-  /* Role (who is signed in) — identical in every app, unchanged from v1. */
+  /* Role (who is signed in) — identical in every app. */
   --role-accent: var(--brand);
   --role-accent-foreground: #ffffff;
 
@@ -129,7 +128,7 @@
   --brand-soft: #1d3528;
   --brand-soft-foreground: #c9ecc7;
 
-  /* Neutral greys (v0.11): body 16.9:1 on --background, 15.6:1 on --card;
+  /* Neutral greys: body 16.9:1 on --background, 15.6:1 on --card;
      muted 10.3 / 9.6 / 8.7:1 on --background / --card / --muted. */
   --background: #141414;
   --foreground: #f5f5f5;
@@ -178,7 +177,7 @@
   --scroll-shadow: rgb(0 0 0 / 0.55);
 }
 
-/* ─── Dicas (v0.12, `Dica` in src/dicas.tsx, styles in css/dicas.css) ────
+/* ─── Dicas (`Dica` in src/dicas.tsx, styles in css/dicas.css) ────
    A calm note: a faint brand tint, a border that still reads (≥ 3:1 on the
    note and on the page), body text ≥ 7:1. Measured in tests/dicas.test.ts;
    high contrast in css/preferencias.css. Apps with their own palette (the
@@ -200,12 +199,11 @@
   --dica-ligacao: #a6dca4;
 }
 
-/* ─── App identity (v0.13: palette re-spaced) ─────────────────────────────
+/* ─── App identity ─────────────────────────────────────────────────────────
    Each app is recognised by its colour in the frame of shell G (the top bar
    and the navigation, tinted 9% — see "Frame" below), its tile and the icon
-   of the current page. v0.13 re-spaced the hues (OKLCH) so no two apps are
-   less than 33° apart (Eventos, Assistente and Saúde, Simplex and
-   Protocolos, Monitorização and the Portal were 17–25° apart):
+   of the current page. OKLCH hues, no two apps less than 33° apart (the
+   test fails below 30° light / 28° dark):
      Saúde 355 · Protocolos 29 · Simplex 69 · Monitorização 116 · Portal 149 ·
      Assistente 187 · Validador QR 223 · Backoffice 264 · Eventos 303,
      Servidores e DNS = slate (low chroma).
@@ -248,17 +246,18 @@
 [data-app="portal"],
 [data-app="cartao"]     { --app-marca: #1f6f36; }
 
-/* ─── Frame (shell G, v0.13) ─────────────────────────────────────────────
-   Google Workspace structure + Fluent layering (owner, 2026-09-29): the top
+/* ─── Frame (shell G) ─────────────────────────────────────────────────────
+   Google Workspace structure + Fluent layering: the top
    bar and the navigation share ONE surface, a neutral grey with 9% of the
    app's colour («cor dinâmica»); the content sits on ONE neutral elevated
    layer (--camada, rounded 8px). The current page is a pill with 20% (24%
    in dark) of the colour and its icon in the colour; hover 14%. Primary
-   buttons stay brand green. Replaces the v0.8 tinted sidebars.
-   The search field is NOT tinted (owner, 2026-09-30: «a white background
-   means it's interactive»): the neutral input surface (white; the dark
-   input surface in dark) with a border ≥ 3:1 against the tinted bar. tests/tokens.test.ts mixes these exactly as the browser does
-   (sRGB) and measures every pair in every app, light and dark. */
+   buttons stay brand green.
+   The search field is NOT tinted (a white background says «interactive»):
+   the neutral input surface (white; the dark input surface in dark) with a
+   border ≥ 3:1 against the tinted bar. tests/tokens.test.ts mixes these
+   exactly as the browser does (sRGB) and measures every pair in every app,
+   light and dark. */
 :root {
   --moldura-base: #f2f2f2;
   --moldura-mistura: 9%;
@@ -315,11 +314,11 @@
 .dark [data-role="gestor_clinica"],
 .dark [data-role="rececionista"] { --role-accent: #f9a8d4; --role-accent-foreground: #1c1917; }
 
-/* ─── Focus on the dark shell (v0.9.2) ──────────────────────────────────
-   On the tinted sidebar and the phone top bar the focus ring is the light
-   green of --sidebar-ring (≥ 8:1 on every tint; brand green there is < 3:1).
-   Popovers, cards and the content canvas inside the shell go back to the
-   content ring. Apps drop their own `.superficie-tinta { --ring: … }`. */
+/* ─── Focus on ink surfaces ─────────────────────────────────────────────
+   On the dark ink (.bg-sidebar, .bg-nav-background, .m-tinta) the focus
+   ring is the light green of --sidebar-ring (≥ 8:1; brand green there is
+   < 3:1). Popovers, cards and a canvas inside go back to the content ring,
+   so apps need no ring override of their own. */
 :where(.bg-sidebar, .bg-nav-background, .m-tinta) {
   --ring: var(--sidebar-ring);
 }
@@ -327,8 +326,8 @@
   --ring: var(--ring-conteudo);
 }
 
-/* ─── Motion (v0.14) ────────────────────────────────────────────────────
-   One set of durations and curves for every transition of the ecosystem
+/* ─── Motion ─────────────────────────────────────────────────────────────
+   One set of durations and curves for every transition in every app
    (Fluent / Material: quick, decelerating on enter, faster accelerating on
    exit). Only opacity and transform move — never layout. Reduzir movimento
    (html[data-movimento="reduzido"], the Acessibilidade menu) and the OS
@@ -340,7 +339,7 @@
   --curva-entrada: cubic-bezier(0.2, 0.8, 0.2, 1);
   --curva-saida: cubic-bezier(0.4, 0, 1, 1);
   --curva-padrao: cubic-bezier(0.3, 0, 0.1, 1);
-  /* A soft spring (a small overshoot) — the floating assistant settling in its corner (v0.18). */
+  /* A soft spring (a small overshoot) — the floating assistant settling in its corner. */
   --curva-mola: cubic-bezier(0.34, 1.12, 0.64, 1);
 }
 html[data-movimento="reduzido"] {

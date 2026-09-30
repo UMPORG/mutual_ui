@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { movimentoReduzido } from "./preferencias";
 
 /**
- * The engine shared by the canvas effects (v0.7). Every effect gets the same
+ * The engine shared by the canvas effects. Every effect gets the same
  * guarantees as `AsciiFundo`:
  *
  * - device-pixel-ratio capped (default 1.5) and a frame-rate cap;

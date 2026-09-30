@@ -3,7 +3,7 @@ import { BotaoAssistente, useContextoAssistente } from "../src/index.ts";
 import { ChatFlutuante } from "../src/assistente-chat.tsx";
 
 /**
- * v0.18 — the floating assistant next to the «Demonstração» widget: drag it,
+ * The floating assistant next to the «Demonstração» widget: drag it,
  * move it with the arrows of «Mover», open the demo panel and watch it stack.
  * The answers come from a fake server (no network).
  */

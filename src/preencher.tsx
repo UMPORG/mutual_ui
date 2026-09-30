@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * `@umporg/ui/preencher` (v0.17) — the assistant inside the forms:
+ * `@umporg/ui/preencher` — the assistant inside the forms:
  *
  * - `PreencherComDocumento`: «Preencher com um documento» — choose a file,
  *   the Cérebro reads it (text, spreadsheets, local OCR) and PROPOSES values;
@@ -13,7 +13,7 @@
  * - `RascunhoTexto`: an editable text with «Copiar» and «Usar» (drafting).
  *
  * Needs @base-ui/react (dialog, checkboxes). The calls go to the same origin
- * (`/api/v1/assistente/*`, proxied to the Cérebro by every app).
+ * (`/api/v1/assistente/*`, the Cérebro; no app proxy).
  */
 import { useEffect, useId, useMemo, useRef, useState, type ElementType, type ReactNode } from "react";
 import { ArrowRight, CircleCheck, FileText, FileUp, Info, Sparkles } from "lucide-react";

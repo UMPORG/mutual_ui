@@ -10,7 +10,7 @@ import { opcional } from "./opcional";
 import { formatarNumero } from "./formatar";
 
 /**
- * Showing and hiding content (v0.7): Accordion, Collapsible, Tabs, plus
+ * Showing and hiding content: Accordion, Collapsible, Tabs, plus
  * `useUrlParam` to keep the open tab in the address (so "Voltar", reload
  * and shared links land on the same tab).
  *

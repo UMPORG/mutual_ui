@@ -127,7 +127,7 @@ html.contraste {
   --dica-icone: #000000;
   --dica-ligacao: #0b2a8a;
 }
-/* The frame of shell G (v0.13) and the app colours give way to plain black
+/* The frame of shell G and the app colours give way to plain black
    and white — every app looks the same here; the app name in the top bar
    still says where you are. The current page is white on black. These
    selectors outrank [data-app] and .dark[data-app]. Scrollbars: solid black

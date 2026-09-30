@@ -1,5 +1,5 @@
 /**
- * «Entrar como…» of the DEMONSTRATION (v0.11.2) — the plain logic, no DOM, so
+ * «Entrar como…» of the DEMONSTRATION — the plain logic, no DOM, so
  * it is unit-tested. The UI is a section of the floating «Demonstração»
  * widget (`DemoPreencher`); a login page only REGISTERS its sign-in context:
  *

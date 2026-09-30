@@ -8,7 +8,7 @@ import { cx } from "./cx";
 import { CLASSE_FLUTUANTE, CLASSE_POSICIONADOR } from "./controlos-comum";
 
 /**
- * Menus of actions (v0.7), built on Base UI Menu:
+ * Menus of actions, built on Base UI Menu:
  *
  * - `DropdownMenu` — the "⋯"/"Ações" button of a row, card or page header.
  * - `ContextMenu` — the same items on right-click / long-press of an area.

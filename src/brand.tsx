@@ -22,7 +22,7 @@ export function MutualFlag({ height = 24, className, title }: { height?: number 
  * Brand lock-up: flag + "MUTU@L" + the app name. The app name is what tells
  * the user where they are, so it is always shown in full.
  *
- * tone="ink" for the dark sidebar/header, "default" on light surfaces.
+ * tone="ink" on the dark ink (the Cartão's bars), "default" on light surfaces.
  */
 export function MutualWordmark({
   app,

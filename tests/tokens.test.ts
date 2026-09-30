@@ -3,9 +3,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 /**
- * v0.13 shell G: the frame (top bar + navigation) is a neutral grey mixed
+ * Shell G: the frame (top bar + navigation) is a neutral grey mixed
  * with 9% of the app's colour, the current page a pill with 20% (24% dark),
- * hover 14%; the content one neutral layer. The search field (v0.16) is not
+ * hover 14%; the content one neutral layer. The search field is not
  * tinted: the neutral input surface with a border ≥ 3:1 on the tinted bar. Re-measure every pair
  * in every app, light and dark, mixing exactly as `color-mix(in srgb …)`
  * does, and keep the app colours apart (OKLCH hue).
@@ -86,7 +86,7 @@ for (const app of APPS) {
       pares.push(["traço do separador atual", t["--app-accent"]!, "--camada", t["--camada"]!, 3]);
       pares.push(["texto na camada", t["--foreground"]!, "--camada", t["--camada"]!, 7]);
       pares.push(["contador e iniciais do avatar", t["--camada"]!, "--foreground", t["--foreground"]!, 4.5]);
-      // The search field (v0.16): neutral input surface, border visible on the
+      // The search field: neutral input surface, border visible on the
       // tinted bar (and on its hover shade, which sits right next to it).
       for (const sup of ["--moldura", "--moldura-hover"]) {
         pares.push(["borda da procura", t["--procura-borda"]!, sup, t[sup]!, 3]);
@@ -166,7 +166,7 @@ test("bordasComMais: shadows only toward hidden content", () => {
   assert.deepEqual([vertical.cima, vertical.baixo, vertical.transbordaY], [true, true, true]);
 });
 
-// ─── v0.8.2: invalid fields are tinted with --destructive-soft ────────────
+// ─── Invalid fields are tinted with --destructive-soft ───────────────────
 test("invalid field tint: text, placeholder and red border stay readable (light, dark)", () => {
   for (const [tema, t] of [["claro", raiz], ["escuro", { ...raiz, ...escuroRaiz }]] as const) {
     const fundo = t["--destructive-soft"]!;
@@ -190,10 +190,10 @@ test("DataTable scroller is a containing block (sr-only text cannot widen the pa
   assert.match(tabela, /"m-tabela-rolo m-scroll-x relative"/);
 });
 
-// ─── Content tokens (v0.11): neutral greys + contrast floor ─────────────
-// Owner (2026-09-29): the content (canvas, cards, borders, muted text,
-// inputs) must be NEUTRAL in every theme — the app identity lives only in
-// the sidebar tint, the top rule and the accents — and readable in dark.
+// ─── Content tokens: neutral greys + contrast floor ─────────────────────
+// The content (canvas, cards, borders, muted text, inputs) must be NEUTRAL
+// in every theme — the app identity lives only in the frame of the shell and
+// the accents — and readable in dark.
 const NEUTROS = ["--background", "--card", "--popover", "--secondary", "--muted", "--accent", "--border", "--input", "--foreground", "--muted-foreground"];
 for (const [tema, t] of [["claro", raiz], ["escuro", { ...raiz, ...escuroRaiz }]] as const) {
   test(`content tokens are neutral grey (${tema})`, () => {

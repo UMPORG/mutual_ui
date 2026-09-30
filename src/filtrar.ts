@@ -1,5 +1,5 @@
 /**
- * Filtering for comboboxes and autocompletes (v0.7). Pure, framework-free.
+ * Filtering for comboboxes and autocompletes. Pure, framework-free.
  *
  * Portuguese users type without accents and in any case: "evora" must find
  * "Évora", "sao joao" must find "São João da Madeira". Results are ranked:

@@ -6,7 +6,7 @@ import { CheckCircle2, Info, X } from "lucide-react";
 import { cx } from "./cx";
 
 /**
- * Toasts (v0.7) — ONLY to confirm something the person just did and can
+ * Toasts — ONLY to confirm something the person just did and can
  * see anyway ("Alterações guardadas", "Convite enviado"), optionally with
  * "Anular". Never for errors, warnings or anything the person must read:
  * those are persistent `StatusCallout`s next to where they happened.

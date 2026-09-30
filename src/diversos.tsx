@@ -6,7 +6,7 @@ import { Avatar as BaseAvatar } from "@base-ui/react/avatar";
 import { cx } from "./cx";
 
 /**
- * ScrollArea, Avatar, AvatarGroup (v0.7), built on Base UI.
+ * ScrollArea, Avatar, AvatarGroup, built on Base UI.
  */
 
 // ─── ScrollArea ───────────────────────────────────────────────────────────

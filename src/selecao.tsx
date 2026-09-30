@@ -9,7 +9,7 @@ import { filtrarOpcoes, normalizarTexto, textoParaCriar } from "./filtrar";
 import { CLASSE_FLUTUANTE, CLASSE_POSICIONADOR, Destacado, useControlado } from "./controlos-comum";
 
 /**
- * Choosing from lists (v0.7), built on Base UI:
+ * Choosing from lists, built on Base UI:
  *
  * - `Select` — a closed list of up to ~15 options, no typing (estado, tipo).
  * - `Combobox` — many options or a remote search (associação, utente), with

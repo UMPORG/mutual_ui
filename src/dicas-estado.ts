@@ -1,5 +1,5 @@
 /**
- * Dicas (v0.12): the device's memory of «I do not need this tip any more».
+ * Dicas: the device's memory of «I do not need this tip any more».
  * No React here, so `node --test` can exercise it (tests/dicas.test.ts).
  *
  * The key is the dica's `id`, prefixed by the app (`cartao.dica.passe-digital`,
