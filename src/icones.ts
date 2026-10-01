@@ -38,6 +38,7 @@ export const COR_MARCA_APP: Record<MutualAppId, string> = {
   protocolos: "#b93a2e",
   monitor: "#6b7500",
   cartao: "#1f6f36",
+  carta: "#1f6f36",
 };
 
 export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
@@ -85,10 +86,11 @@ export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
     { t: "circulo", x: 8.75, y: 7.625, r: 1.5, papel: "k" },
     { t: "circulo", x: 8.75, y: 16.375, r: 1.5, papel: "k" },
   ],
-  // Assistente — a speech bubble with the spark.
+  // Assistente — the spark: a large four-pointed star and a small one (2026-10-01:
+  // the speech bubble read as «chat», not as «assistant»).
   assistente: [
-    { t: "traco", d: "M7 5h10a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-6.5L7 19v-3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" },
-    { t: "cheio", d: "M12 7.25q.5 2.75 3.25 3.25-2.75.5-3.25 3.25-.5-2.75-3.25-3.25 2.75-.5 3.25-3.25Z", papel: "r" },
+    { t: "cheio", d: "M10.75 6.5q.95 5.3 6.25 6.25-5.3.95-6.25 6.25-.95-5.3-6.25-6.25 5.3-.95 6.25-6.25Z" },
+    { t: "cheio", d: "M17 4.5q.42 2.08 2.5 2.5-2.08.42-2.5 2.5-.42-2.08-2.5-2.5 2.08-.42 2.5-2.5Z", papel: "r" },
   ],
   // Protocolos — two linked rings: two parties, one agreement.
   protocolos: [
@@ -99,6 +101,12 @@ export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
   monitor: [
     { t: "traco", d: "M4.75 13h2.75l2-5 3.5 9 2-5.5h1" },
     { t: "circulo", x: 18.25, y: 11.5, r: 1.9, papel: "r" },
+  ],
+  // Carta Social Mutualista — a folded map with the place marked.
+  carta: [
+    { t: "traco", d: "M4.75 7.25l4.5-2 5.5 2 4.5-2v11.5l-4.5 2-5.5-2-4.5 2Z" },
+    { t: "traco", d: "M9.25 5.25v11.5M14.75 7.25v11.5", papel: "s" },
+    { t: "circulo", x: 12, y: 11.5, r: 1.9, papel: "r" },
   ],
   // Cartão Digital — an ID card: photo and two lines.
   cartao: [

@@ -220,6 +220,7 @@
 [data-app="assistente"] { --app-accent: #0b7a72; --app-accent-soft: #e7f6f4; --app-accent-on-ink: #72dfcf; }
 [data-app="protocolos"] { --app-accent: #b93a2e; --app-accent-soft: #fdf0ee; --app-accent-on-ink: #fca99f; }
 [data-app="portal"],
+[data-app="carta"],
 [data-app="cartao"]     { --app-accent: var(--brand); }
 
 .dark[data-app="backoffice"], .dark [data-app="backoffice"] { --app-accent: #93b4fb; --app-accent-soft: #172544; }
@@ -244,6 +245,7 @@
 [data-app="assistente"] { --app-marca: #0b7a72; }
 [data-app="protocolos"] { --app-marca: #b93a2e; }
 [data-app="portal"],
+[data-app="carta"],
 [data-app="cartao"]     { --app-marca: #1f6f36; }
 
 /* ─── Frame (shell G) ─────────────────────────────────────────────────────

@@ -15,7 +15,7 @@
  *   chat yields.
  */
 import { createContext, useContext, useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
-import { Sparkles } from "lucide-react";
+import { GlifoApp } from "./icone-app";
 import { cx } from "./cx";
 import { hashContexto, normalizarContexto, type EntradaContexto } from "./assistente-contexto";
 import {
@@ -72,7 +72,7 @@ export function BotaoAssistente({ className }: { className?: string | undefined 
       }}
       className={cx("m-barra-util relative max-md:!w-11 max-md:!justify-center max-md:!px-0", className)}
     >
-      <Sparkles aria-hidden />
+      <GlifoApp app="assistente" />
       <span className="max-md:sr-only">Assistente</span>
       {nova && !aberto && (
         <>

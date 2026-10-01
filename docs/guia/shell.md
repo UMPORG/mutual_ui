@@ -68,6 +68,10 @@ Never tinted with the app colour.
 - `IconeApp({ app, tamanho?, titulo? })`: the «folha» base in `--app-marca` with a white glyph — used in
   the top bar, launcher, Portal tiles, lists of apps, favicons. Never a Lucide icon on a coloured square.
   Favicons: [pacote.md](pacote.md#favicons-and-home-screen-icons).
+- `GlifoApp({ app, tamanho?, titulo? })`: the same glyph WITHOUT the base, in `currentColor` (follows
+  light, dark, Alto contraste and forced colours). For buttons and titles that name an app — the top-bar
+  «Assistente», the chat title, the assistant actions («Preencher a partir de um documento», drafts).
+  The Assistente mark is the spark (two four-pointed stars), never Lucide `Sparkles` or a speech bubble.
 
 ## Page parts
 

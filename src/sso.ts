@@ -29,6 +29,7 @@ export const CAMINHOS = {
   assistente: "/assistente",
   protocolos: "/protocolos",
   monitor: "/monitor",
+  carta: "/carta",
   ajuda: "/ajuda",
   api: "/api",
 } as const satisfies Record<AppNoEndereco | "ajuda" | "api", string>;

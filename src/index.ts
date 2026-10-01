@@ -4,7 +4,7 @@ export * from "./brand";
 // Shell G: top bar + tinted frame + navigation + one content layer.
 export { LancadorApps, posicionarPopover } from "./app-switcher";
 // The app icon family and the grid launcher.
-export { IconeApp, IconeWaffle } from "./icone-app";
+export { GlifoApp, IconeApp, IconeWaffle } from "./icone-app";
 export { BASE_ICONE, COR_MARCA_APP, GLIFOS_APPS, svgIconeApp, type FormaGlifo, type PapelGlifo } from "./icones";
 export { indiceNaGrelha } from "./grelha-teclado";
 export {

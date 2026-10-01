@@ -48,6 +48,43 @@ export function IconeApp({
   );
 }
 
+/**
+ * The glyph of an app WITHOUT the «folha» base, in `currentColor`: it takes the
+ * colour of the text it sits in, so it follows the theme (light, dark, Alto
+ * contraste, forced colours) by itself. For buttons and titles that open or
+ * name the app (the top-bar «Assistente», the chat title); the launcher and
+ * the tiles keep `IconeApp`. Decorative unless `titulo` is given.
+ */
+export function GlifoApp({
+  app,
+  tamanho = 20,
+  titulo,
+  className,
+}: {
+  app: MutualAppId;
+  tamanho?: number | undefined;
+  titulo?: string | undefined;
+  className?: string | undefined;
+}) {
+  return (
+    <svg
+      viewBox="4 4 16 16"
+      width={tamanho}
+      height={tamanho}
+      data-app-glifo={app}
+      className={cx("m-glifo-app", className)}
+      role={titulo ? "img" : undefined}
+      aria-label={titulo}
+      aria-hidden={titulo ? undefined : true}
+      focusable="false"
+    >
+      {GLIFOS_APPS[app].map((f, i) => (
+        <Forma key={i} f={f} />
+      ))}
+    </svg>
+  );
+}
+
 /** The nine-dot «waffle» (3 × 3) of the launcher button. */
 export function IconeWaffle({ tamanho = 24 }: { tamanho?: number | undefined }) {
   const pontos: ReactNode[] = [];

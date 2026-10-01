@@ -45,8 +45,9 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeft, ExternalLink, GripVertical, ListChecks, Minus, MessageSquarePlus, MessagesSquare, Sparkles, X } from "lucide-react";
+import { ArrowLeft, ExternalLink, GripVertical, ListChecks, Minus, MessageSquarePlus, MessagesSquare, X } from "lucide-react";
 import { cx } from "./cx";
+import { GlifoApp } from "./icone-app";
 import { Button } from "./basicos";
 import { StatusCallout } from "./feedback";
 import { MUTUAL_APPS, nomeDaApp, type AppNoEndereco, type MutualAppId } from "./apps";
@@ -568,7 +569,7 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
         ) : null}
         <div className="m-chat-titulo">
           <p id={tituloId} className="flex items-center gap-1.5 font-semibold">
-            <Sparkles aria-hidden className="size-4 text-brand" />
+            <GlifoApp app="assistente" tamanho={16} className="text-brand" />
             Assistente
           </p>
           <p className="truncate text-sm text-muted-foreground">

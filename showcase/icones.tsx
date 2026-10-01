@@ -1,5 +1,5 @@
 import { House, Plus, RotateCw, X } from "lucide-react";
-import { AppShell, IconeApp, LancadorApps, ProcuraApp, nomeDaApp, type MutualAppId } from "../src/index.ts";
+import { AppShell, GlifoApp, IconeApp, LancadorApps, ProcuraApp, nomeDaApp, type MutualAppId } from "../src/index.ts";
 
 /**
  * The app icon family and the grid launcher. `?pagina=icones` shows
@@ -7,11 +7,11 @@ import { AppShell, IconeApp, LancadorApps, ProcuraApp, nomeDaApp, type MutualApp
  * `?pagina=icones-shell&app=<id>` is the real frame (AppShell).
  */
 
-const TODAS: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "qr", "dns", "assistente", "protocolos", "monitor", "cartao"];
-const LANCADOR: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "dns", "assistente", "protocolos", "monitor", "qr"];
+const TODAS: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "qr", "dns", "assistente", "protocolos", "monitor", "cartao", "carta"];
+const LANCADOR: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "dns", "assistente", "protocolos", "monitor", "qr", "carta"];
 const TAMANHOS = [16, 20, 24, 32, 48];
 
-const CURTO: Partial<Record<MutualAppId, string>> = { dns: "DNS", qr: "QR", monitor: "Monitorização", cartao: "Cartão" };
+const CURTO: Partial<Record<MutualAppId, string>> = { dns: "DNS", qr: "QR", monitor: "Monitorização", cartao: "Cartão", carta: "Carta Social" };
 
 function Grelha() {
   return (
@@ -46,7 +46,7 @@ function Grelha() {
 
 /** A browser tab strip (mock): the favicons at 16 px, in a light and a dark window. */
 function Separadores({ escuro }: { escuro: boolean }) {
-  const abas: MutualAppId[] = ["portal", "eventos", "simplex", "saude", "backoffice", "monitor", "assistente", "dns", "protocolos", "qr", "cartao"];
+  const abas: MutualAppId[] = ["portal", "eventos", "simplex", "saude", "backoffice", "monitor", "assistente", "dns", "protocolos", "qr", "cartao", "carta"];
   const fundo = escuro ? "#202124" : "#dee1e6";
   const aba = escuro ? "#35363a" : "#ffffff";
   const texto = escuro ? "#e8eaed" : "#202124";
@@ -120,6 +120,25 @@ export function PaginaIcones() {
 
       <Seccao id="s-grelha" titulo="Família" descricao="16, 20, 24, 32 e 48 px (sem ampliação).">
         <Grelha />
+      </Seccao>
+
+      <Seccao
+        id="s-glifo"
+        titulo="Glifo sem base"
+        descricao="GlifoApp: a cor do texto à volta — botão «Assistente» da barra de topo e título do chat, em claro, escuro e alto contraste."
+      >
+        <div className="grid gap-3 sm:grid-cols-3">
+          {(["", "dark", "contraste"] as const).map((tema) => (
+            <div key={tema || "claro"} className={tema || undefined}>
+              <div className="m-surface flex items-center gap-4 rounded-xl p-4 text-foreground">
+                <span className="inline-flex items-center gap-2 font-medium">
+                  <GlifoApp app="assistente" /> Assistente
+                </span>
+                <GlifoApp app="carta" tamanho={24} titulo="Carta Social Mutualista" />
+              </div>
+            </div>
+          ))}
+        </div>
       </Seccao>
 
       <Seccao id="s-barra" titulo="Barra de topo" descricao="O mosaico da app e o botão de nove pontos (abra-o: setas, Enter, Esc).">

@@ -4,7 +4,7 @@
  * host `urlCartao` (sso.ts); only the origin `MUTUAL_URL` varies per deployment.
  */
 
-export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr" | "saude" | "dns" | "assistente" | "protocolos" | "monitor" | "cartao";
+export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr" | "saude" | "dns" | "assistente" | "protocolos" | "monitor" | "cartao" | "carta";
 /** Apps served under the shared host (ADR 0004). The Cartão Digital has its own. */
 export type AppNoEndereco = Exclude<MutualAppId, "cartao">;
 
@@ -111,6 +111,14 @@ export const MUTUAL_APPS: readonly MutualApp[] = [
     palavrasChave: ["scanner", "leitor", "código qr", "entradas", "check-in", "controlo de acessos"],
     publica: true,
   },
+  {
+    id: "carta",
+    nome: "Carta Social Mutualista",
+    descricao: "As associações mutualistas e o que oferecem: pesquisa, mapa e indicadores.",
+    publico: "Todas as pessoas (público), e a UMP na versão completa",
+    palavrasChave: ["carta social", "mapa", "associações mutualistas", "indicadores", "respostas sociais", "saúde", "farmácias", "pesquisa"],
+    publica: true,
+  },
 ] as const;
 
 export function getMutualApp(id: MutualAppId): MutualApp | undefined {
@@ -138,7 +146,8 @@ export function appsDisponiveis(apps: Readonly<Record<string, unknown>> | null |
   for (const a of MUTUAL_APPS) {
     // The Validador QR (public, no profile) comes with Eventos — the Portal's rule:
     // the door of an event is where it is used.
-    if (a.id === "qr" ? tem("eventos") : tem(a.id)) lista.push(a.id);
+    // The Carta Social Mutualista is public: in every launcher.
+    if (a.id === "carta" || (a.id === "qr" ? tem("eventos") : tem(a.id))) lista.push(a.id);
   }
   return lista;
 }

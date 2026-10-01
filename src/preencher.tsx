@@ -16,7 +16,8 @@
  * (`/api/v1/assistente/*`, the Cérebro; no app proxy).
  */
 import { useEffect, useId, useMemo, useRef, useState, type ElementType, type ReactNode } from "react";
-import { ArrowRight, CircleCheck, FileText, FileUp, Info, Sparkles } from "lucide-react";
+import { ArrowRight, CircleCheck, FileText, FileUp, Info } from "lucide-react";
+import { GlifoApp } from "./icone-app";
 import { cx } from "./cx";
 import { Button } from "./basicos";
 import { StatusBadge, StatusCallout } from "./feedback";
@@ -288,7 +289,7 @@ export function PreencherComDocumento({
   return (
     <>
       <Button variant={buttonVariant} onClick={() => setAberto(true)} disabled={disabled} className={className}>
-        <Sparkles aria-hidden /> {label}
+        <GlifoApp app="assistente" /> {label}
       </Button>
       <Dialog
         open={aberto}
@@ -454,7 +455,7 @@ export function RascunhoTexto({
     <section aria-labelledby={`${id}-t`} className={cx("m-surface flex max-w-2xl flex-col gap-3 rounded-xl border border-border p-4", className)}>
       <div className="flex flex-wrap items-center gap-2">
         <span aria-hidden className="grid size-8 place-items-center rounded-lg bg-brand-soft text-brand">
-          <Sparkles size={16} />
+          <GlifoApp app="assistente" tamanho={16} />
         </span>
         <p id={`${id}-t`} className="text-sm font-medium text-muted-foreground">
           Rascunho · {NOME_RASCUNHO[tipo] ?? "Texto"}

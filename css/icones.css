@@ -30,6 +30,20 @@
   --ic-s: rgb(255 255 255 / 0.72);
 }
 
+/* The glyph without the base (`GlifoApp`): the colour of the text around it, in every theme. */
+.m-glifo-app {
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+  overflow: visible;
+}
+.m-glifo-app .m-ic-p,
+.m-glifo-app .m-ic-r { --ic-c: currentColor; }
+.m-glifo-app .m-ic-s { --ic-c: currentColor; opacity: 0.72; }
+.m-glifo-app .m-ic-k { --ic-c: transparent; }
+.m-glifo-app .m-ic-cheio { fill: var(--ic-c); }
+.m-glifo-app .m-ic-traco { fill: none; stroke: var(--ic-c); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
 @media (forced-colors: active) {
   .m-icone-app { forced-color-adjust: none; }
   .m-icone-app {
