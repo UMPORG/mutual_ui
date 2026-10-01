@@ -71,7 +71,8 @@ Never tinted with the app colour.
 - `GlifoApp({ app, tamanho?, titulo? })`: the same glyph WITHOUT the base, in `currentColor` (follows
   light, dark, Alto contraste and forced colours). For buttons and titles that name an app — the top-bar
   «Assistente», the chat title, the assistant actions («Preencher a partir de um documento», drafts).
-  The Assistente mark is the spark (two four-pointed stars), never Lucide `Sparkles` or a speech bubble.
+  The Assistente mark is the AI chat bot (a speech-bubble head with two eyes and an antenna), never Lucide
+  `Sparkles`, stars or a plain speech bubble. Cut-outs (`k`) are real holes (a mask) in `GlifoApp`.
 
 ## Page parts
 

@@ -1,6 +1,6 @@
 {
   "name": "@umporg/ui",
-  "version": "0.19.0",
+  "version": "0.19.1",
   "description": "MUTU@L design system: tokens, brand, shell pieces, form controls, overlays, dates, cards, stats, charts, tables, conversation (assistant) components, decorative effects and SSO helpers shared by every MUTU@L app.",
   "license": "UNLICENSED",
   "type": "module",

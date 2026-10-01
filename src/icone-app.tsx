@@ -66,6 +66,11 @@ export function GlifoApp({
   titulo?: string | undefined;
   className?: string | undefined;
 }) {
+  // The cut-outs (`k`, the base colour on the tile) become real holes here: a mask,
+  // so they show whatever is behind the button in any theme.
+  const mascara = `m-glifo-furos-${app}`; // the same mask for every instance of an app
+  const formas = GLIFOS_APPS[app];
+  const furos = formas.filter((f) => f.papel === "k");
   return (
     <svg
       viewBox="4 4 16 16"
@@ -78,9 +83,27 @@ export function GlifoApp({
       aria-hidden={titulo ? undefined : true}
       focusable="false"
     >
-      {GLIFOS_APPS[app].map((f, i) => (
-        <Forma key={i} f={f} />
-      ))}
+      {furos.length > 0 ? (
+        <defs>
+          <mask id={mascara} maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+            <rect width="24" height="24" fill="#fff" />
+            {furos.map((f, i) =>
+              f.t === "circulo" ? (
+                <circle key={i} cx={f.x} cy={f.y} r={f.r} fill="#000" />
+              ) : (
+                <path key={i} d={f.d} fill="#000" />
+              ),
+            )}
+          </mask>
+        </defs>
+      ) : null}
+      <g mask={furos.length > 0 ? `url(#${mascara})` : undefined}>
+        {formas
+          .filter((f) => f.papel !== "k")
+          .map((f, i) => (
+            <Forma key={i} f={f} />
+          ))}
+      </g>
     </svg>
   );
 }

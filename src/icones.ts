@@ -86,11 +86,15 @@ export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
     { t: "circulo", x: 8.75, y: 7.625, r: 1.5, papel: "k" },
     { t: "circulo", x: 8.75, y: 16.375, r: 1.5, papel: "k" },
   ],
-  // Assistente — the spark: a large four-pointed star and a small one (2026-10-01:
-  // the speech bubble read as «chat», not as «assistant»).
+  // Assistente — the AI chat: a bot whose head is a speech bubble (tail bottom-left),
+  // two eyes cut out and the antenna (2026-10-01: a bubble alone read as «chat», the
+  // stars as nothing in particular; the owner wants it to say «AI chat» at once).
   assistente: [
-    { t: "cheio", d: "M10.75 6.5q.95 5.3 6.25 6.25-5.3.95-6.25 6.25-.95-5.3-6.25-6.25 5.3-.95 6.25-6.25Z" },
-    { t: "cheio", d: "M17 4.5q.42 2.08 2.5 2.5-2.08.42-2.5 2.5-.42-2.08-2.5-2.5 2.08-.42 2.5-2.5Z", papel: "r" },
+    { t: "cheio", d: "M8.25 7.75h7.5a3.25 3.25 0 0 1 3.25 3.25v3.75a3.25 3.25 0 0 1-3.25 3.25h-5.5L6.5 20.25v-2.5A3.25 3.25 0 0 1 5 14.75V11a3.25 3.25 0 0 1 3.25-3.25Z" },
+    { t: "circulo", x: 9.75, y: 12.9, r: 1.45, papel: "k" },
+    { t: "circulo", x: 14.25, y: 12.9, r: 1.45, papel: "k" },
+    { t: "traco", d: "M12 7.75V5.75", papel: "r" },
+    { t: "circulo", x: 12, y: 4.5, r: 1.35, papel: "r" },
   ],
   // Protocolos — two linked rings: two parties, one agreement.
   protocolos: [
