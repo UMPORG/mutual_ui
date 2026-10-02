@@ -159,10 +159,14 @@ export class ErroAssistente extends Error {
   }
 }
 
+/** 503 `ASSISTENTE_INDISPONIVEL`: the UMP has not opened the assistant here yet (a calm note, not an error). */
+export const TEXTO_ASSISTENTE_INDISPONIVEL = "O assistente ainda não está disponível nesta área. A UMP vai abri-lo em breve.";
+
 /** The message for the person from a Cérebro error answer (pure). */
 export function mensagemDoErro(estado: number, corpo: unknown): string {
   const c = (corpo && typeof corpo === "object" ? corpo : {}) as { error?: unknown; code?: unknown };
   const texto = typeof c.error === "string" ? c.error : null;
+  if (c.code === "ASSISTENTE_INDISPONIVEL") return TEXTO_ASSISTENTE_INDISPONIVEL;
   if (estado === 401) return "A sua sessão terminou. Entre de novo para continuar.";
   if (estado === 413) return "O ficheiro é demasiado grande.";
   if (estado === 429 && c.code === "ERR_RATE_LIMIT") return "Chegou ao limite de documentos de hoje. Pode voltar a tentar amanhã.";

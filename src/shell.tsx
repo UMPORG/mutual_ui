@@ -3,6 +3,7 @@
 import {
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -15,7 +16,8 @@ import { ArrowLeftRight, ExternalLink, HelpCircle, LogOut, Menu, Search, X } fro
 import { AcessibilidadeMenu } from "./acessibilidade";
 import { BotaoAssistente } from "./assistente";
 import { LancadorApps, posicionarPopover } from "./app-switcher";
-import { nomeDaApp, type AppNoEndereco, type MutualAppId } from "./apps";
+import { appLigada, assistenteLigado, filtrarNavPorLancamento, nomeDaApp, type AppNoEndereco, type Lancamento, type MutualAppId } from "./apps";
+import { ContextoLancamento } from "./lancamento-contexto";
 import { IconeApp } from "./icone-app";
 import { CAMINHOS } from "./sso";
 import { ajudaDaApp, hrefAtualDoMenu, iniciais } from "./shell-nav";
@@ -30,7 +32,7 @@ export { hrefAtivo, hrefAtualDoMenu, iniciais } from "./shell-nav";
  *
  *   <AppShell
  *     app="backoffice" caminhoAtual={usePathname()} LinkComponent={Link}
- *     disponiveis={appsDisponiveis(eu.apps)}
+ *     disponiveis={appsDisponiveis(eu.apps, eu.lancamento)} lancamento={eu.lancamento}
  *     conta={{ nome, perfil, organizacao, variasOrganizacoes, onTerminarSessao }}
  *     navegacao={[{ itens: [{ href: "/admin", rotulo: "Início", icone: House }] },
  *                 { titulo: "Rede mutualista", itens: [...] }]}
@@ -400,6 +402,14 @@ export interface AppShellProps {
    * the Assistente app itself.
    */
   assistente?: ReactNode | undefined;
+  /**
+   * `eu.lancamento` (launch switches). Leaves switched-off apps out of the
+   * launcher, switched-off pages out of the navigation, and hides the
+   * assistant (chat, «Assistente», fill-from-document, drafts) on the pages
+   * where it is off. Pages themselves are gated by the app (`paginaLigada` +
+   * `<EmBreve dentroDoShell />`).
+   */
+  lancamento?: Lancamento | null | undefined;
   LinkComponent?: ElementType | undefined;
   /** Name of the navigation landmark. */
   rotuloNavegacao?: string | undefined;
@@ -424,6 +434,7 @@ export function AppShell({
   ajudaHref,
   declaracaoHref,
   assistente,
+  lancamento,
   LinkComponent = "a",
   rotuloNavegacao = "Menu principal",
   idConteudo = "conteudo-principal",
@@ -432,8 +443,16 @@ export function AppShell({
 }: AppShellProps) {
   const nome = nomeDaApp(app) ?? "";
   const ajuda = ajudaHref ?? ajudaDaApp(app, CAMINHOS.ajuda);
-  const temNav = navegacao !== undefined && navegacao.length > 0;
-  const comAssistente = assistente !== undefined && assistente !== null && assistente !== false && app !== "assistente";
+  const lanc = lancamento ?? null;
+  const assistenteAqui = assistenteLigado(lanc, app, caminhoAtual);
+  const nav = navegacao && lanc ? filtrarNavPorLancamento(navegacao, lanc, app) : navegacao;
+  const apps = disponiveis && lanc ? disponiveis.filter((a) => appLigada(lanc, a) && (a !== "qr" || appLigada(lanc, "eventos"))) : disponiveis;
+  const temNav = nav !== undefined && nav.length > 0;
+  const estadoLancamento = useMemo(
+    () => ({ lancamento: lanc, app, caminho: caminhoAtual, assistente: assistenteAqui }),
+    [lanc, app, caminhoAtual, assistenteAqui],
+  );
+  const comAssistente = assistente !== undefined && assistente !== null && assistente !== false && app !== "assistente" && assistenteAqui;
   const gavetaRef = useRef<HTMLDialogElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const [gavetaAberta, setGavetaAberta] = useState(false);
@@ -497,6 +516,7 @@ export function AppShell({
   );
 
   return (
+    <ContextoLancamento.Provider value={estadoLancamento}>
     <div data-shell-app={app} className={cx("m-app", temNav && "m-app-com-nav")}>
       <a
         href={`#${idConteudo}`}
@@ -564,7 +584,7 @@ export function AppShell({
         <span data-shell="acessibilidade" className={cx("contents", temNav && "max-md:[&>button]:!hidden")}>
           <AcessibilidadeMenu tone="moldura" compacto={temNav ? false : "md"} declaracaoHref={declaracaoHref} className="m-barra-util" />
         </span>
-        {disponiveis && <LancadorApps atual={app} disponiveis={disponiveis} />}
+        {apps && <LancadorApps atual={app} disponiveis={apps} />}
         {conta && <MenuConta app={app} conta={conta} />}
       </header>
       {procura && procuraAberta ? <div className="m-app-procura-telefone lg:hidden">{procura}</div> : null}
@@ -573,7 +593,7 @@ export function AppShell({
         {temNav && (
           <aside id={`${idConteudo}-nav`} aria-label={rotuloNavegacao} className="m-app-nav" data-recolhida={recolhida ? "true" : undefined}>
             <NavApp
-              grupos={navegacao}
+              grupos={nav}
               caminhoAtual={caminhoAtual}
               LinkComponent={LinkComponent}
               rotulo={rotuloNavegacao}
@@ -608,7 +628,7 @@ export function AppShell({
               </div>
               <div className="m-gaveta-corpo">
                 <NavApp
-                  grupos={navegacao}
+                  grupos={nav}
                   caminhoAtual={caminhoAtual}
                   LinkComponent={LinkComponent}
                   onNavegar={fecharGaveta}
@@ -638,5 +658,6 @@ export function AppShell({
       )}
       {comAssistente && assistente}
     </div>
+    </ContextoLancamento.Provider>
   );
 }

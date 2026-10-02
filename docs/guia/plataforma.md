@@ -25,6 +25,27 @@
 - Access comes from profiles in `GET /api/v1/acessos/eu` (`apps.<id>` not null = can use the app;
   `apps.<id>.nome` = profile name), never from a login role. No access → `<SemAcesso …>`.
 
+## Lançamento
+
+`GET /api/v1/acessos/eu` → `lancamento` (same JSON public at `GET /api/v1/publico/lancamento`):
+
+```json
+{ "appsDesligadas": ["eventos"],
+  "paginasDesligadas": { "backoffice": ["/associacao/pagamentos"] },
+  "assistente": { "desligado": false, "paginasDesligadas": { "backoffice": ["/associacao/caracterizacao"] } } }
+```
+
+- A missing field = everything on. Page entries are path prefixes relative to the app's basePath,
+  matched on segments (`/a/b` covers `/a/b/c`, not `/a/bc`). The Portal is never switched off.
+- Pure, server-safe helpers (`@umporg/ui/apps` and main entry): `lancamentoDe(eu)` (normalised,
+  tolerant), `appLigada(lanc, app)`, `paginaLigada(lanc, app, caminho)`, `assistenteLigado(lanc, app,
+  caminho)`, `filtrarNavPorLancamento(grupos, lanc, app)`, `appsDisponiveis(eu.apps, eu.lancamento)`
+  (the Validador QR goes with Eventos).
+- Wiring: `AppShell lancamento={eu.lancamento}`; pages with `paginaLigada` + `<EmBreve />`
+  ([shell.md](shell.md#lançamento)).
+- The Cérebro enforces it: a switched-off app's API answers 503 `APP_INDISPONIVEL`; the assistant 503
+  `ASSISTENTE_INDISPONIVEL`, which the chat shows as a calm note (`TEXTO_ASSISTENTE_INDISPONIVEL`).
+
 ## Cérebro calls (`@umporg/ui/cerebro`)
 
 - `pedirAoCerebro(url, { tempoLimiteMs, falharEm5xx, ...fetchInit })` with `TEMPO_LIMITE_CEREBRO_MS`

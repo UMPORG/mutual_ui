@@ -33,6 +33,8 @@ export { AcessibilidadeMenu } from "./acessibilidade";
 export { AsciiFundo, iniciarAsciiFundo, type AsciiFundoProps } from "./ascii-fundo";
 export { SemAcesso, type MotivoSemAcesso } from "./sem-acesso";
 export { ServicoIndisponivel } from "./indisponivel";
+export { EmBreve, TEXTOS_EM_BREVE } from "./em-breve";
+export { useLancamento, useAssistenteLigado, type EstadoLancamento } from "./lancamento-contexto";
 export { cx } from "./cx";
 export {
   DemoPreencher,

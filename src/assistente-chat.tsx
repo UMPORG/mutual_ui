@@ -87,6 +87,7 @@ import {
   carregarDocumento,
   compararPropostas,
   ErroAssistente,
+  TEXTO_ASSISTENTE_INDISPONIVEL,
   escolhaInicial,
   pedirOQueFalta,
   valoresEscolhidos,
@@ -407,7 +408,11 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
           break;
         case "erro":
           atualizarUltima((m) =>
-            m.content.trim() ? { ...m, status: "stopped" } : { ...m, role: "error", content: e.mensagem, status: "error" },
+            m.content.trim()
+              ? { ...m, status: "stopped" }
+              : e.codigo === "ASSISTENTE_INDISPONIVEL"
+                ? { ...m, content: TEXTO_ASSISTENTE_INDISPONIVEL, status: "done" }
+                : { ...m, role: "error", content: e.mensagem, status: "error" },
           );
           break;
       }
@@ -419,7 +424,8 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
         atualizarUltima((m) => ({ ...m, status: m.content.trim() ? "stopped" : "stopped", content: m.content || "Resposta interrompida." }));
       } else {
         const mensagem = e instanceof ErroAssistente ? e.message : "Não foi possível enviar a pergunta. Verifique a ligação e tente novamente.";
-        atualizarUltima((m) => ({ ...m, role: "error", content: mensagem, status: "error" }));
+        const calmo = e instanceof ErroAssistente && e.codigo === "ASSISTENTE_INDISPONIVEL";
+        atualizarUltima((m) => (calmo ? { ...m, content: TEXTO_ASSISTENTE_INDISPONIVEL, status: "done" } : { ...m, role: "error", content: mensagem, status: "error" }));
         if (e instanceof ErroAssistente && e.codigo === "ASSISTENTE_LIMITE_DIARIO") setEstado((s) => (s ? { ...s, limiteAtingido: "pessoa" } : s));
       }
     } finally {
@@ -625,7 +631,7 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
       <div className="m-chat-corpo">
         {erroEstado ? (
           <div className="p-4">
-            <StatusCallout tone="warning">{erroEstado}</StatusCallout>
+            <StatusCallout tone={erroEstado === TEXTO_ASSISTENTE_INDISPONIVEL ? "info" : "warning"}>{erroEstado}</StatusCallout>
           </div>
         ) : vista === "conversas" ? (
           <ThreadList

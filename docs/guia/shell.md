@@ -26,7 +26,8 @@ perfil, organizacao, variasOrganizacoes, onTerminarSessao, aTerminar, extra }` �
 «Mudar de organização» and «Terminar sessão»), `navegacao` (`GrupoNavApp[]`: `{ titulo?, itens: { href,
 rotulo, icone, contador?, externo?, ativo? }[] }`), `procura` (`<ProcuraApp rotulo action|onProcurar/>`),
 `antesDaNavegacao`/`depoisDaNavegacao` (e.g. a unit selector), `barraExtra`, `inicioHref`, `ajudaHref`,
-`declaracaoHref` (accessibility statement), `assistente` (see [assistente.md](assistente.md)).
+`declaracaoHref` (accessibility statement), `assistente` (see [assistente.md](assistente.md)), `lancamento`
+(`eu.lancamento`, see [Lançamento](#lançamento)).
 
 - Renders `<main id="conteudo-principal">` (the scroller, back to the top on every navigation). Wrap
   pages in `.m-pagina` (16px gutters on phones, 24px from 40rem, 32px from 64rem; bottom room for the demo
@@ -59,7 +60,7 @@ Never tinted with the app colour.
 
 ## Launcher and app icons
 
-- `disponiveis = appsDisponiveis(eu.apps)` from `GET /api/v1/acessos/eu`: Portal + every app whose
+- `disponiveis = appsDisponiveis(eu.apps, eu.lancamento)` from `GET /api/v1/acessos/eu`: Portal + every app whose
   `apps.<id>` is not null (Validador QR only with Eventos) — the same set and order as the Portal launcher.
   Show the profile name (`apps.<app>.nome`) and organisation, never a login role.
 - `LancadorApps` (inside `AppShell`): round nine-dot button (tooltip «Aplicações MUTU@L»), grid of 3
@@ -81,10 +82,30 @@ Never tinted with the app colour.
 - `SemAcesso` (`app`, `motivo`, `utilizador`, `organizacao`, `variasOrganizacoes`, `acaoSair`,
   `portalHref`, `acoes`): the one «no access» page. The Cartão uses `app="cartao"` with
   `motivo="sem-associado"` and an absolute `portalHref`.
+- `EmBreve({ app, dentroDoShell?, portalHref? })`: «Disponível em breve» for an app or page the UMP has
+  not opened yet (see [Lançamento](#lançamento)).
 - `ServicoIndisponivel({ app, tentarHref })`: the one «Serviço temporariamente indisponível» page, no
   Portal link ([plataforma.md](plataforma.md)).
 - `EmptyState` (`variant="page"` default, `"inline"` inside cards, tables, charts), `StatusCallout`,
   `Breadcrumbs` (phones: «‹ Parent» only).
+
+## Lançamento
+
+The UMP opens apps, pages and the assistant gradually (launch switches in `eu.lancamento`; details in
+[plataforma.md](plataforma.md#lançamento)). An app wires it once:
+
+```tsx
+<AppShell app="backoffice" caminhoAtual={usePathname()} lancamento={eu.lancamento}
+  disponiveis={appsDisponiveis(eu.apps, eu.lancamento)}
+  assistente={eu.assistenteNaPagina ? <ChatFlutuante app="backoffice" /> : undefined} …>
+```
+
+- With `lancamento` the shell drops switched-off apps from the launcher, switched-off pages from the
+  navigation (`filtrarNavPorLancamento`), and hides «Assistente», the chat, «Preencher com um documento»
+  and `RascunhoTexto` on pages where the assistant is off (`useAssistenteLigado()`).
+- The app gates its pages itself (layout or page): `paginaLigada(eu.lancamento, "backoffice", caminho)`
+  false → `<EmBreve app="backoffice" dentroDoShell />` in place of the page. A switched-off app
+  (`appLigada` false) renders `<EmBreve app="…" />` (full screen) instead of the shell.
 
 ## Migrating a screen into the shell
 

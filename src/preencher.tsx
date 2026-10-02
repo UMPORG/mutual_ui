@@ -18,6 +18,7 @@
 import { useEffect, useId, useMemo, useRef, useState, type ElementType, type ReactNode } from "react";
 import { ArrowRight, CircleCheck, FileText, FileUp, Info } from "lucide-react";
 import { GlifoApp } from "./icone-app";
+import { useAssistenteLigado } from "./lancamento-contexto";
 import { cx } from "./cx";
 import { Button } from "./basicos";
 import { StatusBadge, StatusCallout } from "./feedback";
@@ -194,7 +195,12 @@ export interface PreencherComDocumentoProps {
   className?: string | undefined;
 }
 
-export function PreencherComDocumento({
+/** Not rendered where the UMP switched the assistant off (`AppShell lancamento`). */
+export function PreencherComDocumento(props: PreencherComDocumentoProps) {
+  return useAssistenteLigado() ? <PreencherComDocumentoLigado {...props} /> : null;
+}
+
+function PreencherComDocumentoLigado({
   alvo,
   nomeFormulario,
   valoresAtuais,
@@ -431,21 +437,28 @@ const NOME_RASCUNHO: Record<string, string> = {
  * A text the assistant drafted, editable in place, with «Copiar» and «Usar»
  * (the app decides what «Usar» does: fill a field, open a draft…).
  */
-export function RascunhoTexto({
-  tipo,
-  titulo,
-  texto,
-  onUsar,
-  usarLabel = "Usar",
-  className,
-}: {
+export interface RascunhoTextoProps {
   tipo: string;
   titulo: string;
   texto: string;
   onUsar?: ((texto: string, titulo: string) => void) | undefined;
   usarLabel?: string | undefined;
   className?: string | undefined;
-}) {
+}
+
+/** Not rendered where the UMP switched the assistant off (`AppShell lancamento`). */
+export function RascunhoTexto(props: RascunhoTextoProps) {
+  return useAssistenteLigado() ? <RascunhoTextoLigado {...props} /> : null;
+}
+
+function RascunhoTextoLigado({
+  tipo,
+  titulo,
+  texto,
+  onUsar,
+  usarLabel = "Usar",
+  className,
+}: RascunhoTextoProps) {
   const [valor, setValor] = useState(texto);
   const [tituloAtual, setTitulo] = useState(titulo);
   const id = useId();
@@ -487,6 +500,7 @@ export function RascunhoTexto({
 }
 
 export {
+  TEXTO_ASSISTENTE_INDISPONIVEL,
   aplicarValores,
   compararPropostas,
   escolhaInicial,

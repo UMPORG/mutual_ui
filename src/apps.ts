@@ -132,22 +132,148 @@ export function nomeDaApp(id: MutualAppId): string | undefined {
   return getMutualApp(id)?.nome;
 }
 
+// ─── Lançamento (launch switches) ────────────────────────────────────────────
+
+/**
+ * The launch switches the UMP sets in the Cérebro (`GET /api/v1/acessos/eu` →
+ * `lancamento`, and the public `GET /api/v1/publico/lancamento`). A missing
+ * field means everything is on. Page entries are path PREFIXES relative to
+ * the app's basePath (like `caminhoAtual`). An API call of a switched-off app
+ * answers 503 `APP_INDISPONIVEL`; the assistant 503 `ASSISTENTE_INDISPONIVEL`.
+ */
+export interface Lancamento {
+  /** Apps switched off («eventos»…). The Portal is never switched off. */
+  appsDesligadas?: readonly string[] | undefined;
+  /** Per app, the pages switched off (`{ backoffice: ["/associacao/pagamentos"] }`). */
+  paginasDesligadas?: Readonly<Record<string, readonly string[]>> | undefined;
+  assistente?:
+    | {
+        /** The floating assistant and the assistant actions are off everywhere. */
+        desligado?: boolean | undefined;
+        /** Per app, the pages where the assistant is off. */
+        paginasDesligadas?: Readonly<Record<string, readonly string[]>> | undefined;
+      }
+    | undefined;
+}
+
+/** `lancamentoDe` result: every field present (empty = everything on). */
+export interface LancamentoNormalizado extends Lancamento {
+  appsDesligadas: readonly string[];
+  paginasDesligadas: Readonly<Record<string, readonly string[]>>;
+  assistente: { desligado: boolean; paginasDesligadas: Readonly<Record<string, readonly string[]>> };
+}
+
+function listaDeTextos(v: unknown): string[] {
+  return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string" && x.length > 0) : [];
+}
+
+function mapaDeListas(v: unknown): Record<string, string[]> {
+  const out: Record<string, string[]> = {};
+  if (v && typeof v === "object" && !Array.isArray(v)) {
+    for (const [k, l] of Object.entries(v as Record<string, unknown>)) {
+      const lista = listaDeTextos(l);
+      if (lista.length) out[k] = lista;
+    }
+  }
+  return out;
+}
+
+/**
+ * The `lancamento` of `GET /api/v1/acessos/eu` (or of the public endpoint's
+ * body), normalised. Tolerant: a missing or malformed field = everything on.
+ * Accepts the whole `eu` object or the `lancamento` object itself.
+ */
+export function lancamentoDe(eu: unknown): LancamentoNormalizado {
+  const o = (eu && typeof eu === "object" ? eu : {}) as Record<string, unknown>;
+  const l = (o.lancamento && typeof o.lancamento === "object" ? o.lancamento : "appsDesligadas" in o || "paginasDesligadas" in o || "assistente" in o ? o : {}) as Record<string, unknown>;
+  const a = (l.assistente && typeof l.assistente === "object" ? l.assistente : {}) as Record<string, unknown>;
+  return {
+    appsDesligadas: listaDeTextos(l.appsDesligadas).filter((id) => id !== "portal"),
+    paginasDesligadas: mapaDeListas(l.paginasDesligadas),
+    assistente: { desligado: a.desligado === true, paginasDesligadas: mapaDeListas(a.paginasDesligadas) },
+  };
+}
+
+function limparCaminho(c: string): string {
+  const sem = c.split(/[?#]/)[0] ?? "";
+  const com = sem.startsWith("/") ? sem : `/${sem}`;
+  return com.length > 1 && com.endsWith("/") ? com.replace(/\/+$/, "") || "/" : com;
+}
+
+/** `caminho` is `prefixo` or below it, on path segments (`/a/b` → `/a/b`, `/a/b/c`; not `/a/bc`). */
+export function caminhoSob(caminho: string, prefixo: string): boolean {
+  const c = limparCaminho(caminho);
+  const p = limparCaminho(prefixo);
+  return p === "/" || c === p || c.startsWith(`${p}/`);
+}
+
+/** The app is on (not in `appsDesligadas`). The Portal is always on. */
+export function appLigada(lanc: Lancamento | null | undefined, app: MutualAppId | string): boolean {
+  if (app === "portal") return true;
+  return !(lanc?.appsDesligadas ?? []).includes(app);
+}
+
+/**
+ * The app is on AND `caminho` (relative to the app's basePath, e.g.
+ * `usePathname()`) is not under one of its switched-off pages.
+ */
+export function paginaLigada(lanc: Lancamento | null | undefined, app: MutualAppId | string, caminho: string): boolean {
+  if (!appLigada(lanc, app)) return false;
+  const lista = lanc?.paginasDesligadas?.[app] ?? [];
+  return !lista.some((p) => caminhoSob(caminho, p));
+}
+
+/**
+ * The floating assistant and the assistant actions (fill from a document,
+ * drafts) may show on this page of this app.
+ */
+export function assistenteLigado(lanc: Lancamento | null | undefined, app: MutualAppId | string, caminho: string): boolean {
+  const a = lanc?.assistente;
+  if (a?.desligado === true) return false;
+  const lista = a?.paginasDesligadas?.[app] ?? [];
+  return !lista.some((p) => caminhoSob(caminho, p));
+}
+
+/**
+ * The navigation without the entries of switched-off pages (`paginaLigada`);
+ * `externo` entries (other apps) stay. Groups left empty are dropped. Works
+ * with `GrupoNavApp[]` of `AppShell` (which already applies it when it gets
+ * `lancamento`).
+ */
+export function filtrarNavPorLancamento<G extends { itens: readonly { href: string; externo?: boolean | undefined }[] }>(
+  grupos: readonly G[],
+  lanc: Lancamento | null | undefined,
+  app: MutualAppId | string,
+): G[] {
+  if (!lanc) return [...grupos];
+  return grupos
+    .map((g) => ({ ...g, itens: g.itens.filter((i) => i.externo === true || paginaLigada(lanc, app, i.href)) }))
+    .filter((g) => g.itens.length > 0);
+}
+
 /**
  * The apps a person can open in the active organisation, in the ecosystem's
  * order: the keys of `apps` from `GET /api/v1/acessos/eu` whose value is not
  * null, plus the Portal (always). The `disponiveis` of `AppShell` /
  * `LancadorApps` — every app uses this one function, so a new app appears in
  * every switcher by bumping `@umporg/ui`. The Validador QR is listed with
- * Eventos, as in the Portal launcher.
+ * Eventos, as in the Portal launcher. With `lancamento` (`eu.lancamento`),
+ * switched-off apps are left out (the Portal never; the Validador QR goes
+ * with Eventos).
  */
-export function appsDisponiveis(apps: Readonly<Record<string, unknown>> | null | undefined): MutualAppId[] {
+export function appsDisponiveis(
+  apps: Readonly<Record<string, unknown>> | null | undefined,
+  lancamento?: Lancamento | null | undefined,
+): MutualAppId[] {
   const tem = (id: string) => apps?.[id] !== null && apps?.[id] !== undefined;
   const lista: MutualAppId[] = ["portal"];
   for (const a of MUTUAL_APPS) {
     // The Validador QR (public, no profile) comes with Eventos — the Portal's rule:
     // the door of an event is where it is used.
     // The Carta Social Mutualista is public: in every launcher.
-    if (a.id === "carta" || (a.id === "qr" ? tem("eventos") : tem(a.id))) lista.push(a.id);
+    if (!(a.id === "carta" || (a.id === "qr" ? tem("eventos") : tem(a.id)))) continue;
+    if (!appLigada(lancamento, a.id) || (a.id === "qr" && !appLigada(lancamento, "eventos"))) continue;
+    lista.push(a.id);
   }
   return lista;
 }

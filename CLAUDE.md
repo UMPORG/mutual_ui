@@ -47,7 +47,8 @@ topic you need. **Public repo** `UMPORG/mutual_ui`: never commit secrets, creden
 - Navigation holds destinations only: ≤ 8 in 2–3 groups, exactly one current entry; sub-pages are
   `Separadores` tabs, never a second menu level; other MUTU@L apps are `externo`.
 - The top-bar search (`ProcuraApp`) is a **neutral field with a visible border**, never tinted.
-- `disponiveis = appsDisponiveis(eu.apps)` (same set as the Portal launcher; Cartão never in it). Show
+- `disponiveis = appsDisponiveis(eu.apps, eu.lancamento)` (same set as the Portal launcher; Cartão never in
+  it) and `AppShell lancamento={eu.lancamento}`; switched-off pages render `<EmBreve dentroDoShell />`. Show
   the profile name + organisation, never a login role.
 
 ## Accessibility floor and copy
