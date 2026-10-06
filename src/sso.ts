@@ -80,10 +80,16 @@ export function safeReturnUrl(next: string | null | undefined): string | null {
   // become "//evil.pt" in the browser. Refuse any control char or whitespace.
   if (/[\u0000-\u001f\u007f\s]/.test(next)) return null;
   if (!next.startsWith("/")) return null;
+  // Browsers read «\» as «/» in a path: «/\evil.pt» would leave the site.
+  if (next.includes("\\")) return null;
   const base = "https://same-site.invalid";
   try {
     const r = new URL(next, base);
-    return r.origin === base ? r.pathname + r.search + r.hash : null;
+    if (r.origin !== base) return null;
+    const destino = r.pathname + r.search + r.hash;
+    // The NORMALISED path must still be one path on this site: «/..//evil.pt» normalises to
+    // «//evil.pt», which a browser reads as another host (protocol-relative) — an open redirect.
+    return destino.startsWith("//") ? null : destino;
   } catch {
     return null;
   }

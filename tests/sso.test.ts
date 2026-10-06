@@ -24,6 +24,10 @@ test("safeReturnUrl accepts same-origin paths only", () => {
     "/" + TAB + "/evil.pt",
     "/" + LF + "/evil.pt",
     " /evil",
+    // normalise to «//evil.pt» (protocol-relative: another host) — open redirect
+    "/..//evil.pt",
+    "/a/../..//evil.pt/x",
+    "/.//evil.pt",
     "/" + "x".repeat(3000),
     "",
     null,
