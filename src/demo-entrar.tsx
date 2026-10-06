@@ -105,7 +105,7 @@ export function SeccaoEntrarComo({
       {personas.length > 10 && (
         <div className="relative">
           <label htmlFor={idFiltro} className="sr-only">
-            Procurar pessoa, função ou organização
+            Procurar pessoa, função ou entidade
           </label>
           <Search aria-hidden className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -113,7 +113,7 @@ export function SeccaoEntrarComo({
             type="search"
             value={filtro}
             onChange={(e) => setFiltro(e.target.value)}
-            placeholder="Procurar pessoa, função ou organização"
+            placeholder="Procurar pessoa, função ou entidade"
             className="m-field h-11 w-full rounded-lg pr-3 pl-9 text-base text-foreground outline-none placeholder:text-muted-foreground"
           />
         </div>

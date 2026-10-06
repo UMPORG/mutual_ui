@@ -19,10 +19,10 @@ export type MotivoSemAcesso =
   | "sem-associado";
 
 const TEXTO: Record<MotivoSemAcesso, (app: string) => string> = {
-  "sem-organizacao": () => "Escolha no Portal a organização com que quer trabalhar.",
-  "sem-perfil": (app) => `O seu perfil nesta organização não inclui a aplicação ${app}.`,
+  "sem-organizacao": () => "Escolha no Portal a entidade com que quer trabalhar.",
+  "sem-perfil": (app) => `O seu perfil nesta entidade não inclui a aplicação ${app}.`,
   "sem-unidade": () => "A sua conta ainda não está associada a nenhuma unidade.",
-  "tipo-organizacao": (app) => `A aplicação ${app} não está disponível para este tipo de organização.`,
+  "tipo-organizacao": (app) => `A aplicação ${app} não está disponível para este tipo de entidade.`,
   "sem-associado": () =>
     "O Cartão Digital é para os associados das associações mutualistas. Esta conta não tem ficha de associado.",
 };
@@ -82,14 +82,14 @@ export function SemAcesso({
               )}
               {organizacao && (
                 <div>
-                  <dt className="text-sm text-muted-foreground">Organização</dt>
+                  <dt className="text-sm text-muted-foreground">Entidade</dt>
                   <dd>{organizacao}</dd>
                 </div>
               )}
             </dl>
           )}
           {motivo !== "sem-organizacao" && motivo !== "sem-associado" && (
-            <p className="text-[0.9375rem]">Para ter acesso, contacte o super administrador da sua organização.</p>
+            <p className="text-[0.9375rem]">Para ter acesso, contacte o super administrador da sua entidade.</p>
           )}
           {motivo === "sem-associado" && (
             <p className="text-[0.9375rem]">Para trabalhar na MUTU@L, use o Portal. Se também é associado, indique os seus dados de associado.</p>
@@ -103,7 +103,7 @@ export function SemAcesso({
             {(variasOrganizacoes || motivo === "sem-organizacao") && (
               <a href={`${portal}/organizacao`} className="m-btn m-btn-outline inline-flex min-h-12 items-center gap-2 rounded-lg px-5">
                 <ArrowLeftRight aria-hidden className="size-[1.15em]" />
-                {motivo === "sem-organizacao" ? "Escolher organização" : "Mudar de organização"}
+                {motivo === "sem-organizacao" ? "Escolher entidade" : "Mudar de entidade"}
               </a>
             )}
             {acaoSair}

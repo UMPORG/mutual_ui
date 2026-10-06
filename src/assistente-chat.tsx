@@ -532,9 +532,9 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
   const bloqueado = estado?.limiteAtingido
     ? estado.limiteAtingido === "pessoa"
       ? "Chegou ao limite de perguntas de hoje. Pode voltar a perguntar amanhã."
-      : "A sua organização chegou ao limite de perguntas de hoje."
+      : "A sua entidade chegou ao limite de perguntas de hoje."
     : estado && estado.configuracao.estado !== "pronto"
-      ? (estado.configuracao.mensagem ?? "O assistente ainda não está configurado nesta organização.")
+      ? (estado.configuracao.mensagem ?? "O assistente ainda não está configurado nesta entidade.")
       : null;
 
   return (

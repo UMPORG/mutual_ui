@@ -262,7 +262,7 @@ function ContaAcoes({ app, conta }: { app: AppNoEndereco; conta: ContaShell }) {
         // Same origin (ADR 0004): the organisation page is the Portal's.
         <a href={organizacaoHref} data-shell="organizacao" className="m-menu-item">
           <ArrowLeftRight aria-hidden />
-          <span>Mudar de organização</span>
+          <span>Mudar de entidade</span>
         </a>
       )}
       {conta.extra}

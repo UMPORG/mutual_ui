@@ -171,7 +171,7 @@ export function mensagemDoErro(estado: number, corpo: unknown): string {
   if (estado === 413) return "O ficheiro é demasiado grande.";
   if (estado === 429 && c.code === "ERR_RATE_LIMIT") return "Chegou ao limite de documentos de hoje. Pode voltar a tentar amanhã.";
   if (texto) return texto;
-  if (estado === 403) return "Não tem acesso a esta função do assistente. Peça-o ao super administrador da sua organização.";
+  if (estado === 403) return "Não tem acesso a esta função do assistente. Peça-o ao super administrador da sua entidade.";
   if (estado >= 500) return "O assistente não está disponível de momento. Tente dentro de alguns minutos.";
   return "Não foi possível concluir o pedido. Tente novamente.";
 }
