@@ -85,7 +85,7 @@ function Paginas() {
 const TITULOS: Record<string, [string, string]> = {
   controlos: ["Controlos", "Campos, seleção, datas, menus, diálogos e avisos — v0.7."],
   efeitos: ["Efeitos", "Fundos decorativos com lugar próprio — v0.7."],
-  conversa: ["Assistente", "Componentes de conversa do assistente MUTU@L — v0.7."],
+  conversa: ["Assistente", "Componentes de conversa do assistente — v0.7."],
   shells: ["Aplicações", "A moldura de cada aplicação (barra de topo, navegação e camada do conteúdo) — v0.13."],
   rolagem: ["Rolagem", "Barras de rolagem e sombras nas pontas — v0.8."],
   identificadores: ["Identificadores", "Telefones, NIF, código postal e IBAN: mostrar, escrever e validar — v0.8.9."],
@@ -512,7 +512,7 @@ function App() {
           </div>
         </Section>
 
-        <Section id="s-graf" title="Gráficos" description="Paleta MUTU@L validada para daltonismo, modo escuro e alto contraste.">
+        <Section id="s-graf" title="Gráficos" description="Paleta da plataforma validada para daltonismo, modo escuro e alto contraste.">
           <div className="grid gap-4 lg:grid-cols-2">
             <GraficoBarras
               title="Quotas recebidas por mês"

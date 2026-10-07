@@ -99,6 +99,6 @@ export const CABECALHOS_INDISPONIVEL: Readonly<Record<string, string>> = {
 export const TEXTOS_INDISPONIVEL = {
   titulo: "Serviço temporariamente indisponível",
   texto:
-    "Não foi possível falar com o serviço central da MUTU@L. Tente novamente dentro de alguns minutos. Se o problema continuar, contacte o suporte.",
+    "Não foi possível falar com o serviço central da plataforma. Tente novamente dentro de alguns minutos. Se o problema continuar, contacte o suporte.",
   tentar: "Tentar novamente",
 } as const;

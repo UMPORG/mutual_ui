@@ -61,7 +61,7 @@ export function ProgressoLeitura({ progresso, fase, nome }: { progresso: number;
         <div className="h-full rounded-full bg-brand transition-[width] duration-500 ease-out motion-reduce:transition-none" style={{ width: `${p}%` }} />
       </div>
       <p className="text-sm text-muted-foreground">
-        O documento é lido no servidor da MUTU@L. Os dados pessoais não são enviados ao modelo de IA.
+        O documento é lido no servidor da plataforma. Os dados pessoais não são enviados ao modelo de IA.
       </p>
     </div>
   );

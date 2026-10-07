@@ -675,7 +675,7 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
                     <p className="text-[0.9375rem] text-muted-foreground">
                       {nomeContexto
                         ? `Pergunte sobre «${nomeContexto}». O assistente vê o que está nesta página.`
-                        : "Pergunte como fazer algo nas aplicações MUTU@L."}
+                        : "Pergunte como fazer algo nas aplicações."}
                     </p>
                   </div>
                 )

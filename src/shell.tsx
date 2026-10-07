@@ -16,7 +16,7 @@ import { ArrowLeftRight, ExternalLink, HelpCircle, LogOut, Menu, Search, X } fro
 import { AcessibilidadeMenu } from "./acessibilidade";
 import { BotaoAssistente } from "./assistente";
 import { LancadorApps, posicionarPopover } from "./app-switcher";
-import { appLigada, assistenteLigado, filtrarNavPorLancamento, nomeDaApp, type AppNoEndereco, type Lancamento, type MutualAppId } from "./apps";
+import { appLigada, assistenteLigado, filtrarNavPorLancamento, nomeDaApp, nomeDaPlataforma, type AppNoEndereco, type Lancamento, type MutualAppId } from "./apps";
 import { ContextoLancamento } from "./lancamento-contexto";
 import { IconeApp } from "./icone-app";
 import { CAMINHOS } from "./sso";
@@ -41,7 +41,7 @@ export { hrefAtivo, hrefAtualDoMenu, iniciais } from "./shell-nav";
  *     <div className="m-pagina">…</div>
  *   </AppShell>
  *
- * Top bar: ☰, the app's tile + «MUTU@L» + its name (link to the app's home),
+ * Top bar: ☰, the app's tile + the platform name (`nomeDaPlataforma`) + its name (link to the app's home),
  * the search (centre), Ajuda and Acessibilidade WITH text, the app launcher
  * (waffle) and the account (avatar → name, profile, organisation, «Mudar de
  * organização», «Terminar sessão»). Left: ONLY navigation, ≤ 8
@@ -509,8 +509,8 @@ export function AppShell({
     <Link href={inicioHref} onClick={onClick} className="m-app-identidade">
       <IconeApp app={app} tamanho={38} />
       <span className="m-app-nomes">
-        {/* The space keeps «MUTU@L Backoffice» as the link's name. */}
-        <small>MUTU@L</small> <strong>{nome}</strong>
+        {/* The space keeps «UMP Backoffice» (configured name + app) as the link's name. */}
+        <small>{nomeDaPlataforma(lanc)}</small> <strong>{nome}</strong>
       </span>
     </Link>
   );

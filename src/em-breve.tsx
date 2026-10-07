@@ -1,5 +1,5 @@
 import { LayoutGrid } from "lucide-react";
-import { type MutualAppId } from "./apps";
+import { type Lancamento, type MutualAppId } from "./apps";
 import { CAMINHOS } from "./sso";
 import { MutualWordmark } from "./brand";
 import { AcessibilidadeMenu } from "./acessibilidade";
@@ -9,7 +9,7 @@ import { cx } from "./cx";
 export const TEXTOS_EM_BREVE = {
   titulo: "Disponível em breve",
   texto: "Esta área ainda não está disponível. A UMP vai abri-la em breve.",
-  portal: "Ir para o Portal MUTU@L",
+  portal: "Ir para o Portal",
 } as const;
 
 /**
@@ -25,9 +25,12 @@ export function EmBreve({
   app,
   dentroDoShell = false,
   portalHref = CAMINHOS.portal,
+  lancamento,
   className,
 }: {
   app: MutualAppId;
+  /** `eu.lancamento` (or the public one): the configured platform name in the header. */
+  lancamento?: Lancamento | null | undefined;
   /** Inside `AppShell` (a switched-off page): no own header, no full-screen canvas. */
   dentroDoShell?: boolean | undefined;
   /** The Portal address — absolute for an app on another host. */
@@ -56,7 +59,7 @@ export function EmBreve({
   return (
     <main data-app={app} className={cx("m-canvas flex min-h-dvh flex-col", className)}>
       <header className="flex items-center justify-between gap-3 px-6 py-4">
-        <MutualWordmark app={app} />
+        <MutualWordmark app={app} lancamento={lancamento} />
         <AcessibilidadeMenu compacto="md" />
       </header>
       <div className="flex flex-1 items-start justify-center px-4 pt-6 pb-16 sm:items-center">{cartao}</div>

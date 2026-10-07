@@ -74,7 +74,7 @@ export const MUTUAL_APPS: readonly MutualApp[] = [
   {
     id: "dns",
     nome: "Servidores e DNS",
-    descricao: "Endereços da MUTU@L e os servidores onde vivem, sem complicações.",
+    descricao: "Endereços da plataforma e os servidores onde vivem, sem complicações.",
     publico: "Equipa de informática da UMP",
     palavrasChave: ["dns", "servidores", "domínios", "subdomínios", "cloudflare", "vps", "coolify", "endereços"],
     publica: false,
@@ -154,6 +154,9 @@ export interface Lancamento {
         paginasDesligadas?: Readonly<Record<string, readonly string[]>> | undefined;
       }
     | undefined;
+  /** «Nome da plataforma» set by the system super admin (trimmed, ≤ 60 code
+   *  points). Absent/null = not set: show `nomeDaPlataforma` («UMP»). */
+  nomePlataforma?: string | null | undefined;
 }
 
 /** `lancamentoDe` result: every field present (empty = everything on). */
@@ -161,6 +164,33 @@ export interface LancamentoNormalizado extends Lancamento {
   appsDesligadas: readonly string[];
   paginasDesligadas: Readonly<Record<string, readonly string[]>>;
   assistente: { desligado: boolean; paginasDesligadas: Readonly<Record<string, readonly string[]>> };
+  nomePlataforma: string | null;
+}
+
+/** The long name, for long spots (email sender, footers) when no name is set. */
+export const NOME_UMP = "União das Mutualidades Portuguesas";
+
+const MAX_NOME_PLATAFORMA = 60;
+
+/** C0/C1 control characters (U+0000–U+001F, U+007F–U+009F). */
+function eControlo(c: string): boolean {
+  const n = c.codePointAt(0) ?? 0;
+  return n < 0x20 || (n >= 0x7f && n <= 0x9f);
+}
+
+function nomePlataformaDe(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const limpo = Array.from(v).filter((c) => !eControlo(c)).join("").trim();
+  if (!limpo) return null;
+  return Array.from(limpo).slice(0, MAX_NOME_PLATAFORMA).join("").trim();
+}
+
+/**
+ * The platform name for short brand spots (shell wordmark, tab titles…): the
+ * «Nome da plataforma» of the launch config, or «UMP» when unset.
+ */
+export function nomeDaPlataforma(l?: Lancamento | null): string {
+  return nomePlataformaDe(l?.nomePlataforma) ?? "UMP";
 }
 
 function listaDeTextos(v: unknown): string[] {
@@ -185,12 +215,13 @@ function mapaDeListas(v: unknown): Record<string, string[]> {
  */
 export function lancamentoDe(eu: unknown): LancamentoNormalizado {
   const o = (eu && typeof eu === "object" ? eu : {}) as Record<string, unknown>;
-  const l = (o.lancamento && typeof o.lancamento === "object" ? o.lancamento : "appsDesligadas" in o || "paginasDesligadas" in o || "assistente" in o ? o : {}) as Record<string, unknown>;
+  const l = (o.lancamento && typeof o.lancamento === "object" ? o.lancamento : "appsDesligadas" in o || "paginasDesligadas" in o || "assistente" in o || "nomePlataforma" in o ? o : {}) as Record<string, unknown>;
   const a = (l.assistente && typeof l.assistente === "object" ? l.assistente : {}) as Record<string, unknown>;
   return {
     appsDesligadas: listaDeTextos(l.appsDesligadas).filter((id) => id !== "portal"),
     paginasDesligadas: mapaDeListas(l.paginasDesligadas),
     assistente: { desligado: a.desligado === true, paginasDesligadas: mapaDeListas(a.paginasDesligadas) },
+    nomePlataforma: nomePlataformaDe(l.nomePlataforma),
   };
 }
 

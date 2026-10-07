@@ -26,7 +26,7 @@ export function posicionarPopover(pop: HTMLElement, botao: HTMLElement | null, a
 
 /**
  * The app launcher of the top bar (Google Workspace style): a round
- * nine-dot button (tooltip «Aplicações MUTU@L») opening a rounded panel with
+ * nine-dot button (tooltip «Aplicações») opening a rounded panel with
  * a 3-column grid of app icon + name — only the apps the person can use in
  * the active organisation (`appsDisponiveis(eu.apps)`, the Portal first),
  * the current one marked (tick + outline + «está aqui» for screen readers).
@@ -41,7 +41,7 @@ export function posicionarPopover(pop: HTMLElement, botao: HTMLElement | null, a
 export function LancadorApps({
   atual,
   disponiveis,
-  rotulo = "Aplicações MUTU@L",
+  rotulo = "Aplicações",
   className,
 }: {
   atual: MutualAppId;

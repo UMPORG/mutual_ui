@@ -1,4 +1,4 @@
-import { nomeDaApp, type MutualAppId } from "./apps";
+import { nomeDaApp, nomeDaPlataforma, type Lancamento, type MutualAppId } from "./apps";
 import { MUTUAL_FLAG_DATA_URI, MUTUAL_FLAG_RATIO } from "./logo-data";
 import { cx } from "./cx";
 
@@ -19,7 +19,8 @@ export function MutualFlag({ height = 24, className, title }: { height?: number 
 }
 
 /**
- * Brand lock-up: flag + "MUTU@L" + the app name. The app name is what tells
+ * Brand lock-up: flag + the platform name (`nomeDaPlataforma`, «UMP» when
+ * unset) + the app name. The app name is what tells
  * the user where they are, so it is always shown in full.
  *
  * tone="ink" on the dark ink (the Cartão's bars), "default" on light surfaces.
@@ -28,9 +29,12 @@ export function MutualWordmark({
   app,
   tone = "default",
   size = "md",
+  lancamento,
   className,
 }: {
   app?: MutualAppId | undefined;
+  /** `eu.lancamento` (or the public one): carries the configured platform name. */
+  lancamento?: Lancamento | null | undefined;
   tone?: "default" | "ink" | undefined;
   size?: "sm" | "md" | "lg" | undefined;
   className?: string | undefined;
@@ -49,7 +53,7 @@ export function MutualWordmark({
             tone === "ink" ? "text-sidebar-foreground" : "text-foreground",
           )}
         >
-          MUTU@L
+          {nomeDaPlataforma(lancamento)}
         </span>
         {nome && (
           <span

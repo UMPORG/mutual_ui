@@ -178,7 +178,7 @@ export function AcessibilidadeMenu({
         <div className="flex flex-col gap-7 px-5 py-5">
           <p className="text-[0.9375rem] text-muted-foreground">
             Ajuste a apresentação ao que lhe for mais confortável. As escolhas ficam guardadas neste
-            navegador e aplicam-se em todas as aplicações MUTU@L.
+            navegador e aplicam-se em todas as aplicações.
           </p>
 
           <Grupo titulo="Tema">

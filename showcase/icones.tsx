@@ -1,5 +1,5 @@
 import { House, Plus, RotateCw, X } from "lucide-react";
-import { AppShell, GlifoApp, IconeApp, LancadorApps, ProcuraApp, nomeDaApp, type MutualAppId } from "../src/index.ts";
+import { AppShell, GlifoApp, IconeApp, LancadorApps, ProcuraApp, nomeDaApp, nomeDaPlataforma, type MutualAppId } from "../src/index.ts";
 
 /**
  * The app icon family and the grid launcher. `?pagina=icones` shows
@@ -60,7 +60,7 @@ function Separadores({ escuro }: { escuro: boolean }) {
             style={{ background: i === 1 ? aba : "transparent", borderRadius: "10px 10px 0 0", maxWidth: 190 }}
           >
             <IconeApp app={a} tamanho={16} />
-            <span className="truncate">{`${nomeDaApp(a)} — MUTU@L`}</span>
+            <span className="truncate">{`${nomeDaApp(a)} — ${nomeDaPlataforma()}`}</span>
             <X aria-hidden size={14} className="ml-auto shrink-0 opacity-60" />
           </div>
         ))}
@@ -99,7 +99,7 @@ export function PaginaIcones() {
         descricao="Inspirados no método do Google Workspace e do Proton — nunca nos seus desenhos: todos os glifos são originais."
       >
         <ul className="m-surface list-disc space-y-1.5 py-4 pr-5 pl-9 text-[0.9375rem]">
-          <li>Uma base comum a toda a família: a «folha» MUTU@L (quadrado com cantos alternados, 7 e 2,5 de 24), a assinatura que diz «isto é MUTU@L» antes do glifo.</li>
+          <li>Uma base comum a toda a família: a «folha» (quadrado com cantos alternados, 7 e 2,5 de 24), a assinatura comum a todas as aplicações antes do glifo.</li>
           <li>Um glifo próprio por app, com silhueta diferente (arco, frontão, calendário, gráfico circular, cruz, moldura, servidores, balão, anéis, pulso, cartão) — distingue-se sem cor.</li>
           <li>Grelha de 24, área viva 4,5–19,5 (62 %), traço 2, pontas redondas; formas ≥ 2,5 e intervalos ≥ 1,5 — legível a 16 px.</li>
           <li>A base na cor da app (a mesma nos temas claro e escuro), glifo branco (≥ 4,8:1).</li>
@@ -148,7 +148,7 @@ export function PaginaIcones() {
               <a href="#" className="m-app-identidade">
                 <IconeApp app="eventos" tamanho={38} />
                 <span className="m-app-nomes">
-                  <small>MUTU@L</small> <strong>Eventos</strong>
+                  <small>{nomeDaPlataforma()}</small> <strong>Eventos</strong>
                 </span>
               </a>
               <span className="m-app-espaco" />
@@ -193,7 +193,7 @@ export function PaginaIconesShell() {
     >
       <div className="m-pagina">
         <h1 className="text-pagina">Início</h1>
-        <p className="mt-2 text-muted-foreground">Abra «Aplicações MUTU@L» na barra de topo: a grelha das aplicações a que esta conta tem acesso.</p>
+        <p className="mt-2 text-muted-foreground">Abra «Aplicações» na barra de topo: a grelha das aplicações a que esta conta tem acesso.</p>
       </div>
     </AppShell>
   );

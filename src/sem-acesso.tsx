@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowLeftRight, LayoutGrid, ShieldAlert } from "lucide-react";
-import { nomeDaApp, type MutualAppId } from "./apps";
+import { nomeDaApp, type Lancamento, type MutualAppId } from "./apps";
 import { CAMINHOS } from "./sso";
 import { MutualWordmark } from "./brand";
 import { AcessibilidadeMenu } from "./acessibilidade";
@@ -40,9 +40,12 @@ export function SemAcesso({
   acaoSair,
   acoes,
   portalHref = CAMINHOS.portal,
+  lancamento,
   className,
 }: {
   app: Exclude<MutualAppId, "portal">;
+  /** `eu.lancamento` (or the public one): the configured platform name in the header. */
+  lancamento?: Lancamento | null | undefined;
   motivo: MotivoSemAcesso;
   utilizador?: { nome: string; email: string } | null | undefined;
   organizacao?: string | null | undefined;
@@ -50,7 +53,7 @@ export function SemAcesso({
   variasOrganizacoes?: boolean | undefined;
   /** The app's own sign-out button (it needs the app's auth client). */
   acaoSair?: ReactNode | undefined;
-  /** Extra actions before "Ir para o Portal MUTU@L" (e.g. the Cartão's "Sou associado"). */
+  /** Extra actions before "Ir para o Portal" (e.g. the Cartão's "Sou associado"). */
   acoes?: ReactNode | undefined;
   /** The Portal address — absolute for an app on another host (the Cartão). */
   portalHref?: string | undefined;
@@ -61,7 +64,7 @@ export function SemAcesso({
   return (
     <main data-app={app} className={cx("m-canvas flex min-h-dvh flex-col", className)}>
       <header className="flex items-center justify-between gap-3 px-6 py-4">
-        <MutualWordmark app={app} />
+        <MutualWordmark app={app} lancamento={lancamento} />
         <AcessibilidadeMenu compacto="md" />
       </header>
       <div className="flex flex-1 items-start justify-center px-4 pt-6 pb-16 sm:items-center">
@@ -92,13 +95,13 @@ export function SemAcesso({
             <p className="text-[0.9375rem]">Para ter acesso, contacte o super administrador da sua entidade.</p>
           )}
           {motivo === "sem-associado" && (
-            <p className="text-[0.9375rem]">Para trabalhar na MUTU@L, use o Portal. Se também é associado, indique os seus dados de associado.</p>
+            <p className="text-[0.9375rem]">Para trabalhar na plataforma, use o Portal. Se também é associado, indique os seus dados de associado.</p>
           )}
           <div className="flex flex-wrap gap-3">
             {acoes}
             <a href={portal || "/"} className="m-btn m-btn-primary inline-flex min-h-12 items-center gap-2 rounded-lg px-5">
               <LayoutGrid aria-hidden className="size-[1.15em]" />
-              Ir para o Portal MUTU@L
+              Ir para o Portal
             </a>
             {(variasOrganizacoes || motivo === "sem-organizacao") && (
               <a href={`${portal}/organizacao`} className="m-btn m-btn-outline inline-flex min-h-12 items-center gap-2 rounded-lg px-5">
