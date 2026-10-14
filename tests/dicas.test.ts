@@ -3,8 +3,6 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dicaDispensada, dispensarDica, reporDica, subscreverDicas } from "../src/dicas-estado.ts";
 
-// ─── Memory ─────────────────────────────────────────────────────────────
-
 function armazenamento(): Storage {
   const m = new Map<string, string>();
   return {
@@ -47,8 +45,6 @@ test("blocked storage never throws; the choice lasts for the session", () => {
   assert.doesNotThrow(() => reporDica("teste.dica.c"));
   assert.equal(dicaDispensada("teste.dica.c"), false);
 });
-
-// ─── Contrast (light, dark, high contrast) ──────────────────────────────
 
 const tokens = readFileSync(new URL("../css/tokens.css", import.meta.url), "utf8");
 const preferencias = readFileSync(new URL("../css/preferencias.css", import.meta.url), "utf8");

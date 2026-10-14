@@ -14,25 +14,11 @@ import { cx } from "./cx";
 import { formatarNumero } from "./formatar";
 
 /**
- * Form fields: one wrapper for label, hint, error, required/optional
- * and a character count, plus the three native controls with the MUTU@L
- * look. Works with react-hook-form (`{...register("nome")}`), with zod
- * messages, with server actions and with plain `<form>`s — the wrapper only
- * wires ids and ARIA; it never owns the value.
- *
- * Server-safe (useId only).
- *
- * Fields side by side: put them in a grid with the class
- * `m-campos-alinhados` (+ `m-campos-2|3|4`, the fields per line from 40rem;
- * one per line below). Each field then takes four rows of the grid (label,
- * hint, control, message), so a label or a hint that wraps, or a character
- * count under one field, never pushes the control of the field next to it.
- * A field wrapped in its own element (an anchor `<div id>`) still aligns; a
- * button that belongs to the line (e.g. «Retirar») goes in an element with
- * `m-campos-acao` and sits on the controls' row. See `css/controlos.css`.
+ * One wrapper for label, hint, error, required/optional and a character count, plus the native controls. It only wires ids and ARIA, never owns the value. Server-safe (useId only).
+ * Side by side: a grid with `m-campos-alinhados` (+ `m-campos-2|3|4`, per line from 40rem); each field takes four rows (label, hint, control, message)
+ * so wrapping text never pushes a neighbour's control. A button of the line (e.g. «Retirar») goes in an element with `m-campos-acao`. See `css/controlos.css`.
  */
 
-/** Props the wrapper hands to its control. */
 export interface FieldControlProps {
   id: string;
   "aria-describedby"?: string | undefined;
@@ -42,9 +28,7 @@ export interface FieldControlProps {
 
 export interface FormFieldProps {
   label: ReactNode;
-  /** A short explanation, only when the meaning is not obvious. */
   hint?: ReactNode | undefined;
-  /** The validation message (e.g. `errors.nome?.message`). Shown with an icon. */
   error?: ReactNode | undefined;
   /** Marks the field as required (a "*" and "obrigatório" for screen readers). */
   required?: boolean | undefined;
@@ -52,15 +36,9 @@ export interface FormFieldProps {
   optional?: boolean | undefined;
   /** Character count: "120 de 500". Pass the current length and the limit. */
   count?: { value: number; max: number } | undefined;
-  /** Id for the control (default: generated). */
   id?: string | undefined;
-  /** Visually hide the label (it stays for screen readers). */
   hideLabel?: boolean | undefined;
   className?: string | undefined;
-  /**
-   * The control: an element (it receives id and ARIA props) or a function
-   * `(props) => <input {...props} {...register("x")} />`.
-   */
   children: ReactElement | ((props: FieldControlProps) => ReactNode);
 }
 
@@ -141,21 +119,12 @@ export function FormField({
   );
 }
 
-/**
- * The "*" / "(opcional)" mark after a label or legend. The label is a flex
- * row (the gap does the visual spacing), but the accessible name is built from
- * the text, so each mark carries its own leading space — otherwise the name
- * would be "Nome(opcional)". The space lives inside a span (a bare whitespace
- * text node between flex items is dropped from layout, and some browsers drop
- * it from the name too).
- */
+/** The "*" / "(opcional)" mark carries its own leading space inside a span: the label is a flex row, and a bare whitespace node between flex items is dropped, so the name would read "Nome(opcional)". */
 function Marca({ required, optional }: { required?: boolean | undefined; optional?: boolean | undefined }) {
   if (required)
     return (
       <>
-        {/* The "*" is generated content so it stays out of the label's text:
-            getByLabel("Nome (obrigatório)") and screen readers both get
-            "Nome (obrigatório)". */}
+        {/* Generated content, so the "*" stays out of the label text: getByLabel("Nome (obrigatório)") and screen readers both get that name. */}
         <span aria-hidden className="text-destructive after:content-['*']" />
         <span className="sr-only">{" (obrigatório)"}</span>
       </>
@@ -169,10 +138,6 @@ function Marca({ required, optional }: { required?: boolean | undefined; optiona
   return null;
 }
 
-/**
- * A group of related controls (radio group, checkboxes, a date range) with a
- * legend, hint and error — the grouping version of `FormField`.
- */
 export function Fieldset({
   legend,
   hint,
@@ -219,11 +184,8 @@ export function Fieldset({
   );
 }
 
-// ─── Native controls with the MUTU@L look ─────────────────────────────────
-
 const CAMPO = "m-field w-full min-w-0 rounded-lg text-base text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-60";
 
-/** Text input (`m-field`, 44px). Pass-through: works with `register()`. */
 export function Input({
   className,
   ref,
@@ -248,11 +210,7 @@ export function Textarea({
   );
 }
 
-/**
- * The native `<select>` with the MUTU@L look. Prefer it over `Select` for
- * long plain lists on phones (the OS picker is the best there), inside GET
- * filter forms of server pages, and wherever no JavaScript is wanted.
- */
+/** Native `<select>`: prefer over `Select` for long plain lists on phones (the OS picker), GET filter forms of server pages, and where no JavaScript is wanted. */
 export function NativeSelect({
   className,
   children,

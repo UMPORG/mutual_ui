@@ -1,9 +1,3 @@
-/*
- * Decorative effects — @umporg/ui/efeitos. The canvas effects draw
- * with the tokens they read at run time; the CSS ones live here.
- */
-
-/* ─── MalhaFundo: soft mesh of radial colour + grain (no filters, no JS) ─── */
 .m-malha {
   --malha-1: color-mix(in oklab, var(--brand) 30%, transparent);
   --malha-2: color-mix(in oklab, var(--flag-green) 34%, transparent);
@@ -60,7 +54,6 @@ html[data-movimento="reduzido"] .m-malha > span { animation: none; }
 }
 .dark .m-malha-grao { opacity: 0.14; mix-blend-mode: soft-light; filter: invert(1); }
 
-/* ─── BrilhoDestaque / .m-brilho: a light running around the edge ─────── */
 @property --m-angulo {
   syntax: "<angle>";
   inherits: false;
@@ -104,7 +97,6 @@ html[data-movimento="reduzido"] .m-brilho::after { --m-angulo: 300deg; animation
   .m-brilho, .m-brilho::after { --m-angulo: 300deg; animation: none; }
 }
 
-/* ─── MomentoSucesso seal ──────────────────────────────────────────────── */
 .m-selo-sucesso {
   color: #ffffff;
   background:
@@ -121,7 +113,6 @@ html[data-movimento="reduzido"] .m-brilho::after { --m-angulo: 300deg; animation
   to { transform: scale(1); opacity: 1; }
 }
 
-/* ─── Guarantees: gone in Alto contraste and in print ──────────────────── */
 html.contraste .m-efeito { display: none !important; }
 html.contraste .m-brilho { background: var(--card) !important; border: 2px solid #000000 !important; animation: none; }
 html.contraste .m-brilho::after { display: none; }

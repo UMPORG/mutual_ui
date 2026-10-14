@@ -25,11 +25,7 @@ import { cx } from "./cx";
 
 export { hrefAtivo, hrefAtualDoMenu, iniciais } from "./shell-nav";
 
-/**
- * Shell G: the frame of every desk app (top bar, navigation, one neutral content layer).
- * Only the navigation and the search are the app's. Anatomy and rules: docs/guia/shell.md.
- * Tour targets: `[data-shell="navegacao|ajuda|acessibilidade|aplicacoes|conta|organizacao|sair|menu|assistente"]`.
- */
+/** Tour targets: `[data-shell="navegacao|ajuda|acessibilidade|aplicacoes|conta|organizacao|sair|menu|assistente"]`. */
 
 // Lucide icons (their props do not accept `undefined`, hence no `| undefined`).
 export type IconeShell = ComponentType<SVGProps<SVGSVGElement> & { size?: number | string; strokeWidth?: number | string }>;
@@ -41,41 +37,31 @@ export interface ItemNavApp {
   icone?: IconeShell | undefined;
   /** A count that needs action («Pedidos de adesão 3»). 0 hides it. */
   contador?: number | undefined;
-  /** Spoken meaning of the count; default «<n> por tratar». */
   contadorRotulo?: string | undefined;
-  /** Opens another MUTU@L app (an ↗ after the label; plain <a>, full load). */
+  /** Another MUTU@L app: plain <a> (full load), ↗ after the label. */
   externo?: boolean | undefined;
   /** Marks the current entry; with none marked, the longest matching `href` (`hrefAtualDoMenu`: only ONE entry is ever current). */
   ativo?: boolean | undefined;
-  /** Tour/test hooks (`{ "data-tour": "associacoes" }`). */
   atributos?: Readonly<Record<`data-${string}`, string>> | undefined;
 }
 
 export interface GrupoNavApp {
-  /** Small section title («Rede mutualista»); the first group usually has none. */
   titulo?: string | undefined;
   itens: readonly ItemNavApp[];
 }
 
 export interface ContaShell {
   nome: string;
-  /** The person's profile in this app («Tesoureiro», «Informática»…). */
   perfil?: ReactNode | undefined;
-  /** The active organisation. */
   organizacao?: ReactNode | undefined;
-  /** Shows «Mudar de organização» (the Portal's organisation page). */
   variasOrganizacoes?: boolean | undefined;
   onTerminarSessao: () => void;
-  /** Sign-out in progress: «A terminar…», disabled. */
   aTerminar?: boolean | undefined;
-  /** App-specific entries of the account menu, styled with `classeItemMenu`. */
   extra?: ReactNode | undefined;
 }
 
-/** Class of an entry in the account menu (the `extra` of `ContaShell`). */
 export const classeItemMenu = "m-menu-item";
 
-/** Class of a navigation entry, for apps that render their own item (e.g. a button). */
 export function classeItemNav(): string {
   return "m-nav-item";
 }
@@ -87,11 +73,6 @@ function Ligacao({ LinkComponent, externo, ...props }: LinkProps & { LinkCompone
   return <L {...props} />;
 }
 
-/**
- * The navigation: only destinations, in groups (no actions).
- * `aria-current="page"` on the current entry (pill, bold, icon in the app's
- * colour).
- */
 export function NavApp({
   grupos,
   caminhoAtual,
@@ -107,15 +88,12 @@ export function NavApp({
   LinkComponent?: ElementType | undefined;
   onNavegar?: (() => void) | undefined;
   rotulo?: string | undefined;
-  /** Above the destinations (e.g. Saúde's unit selector). */
   antes?: ReactNode | undefined;
-  /** Below them. */
   depois?: ReactNode | undefined;
   className?: string | undefined;
 }) {
   const baseId = useId();
-  // Exactly one current entry: `hrefAtualDoMenu` never infers a prefix
-  // («/admin») next to an entry the app marked itself.
+  // Exactly one current entry: never infer a prefix («/admin») next to an entry the app marked.
   const atual = hrefAtualDoMenu(grupos.flatMap((g) => g.itens), caminhoAtual);
   return (
     <div className={cx("flex flex-col", className)}>
@@ -173,7 +151,6 @@ export function NavApp({
   );
 }
 
-/** The account: the initials → a menu with who is signed in and «Terminar sessão». */
 export function MenuConta({ app, conta }: { app: AppNoEndereco; conta: ContaShell }) {
   const id = useId().replace(/:/g, "");
   const popId = `mutual-conta-${id}`;
@@ -255,11 +232,7 @@ function ContaAcoes({ app, conta }: { app: AppNoEndereco; conta: ContaShell }) {
   );
 }
 
-/**
- * The search pill of the top bar. A GET form to `action` (the app's search
- * page, `?q=`) or `onProcurar` for client-side search. Its name is `rotulo`
- * («Procurar no Backoffice»), also the placeholder unless one is given.
- */
+/** GET form to `action` (`?q=`) or `onProcurar` for client-side search; `rotulo` is its name and the default placeholder. */
 export function ProcuraApp({
   rotulo,
   placeholder,
@@ -303,11 +276,7 @@ export function ProcuraApp({
   );
 }
 
-/**
- * Sub-pages of one page as tabs (links, `aria-current="page"`), under the
- * page title, never a second navigation level. Use
- * `/controlos` `Tabs` instead for views that are not separate addresses.
- */
+/** Sub-pages as tabs (links), never a second navigation level; for views without separate addresses use `/controlos` `Tabs`. */
 export function Separadores({
   itens,
   caminhoAtual,
@@ -318,7 +287,6 @@ export function Separadores({
   itens: readonly { href: string; rotulo: string; ativo?: boolean | undefined; contador?: number | undefined }[];
   /** With it, the current tab is the longest matching href (like the navigation). */
   caminhoAtual?: string | undefined;
-  /** Name of the tab list («Secções da caracterização»). */
   rotulo: string;
   LinkComponent?: ElementType | undefined;
   className?: string | undefined;
@@ -348,49 +316,26 @@ export function Separadores({
 
 export interface AppShellProps {
   app: AppNoEndereco;
-  /** The current path relative to the basePath (`usePathname()`). */
   caminhoAtual: string;
-  /** `appsDisponiveis(eu.apps)` — shows the launcher. Omit on public screens. */
   disponiveis?: readonly MutualAppId[] | undefined;
-  /** Who is signed in — shows the account menu. Omit on public screens. */
   conta?: ContaShell | undefined;
-  /** The destinations (≤ 8, in 2–3 groups). Omit for a screen without navigation (Validador QR, Portal launcher). */
+  /** Omit for a screen without navigation (Validador QR, Portal launcher). */
   navegacao?: readonly GrupoNavApp[] | undefined;
-  /** `<ProcuraApp …/>` when the app has a search. */
   procura?: ReactNode | undefined;
-  /** Above / below the destinations (Saúde's unit selector…). */
   antesDaNavegacao?: ReactNode | undefined;
   depoisDaNavegacao?: ReactNode | undefined;
-  /** Extra controls in the top bar, before Ajuda (e.g. notifications). */
   barraExtra?: ReactNode | undefined;
-  /** The app's home, relative to its basePath. */
   inicioHref?: string | undefined;
   /** Default: the Portal's help centre for this app (`/ajuda/<app>`). */
   ajudaHref?: string | undefined;
-  /** The app's accessibility statement, linked from the Acessibilidade panel. */
   declaracaoHref?: string | undefined;
-  /**
-   * The floating assistant: `<ChatFlutuante …/>` from
-   * `@umporg/ui/assistente`, only when the person has the capability
-   * «assistente na página» (`eu.assistenteNaPagina`). Adds «Assistente» to the
-   * top bar and keeps the chat mounted across client navigation. Ignored in
-   * the Assistente app itself.
-   */
+  /** `<ChatFlutuante …/>` from `@umporg/ui/assistente`; stays mounted across client navigation. Ignored in the Assistente app. */
   assistente?: ReactNode | undefined;
-  /**
-   * `eu.lancamento` (launch switches). Leaves switched-off apps out of the
-   * launcher, switched-off pages out of the navigation, and hides the
-   * assistant (chat, «Assistente», fill-from-document, drafts) on the pages
-   * where it is off. Pages themselves are gated by the app (`paginaLigada` +
-   * `<EmBreve dentroDoShell />`).
-   */
+  /** `eu.lancamento`: hides switched-off apps, pages and assistant; the pages themselves are gated by the app (`paginaLigada` + `<EmBreve dentroDoShell />`). */
   lancamento?: Lancamento | null | undefined;
   LinkComponent?: ElementType | undefined;
-  /** Name of the navigation landmark. */
   rotuloNavegacao?: string | undefined;
-  /** Id of the <main> (skip link target). */
   idConteudo?: string | undefined;
-  /** Extra classes on the content layer. */
   classeConteudo?: string | undefined;
   children: ReactNode;
 }
@@ -439,7 +384,6 @@ export function AppShell({
   const chave = `${app}.navegacao-recolhida`;
   const Link = LinkComponent;
 
-  // The desktop ☰ hides the navigation; remembered on this device.
   useEffect(() => {
     try {
       setRecolhida(localStorage.getItem(chave) === "1");
@@ -448,9 +392,7 @@ export function AppShell({
     }
   }, [chave]);
 
-  // Every navigation: back to the top of the content, drawer closed, and the
-  // page fades in slightly (opacity only: no layout shift; nothing under
-  // Reduzir movimento or the OS setting; input is never delayed).
+  // Every navigation: scroll to top, close the drawer, fade the page in (opacity only, off under Reduzir movimento).
   useEffect(() => {
     mainRef.current?.scrollTo({ top: 0 });
     gavetaRef.current?.close();

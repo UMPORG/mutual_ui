@@ -1,9 +1,6 @@
 "use client";
 
-/**
- * `@umporg/ui/conversa` — the MUTU@L assistant's conversation components
- * (needs the optional peer @base-ui/react for menus and dialogs).
- */
+/** Needs the optional peer @base-ui/react (menus, dialogs). */
 export {
   ChatLayout,
   ThreadList,

@@ -1,16 +1,8 @@
 /**
- * «Entrar como…» of the DEMONSTRATION — the plain logic, no DOM, so
- * it is unit-tested. The UI is a section of the floating «Demonstração»
- * widget (`DemoPreencher`); a login page only REGISTERS its sign-in context:
- *
- *   useEffect(() => registarEntrarComo({ destino: "portal", aoEntrar }), [aoEntrar]);
- *
- * The widget then lists the personas of the Cérebro in use
- * (`GET /api/v1/demo/personas?destino=…`) and one click is
- * `POST /api/v1/demo/entrar { id }` (the Cérebro signs in on the server and
- * sets the normal session cookies; no password reaches the browser). Both
- * routes only exist with `DEMO_MODE=true`: anywhere else the list is a 404 and
- * the widget shows no «Entrar como…».
+ * «Entrar como…» of the demo (pure logic). A login page only registers its context
+ * (`registarEntrarComo({ destino, aoEntrar })`); the widget lists `GET /api/v1/demo/personas?destino=…`
+ * and one click is `POST /api/v1/demo/entrar { id }` (server-side sign-in, no password in the browser).
+ * Both routes exist only with `DEMO_MODE=true`.
  */
 
 export interface PersonaDemo {
@@ -24,7 +16,6 @@ export interface PersonaDemo {
 
 export interface ContextoEntrarComo {
   destino: "portal" | "cartao";
-  /** Called after the session cookies are set (navigate from here). */
   aoEntrar: (r: { persona: PersonaDemo; twoFactor: boolean }) => void;
   /** Prefix of the Cérebro on this origin (default `/api/v1`). */
   api?: string | undefined;
@@ -36,7 +27,6 @@ const avisar = () => {
   for (const f of ouvintes) f();
 };
 
-/** Registers the page's demo sign-in context for the widget. Returns an unregister function. */
 export function registarEntrarComo(contexto: ContextoEntrarComo): () => void {
   atual = contexto;
   avisar();
@@ -48,7 +38,6 @@ export function registarEntrarComo(contexto: ContextoEntrarComo): () => void {
   };
 }
 
-/** The registered context (null when the page has no demo sign-in). */
 export function contextoEntrarComo(): ContextoEntrarComo | null {
   return atual;
 }

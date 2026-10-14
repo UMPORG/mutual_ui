@@ -1,8 +1,4 @@
-/**
- * Simplified outline of mainland Portugal and a default set of places with
- * mutual associations, for the `ConstelacaoFundo` effect. [lon, lat] in
- * degrees. Stylised (≈ 5 km precision) — decoration, not a map.
- */
+/** Stylised (≈ 5 km) outline of mainland Portugal and default places for `ConstelacaoFundo`: [lon, lat] degrees. Decoration, not a map. */
 
 export const PORTUGAL_CONTINENTAL: ReadonlyArray<readonly [number, number]> = [
   [-8.87, 41.87], [-8.64, 42.03], [-8.48, 42.08], [-8.26, 42.11], [-8.16, 42.15], [-8.16, 42.03],
@@ -20,7 +16,6 @@ export const PORTUGAL_CONTINENTAL: ReadonlyArray<readonly [number, number]> = [
   [-8.65, 41.0], [-8.68, 41.16], [-8.77, 41.38], [-8.84, 41.69],
 ];
 
-/** District capitals and other towns with mutual associations. [lon, lat]. */
 export const LOCAIS_ASSOCIACOES: ReadonlyArray<readonly [number, number]> = [
   [-8.42, 41.55], [-8.61, 41.15], [-8.83, 41.69], [-7.74, 41.3], [-6.76, 41.81], [-8.65, 40.64],
   [-7.91, 40.66], [-7.27, 40.54], [-8.43, 40.21], [-7.49, 39.82], [-8.81, 39.74], [-8.69, 39.24],
@@ -43,7 +38,6 @@ export const ILHAS: ReadonlyArray<readonly [number, number, number, number]> = [
   [-25.1, 36.95, 7, 5], // Santa Maria
 ];
 
-/** Ray casting point-in-polygon. */
 export function dentroDoPoligono(x: number, y: number, poligono: ReadonlyArray<readonly [number, number]>): boolean {
   let dentro = false;
   for (let i = 0, j = poligono.length - 1; i < poligono.length; j = i++) {

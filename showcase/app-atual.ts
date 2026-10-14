@@ -1,12 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { getMutualApp, type MutualAppId } from "../src/apps.ts";
 
-/**
- * The app whose tint the page wears (`data-app` on <html>). Read live, not
- * once at render: the screenshot scripts and the browser tools switch
- * `data-app` after load, and the header must follow the tint (never
- * "Backoffice" on the Saúde tint).
- */
+/** Read live: the screenshot scripts switch `data-app` after load and the header must follow. */
 function subscrever(aviso: () => void) {
   const o = new MutationObserver(aviso);
   o.observe(document.documentElement, { attributes: true, attributeFilter: ["data-app"] });

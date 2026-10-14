@@ -2,14 +2,6 @@ import type { ButtonHTMLAttributes, ElementType, ReactNode, Ref } from "react";
 import { Check, ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
 import { cx } from "./cx";
 
-/**
- * Small, server-safe building blocks: Button, Kbd, Badge, Tag,
- * Separator, Spinner, Breadcrumbs, Stepper. No hooks, no Base UI — safe in
- * server components and in the main entry.
- */
-
-// ─── Button ───────────────────────────────────────────────────────────────
-
 export type ButtonVariant = "primary" | "outline" | "secondary" | "ghost" | "destructive";
 export type ButtonSize = "sm" | "md" | "lg";
 
@@ -28,10 +20,7 @@ const TAMANHO: Record<ButtonSize, string> = {
 const PADDING: Record<ButtonSize, string> = { sm: "px-3", md: "px-4", lg: "px-5" };
 const SO_ICONE: Record<ButtonSize, string> = { sm: "w-9", md: "w-11", lg: "w-12" };
 
-/**
- * Class names of the shared button look, for links and for the app's own
- * button components: `<Link className={buttonClasses({ variant: "outline" })}>`.
- */
+/** Shared button look for links and the app's own buttons: `<Link className={buttonClasses({ variant: "outline" })}>`. */
 export function buttonClasses({
   variant = "primary",
   size = "md",
@@ -58,7 +47,6 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   ref?: Ref<HTMLButtonElement> | undefined;
 }
 
-/** The MUTU@L button (the `m-btn` look). `type="button"` unless told otherwise. */
 export function Button({
   variant = "primary",
   size = "md",
@@ -84,12 +72,7 @@ export function Button({
   );
 }
 
-// ─── Kbd ──────────────────────────────────────────────────────────────────
-
-/**
- * A key as printed on the keyboard: `<Kbd>Enter</Kbd>`, `<Kbd keys={["Shift", "Enter"]} />`.
- * Use it in help text only; the apps have no single-key shortcuts (WCAG 2.1.4).
- */
+/** Help text only: the apps have no single-key shortcuts (WCAG 2.1.4). */
 export function Kbd({ children, keys, className }: { children?: ReactNode | undefined; keys?: string[] | undefined; className?: string | undefined }) {
   if (keys?.length) {
     return (
@@ -106,8 +89,6 @@ export function Kbd({ children, keys, className }: { children?: ReactNode | unde
   return <kbd className={cx("m-kbd", className)}>{children}</kbd>;
 }
 
-// ─── Badge and Tag ────────────────────────────────────────────────────────
-
 export type BadgeVariant = "neutral" | "brand" | "app" | "outline" | "solid";
 
 const BADGE: Record<BadgeVariant, string> = {
@@ -118,10 +99,7 @@ const BADGE: Record<BadgeVariant, string> = {
   solid: "border-transparent bg-brand text-brand-foreground",
 };
 
-/**
- * A label for a category, a count or "Novo". Not for status (use
- * `StatusBadge`, which carries the status tones and words).
- */
+/** Category, count or "Novo". Not for status (use `StatusBadge`). */
 export function Badge({
   variant = "neutral",
   size = "md",
@@ -151,10 +129,6 @@ export function Badge({
   );
 }
 
-/**
- * A removable value (a chosen option, a keyword). The remove button is a real
- * button with a spoken name ("Remover Braga").
- */
 export function Tag({
   children,
   onRemove,
@@ -164,7 +138,6 @@ export function Tag({
 }: {
   children: ReactNode;
   onRemove?: (() => void) | undefined;
-  /** Spoken name of the remove button; default "Remover <texto>". */
   removeLabel?: string | undefined;
   icon?: ReactNode | undefined;
   className?: string | undefined;
@@ -195,8 +168,6 @@ export function Tag({
   );
 }
 
-// ─── Separator ────────────────────────────────────────────────────────────
-
 /** A hairline. Decorative by default; `decorative={false}` for a real section break. */
 export function Separator({
   orientation = "horizontal",
@@ -206,7 +177,6 @@ export function Separator({
 }: {
   orientation?: "horizontal" | "vertical" | undefined;
   decorative?: boolean | undefined;
-  /** Text in the middle ("ou"). */
   label?: ReactNode | undefined;
   className?: string | undefined;
 }) {
@@ -228,13 +198,7 @@ export function Separator({
   );
 }
 
-// ─── Spinner ──────────────────────────────────────────────────────────────
-
-/**
- * Working indicator for a short wait inside a control or a small area. For
- * whole lists and cards prefer `Skeleton` (keeps the layout). With `label`
- * it is announced once ("A carregar…").
- */
+/** Short waits inside a control or small area; for lists and cards prefer `Skeleton`. With `label` it is announced once. */
 export function Spinner({ size = 20, label, className }: { size?: number | undefined; label?: string | undefined; className?: string | undefined }) {
   return (
     <span role={label ? "status" : undefined} className={cx("inline-flex items-center gap-2 text-muted-foreground", className)}>
@@ -244,18 +208,12 @@ export function Spinner({ size = 20, label, className }: { size?: number | undef
   );
 }
 
-// ─── Breadcrumbs ──────────────────────────────────────────────────────────
-
 export interface BreadcrumbItem {
   label: string;
   href?: string | undefined;
 }
 
-/**
- * Where the page sits. On phones only the way back is shown ("‹ Associações");
- * from 40rem the full trail. Long trails fold the middle into "…".
- * `PageHeader` already renders these for page headers.
- */
+/** On phones only the way back is shown; from 40rem the full trail, long trails fold the middle. `PageHeader` already renders these. */
 export function Breadcrumbs({
   items,
   LinkComponent = "a",
@@ -264,7 +222,6 @@ export function Breadcrumbs({
 }: {
   items: BreadcrumbItem[];
   LinkComponent?: ElementType | undefined;
-  /** Beyond this many, the middle items fold into "…". */
   maxItems?: number | undefined;
   className?: string | undefined;
 }) {
@@ -309,23 +266,14 @@ export function Breadcrumbs({
   );
 }
 
-// ─── Stepper ──────────────────────────────────────────────────────────────
-
 export interface StepperStep {
   label: string;
   description?: string | undefined;
-  /** Link back to a completed step (wizards that allow revisiting). */
   href?: string | undefined;
-  /** Error on this step (e.g. after submitting). */
   error?: boolean | undefined;
 }
 
-/**
- * Wizard steps: done (check), current, to do. The current step is
- * `aria-current="step"`, and every step says its state in words. Below 40rem
- * the horizontal stepper collapses to "Passo 2 de 5 · Morada" with a bar.
- * The wizard's state (current step, validation) stays in the app.
- */
+/** Wizard steps; every step says its state in words, and below 40rem it collapses to "Passo 2 de 5 · Morada". Wizard state stays in the app. */
 export function Stepper({
   steps,
   current,
@@ -339,7 +287,6 @@ export function Stepper({
   current: number;
   orientation?: "horizontal" | "vertical" | undefined;
   LinkComponent?: ElementType | undefined;
-  /** Makes completed steps buttons (client components). */
   onStepClick?: ((index: number) => void) | undefined;
   className?: string | undefined;
 }) {

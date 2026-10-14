@@ -1,16 +1,4 @@
-/**
- * Display preferences of the MUTU@L ecosystem ("Acessibilidade").
- *
- * One host-only cookie (`mutual_pref`) holds the choices. Every app lives on
- * the same origin (ADR 0004), so the same choices apply in every app.
- *
- * The choices are applied as attributes on <html> before the first paint by
- * `PREFERENCIAS_SCRIPT` (inline in <head>), and live by `aplicarPreferencias`.
- * The CSS that reacts to them is in css/preferencias.css.
- *
- * Framework-free: safe in server components, client components and the
- * inline script.
- */
+/** "Acessibilidade" preferences: one host-only cookie (`mutual_pref`) shared by every app (same origin, ADR 0004), applied as attributes on <html> before first paint by `PREFERENCIAS_SCRIPT` and live by `aplicarPreferencias` (CSS: css/preferencias.css). Framework-free. */
 
 export type Tema = "sistema" | "claro" | "escuro" | "contraste";
 export type TamanhoTexto = "100" | "112" | "125" | "150";
@@ -88,18 +76,11 @@ export function cookiePreferencias(p: Preferencias): string {
   return partes.join("; ");
 }
 
-/** True when the effective theme is dark (resolving "sistema"). */
 export function temaEscuro(p: Preferencias, sistemaEscuro: boolean): boolean {
   return p.tema === "escuro" || (p.tema === "sistema" && sistemaEscuro);
 }
 
-/**
- * Applies the preferences to <html>:
- *  - class `dark` (escuro, or sistema + OS dark) and `contraste`;
- *  - data-texto, data-espaco, data-letra, data-ligacoes, data-foco,
- *    data-movimento, data-guia;
- *  - `color-scheme` for native controls.
- */
+/** Applies the preferences to <html>: classes `dark`/`contraste`, data-texto/espaco/letra/ligacoes/foco/movimento/guia, and `color-scheme`. */
 export function aplicarPreferencias(p: Preferencias, raiz: HTMLElement = document.documentElement): void {
   const escuro = temaEscuro(p, matchMedia("(prefers-color-scheme: dark)").matches);
   raiz.classList.toggle("dark", escuro && p.tema !== "contraste");
@@ -134,7 +115,6 @@ export function carregarLetraLegivel(): void {
   document.head.appendChild(l);
 }
 
-/** True when motion should be avoided (OS setting or the user's choice). */
 export function movimentoReduzido(): boolean {
   return (
     document.documentElement.dataset.movimento === "reduzido" ||
@@ -142,9 +122,5 @@ export function movimentoReduzido(): boolean {
   );
 }
 
-/**
- * Inline <head> script: applies the cookie before the first paint (no flash
- * of the wrong theme or size). Kept dependency-free and tiny on purpose; it
- * mirrors `descodificarPreferencias` + `aplicarPreferencias`.
- */
+/** Inline <head> script applying the cookie before first paint (no flash); dependency-free, mirrors `descodificarPreferencias` + `aplicarPreferencias`. */
 export const PREFERENCIAS_SCRIPT = `(function(){try{var d=document.documentElement,m=document.cookie.match(/(?:^|;\\s*)${PREFERENCIAS_COOKIE}=([^;]*)/),v=m?decodeURIComponent(m[1]):"",p={t:"sistema",x:"100",e:"normal"},f={};v.split(";").forEach(function(s){var a=s.split("=");if(a.length>1)p[a[0]]=a[1];else if(a[0])f[a[0]]=1});var esc=p.t==="escuro"||(p.t==="sistema"&&matchMedia("(prefers-color-scheme: dark)").matches);var c=p.t==="contraste";d.classList.toggle("dark",esc&&!c);d.classList.toggle("contraste",c);d.style.colorScheme=esc&&!c?"dark":"light";d.dataset.tema=p.t;d.dataset.texto=p.x;d.dataset.espaco=p.e;if(f.l){d.dataset.letra="legivel";var l=document.createElement("link");l.id="mutual-letra-legivel";l.rel="stylesheet";l.href="${LETRA_LEGIVEL_URL}";document.head.appendChild(l)}if(f.s)d.dataset.ligacoes="sublinhadas";if(f.f)d.dataset.foco="destacado";if(f.m)d.dataset.movimento="reduzido";if(f.g)d.dataset.guia="ativo"}catch(e){}})();`;

@@ -1,18 +1,9 @@
 /**
- * The MUTU@L app icon family («folha» base). Plain data + a string renderer,
- * no React: `IconeApp` (src/icone-app.tsx) draws it in the page; `svgIconeApp` gives the standalone SVG for favicons
- * and home-screen icons (scripts/gerar-icones.mjs → assets/icones/).
- *
- * One 24-unit grid for every app (the method of Google Workspace and Proton —
- * one base, one glyph per product — with ORIGINAL drawings):
- * - base «folha»: a square with alternating corners (7 / 2.5 units), the
- *   signature of the family;
- * - live area 4.5–19.5 (62 % of the base, legible at 16 px);
- * - stroke 2 units, round caps and joins; shapes ≥ 2.5, gaps ≥ 1.5;
- * - roles: `p` the shape that says what it is, `r` the highlight, `s`
- *   secondary (white at 72 %), `k` a cut-out in the colour of the base.
- * The base is the app's colour (`--app-marca`, the same in light and dark),
- * the glyph white (≥ 5.0:1). Forced colours: Canvas / CanvasText.
+ * App icon family («folha» base): plain data + string renderer, no React (`IconeApp` draws it; `svgIconeApp` gives
+ * the SVG for favicons, scripts/gerar-icones.mjs). 24-unit grid; base = square with alternating corners (7 / 2.5);
+ * live area 4.5–19.5; stroke 2, round caps and joins; shapes ≥ 2.5, gaps ≥ 1.5. Roles: `p` main shape, `r`
+ * highlight, `s` secondary (white 72 %), `k` cut-out in the base colour. Glyph white (≥ 5.0:1); forced colours:
+ * Canvas / CanvasText.
  */
 import type { MutualAppId } from "./apps";
 
@@ -22,7 +13,6 @@ export type FormaGlifo =
   | { t: "cheio"; d: string; papel?: PapelGlifo }
   | { t: "circulo"; x: number; y: number; r: number; traco?: boolean; papel?: PapelGlifo };
 
-/** The «folha» base (24 × 24). */
 export const BASE_ICONE = "M7 0H21.5A2.5 2.5 0 0 1 24 2.5V17A7 7 0 0 1 17 24H2.5A2.5 2.5 0 0 1 0 21.5V7A7 7 0 0 1 7 0Z";
 
 /** The tile colour of each app (= `--app-marca` in css/tokens.css; tests/icones.test.ts keeps them equal). */
@@ -42,31 +32,26 @@ export const COR_MARCA_APP: Record<MutualAppId, string> = {
 };
 
 export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
-  // Portal — the way in: an arch, the open door and the floor.
   portal: [
     { t: "traco", d: "M7.5 18.5V11a4.5 4.5 0 0 1 9 0v7.5" },
     { t: "cheio", d: "M10.5 18.5v-5.25a1.5 1.5 0 0 1 3 0v5.25Z", papel: "r" },
     { t: "traco", d: "M5 19.25h14", papel: "s" },
   ],
-  // Backoffice — the institution: pediment, three columns, base.
   backoffice: [
     { t: "cheio", d: "M12 4.5l7.25 4.75H4.75Z", papel: "r" },
     { t: "traco", d: "M7.5 12v4M12 12v4M16.5 12v4" },
     { t: "traco", d: "M5 19h14", papel: "s" },
   ],
-  // Eventos — a calendar with its rings and the day marked.
   eventos: [
     { t: "traco", d: "M7.5 7h9a2.5 2.5 0 0 1 2.5 2.5v7a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 5 16.5v-7A2.5 2.5 0 0 1 7.5 7Z" },
     { t: "cheio", d: "M4 10.5V9.5A3.5 3.5 0 0 1 7.5 6h9A3.5 3.5 0 0 1 20 9.5v1Z" },
     { t: "traco", d: "M9 4.25v2.5M15 4.25v2.5" },
     { t: "circulo", x: 15, y: 15, r: 1.9, papel: "r" },
   ],
-  // Simplex — the accounts: a pie chart with one slice pulled out.
   simplex: [
     { t: "cheio", d: "M11 13V6.5A6.5 6.5 0 1 0 17.5 13Z" },
     { t: "cheio", d: "M13 11V4.5A6.5 6.5 0 0 1 19.5 11Z", papel: "r" },
   ],
-  // Saúde — the cross.
   saude: [
     {
       t: "cheio",
@@ -74,21 +59,17 @@ export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
       papel: "r",
     },
   ],
-  // Validador QR — the scan frame and the reading line.
   qr: [
     { t: "traco", d: "M5 9V7a2 2 0 0 1 2-2h2M15 5h2a2 2 0 0 1 2 2v2M19 15v2a2 2 0 0 1-2 2h-2M9 19H7a2 2 0 0 1-2-2v-2" },
     { t: "traco", d: "M8 12h8", papel: "r" },
   ],
-  // Servidores e DNS — two stacked servers, each with its light.
   dns: [
     { t: "cheio", d: "M6.5 4.5h11a1.75 1.75 0 0 1 1.75 1.75v2.75a1.75 1.75 0 0 1-1.75 1.75h-11A1.75 1.75 0 0 1 4.75 9V6.25A1.75 1.75 0 0 1 6.5 4.5Z" },
     { t: "cheio", d: "M6.5 13.25h11a1.75 1.75 0 0 1 1.75 1.75v2.75a1.75 1.75 0 0 1-1.75 1.75h-11a1.75 1.75 0 0 1-1.75-1.75V15a1.75 1.75 0 0 1 1.75-1.75Z", papel: "s" },
     { t: "circulo", x: 8.75, y: 7.625, r: 1.5, papel: "k" },
     { t: "circulo", x: 8.75, y: 16.375, r: 1.5, papel: "k" },
   ],
-  // Assistente — the AI chat: a bot whose head is a speech bubble (tail bottom-left),
-  // two eyes cut out and the antenna (2026-10-01: a bubble alone read as «chat», the
-  // stars as nothing in particular; the owner wants it to say «AI chat» at once).
+  // Assistente: a bot with a speech-bubble head, so it reads as «AI chat», not just «chat».
   assistente: [
     { t: "cheio", d: "M8.25 7.75h7.5a3.25 3.25 0 0 1 3.25 3.25v3.75a3.25 3.25 0 0 1-3.25 3.25h-5.5L6.5 20.25v-2.5A3.25 3.25 0 0 1 5 14.75V11a3.25 3.25 0 0 1 3.25-3.25Z" },
     { t: "circulo", x: 9.75, y: 12.9, r: 1.45, papel: "k" },
@@ -96,23 +77,19 @@ export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
     { t: "traco", d: "M12 7.75V5.75", papel: "r" },
     { t: "circulo", x: 12, y: 4.5, r: 1.35, papel: "r" },
   ],
-  // Protocolos — two linked rings: two parties, one agreement.
   protocolos: [
     { t: "circulo", x: 9.25, y: 12, r: 4.5, traco: true },
     { t: "circulo", x: 14.75, y: 12, r: 4.5, traco: true, papel: "r" },
   ],
-  // Monitorização — the pulse and the dot that watches it.
   monitor: [
     { t: "traco", d: "M4.75 13h2.75l2-5 3.5 9 2-5.5h1" },
     { t: "circulo", x: 18.25, y: 11.5, r: 1.9, papel: "r" },
   ],
-  // Carta Social Mutualista — a folded map with the place marked.
   carta: [
     { t: "traco", d: "M4.75 7.25l4.5-2 5.5 2 4.5-2v11.5l-4.5 2-5.5-2-4.5 2Z" },
     { t: "traco", d: "M9.25 5.25v11.5M14.75 7.25v11.5", papel: "s" },
     { t: "circulo", x: 12, y: 11.5, r: 1.9, papel: "r" },
   ],
-  // Cartão Digital — an ID card: photo and two lines.
   cartao: [
     { t: "traco", d: "M6.5 6.5h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" },
     { t: "circulo", x: 9, y: 12, r: 2.1, papel: "r" },
@@ -120,11 +97,7 @@ export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
   ],
 };
 
-/**
- * The standalone SVG of an app icon (favicon, home screen). `mascaravel`:
- * full-bleed square with the glyph shrunk into the safe zone (Android
- * maskable icons); otherwise the «folha» on a transparent background.
- */
+/** Standalone SVG of an app icon; `mascaravel`: full-bleed square with the glyph in the safe zone (Android maskable), else the «folha» on transparent. */
 export function svgIconeApp(app: MutualAppId, { mascaravel = false }: { mascaravel?: boolean | undefined } = {}): string {
   const cor = COR_MARCA_APP[app];
   const pinta = (papel: PapelGlifo | undefined) => (papel === "k" ? cor : "#ffffff");

@@ -8,23 +8,14 @@ import { aleatorio, comAlfa, estiloMascara, iniciarEfeito, type Mascara } from "
 import { dentroDoPoligono, ILHAS, LOCAIS_ASSOCIACOES, PORTUGAL_CONTINENTAL } from "./efeitos-portugal";
 
 /**
- * Decorative effects. Each has its own look and its own place (see
- * docs/guia/superficies.md → "Effects"), so the apps do not all wear the
- * same backdrop. All are `aria-hidden`, pointer-transparent, masked away
- * from text, capped in DPR and frame rate, paused off screen and in hidden
- * tabs, still under "Reduzir movimento" and gone in "Alto contraste".
- *
- * Place them inside a `relative` (and usually `overflow-hidden`) container,
- * before the content, and give the content `relative`.
+ * Decorative effects, each with its own place (docs/guia/superficies.md → "Effects"). All are `aria-hidden`,
+ * pointer-transparent and masked away from text. Place them in a `relative` container before the content.
  */
 
 interface BaseProps {
   className?: string | undefined;
-  /** Soft hole where the content sits (so nothing moves behind text). */
   mascara?: Mascara | undefined;
-  /** Fade out at the top under a header, e.g. "5rem". */
   fadeTopo?: string | false | undefined;
-  /** 0–1: overall strength. */
   intensidade?: number | undefined;
 }
 
@@ -41,23 +32,15 @@ function useCanvas(iniciar: (c: HTMLCanvasElement) => () => void, deps: unknown[
 
 const CLASSE_CANVAS = "m-efeito pointer-events-none absolute inset-0 size-full select-none";
 
-// ─── ConstelacaoFundo — the network of associations across Portugal ──────
-
 export interface ConstelacaoFundoProps extends BaseProps {
   /** Places to light up ([lon, lat]); default: towns with mutual associations. */
   pontos?: ReadonlyArray<readonly [number, number]> | undefined;
   /** Where the map sits; keep the text on the other side. */
   posicao?: "direita" | "esquerda" | "centro" | undefined;
-  /** Madeira and the Azores in an inset. */
   ilhas?: boolean | undefined;
 }
 
-/**
- * A dotted map of Portugal with the associations as slowly twinkling points,
- * joined to their neighbours; now and then a soft light travels between two
- * of them. For pages about the network (Portal home band, public "Sobre",
- * associations directory hero), never behind forms or tables.
- */
+/** Dotted map of Portugal with associations as twinkling points joined to neighbours. For network pages (Portal band, public "Sobre", directory hero), never behind forms or tables. */
 export function ConstelacaoFundo({ className, pontos = LOCAIS_ASSOCIACOES, posicao = "direita", ilhas = true, mascara = false, fadeTopo = false, intensidade = 1 }: ConstelacaoFundoProps) {
   const ref = useCanvas(
     (canvas) => {
@@ -138,7 +121,6 @@ export function ConstelacaoFundo({ className, pontos = LOCAIS_ASSOCIACOES, posic
             }
           }
           pts = pontos.map(([lon, lat], i) => ({ x: px(lon), y: py(lat), fase: rnd() * Math.PI * 2, vel: 0.6 + rnd() * 0.8, r: i % 5 === 0 ? 2.6 : 1.9 }));
-          // Each point joined to its two nearest neighbours.
           const vistas = new Set<string>();
           arestas = [];
           pts.forEach((p, i) => {
@@ -183,7 +165,6 @@ export function ConstelacaoFundo({ className, pontos = LOCAIS_ASSOCIACOES, posic
             ctx.fill();
           }
           if (e.parado || !arestas.length) return;
-          // A light travelling between two associations.
           for (const pu of pulsos) {
             let p = (t - pu.inicio) / pu.dur;
             if (p >= 1 || pu.aresta < 0) {
@@ -221,8 +202,6 @@ export function ConstelacaoFundo({ className, pontos = LOCAIS_ASSOCIACOES, posic
   return <canvas ref={ref} aria-hidden className={cx(CLASSE_CANVAS, className)} style={estiloMascara(mascara, fadeTopo)} />;
 }
 
-// ─── TopografiaFundo — contour lines ──────────────────────────────────────
-
 function ruido(semente: number) {
   const perm = new Uint8Array(512);
   const r = aleatorio(semente);
@@ -248,19 +227,12 @@ function ruido(semente: number) {
 }
 
 export interface TopografiaFundoProps extends BaseProps {
-  /** Number of contour levels (default 12). */
   niveis?: number | undefined;
-  /** Size of the hills in px (default 420). */
   escala?: number | undefined;
-  /** Line colour: the app accent (default) or the brand green. */
   cor?: "acento" | "marca" | undefined;
 }
 
-/**
- * Topographic contour lines that drift very slowly, like a relief map of
- * the country. For public heroes, the help centre and section covers — a
- * quiet texture with the app's accent.
- */
+/** Topographic contour lines drifting slowly: public heroes, help centre, section covers. */
 export function TopografiaFundo({ className, niveis = 12, escala = 420, cor = "acento", mascara = false, fadeTopo = false, intensidade = 1 }: TopografiaFundoProps) {
   const ref = useCanvas(
     (canvas) => {
@@ -337,8 +309,6 @@ export function TopografiaFundo({ className, niveis = 12, escala = 420, cor = "a
   return <canvas ref={ref} aria-hidden className={cx(CLASSE_CANVAS, className)} style={estiloMascara(mascara, fadeTopo)} />;
 }
 
-// ─── MalhaFundo — soft gradient mesh with grain (CSS only) ────────────────
-
 export interface MalhaFundoProps extends BaseProps {
   /**
    * "marca": brand greens (Portal, general); "app": the app accent with the
@@ -346,15 +316,10 @@ export interface MalhaFundoProps extends BaseProps {
    * (celebrations, institutional); "calmo": almost neutral.
    */
   tons?: "marca" | "app" | "bandeira" | "calmo" | undefined;
-  /** Film grain over the colours (default true). */
   grao?: boolean | undefined;
 }
 
-/**
- * A soft mesh of colour that drifts slowly, with a fine grain. Pure CSS (no
- * JavaScript, server-safe markup). For public heroes and cover bands with
- * large type on top; as a quiet wash behind "done" moments.
- */
+/** Soft drifting colour mesh with fine grain; pure CSS, server-safe. For public heroes and cover bands with large type, and behind "done" moments. */
 export function MalhaFundo({ className, tons = "marca", grao = true, mascara = false, fadeTopo = false, intensidade = 1 }: MalhaFundoProps) {
   return (
     <div aria-hidden data-tons={tons} className={cx("m-efeito m-malha pointer-events-none absolute inset-0 overflow-hidden", className)} style={{ ...estiloMascara(mascara, fadeTopo), opacity: intensidade }}>
@@ -367,20 +332,12 @@ export function MalhaFundo({ className, tons = "marca", grao = true, mascara = f
   );
 }
 
-// ─── PontosFundo — a dot grid that answers the pointer ────────────────────
-
 export interface PontosFundoProps extends BaseProps {
-  /** Distance between dots in px (default 22). */
   espaco?: number | undefined;
-  /** Reach of the pointer in px (default 150). */
   alcance?: number | undefined;
 }
 
-/**
- * A quiet grid of dots; near the pointer they swell a little and take the
- * brand colour. Still when nobody moves (no animation loop runs). For empty
- * states, the assistant's greeting, search pages and 404s.
- */
+/** Dot grid that swells and takes the brand colour near the pointer; no animation loop when still. For empty states, the assistant greeting, search pages and 404s. */
 export function PontosFundo({ className, espaco = 22, alcance = 150, mascara = false, fadeTopo = false, intensidade = 1 }: PontosFundoProps) {
   const ref = useCanvas(
     (canvas) => {
@@ -456,34 +413,19 @@ export function PontosFundo({ className, espaco = 22, alcance = 150, mascara = f
   return <canvas ref={ref} aria-hidden className={cx(CLASSE_CANVAS, className)} style={estiloMascara(mascara, fadeTopo)} />;
 }
 
-// ─── BrilhoDestaque — a light that runs around a featured card ────────────
-
-/**
- * A slow light that runs around the edge of ONE featured card per page
- * ("Recomendado", the next event, a new feature). Also available as the
- * class `m-brilho` (e.g. `<Card className="m-brilho">`).
- */
+/** Slow light around the edge of ONE featured card per page; also the class `m-brilho`. */
 export function BrilhoDestaque({ children, as: Tag = "div", className }: { children: ReactNode; as?: ElementType | undefined; className?: string | undefined }) {
   return <Tag className={cx("m-brilho", className)}>{children}</Tag>;
 }
 
-// ─── Celebracao — a one-off burst for "done" moments ─────────────────────
-
 export interface CelebracaoProps {
-  /** Plays when it becomes true (default: on mount). */
   ativo?: boolean | undefined;
-  /** Centre of the burst inside the parent. */
   origem?: { x?: string | undefined; y?: string | undefined } | undefined;
   particulas?: number | undefined;
   className?: string | undefined;
 }
 
-/**
- * A short, single burst of the flag's colours (≈ 1.5 s, then still) for
- * moments that close a task: "Documento submetido", "Inscrição confirmada",
- * "Pagamento recebido". Never on page load of ordinary pages, never
- * repeated. Nothing plays under "Reduzir movimento".
- */
+/** One short burst (≈ 1.5 s) of the flag's colours for task-closing moments; never on ordinary page load, never repeated; nothing under "Reduzir movimento". */
 export function Celebracao({ ativo = true, origem = {}, particulas = 30, className }: CelebracaoProps) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -520,7 +462,6 @@ export function Celebracao({ ativo = true, origem = {}, particulas = 30, classNa
       const t = agora - t0;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, r.width, r.height);
-      // Ring.
       if (t < 800) {
         const p = t / 800;
         ctx.strokeStyle = comAlfa(cores[1]!, 0.35 * (1 - p));
@@ -558,11 +499,7 @@ export function Celebracao({ ativo = true, origem = {}, particulas = 30, classNa
   return <canvas ref={ref} aria-hidden className={cx(CLASSE_CANVAS, className)} />;
 }
 
-/**
- * The "done" moment of a flow: a big check with a single `Celebracao`,
- * the result in words and the next steps. Focus moves to the title so
- * screen readers hear the result.
- */
+/** The "done" moment of a flow: big check, a `Celebracao`, the result in words and next steps; focus moves to the title. */
 export function MomentoSucesso({
   title,
   children,
@@ -574,7 +511,6 @@ export function MomentoSucesso({
   title: ReactNode;
   children?: ReactNode | undefined;
   actions?: ReactNode | undefined;
-  /** Play the burst (default true). */
   celebrar?: boolean | undefined;
   headingLevel?: 1 | 2 | undefined;
   className?: string | undefined;

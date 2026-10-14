@@ -15,55 +15,22 @@ export const ID_POSICAO_DEMO = "demo";
 
 const SEM_GRUPOS: readonly GrupoAcoesDemo[] = [];
 
-/**
- * Registers a group of demo-only actions of the page (sample codes, sample
- * identifications, «repor dados»…) in the floating «Demonstração» widget while
- * the component is mounted. Pass `null` outside demo mode. The group is
- * re-registered when its identity changes (memoise it).
- */
+/** Registers the page's demo-only action group in the widget while mounted; `null` outside demo mode. Memoise it: it re-registers when its identity changes. */
 export function useAcoesDemo(grupo: GrupoAcoesDemo | null): void {
   useEffect(() => (grupo ? registarAcoesDemo(grupo) : undefined), [grupo]);
 }
 
 /**
- * Demonstration mode: fill forms with example data.
- *
- * Only rendered when the app runs in demo mode (server env `DEMO_MODE=true`,
- * passed down as the `ativo` prop) — never in production data environments.
- *
- * How forms take part:
- *  - Mark the form: `<form data-demo-form="inscricao-evento">`.
- *  - Give the app a catalogue of scenarios per form id (`cenarios`): each
- *    scenario maps field `name`s to values (text, number, date, select value,
- *    checkbox `true/false`, radio value). Fields are filled through the native
- *    value setter + `input`/`change` events, so React-controlled inputs,
- *    react-hook-form and plain forms all react as if a person typed.
- *  - Widgets that are not native inputs (rich text, custom selects, money
- *    cells) register a filler with `registarPreenchedor(formId, fn)`.
- *
- * Where the controls appear:
- *  - Forms on the page: a small floating pill. It docks away from what the
- *    person needs (the focused element, a form's last actions, anything with
- *    `data-demo-evitar`): bottom-right, else bottom-left, else the middle of
- *    the right edge. An app with a bottom navigation bar lifts it with
- *    `--demo-fundo` (e.g. `:root { --demo-fundo: 4.5rem }` on phones). While
- *    active, `<html data-demo>` sets `--demo-reserva`
- *    (the room the pill needs) so layouts can keep their last actions clear
- *    of it (`m-demo-reserva`, or `pb-[calc(2rem+var(--demo-reserva))]`).
- *  - Forms inside an open dialog or sheet (`role="dialog"`/`"alertdialog"`,
- *    `<dialog open>`): a «Preencher (demonstração)» strip at the bottom of
- *    that dialog. It lives inside the dialog, so the modal's focus trap and
- *    the inertness of the page stay intact; the floating pill hides while a
- *    modal makes the page inert.
- *
- * «Entrar como…»: a login page that registers a demo sign-in
- * context (`useEntrarComoDemo({ destino, aoEntrar })` or
- * `registarEntrarComo`) gets an «Entrar como…» section at the top of the
- * panel — the demo personas of the Cérebro in use, one click signs in. When
- * the environment has no demo personas (404) the section is not shown.
- *
- * Scenarios are meant to show how each form reacts: valid data, a validation
- * error, an edge case (e.g. a full event, a negative amount).
+ * Demo widget that fills forms with example data. Rendered only when `ativo` (server `DEMO_MODE=true`).
+ * - Forms: `data-demo-form="<id>"`; `cenarios` maps form id → scenarios of field `name` → value. Fields are set
+ *   through the native value setter + `input`/`change` events, so controlled inputs and react-hook-form react.
+ *   Non-native widgets register a filler with `registarPreenchedor(formId, fn)`.
+ * - Forms on the page: a floating pill docked away from the focused element, a form's last actions and
+ *   `data-demo-evitar`; `--demo-fundo` lifts it above a bottom nav. While active `<html data-demo>` sets
+ *   `--demo-reserva` so layouts keep their last actions clear (`m-demo-reserva`).
+ * - Forms in an open dialog/sheet: a «Preencher (demonstração)» strip inside it (keeps the focus trap); the
+ *   pill hides while a modal makes the page inert.
+ * - «Entrar como…» section when a login page registers `useEntrarComoDemo`/`registarEntrarComo`; hidden on 404.
  */
 
 export type ValorDemo = string | number | boolean | null;
@@ -74,7 +41,6 @@ export interface CenarioDemo {
   nome: string;
   descricao?: string | undefined;
   campos: Record<string, ValorDemo>;
-  /** Submit the form after filling. */
   submeter?: boolean | undefined;
 }
 
@@ -83,7 +49,6 @@ export type CatalogoDemo = Record<string, { titulo: string; cenarios: CenarioDem
 type Preenchedor = (cenario: CenarioDemo, form: HTMLFormElement) => void | Promise<void>;
 const preenchedores = new Map<string, Set<Preenchedor>>();
 
-/** Custom filler for widgets that are not native inputs. Returns an unregister function. */
 export function registarPreenchedor(formId: string, fn: Preenchedor): () => void {
   const set = preenchedores.get(formId) ?? new Set();
   set.add(fn);
@@ -104,7 +69,6 @@ function definirValorNativo(el: HTMLInputElement | HTMLTextAreaElement | HTMLSel
   el.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
-/** Fills a form with a scenario. Exported for tests and custom triggers. */
 export async function preencherFormulario(form: HTMLFormElement, cenario: CenarioDemo): Promise<number> {
   let preenchidos = 0;
   for (const [nome, valor] of Object.entries(cenario.campos)) {
@@ -134,9 +98,6 @@ export async function preencherFormulario(form: HTMLFormElement, cenario: Cenari
   return preenchidos;
 }
 
-// ─── Reading the page ──────────────────────────────────────────────────────
-
-/** Layers whose forms get the in-dialog strip instead of the floating pill. */
 const SELETOR_CAMADA = '[role="dialog"], [role="alertdialog"], dialog[open]';
 const MARCA_RAIZ = "data-demo-preencher";
 const AVISO_MS = 3500;
@@ -180,9 +141,8 @@ function lerPagina(cenarios: CatalogoDemo, raiz: HTMLElement | null): Leitura {
       pagina.push(id);
     }
   }
-  // A modal marks everything outside it `aria-hidden`/`inert` (Base UI,
-  // Radix) or puts itself in the top layer (<dialog>.showModal()): the pill
-  // could not be reached, so it hides.
+  // A modal makes the page aria-hidden/inert (Base UI, Radix) or uses the top layer (<dialog>.showModal()):
+  // the pill would be unreachable, so it hides.
   const bloqueado = (raiz?.closest('[aria-hidden="true"], [inert]') ?? null) !== null || temModalNativo();
   return { pagina, camadas: [...porHost].map(([host, forms]) => ({ host, forms })), bloqueado };
 }
@@ -206,10 +166,8 @@ function movimentoReduzido(): boolean {
 const SELETOR_ACOES = ':is(button, a[href], input[type="submit"], input[type="button"], input[type="reset"])';
 
 /**
- * What the pill must not cover: the focused element, the forms' last actions, `data-demo-evitar`.
- * While a bottom sheet marked `data-demo-folha` is open (the floating assistant at phone width),
- * nothing: the page behind it is hidden anyway and the sheet stacks above the pill docked at the
- * bottom — a pill mid-edge would sit on the sheet or leave it too short.
+ * What the pill must not cover: the focused element, the forms' last actions, `data-demo-evitar`. Nothing
+ * while a `data-demo-folha` bottom sheet is open (floating assistant on phones): it stacks above the bottom pill.
  */
 function obstaculos(raiz: HTMLElement | null): Retangulo[] {
   const vw = window.innerWidth;
@@ -232,15 +190,12 @@ function obstaculos(raiz: HTMLElement | null): Retangulo[] {
   const submissoes = document.querySelectorAll('button[type="submit"], input[type="submit"], form button:not([type]), button[form]');
   for (const s of submissoes) {
     juntar(s);
-    // The whole actions row: «Cancelar» sits next to «Guardar».
     const linha = s.parentElement;
     if (linha) for (const irmao of linha.querySelectorAll(`:scope > ${SELETOR_ACOES}`)) juntar(irmao);
   }
   for (const e of document.querySelectorAll("[data-demo-evitar]")) juntar(e, true);
   return out;
 }
-
-// ─── The component ────────────────────────────────────────────────────────
 
 export function DemoPreencher({
   ativo,
@@ -323,8 +278,6 @@ function chaveDe(el: HTMLElement): string {
   return k;
 }
 
-// ─── Floating pill (forms on the page) ─────────────────────────────────────
-
 function Flutuante({
   raizRef,
   forms,
@@ -351,7 +304,6 @@ function Flutuante({
   const grupos = useSyncExternalStore(ouvirAcoesDemo, gruposAcoesDemo, () => SEM_GRUPOS);
   const contagem = forms.length + (entrarComo ? 1 : 0) + grupos.length;
 
-  // Dock away from the focused element and the forms' last actions.
   useEffect(() => {
     if (escondido) return;
     let quadro = 0;
@@ -392,9 +344,8 @@ function Flutuante({
     };
   }, [escondido, raizRef]);
 
-  // The whole footprint (pill + open panel + notice) in the position registry:
-  // the floating assistant stacks above it and never covers it. The
-  // widget never moves for the chat.
+  // The whole footprint (pill + panel + notice) goes in the position registry so the floating assistant
+  // stacks above it; the widget never moves for the chat.
   const registo = useRegistoPosicoes();
   useLayoutEffect(() => {
     const raiz = raizRef.current;
@@ -432,12 +383,10 @@ function Flutuante({
   }, [escondido, aberto, aviso, doca, registo, raizRef]);
   useEffect(() => () => registo.publicar(ID_POSICAO_DEMO, null), [registo]);
 
-  // A modal opened over the page: close the panel.
   useEffect(() => {
     if (escondido) setAberto(false);
   }, [escondido]);
 
-  // Open: focus the first scenario; a press outside closes the panel.
   useEffect(() => {
     if (!aberto) return;
     const painel = painelRef.current;
@@ -609,8 +558,6 @@ function Flutuante({
     </div>
   );
 }
-
-// ─── Strip inside an open dialog or sheet ──────────────────────────────────
 
 function NaCamada({ host, forms, cenarios }: { host: HTMLElement; forms: string[]; cenarios: CatalogoDemo }) {
   const [alvo, setAlvo] = useState<HTMLElement | null>(null);

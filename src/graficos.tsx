@@ -1,15 +1,9 @@
 "use client";
 
 /**
- * Brand charts on Recharts (optional peer dependency — import from
- * `@umporg/ui/graficos` only in apps that have `recharts` installed).
- *
- * Every chart is a `ChartFrame`: a card with title, description, legend
- * (≥ 2 series), the plot, and a "Ver dados" toggle that swaps the plot for
- * an accessible table. The svg carries a generated text description;
- * Recharts' accessibility layer makes the plot keyboard-focusable (arrow keys
- * move the tooltip). Colours come from the validated `--serie-*` palette,
- * numbers are pt-PT, animation is off under Reduzir movimento.
+ * Brand charts on Recharts (optional peer: import from `@umporg/ui/graficos` only in apps with `recharts`).
+ * Every chart is a `ChartFrame` with a "Ver dados" toggle that swaps the plot for an accessible table; the svg
+ * has a generated description. Colours from `--serie-*`; animation off under Reduzir movimento.
  */
 
 import { useEffect, useId, useMemo, useState, type ReactNode } from "react";
@@ -51,9 +45,6 @@ import {
 
 export type { CorSerie, SerieBase as ChartSeries } from "./dados";
 
-// ─── Motion ───────────────────────────────────────────────────────────────
-
-/** True when the OS or the Acessibilidade menu asks for less motion. */
 export function useMovimentoReduzido(): boolean {
   const [reduzido, setReduzido] = useState(true); // SSR/first paint: no animation
   useEffect(() => {
@@ -72,8 +63,7 @@ export function useMovimentoReduzido(): boolean {
   return reduzido;
 }
 
-/** Axis text in px (Recharts measures labels in px): 0.875rem of the root
- *  size, so ticks grow with the Acessibilidade text size. */
+/** Axis text in px (Recharts measures in px): 0.875rem of the root size, so ticks follow the text-size setting. */
 export function useLetraEixo(): number {
   const [px, setPx] = useState(14);
   useEffect(() => {
@@ -87,7 +77,6 @@ export function useLetraEixo(): number {
 }
 
 let medidor: CanvasRenderingContext2D | null = null;
-/** Width (px) of the widest label, measured like the browser draws it. */
 function larguraTexto(textos: string[], px: number): number {
   if (typeof document === "undefined") return Math.max(...textos.map((t) => t.length)) * px * 0.62;
   medidor ??= document.createElement("canvas").getContext("2d");
@@ -97,8 +86,7 @@ function larguraTexto(textos: string[], px: number): number {
   return Math.max(0, ...textos.map((t) => medidor!.measureText(t).width));
 }
 
-/** Width of a value axis: the widest tick Recharts can produce for this data
- *  (it rounds the top up, so allow for a longer label), plus breathing room. */
+/** Width of a value axis: the widest tick Recharts can produce (it rounds the top up) plus room. */
 function larguraEixoValor(dados: readonly Linha[], chaves: string[], formato: FormatoValor | undefined, px: number, empilhado?: boolean): number {
   let max = 0;
   let min = 0;
@@ -119,7 +107,6 @@ function larguraEixoValor(dados: readonly Linha[], chaves: string[], formato: Fo
   return Math.ceil(larguraTexto(candidatos, px) * 1.08) + 12;
 }
 
-/** Width of a category axis (horizontal bars): the longest name, capped. */
 function larguraEixoCategoria(dados: readonly Linha[], chave: string, px: number, fc?: (v: unknown) => string): number {
   const nomes = dados.map((d) => (fc ? fc(d[chave]) : String(d[chave] ?? "")));
   return Math.min(Math.ceil(larguraTexto(nomes, px) * 1.06) + 14, 220);
@@ -128,14 +115,10 @@ function larguraEixoCategoria(dados: readonly Linha[], chave: string, px: number
 /** Heights are given in px at 100% text and scale with the Acessibilidade size. */
 const rem = (px: number) => `${px / 16}rem`;
 
-// ─── Frame ────────────────────────────────────────────────────────────────
-
 export interface LegendItem {
   label: string;
   color: string;
-  /** Key shape mirrors the mark: rect for bars/areas/slices, line for lines. */
   shape?: "rect" | "line" | undefined;
-  /** Optional value next to the name (donut). */
   value?: string | undefined;
 }
 
@@ -160,21 +143,16 @@ export function ChartLegend({ items, className }: { items: LegendItem[]; classNa
 export interface ChartFrameProps {
   title: ReactNode;
   description?: ReactNode | undefined;
-  /** Extra controls on the right (the "Ver dados" toggle is added for you). */
   actions?: ReactNode | undefined;
   legend?: LegendItem[] | undefined;
-  /** The table twin of the chart. */
   table?: { headers: string[]; rows: string[][] } | undefined;
   loading?: boolean | undefined;
-  /** Keeps the previous plot at reduced opacity while new data loads. */
   refreshing?: boolean | undefined;
   isEmpty?: boolean | undefined;
   empty?: ReactNode | undefined;
   /** Plot height in px at 100% text (scales with the text size; the axis band is inside it). */
   height?: number | undefined;
-  /** No card surface (inside another card). */
   bare?: boolean | undefined;
-  /** Heading level of the title. */
   level?: 2 | 3 | 4 | undefined;
   /** "auto": the plot sizes itself (content taller than `height` on phones). */
   plotHeight?: "fixed" | "auto" | undefined;
@@ -182,7 +160,6 @@ export interface ChartFrameProps {
   children: ReactNode;
 }
 
-/** Card + title + legend + plot/table toggle. Use it for custom charts too. */
 export function ChartFrame({
   title,
   description,
@@ -285,8 +262,6 @@ export function ChartFrame({
   );
 }
 
-// ─── Shared pieces ────────────────────────────────────────────────────────
-
 const tick = (px: number) => ({ fill: "var(--grafico-texto)", fontSize: px });
 
 function ChartTooltip({
@@ -327,12 +302,10 @@ interface CartesianBase<T extends Linha> {
   title: ReactNode;
   description?: ReactNode | undefined;
   data: readonly T[];
-  /** Key of the category (x) value in each row. */
   categoryKey: keyof T & string;
   series: SerieBase[];
   format?: FormatoValor | undefined;
   formatCategory?: ((v: unknown) => string) | undefined;
-  /** Header of the first table column ("Mês", "Distrito"). */
   categoryLabel?: string | undefined;
   height?: number | undefined;
   actions?: ReactNode | undefined;
@@ -341,7 +314,6 @@ interface CartesianBase<T extends Linha> {
   empty?: ReactNode | undefined;
   bare?: boolean | undefined;
   level?: 2 | 3 | 4 | undefined;
-  /** Override the generated screen-reader description. */
   summary?: string | undefined;
   className?: string | undefined;
 }
@@ -386,22 +358,15 @@ function frameProps<T extends Linha>(p: CartesianBase<T>, legend: LegendItem[] |
 
 const tituloTexto = (t: ReactNode) => (typeof t === "string" ? t : undefined);
 
-// ─── Bars ─────────────────────────────────────────────────────────────────
-
 export interface GraficoBarrasProps<T extends Linha> extends CartesianBase<T> {
-  /** "vertical" columns (time), "horizontal" bars (rankings, long names). */
   orientation?: "vertical" | "horizontal" | undefined;
   stacked?: boolean | undefined;
   /** Emphasis: this category keeps its colour, the others go grey. */
   highlight?: string | undefined;
-  /** Value at the bar end. Default: on for single-series horizontal bars. */
   valueLabels?: boolean | undefined;
 }
 
-/**
- * Bars ≤ 24px thick with 4px rounded data ends, a hairline grid and one
- * baseline. Horizontal bars grow with the number of categories.
- */
+/** Bars ≤ 24px thick with 4px rounded ends; horizontal bars grow with the number of categories. */
 export function GraficoBarras<T extends Linha>(props: GraficoBarrasProps<T>) {
   const { orientation = "vertical", stacked, highlight } = props;
   const reduzido = useMovimentoReduzido();
@@ -527,8 +492,6 @@ export function GraficoBarras<T extends Linha>(props: GraficoBarrasProps<T>) {
   );
 }
 
-// ─── Lines ────────────────────────────────────────────────────────────────
-
 export interface GraficoLinhasProps<T extends Linha> extends CartesianBase<T> {
   /** Series drawn in grey (context), e.g. "Média nacional". */
   context?: string[] | undefined;
@@ -536,7 +499,6 @@ export interface GraficoLinhasProps<T extends Linha> extends CartesianBase<T> {
   domain?: [number | "auto", number | "auto"] | undefined;
 }
 
-/** 2px lines, a crosshair tooltip listing every series, an end dot. */
 export function GraficoLinhas<T extends Linha>(props: GraficoLinhasProps<T>) {
   const reduzido = useMovimentoReduzido();
   const TICK = tick(useLetraEixo());
@@ -610,13 +572,10 @@ export function GraficoLinhas<T extends Linha>(props: GraficoLinhasProps<T>) {
   );
 }
 
-// ─── Area ─────────────────────────────────────────────────────────────────
-
 export interface GraficoAreaProps<T extends Linha> extends CartesianBase<T> {
   stacked?: boolean | undefined;
 }
 
-/** A single trend as a line with a soft wash; stacked for part-to-whole over time. */
 export function GraficoArea<T extends Linha>(props: GraficoAreaProps<T>) {
   const reduzido = useMovimentoReduzido();
   const TICK = tick(useLetraEixo());
@@ -685,15 +644,12 @@ export function GraficoArea<T extends Linha>(props: GraficoAreaProps<T>) {
   );
 }
 
-// ─── Donut ────────────────────────────────────────────────────────────────
-
 export interface GraficoDonutProps {
   title: ReactNode;
   description?: ReactNode | undefined;
   /** Parts of one whole. More than 5 are folded into "Outros". */
   data: Fatia[];
   format?: FormatoValor | undefined;
-  /** Words under the total in the centre ("inscrições"). */
   totalLabel?: string | undefined;
   /** Max slices including "Outros" (≤ 5: the palette's all-pairs limit is 4 + grey). */
   maxSlices?: number | undefined;
@@ -707,10 +663,7 @@ export interface GraficoDonutProps {
   className?: string | undefined;
 }
 
-/**
- * Part-to-whole at a glance (≤ 5 slices). For comparing close values use
- * GraficoBarras — a donut hides small differences.
- */
+/** Part-to-whole (≤ 5 slices); to compare close values use GraficoBarras: a donut hides small differences. */
 export function GraficoDonut({
   title,
   description,

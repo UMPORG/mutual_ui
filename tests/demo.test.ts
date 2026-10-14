@@ -21,7 +21,6 @@ test("areaSobreposta counts the gap (folga) around obstacles", () => {
 
 test("escolherDoca keeps the bottom-right corner when nothing is there", () => {
   assert.equal(escolherDoca(PILULA, VP, []), "fim");
-  // An obstacle far away.
   assert.equal(escolherDoca(PILULA, VP, [{ x: 100, y: 100, w: 200, h: 44 }]), "fim");
 });
 

@@ -10,22 +10,7 @@ import { NumberField as BaseNumberField } from "@base-ui/react/number-field";
 import { Check, Minus, Plus } from "lucide-react";
 import { cx } from "./cx";
 
-/**
- * On/off and one-of-many controls, built on Base UI:
- *
- * - Switch — a setting that applies at once ("Receber avisos por email").
- *   In a form that is saved with a button, use Checkbox instead.
- * - Checkbox — a yes/no inside a form, or several independent choices
- *   (group them in a `Fieldset`).
- * - RadioGroup — one of 2–6 visible options. More than that: Select.
- * - RadioCards — one of a few options that need a description or an icon
- *   (plano, tipo de inscrição).
- * - SegmentedControl — switch between views of the same content (Lista /
- *   Mapa, Mês / Semana). Not for form values.
- * - Slider — an approximate value on a range (raio de pesquisa). For exact
- *   values use NumberField.
- * - NumberField — a number with − / + buttons, pt-PT formatting and limits.
- */
+/** Switch applies at once (in a saved form use Checkbox). RadioGroup: 2–6 options (more: Select). RadioCards: options needing a description or icon. SegmentedControl: views of the same content, not form values. Slider: approximate value (exact: NumberField). */
 
 type Aria = {
   id?: string | undefined;
@@ -36,13 +21,9 @@ type Aria = {
 };
 
 /**
- * The visible label of a Base UI checkbox / switch / radio. Base UI renders
- * the focusable control as a `<span role=…>` plus a hidden native input that
- * takes our `id`, so a `<label for>` would name the hidden input, not the
- * control (in server HTML the control would have no name, and getByLabel
- * would find the hidden input). The control names itself with
- * `aria-labelledby` (server HTML included) and a click on the label clicks
- * the control.
+ * Visible label of a Base UI checkbox/switch/radio. The control is a `<span role>` plus a hidden input that
+ * takes our `id`, so `<label for>` would name the hidden input; the control names itself via
+ * `aria-labelledby` (also in server HTML) and a click on the label clicks it.
  */
 function Rotulo({ id, alvo, className, children }: { id: string; alvo: { current: HTMLElement | null }; className: string; children: ReactNode }) {
   return (
@@ -51,8 +32,6 @@ function Rotulo({ id, alvo, className, children }: { id: string; alvo: { current
     </label>
   );
 }
-
-// ─── Switch ───────────────────────────────────────────────────────────────
 
 export function Switch({
   label,
@@ -74,15 +53,9 @@ export function Switch({
   onCheckedChange?: ((checked: boolean) => void) | undefined;
   name?: string | undefined;
   disabled?: boolean | undefined;
-  /** "end" puts the switch on the right (settings lists). */
   align?: "start" | "end" | undefined;
   className?: string | undefined;
-  /**
-   * Accessible name when the visible `label` is only the state («Ligada»):
-   * `aria-labelledby` points at the field's own label and is read BEFORE the
-   * visible label («Proteção, Ligada»); `aria-label` replaces the name (keep
-   * the visible words in it — WCAG 2.5.3).
-   */
+  /** Accessible name when the visible `label` is only the state («Ligada»): `aria-labelledby` reads the field label BEFORE it; `aria-label` replaces the name (keep the visible words, WCAG 2.5.3). */
   "aria-label"?: string | undefined;
   "aria-labelledby"?: string | undefined;
 }) {
@@ -121,8 +94,6 @@ export function Switch({
   );
 }
 
-// ─── Checkbox ─────────────────────────────────────────────────────────────
-
 export function Checkbox({
   label,
   description,
@@ -141,7 +112,6 @@ export function Checkbox({
   description?: ReactNode | undefined;
   checked?: boolean | undefined;
   defaultChecked?: boolean | undefined;
-  /** "Some selected" (a select-all box). */
   indeterminate?: boolean | undefined;
   onCheckedChange?: ((checked: boolean) => void) | undefined;
   name?: string | undefined;
@@ -192,8 +162,6 @@ export function Checkbox({
     </div>
   );
 }
-
-// ─── RadioGroup & RadioCards ──────────────────────────────────────────────
 
 export interface RadioOption {
   value: string;
@@ -275,7 +243,6 @@ export function RadioGroup({
   );
 }
 
-/** Options as cards: the whole card is the radio. */
 export function RadioCards({
   options,
   value,
@@ -333,8 +300,6 @@ export function RadioCards({
   );
 }
 
-// ─── SegmentedControl ─────────────────────────────────────────────────────
-
 export function SegmentedControl({
   options,
   value,
@@ -347,7 +312,6 @@ export function SegmentedControl({
   value?: string | undefined;
   defaultValue?: string | undefined;
   onValueChange?: ((value: string) => void) | undefined;
-  /** Spoken name ("Vista"). */
   label: string;
   className?: string | undefined;
 }) {
@@ -369,8 +333,6 @@ export function SegmentedControl({
   );
 }
 
-// ─── Slider ───────────────────────────────────────────────────────────────
-
 export function Slider({
   label,
   value,
@@ -387,7 +349,6 @@ export function Slider({
   className,
 }: {
   label: ReactNode;
-  /** One number, or two for a range. */
   value?: number | readonly number[] | undefined;
   defaultValue?: number | readonly number[] | undefined;
   onValueChange?: ((value: number | readonly number[]) => void) | undefined;
@@ -396,7 +357,6 @@ export function Slider({
   min?: number | undefined;
   max?: number | undefined;
   step?: number | undefined;
-  /** Intl options for the shown value, e.g. `{ style: "unit", unit: "kilometer" }`. */
   format?: Intl.NumberFormatOptions | undefined;
   showValue?: boolean | undefined;
   name?: string | undefined;
@@ -434,8 +394,6 @@ export function Slider({
   );
 }
 
-// ─── NumberField ──────────────────────────────────────────────────────────
-
 export function NumberField({
   value,
   defaultValue,
@@ -456,7 +414,6 @@ export function NumberField({
   min?: number | undefined;
   max?: number | undefined;
   step?: number | undefined;
-  /** Intl options, e.g. `{ style: "currency", currency: "EUR" }` or `{ maximumFractionDigits: 2 }`. */
   format?: Intl.NumberFormatOptions | undefined;
   name?: string | undefined;
   disabled?: boolean | undefined;

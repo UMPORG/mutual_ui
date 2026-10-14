@@ -1,7 +1,3 @@
-/**
- * Pure helpers of the conversation components: grouping threads by
- * date, the text announced to screen readers, the Enter-to-send rule.
- */
 
 import { hojeLisboa, somarDias, type DataIso } from "./calendario";
 import { markdownParaTexto } from "./markdown-ast";
@@ -14,13 +10,11 @@ export interface ChatSource {
   /** Number used in the reply's "[1]" markers. */
   n?: number | undefined;
   title: string;
-  /** Help-centre page or app record. */
   href: string;
   /** "ajuda": documentation; "registo": the person's own data in an app. */
   kind: "ajuda" | "registo";
   /** App of a record (its accent marks the chip): "simplex", "backoffice"… */
   app?: string | undefined;
-  /** Short quote shown in the tooltip/detail. */
   excerpt?: string | undefined;
 }
 
@@ -69,11 +63,7 @@ export function agruparConversas<T extends ChatThread>(threads: readonly T[], ag
   return [...grupos].filter(([, l]) => l.length).map(([rotulo, l]) => ({ rotulo, threads: l }));
 }
 
-/**
- * What a screen reader hears when a reply finishes: the reply as plain text,
- * cut at a sentence end near `max` characters, with a pointer to read the
- * rest in the conversation.
- */
+/** Reply as plain text for screen readers, cut at a sentence end near `max` characters. */
 export function textoParaAnunciar(markdown: string, max = 600): string {
   const t = markdownParaTexto(markdown).replace(/\s+/g, " ").trim();
   if (t.length <= max) return t;
@@ -91,7 +81,6 @@ export function teclaEnvia(e: { key: string; shiftKey?: boolean | undefined; alt
   return true;
 }
 
-/** Numbers sources in order of first appearance when they lack `n`. */
 export function numerarFontes(fontes: readonly ChatSource[]): Array<ChatSource & { n: number }> {
   let proximo = 1;
   const usados = new Set(fontes.map((f) => f.n).filter((n): n is number => n !== undefined));

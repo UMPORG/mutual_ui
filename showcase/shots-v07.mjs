@@ -1,5 +1,4 @@
-// Screenshots of the controls, effects and assistant pages in every theme
-// and size, plus the interactive states (open popups, dialogs, streaming…).
+// Screenshots of the controls, effects and assistant pages per theme/size, plus interactive states.
 // `node shots-v07.mjs <outDir> [filtro]` with `bun serve.ts` running.
 import { chromium } from "file:///D:/Mutual/mutual_eventos/node_modules/@playwright/test/index.mjs";
 import { mkdirSync } from "node:fs";
@@ -21,7 +20,6 @@ async function abrir(q, vp = { width: 1440, height: 900 }, reduzido = true) {
 }
 const quer = (n) => !FILTRO || n.includes(FILTRO);
 
-// 1) Whole pages and sections per theme / size.
 const casos = [
   ["claro-desktop", "tema=claro", { width: 1440, height: 900 }],
   ["escuro-desktop", "tema=escuro", { width: 1440, height: 900 }],
@@ -54,7 +52,6 @@ for (const pagina of Object.keys(SECOES)) {
   }
 }
 
-// 2) Interactive states (viewport shots).
 async function estado(nome, q, vp, acao, reduzido = true) {
   if (!quer(nome)) return;
   const p = await abrir(q, vp, reduzido);
@@ -143,7 +140,6 @@ await estado("claro-390-intervalo", "?pagina=controlos&tema=claro", M, async (p)
 });
 await estado("claro-390-confirmar", "?pagina=controlos&tema=claro", M, (p) => p.locator("[data-abrir=confirmar]").click());
 
-// Assistant states.
 for (const tema of ["claro", "escuro", "contraste"]) {
   const q = `?pagina=conversa&tema=${tema}`;
   await estado(`${tema}-conversa-a-pensar`, q, D, async (p) => {
@@ -174,7 +170,6 @@ await estado("claro-390-conversa-lista", "?pagina=conversa&tema=claro", M, async
 });
 await estado("escuro-390-conversa-vazia", "?pagina=conversa&vazia=1&tema=escuro", M, async () => {});
 
-// Effects in motion (not reduced) — a frame mid-animation.
 for (const tema of ["claro", "escuro"]) {
   for (const s of ["e-constelacao", "e-topografia", "e-malha", "e-pontos", "e-brilho"]) {
     const nome = `${tema}-movimento-${s}`;

@@ -33,7 +33,6 @@ for (const d of ["a"]) {
     }
   }
 }
-// Forced colours: the launcher open.
 {
   const p = await pagina(`?pagina=icones-shell&app=eventos&tema=claro`, undefined, { forcado: true });
   await p.locator(".m-waffle").click();
@@ -41,7 +40,6 @@ for (const d of ["a"]) {
   await p.screenshot({ path: `${OUT}/lancador-forcado-1440.png` });
   await p.close();
 }
-// Keyboard: focus lands on the current app, arrows move, Esc closes and returns focus.
 {
   const p = await pagina(`?pagina=icones-shell&app=eventos&tema=claro`);
   const foco = () => p.evaluate(() => (document.activeElement?.textContent || document.activeElement?.getAttribute("aria-label") || document.activeElement?.tagName || "").trim());
@@ -60,7 +58,6 @@ for (const d of ["a"]) {
   await p.mouse.click(700, 600); await p.waitForTimeout(150);
   r.push("clique fora: " + (await foco()));
   console.log(r.join(" | "));
-  // Tooltip on hover (panel closed).
   await p.mouse.move(10, 400);
   await p.locator(".m-waffle").hover(); await p.waitForTimeout(700);
   await p.screenshot({ path: `${OUT}/dica-hover.png`, clip: { x: 900, y: 0, width: 540, height: 120 } });

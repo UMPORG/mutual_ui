@@ -1,10 +1,4 @@
-/**
- * Keyboard movement in a grid of `n` items laid out in `colunas` columns
- * (the grid launcher). Returns the new index, or `null` when the key does
- * not move (the caller then lets the browser handle it). Stops at the edges
- * (no wrap): ←/→ one item (across rows), ↑/↓ one row (↓ on the last,
- * incomplete row stays), Home/End first/last.
- */
+/** New index for a key in a grid of `n` items in `colunas` columns, or `null` when the key does not move (the browser handles it). No wrap: ←/→ across rows, ↑/↓ one row (↓ on the last, incomplete row stays), Home/End. */
 export function indiceNaGrelha(i: number, tecla: string, n: number, colunas: number): number | null {
   if (n <= 0 || i < 0 || i >= n) return null;
   switch (tecla) {

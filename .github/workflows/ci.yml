@@ -1,11 +1,5 @@
 name: CI
 
-# Runners alojados do GitHub (ubuntu-latest), um só job: tipos (pacote e o
-# ficheiro solto), testes (node --test) e o build da página de revisão
-# (showcase: bun build + Tailwind), que prova que os componentes compilam como
-# as apps os usam. Só em push para main, PR e etiquetas de versão; mudanças só
-# de documentação não correm a CI.
-
 on:
   push:
     branches: [main]

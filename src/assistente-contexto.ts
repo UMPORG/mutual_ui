@@ -1,16 +1,6 @@
 /**
- * Page context for the floating assistant — pure, no React, no DOM,
- * tested in `tests/assistente.test.ts`.
- *
- * A page publishes what the person is looking at (`useContextoAssistente`):
- * the app, the page, the current section, the fields with their labels and
- * values. It is sent to the Cérebro with the next question ONLY when it
- * changed (hash), compact and capped; the Cérebro keeps it inside the
- * encrypted conversation and gives the model only the difference.
- *
- * Personal data does not need to be removed here — mark it (`sensivel`) and
- * the Cérebro sends the model only «preenchido». NIF, emails, phones and IBAN
- * in ordinary fields are masked by the Cérebro too.
+ * Page context for the floating assistant (pure, no React/DOM). Sent with the next question ONLY when it changed (hash), compact and capped; the Cérebro keeps it inside the encrypted conversation.
+ * Mark personal data `sensivel` (the model then learns only «preenchido»); the Cérebro also masks NIF, emails, phones and IBAN in ordinary fields.
  */
 
 export type ValorContexto = string | number | boolean | null;
@@ -18,7 +8,6 @@ export type ValorContexto = string | number | boolean | null;
 export interface CampoContexto {
   /** Dotted path in the form's draft ("identificacao.nif") — what a proposal writes. */
   caminho: string;
-  /** The label the person sees («NIF da associação»). */
   rotulo: string;
   valor: ValorContexto;
   /** Personal data: the model only learns whether it is filled. */
@@ -27,7 +16,6 @@ export interface CampoContexto {
   editavel?: boolean | undefined;
 }
 
-/** A field in the short form of `dados`: a value, or the value with its label and marks. */
 export type EntradaDado =
   | ValorContexto
   | { valor: ValorContexto; rotulo?: string | undefined; sensivel?: boolean | undefined; editavel?: boolean | undefined };
@@ -35,15 +23,12 @@ export type EntradaDado =
 export interface EntradaContexto {
   /** The app (`data-app` id). */
   app: string;
-  /** The page as the person names it («Caracterização», «Balanço 2025»). */
   pagina: string;
-  /** The current section («A. Identificação»). */
   seccao?: string | undefined;
   /** What is on the page: `{ caminho: valor | { valor, rotulo, sensivel, editavel } }`. */
   dados?: Readonly<Record<string, EntradaDado>> | undefined;
   /** The same as a list (keeps the order of the form). */
   campos?: readonly CampoContexto[] | undefined;
-  /** «O que falta?» for this form. */
   formulario?: "caracterizacao" | "simplex" | undefined;
   /** «Preencher com um documento» target in the Cérebro ("caracterizacao.a"). */
   alvo?: string | undefined;
@@ -77,7 +62,6 @@ const valorCompacto = (v: unknown): ValorContexto => {
 const eObjetoDado = (v: EntradaDado): v is Exclude<EntradaDado, ValorContexto> =>
   v !== null && typeof v === "object";
 
-/** The route without record ids (never needed by the model). */
 export function rotaSemIds(rota: string): string {
   return corta(
     rota
@@ -88,7 +72,6 @@ export function rotaSemIds(rota: string): string {
   );
 }
 
-/** The compact context (capped, trimmed, fields in order, without empty labels). */
 export function normalizarContexto(e: EntradaContexto, rota: string): ContextoPagina {
   const lista: CampoContexto[] = [...(e.campos ?? [])];
   for (const [caminho, d] of Object.entries(e.dados ?? {})) {
@@ -133,7 +116,6 @@ export function jsonEstavel(v: unknown): string {
     .join(",")}}`;
 }
 
-/** FNV-1a (32 bits, hex) of the stable JSON — to know whether the context changed. */
 export function hashContexto(c: ContextoPagina | null): string {
   if (!c) return "0";
   const s = jsonEstavel(c);
@@ -146,13 +128,11 @@ export function hashContexto(c: ContextoPagina | null): string {
 }
 
 export interface DiferencaContexto {
-  /** Another app, page or section: the whole context counts as new. */
   outraPagina: boolean;
   alterados: CampoContexto[];
   removidos: string[];
 }
 
-/** What changed from `antes` to `agora` (fields by path). */
 export function diferencaContexto(antes: ContextoPagina | null, agora: ContextoPagina): DiferencaContexto {
   if (!antes || antes.app !== agora.app || antes.rota !== agora.rota || antes.pagina !== agora.pagina || antes.seccao !== agora.seccao) {
     return { outraPagina: true, alterados: agora.campos, removidos: [] };
@@ -166,11 +146,7 @@ export function diferencaContexto(antes: ContextoPagina | null, agora: ContextoP
   };
 }
 
-/**
- * The context to send with a question: the full compact context when it
- * differs from the last one sent in this conversation, else `undefined`
- * (the Cérebro keeps using the last one).
- */
+/** The full compact context when it differs from the last one sent in this conversation, else `undefined` (the Cérebro reuses the last). */
 export function contextoAEnviar(
   atual: ContextoPagina | null,
   ultimoHashEnviado: string | undefined,
@@ -179,7 +155,6 @@ export function contextoAEnviar(
   return { contexto: atual && hash !== ultimoHashEnviado ? atual : undefined, hash };
 }
 
-/** The current values by path (for `compararPropostas`). */
 export function valoresDoContexto(c: ContextoPagina | null): Record<string, unknown> {
   return Object.fromEntries((c?.campos ?? []).map((x) => [x.caminho, x.valor]));
 }

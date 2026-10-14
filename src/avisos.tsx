@@ -6,14 +6,8 @@ import { CheckCircle2, Info, X } from "lucide-react";
 import { cx } from "./cx";
 
 /**
- * Toasts — ONLY to confirm something the person just did and can
- * see anyway ("Alterações guardadas", "Convite enviado"), optionally with
- * "Anular". Never for errors, warnings or anything the person must read:
- * those are persistent `StatusCallout`s next to where they happened.
- *
- * Render `<Toaster />` once (root layout, client side) and call
- * `toast.success("Alterações guardadas")` from anywhere — event handlers,
- * server-action results, outside React.
+ * Toasts ONLY confirm something the person just did and can see anyway, optionally with "Anular"; errors and anything to read are persistent `StatusCallout`s.
+ * Render `<Toaster />` once (root layout, client side); `toast.success(...)` works anywhere, even outside React.
  */
 
 type DadosToast = { tom: "success" | "info"; acao?: { label: string; onClick: () => void } | undefined };
@@ -22,7 +16,6 @@ const gestor = Toast.createToastManager();
 
 export interface ToastOptions {
   description?: ReactNode | undefined;
-  /** One action, usually "Anular" for a reversible change. */
   action?: { label: string; onClick: () => void } | undefined;
   /** ms before it closes (default 5 s; 10 s with an action). Pauses on hover and focus. */
   timeout?: number | undefined;
@@ -39,9 +32,7 @@ function adicionar(tom: DadosToast["tom"], title: ReactNode, o: ToastOptions = {
 }
 
 export const toast = {
-  /** "Alterações guardadas." */
   success: (title: ReactNode, options?: ToastOptions) => adicionar("success", title, options),
-  /** Neutral confirmation ("A exportação começou. O ficheiro fica em Transferências."). */
   info: (title: ReactNode, options?: ToastOptions) => adicionar("info", title, options),
   close: (id?: string) => gestor.close(id),
 };

@@ -1,19 +1,8 @@
 /**
- * Where the floating assistant chat sits — pure geometry, no DOM, so
- * it is unit-tested (`tests/assistente.test.ts`).
- *
- * - The chat lives in one of four CORNERS. Dragged and released, it goes to
- *   the corner nearest its centre (`cantoMaisProximo`); the arrow keys move
- *   it between corners (`cantoPelaSeta`).
- * - It never overlaps the «Demonstração» widget (or anything else published
- *   in the position registry): the widget never moves for the chat — the
- *   chat YIELDS. In a bottom corner it stacks ABOVE the widget with a gap; an
- *   obstacle higher up only limits its height. When what is left is shorter
- *   than `minAltura`, the chat takes the mirrored corner on the same edge
- *   (the person's chosen corner comes back as soon as there is room).
- * - At phone width it is a bottom sheet (`folha`): full width, anchored to
- *   the bottom edge, stacked above a widget docked at the bottom; a widget
- *   higher up (mid-edge) caps its height when a useful sheet is left.
+ * Where the floating chat sits: pure geometry, no DOM. Four CORNERS (nearest on release, arrow keys between them).
+ * It never overlaps published obstacles (the «Demonstração» widget): the chat YIELDS, stacking above in a bottom corner; obstacles higher up only cap its height.
+ * When less than `minAltura` is left it takes the mirrored corner on the same edge (the chosen corner returns when there is room).
+ * At phone width it is a bottom sheet (`folha`): full width, stacked above a widget docked at the bottom.
  */
 
 export type CantoChat = "inf-dir" | "inf-esq" | "sup-dir" | "sup-esq";
@@ -40,19 +29,16 @@ export const eCanto = (v: unknown): v is CantoChat => typeof v === "string" && (
 const inferior = (c: CantoChat) => c.startsWith("inf");
 const direito = (c: CantoChat) => c.endsWith("dir");
 
-/** The corner of the same edge on the other side. */
 export function cantoEspelhado(c: CantoChat): CantoChat {
   return `${inferior(c) ? "inf" : "sup"}-${direito(c) ? "esq" : "dir"}` as CantoChat;
 }
 
-/** The corner nearest a point (the chat's centre when it is released). */
 export function cantoMaisProximo(centro: { x: number; y: number }, viewport: Tamanho): CantoChat {
   const baixo = centro.y >= viewport.h / 2;
   const dir = centro.x >= viewport.w / 2;
   return `${baixo ? "inf" : "sup"}-${dir ? "dir" : "esq"}` as CantoChat;
 }
 
-/** Arrow keys move between corners; any other key → `null`. */
 export function cantoPelaSeta(c: CantoChat, tecla: string): CantoChat | null {
   const v = inferior(c) ? "inf" : "sup";
   const h = direito(c) ? "dir" : "esq";
@@ -82,7 +68,6 @@ export interface OpcoesPosicao {
   topo?: number | undefined;
   /** Shortest useful chat (default 280). */
   minAltura?: number | undefined;
-  /** What the chat must not cover (the demo widget's footprint), viewport rectangles. */
   ocupados?: readonly Retangulo[] | undefined;
   /** Width below which it is a bottom sheet (default `LARGURA_FOLHA`). */
   larguraFolha?: number | undefined;
@@ -95,19 +80,13 @@ export interface PosicaoChat {
   h: number;
   /** The corner actually used (the mirrored one when the chosen corner has no room). */
   canto: CantoChat;
-  /** Phone width: a bottom sheet. */
   folha: boolean;
 }
 
 const sobrepoeHorizontal = (a: { x: number; w: number }, b: Retangulo, folga: number) =>
   a.x < b.x + b.w + folga && b.x < a.x + a.w + folga;
 
-/**
- * The chat's rectangle in one corner, yielding to the obstacles: the ones in
- * its column that reach the anchored edge push it inwards (it stacks past
- * them), the others limit its height. `h` may end below `minAltura` — the
- * caller then tries the mirrored corner.
- */
+/** The chat's rectangle in one corner, yielding to obstacles: those reaching the anchored edge push it inwards, the others cap its height. `h` may end below `minAltura`: the caller then tries the mirrored corner. */
 function noCanto(
   canto: CantoChat,
   w: number,
@@ -125,8 +104,7 @@ function noCanto(
   const limiteTopo = topo + margem;
   const limiteFundo = vh - margem;
   if (inferior(canto)) {
-    // Anchored at the bottom: push the anchor above whatever sits in the
-    // anchor zone (from the bottom edge up to the shortest chat), nearest first.
+    // Anchored at the bottom: push the anchor above whatever is in the anchor zone, nearest first.
     let fundo = limiteFundo;
     for (const o of [...coluna].sort((a, b) => b.y + b.h - (a.y + a.h))) {
       if (o.y + o.h + folga > fundo - minAltura && o.y < fundo) fundo = Math.min(fundo, o.y - folga);
@@ -140,7 +118,6 @@ function noCanto(
     const h = Math.max(0, Math.min(hDesejada, fundo - teto));
     return { x, y: fundo - h, w, h };
   }
-  // Anchored at the top.
   let cima = limiteTopo;
   for (const o of [...coluna].sort((a, b) => a.y - b.y)) {
     if (o.y - folga < cima + minAltura && o.y + o.h > cima) cima = Math.max(cima, o.y + o.h + folga);
@@ -153,10 +130,6 @@ function noCanto(
   return { x, y: cima, w, h };
 }
 
-/**
- * The chat's rectangle for the chosen corner (or the bottom sheet at phone
- * width), never overlapping `ocupados`.
- */
 export function posicaoDoChat(canto: CantoChat, o: OpcoesPosicao): PosicaoChat {
   const { w: vw, h: vh } = o.viewport;
   const ocupados = o.ocupados ?? [];
@@ -164,7 +137,6 @@ export function posicaoDoChat(canto: CantoChat, o: OpcoesPosicao): PosicaoChat {
   const topo = o.topo ?? 0;
   const minAltura = o.minAltura ?? 280;
   if (vw < (o.larguraFolha ?? LARGURA_FOLHA)) {
-    // Bottom sheet: full width, stacked above what sits at the bottom edge.
     const margem = 0;
     let fundo = vh - margem;
     for (const r of [...ocupados].sort((a, b) => b.y + b.h - (a.y + a.h))) {
@@ -190,14 +162,12 @@ export function posicaoDoChat(canto: CantoChat, o: OpcoesPosicao): PosicaoChat {
   return ali.h > aqui.h ? { ...ali, canto: outro, folha: false } : { ...aqui, canto, folha: false };
 }
 
-/** Area shared by two rectangles (0 when apart) — for tests and checks. */
 export function sobreposicao(a: Retangulo, b: Retangulo): number {
   const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
   const h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
   return w > 0 && h > 0 ? w * h : 0;
 }
 
-/** The smallest rectangle around several (a widget's pill + its open panel). */
 export function uniao(rs: readonly Retangulo[]): Retangulo | null {
   const v = rs.filter((r) => r.w > 0 && r.h > 0);
   if (v.length === 0) return null;

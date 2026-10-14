@@ -1,20 +1,9 @@
 /**
- * A small, safe Markdown parser for assistant replies and help text.
- *
- * Safety by construction: the parser produces a tree of plain objects and the
- * renderer (`markdown.tsx`) turns it into React elements. There is no HTML
- * string anywhere, so raw HTML in the input (`<script>`, `<img onerror>`) is
- * shown as text. Link targets go through `sanitizarUrl` (http, https, mailto,
- * tel and relative paths only). Images are never loaded: `![alt](src)` becomes
- * a link, so a reply cannot make the browser fetch arbitrary addresses.
- *
- * Supported (CommonMark + GFM subset): paragraphs, headings, emphasis,
- * strong, strikethrough, inline code, fenced code, block quotes, ordered and
- * bulleted lists (nested, task items), tables with alignment, horizontal
- * rules, links, autolinks, hard breaks, citation markers "[1]".
- *
- * Tolerant of partial input (streaming): an unclosed fence is code to the
- * end, unclosed emphasis stays literal.
+ * Small, safe Markdown parser (CommonMark + GFM subset, citation markers "[1]") for assistant replies and help text.
+ * Safe by construction: a tree of plain objects that `markdown.tsx` renders as React elements, no HTML string
+ * anywhere, so raw HTML in the input shows as text. Link targets go through `sanitizarUrl`; images are never
+ * loaded (`![alt](src)` becomes a link) so a reply cannot make the browser fetch arbitrary addresses.
+ * Tolerant of partial input (streaming): an unclosed fence is code to the end, unclosed emphasis stays literal.
  */
 
 export type Inline =
@@ -41,12 +30,7 @@ export type Block =
 
 const PROTOCOLOS = new Set(["http:", "https:", "mailto:", "tel:"]);
 
-/**
- * Returns a safe href, or null. Allowed: http(s), mailto, tel, and relative
- * references ("/ajuda/quotas", "#secao", "?q=1", "ficha"). Control
- * characters and whitespace are stripped before the scheme check, so
- * "java\nscript:" and " javascript:" are caught.
- */
+/** Safe href or null: http(s), mailto, tel and relative references only. Control characters and whitespace are stripped before the scheme check ("java\nscript:" is caught). */
 export function sanitizarUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   // eslint-disable-next-line no-control-regex
@@ -61,12 +45,9 @@ export function sanitizarUrl(url: string | null | undefined): string | null {
   return limpo;
 }
 
-/** True for absolute http(s) or protocol-relative addresses. */
 export function urlExterna(href: string): boolean {
   return /^(https?:)?\/\//i.test(href);
 }
-
-// ─── Blocks ───────────────────────────────────────────────────────────────
 
 const RE_FENCE = /^ {0,3}(`{3,}|~{3,})\s*([^`\s]*)[^`]*$/;
 const RE_HEADING = /^ {0,3}(#{1,6})(?:\s+(.*?))?\s*#*\s*$/;
@@ -172,7 +153,6 @@ function analisarBlocos(linhas: string[]): Block[] {
       continue;
     }
 
-    // Table: a row with pipes followed by a delimiter row.
     if (l.includes("|") && linhas[i + 1] !== undefined && RE_TABLE_SEP.test(linhas[i + 1]!) && linhas[i + 1]!.includes("-")) {
       const head = dividirLinhaTabela(l);
       const align: Alinhamento[] = dividirLinhaTabela(linhas[i + 1]!).map((c) => {
@@ -191,10 +171,8 @@ function analisarBlocos(linhas: string[]): Block[] {
       continue;
     }
 
-    // Paragraph.
     const corpo: string[] = [];
     while (i < linhas.length && !vazia(linhas[i]) && (corpo.length === 0 || !iniciaBloco(linhas[i]!))) {
-      // A table can start right after a paragraph line only with a blank line; keep it simple.
       corpo.push(linhas[i]!);
       i++;
     }
@@ -279,8 +257,6 @@ function analisarLista(linhas: string[], inicio: number): { bloco: Block; fim: n
   return { bloco: { t: "list", ordered: ordenada, start, tight, items }, fim: i };
 }
 
-// ─── Inlines ──────────────────────────────────────────────────────────────
-
 const ESCAPAVEIS = "\\`*_{}[]()#+-.!|~<>\"'";
 
 function textoPara(saida: Inline[], v: string) {
@@ -289,7 +265,6 @@ function textoPara(saida: Inline[], v: string) {
   else saida.push({ t: "text", v });
 }
 
-/** Finds the `]` that closes the `[` at `inicio`, honouring nesting and escapes. */
 function fechoParenteses(s: string, inicio: number, abre: string, fecha: string): number {
   let nivel = 0;
   for (let i = inicio; i < s.length; i++) {
@@ -314,7 +289,6 @@ function fechoParenteses(s: string, inicio: number, abre: string, fecha: string)
 
 function destinoLink(bruto: string): string {
   let d = bruto.trim();
-  // Optional title: (url "title")
   const t = /^(\S+)\s+["'(].*["')]$/.exec(d);
   if (t) d = t[1]!;
   if (d.startsWith("<") && d.endsWith(">")) d = d.slice(1, -1);
@@ -331,7 +305,6 @@ export function analisarInline(s: string): Inline[] {
   while (i < s.length) {
     const c = s[i]!;
 
-    // Hard break: backslash or two spaces before a newline.
     if (c === "\n") {
       if (/ {2,}$/.test(s.slice(0, i))) {
         const ultimo = saida[saida.length - 1];
@@ -355,7 +328,6 @@ export function analisarInline(s: string): Inline[] {
       }
     }
 
-    // Code span.
     if (c === "`") {
       let n = 1;
       while (s[i + n] === "`") n++;
@@ -389,7 +361,6 @@ export function analisarInline(s: string): Inline[] {
     if (c === "[") {
       const fim = fechoParenteses(s, i, "[", "]");
       if (fim !== -1) {
-        // Link [text](url)
         if (s[fim + 1] === "(") {
           const fp = fechoParenteses(s, fim + 1, "(", ")");
           if (fp !== -1) {
@@ -399,7 +370,6 @@ export function analisarInline(s: string): Inline[] {
             continue;
           }
         }
-        // Citation marker [1] or [1, 2]
         const cit = /^\[(\d{1,3}(?:\s*,\s*\d{1,3})*)\]/.exec(s.slice(i));
         if (cit) {
           for (const n of cit[1]!.split(",")) saida.push({ t: "cite", n: Number(n.trim()) });
@@ -409,7 +379,6 @@ export function analisarInline(s: string): Inline[] {
       }
     }
 
-    // Autolink <https://…> / <email@…>
     if (c === "<") {
       const a = /^<((?:https?:\/\/|mailto:)[^\s<>]+|[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+)>/i.exec(s.slice(i));
       if (a) {
@@ -421,7 +390,6 @@ export function analisarInline(s: string): Inline[] {
       }
     }
 
-    // Bare URL (GFM autolink literal).
     if ((c === "h" || c === "w") && !eLetra(s[i - 1])) {
       const u = /^(?:https?:\/\/|www\.)[^\s<]*[^\s<.,:;"')\]!?]/i.exec(s.slice(i));
       if (u) {
@@ -433,7 +401,6 @@ export function analisarInline(s: string): Inline[] {
       }
     }
 
-    // Strikethrough ~~x~~
     if (c === "~" && s[i + 1] === "~") {
       const fim = s.indexOf("~~", i + 2);
       if (fim > i + 2 && s[i + 2] !== " ") {
@@ -443,7 +410,6 @@ export function analisarInline(s: string): Inline[] {
       }
     }
 
-    // Strong / emphasis.
     if (c === "*" || c === "_") {
       const duplo = s[i + 1] === c;
       const n = duplo ? 2 : 1;
@@ -502,8 +468,6 @@ function procurarFecho(s: string, desde: number, c: string, n: number): number {
   return -1;
 }
 
-// ─── Plain text (screen-reader announcements, copy, previews) ─────────────
-
 function inlineParaTexto(c: Inline[]): string {
   return c
     .map((x) => {
@@ -547,7 +511,6 @@ function blocosParaTexto(b: Block[]): string {
     .join("\n\n");
 }
 
-/** Markdown → readable plain text (no markers). */
 export function markdownParaTexto(fonte: string): string {
   return blocosParaTexto(analisarMarkdown(fonte))
     .replace(/[ \t]+\n/g, "\n")
@@ -555,12 +518,7 @@ export function markdownParaTexto(fonte: string): string {
     .trim();
 }
 
-/**
- * While a reply is still being written, hides an emphasis/code marker that
- * has not been closed yet in the last paragraph ("indicação *se" →
- * "indicação se"), so readers never see stray asterisks. Code fences are
- * left alone (an open fence already renders as code).
- */
+/** While a reply is still streaming, hides an unclosed emphasis/code marker in the last paragraph ("indicação *se" → "indicação se"); code fences are left alone. */
 export function estabilizarParcial(texto: string): string {
   if ((texto.match(/^ {0,3}(```|~~~)/gm)?.length ?? 0) % 2 === 1) return texto;
   const corte = texto.lastIndexOf("\n\n");

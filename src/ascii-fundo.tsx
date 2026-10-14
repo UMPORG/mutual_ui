@@ -5,23 +5,16 @@ import { movimentoReduzido } from "./preferencias";
 import { cx } from "./cx";
 
 /**
- * Animated ASCII backdrop: the waving bands of the MUTU@L flag drawn in text
- * characters, drifting slowly, with a soft ripple where the pointer passes.
- *
- * Calm by design: ~20 fps, low contrast, paused when the tab is hidden, a
- * single still frame when motion is reduced (OS setting or "Reduzir
- * movimento"), hidden in high contrast. Decorative only (aria-hidden).
- *
- * The `mascara` cuts a soft hole where the content sits (e.g. the login
- * form), so the characters never run behind text.
+ * Decorative (aria-hidden) and calm by design: ~20 fps, paused when the tab is hidden, one still frame under reduced motion, hidden in high contrast.
+ * `mascara` cuts a soft hole where content sits, so characters never run behind text.
  */
 export interface AsciiFundoProps {
   className?: string | undefined;
   /** Hole in the animation, in CSS units relative to the backdrop. */
   mascara?: { x?: string | undefined; y?: string | undefined; largura?: string | undefined; altura?: string | undefined } | false | undefined;
-  /** Cell size in px (character grid). */
+  /** px. */
   celula?: number | undefined;
-  /** 0–1: overall strength of the characters. */
+  /** 0–1. */
   intensidade?: number | undefined;
   /** Fade the animation out at the top (keeps a header legible), e.g. "6rem"; false to disable. */
   fadeTopo?: string | false | undefined;
@@ -125,18 +118,14 @@ export function iniciarAsciiFundo(
       const y = j * celula;
       for (let i = 0; i < colunas; i++) {
         const x = i * cw;
-        // Flag wave: vertical offset that travels along x and breathes in time.
         const onda = Math.sin(x * 0.0065 + t * 0.00042) * 26 + Math.sin(x * 0.017 - t * 0.0007 + y * 0.004) * 9;
         const yy = y + onda;
         const posFaixa = yy / faixa;
         const indiceFaixa = Math.floor(posFaixa);
         const dentro = posFaixa - indiceFaixa; // 0..1 within the band
-        // Brightest at the middle of each band, fading to the edges.
         let v = Math.sin(dentro * Math.PI) ** 2;
-        // Diagonal "S" of the logo: a slow sweep that lifts the characters it crosses.
         const diag = Math.sin((x - y * 1.35) * 0.0045 - t * 0.00025);
         v *= 0.55 + 0.45 * (diag * 0.5 + 0.5);
-        // Pointer ripple.
         if (rato.forca > 0.01) {
           const dx = x - rato.x;
           const dy = y - rato.y;
@@ -159,7 +148,7 @@ export function iniciarAsciiFundo(
 
   const ciclo = (agora: number) => {
     raf = requestAnimationFrame(ciclo);
-    if (agora - ultimo < 50) return; // ~20 fps is plenty for a backdrop
+    if (agora - ultimo < 50) return;
     ultimo = agora;
     desenhar(agora);
   };
@@ -169,7 +158,7 @@ export function iniciarAsciiFundo(
     medir();
     if (movimentoReduzido()) {
       parado = true;
-      desenhar(12_000); // one still, pleasant frame
+      desenhar(12_000);
       return;
     }
     parado = false;

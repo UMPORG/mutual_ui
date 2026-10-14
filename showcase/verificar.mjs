@@ -1,12 +1,4 @@
-// Checks what unit tests cannot see (needs `bun serve.ts` running):
-// FormField accessible names ("Nome (opcional)", "Nome (obrigatório)") both
-// in Playwright's getByLabel and in Chromium's accessibility tree, the 44px
-// hit area of the FilterChips and Tag buttons, that the header follows data-app,
-// the invalid-field tint, that DataTable never widens the page at 150% text,
-// that Checkbox/Switch/Radio labels name the focusable control in server
-// HTML and after hydration (/ssr), and that DemoPreencher works inside open
-// dialogs and never covers a long form's last actions (?pagina=demo).
-// `node verificar.mjs` — exits 1 on the first failure.
+// Checks unit tests cannot see (needs `bun serve.ts` running): `node verificar.mjs` exits 1 on the first failure.
 import { chromium } from "file:///D:/Mutual/mutual_eventos/node_modules/@playwright/test/index.mjs";
 
 const BASE = "http://localhost:5199/";
@@ -40,8 +32,6 @@ const alvos = await p.$$eval('ul[aria-label="Filtros ativos"] :is(a, button)', (
   }),
 );
 for (const [n, w, h] of alvos) ok(w >= 44 && h >= 44, `alvo ${Math.round(w)}×${Math.round(h)} — ${n}`);
-// ─── Hit areas, invalid fields, table width, control labels ─────────────
-// Tag remove buttons: 44px hit area.
 await p.goto(BASE + "?pagina=controlos");
 await p.waitForTimeout(500);
 const alvosTag = await p.$$eval('button[aria-label^="Remover "]', (els) =>
@@ -56,7 +46,6 @@ const alvosTag = await p.$$eval('button[aria-label^="Remover "]', (els) =>
 ok(alvosTag.length >= 2, "Tag: botões de remover presentes");
 for (const [n, w, h] of alvosTag) ok(w >= 44 && h >= 44, `alvo Tag ${Math.round(w)}×${Math.round(h)} — ${n}`);
 
-// Invalid fields: red border + destructive-soft tint in every theme.
 for (const tema of ["claro", "escuro", "contraste"]) {
   await p.goto(BASE + `?pagina=controlos&tema=${tema}`);
   await p.waitForTimeout(300);
@@ -73,7 +62,6 @@ for (const tema of ["claro", "escuro", "contraste"]) {
   ok(fundo === soft && borda === vermelho, `campo inválido (${tema}): fundo ${fundo}, borda ${borda}`);
 }
 
-// DataTable: its sr-only caption/header text must not widen the page (150% text).
 for (const w of [800, 1024, 1280]) {
   await p.setViewportSize({ width: w, height: 900 });
   await p.goto(BASE + "?pagina=dados&texto=150");
@@ -83,8 +71,6 @@ for (const w of [800, 1024, 1280]) {
 }
 await p.setViewportSize({ width: 1440, height: 900 });
 
-// Checkbox / Switch / Radio: the visible label names the focusable control,
-// in server HTML (no JavaScript) and after hydration (showcase/ssr.tsx).
 const controlos = [
   ["Só com quotas em atraso", "checkbox"],
   ["Li e aceito o regulamento de inscrição", "checkbox"],
@@ -129,7 +115,6 @@ ok((await ativas.count()) === 1 && (await ativas.getAttribute("role")) === "chec
 await p.getByText("Só associações ativas", { exact: true }).click();
 ok((await ativas.getAttribute("aria-checked")) === "false", "showcase (popover): clique no rótulo desmarca");
 
-// ─── DemoPreencher: dialogs and long forms ───────────────────────────────
 const retangulo = (loc) => loc.evaluate((e) => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
 const sobrepoe = (a, b) => Math.min(a.x + a.w, b.x + b.w) > Math.max(a.x, b.x) && Math.min(a.y + a.h, b.y + b.h) > Math.max(a.y, b.y);
 for (const [nome, vp] of [["desktop", { width: 1440, height: 900 }], ["telemóvel", { width: 390, height: 844 }]]) {
@@ -140,7 +125,6 @@ for (const [nome, vp] of [["desktop", { width: 1440, height: 900 }], ["telemóve
   const guardar = p.locator('[data-teste="guardar"]');
   const cancelar = guardar.locator("xpath=preceding-sibling::button[1]");
   ok((await p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--demo-reserva").trim())) === "5rem", `demo (${nome}): <html data-demo> dá --demo-reserva`);
-  // The last actions exactly at the bottom edge of the window: the pill docks away.
   for (const folga of [4, 30, 60]) {
     await guardar.evaluate((e, f) => window.scrollBy(0, e.getBoundingClientRect().bottom - (window.innerHeight - f)), folga);
     await p.waitForTimeout(250);
@@ -153,7 +137,6 @@ for (const [nome, vp] of [["desktop", { width: 1440, height: 900 }], ["telemóve
   ok(!sobrepoe(await retangulo(pilula), await retangulo(guardar)), `demo (${nome}): no fim da página a reserva deixa as ações livres`);
   await guardar.click({ timeout: 2000 }); // Playwright refuses when another element covers it
   ok(await p.getByText("Use o formato 1234-567.").isVisible(), `demo (${nome}): «Guardar ficha» clicável`);
-  // Keyboard: open, first scenario focused, Escape returns focus to the pill.
   await pilula.focus();
   await p.keyboard.press("Enter");
   ok(await p.evaluate(() => document.activeElement?.hasAttribute("data-cenario") ?? false), `demo (${nome}): Enter abre e foca o primeiro cenário`);
@@ -163,7 +146,6 @@ for (const [nome, vp] of [["desktop", { width: 1440, height: 900 }], ["telemóve
   await p.getByRole("button", { name: /Dados válidos/ }).click();
   ok((await p.locator('input[name="codigoPostal"]').inputValue()) === "4700-328", `demo (${nome}): cenário da página aplicado`);
 
-  // A decision dialog: the pill hides, the strip in the dialog fills its form.
   await p.evaluate(() => window.scrollTo(0, 0));
   await p.locator('[data-abrir="decisao"]').click();
   await p.waitForTimeout(400);
@@ -196,7 +178,6 @@ for (const [nome, vp] of [["desktop", { width: 1440, height: 900 }], ["telemóve
   ok(await p.locator("[data-demo-preencher]").isVisible(), `demo (${nome}): a pílula volta depois de fechar o diálogo`);
   ok((await p.locator("[data-demo-camada]").count()) === 0, `demo (${nome}): a faixa sai com o diálogo`);
 
-  // Sheet.
   await p.locator('[data-abrir="painel-demo"]').click();
   await p.waitForTimeout(400);
   await p.getByRole("dialog", { name: "Nota interna" }).getByRole("button", { name: /Nota de exemplo/ }).click();
@@ -204,7 +185,6 @@ for (const [nome, vp] of [["desktop", { width: 1440, height: 900 }], ["telemóve
   await p.keyboard.press("Escape");
   await p.waitForTimeout(300);
 }
-// --demo-fundo: the pill sits above a fixed bottom navigation bar and still docks right.
 await p.setViewportSize({ width: 390, height: 844 });
 await p.goto(BASE + "?pagina=demo");
 await p.waitForTimeout(400);
@@ -219,14 +199,12 @@ await p.waitForTimeout(400);
 const fundoPilula = await p.locator("[data-demo-preencher] > button[aria-expanded]").evaluate((e) => window.innerHeight - e.getBoundingClientRect().bottom);
 ok(Math.round(fundoPilula) === 88, `demo: --demo-fundo levanta a pílula (${Math.round(fundoPilula)}px do fundo)`);
 ok((await p.locator("[data-demo-preencher]").getAttribute("data-doca")) !== "meio", "demo: com --demo-fundo a barra de navegação não empurra a pílula para o meio");
-// Reduced motion: no scroll animation, no transition.
 await p.setViewportSize({ width: 1440, height: 900 });
 await p.goto(BASE + "?pagina=demo&movimento=reduzido");
 await p.waitForTimeout(400);
 const dur = await p.locator("[data-demo-preencher]").evaluate((e) => parseFloat(getComputedStyle(e).transitionDuration));
 ok(dur < 0.01, `demo: movimento reduzido sem transição (${dur}s)`);
 
-// ─── Identificadores ─────────────────────────────────────────────────────
 await p.setViewportSize({ width: 1440, height: 900 });
 await p.goto(BASE + "?pagina=identificadores");
 await p.waitForTimeout(500);

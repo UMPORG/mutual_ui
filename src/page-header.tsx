@@ -7,11 +7,7 @@ export interface Crumb {
   href?: string | undefined;
 }
 
-/**
- * The one page header of the ecosystem: breadcrumbs (optional), title,
- * one-line description, and the page's actions on the right (wrapping under
- * the title on narrow screens). The primary action goes last.
- */
+/** The page header: optional breadcrumbs, title, description and actions on the right (wrapping on narrow screens); the primary action goes last. */
 export function PageHeader({
   title,
   description,
@@ -26,12 +22,9 @@ export function PageHeader({
   description?: ReactNode | undefined;
   actions?: ReactNode | undefined;
   breadcrumbs?: Crumb[] | undefined;
-  /** Small label above the title (e.g. state or category). */
   eyebrow?: ReactNode | undefined;
-  /** Sub-pages of this page as tabs, under the title (`<Separadores …/>`). */
   separadores?: ReactNode | undefined;
   className?: string | undefined;
-  /** Pass Next's `Link` for client-side navigation. */
   LinkComponent?: React.ElementType | undefined;
 }) {
   const Link = LinkComponent;

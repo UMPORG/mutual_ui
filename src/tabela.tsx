@@ -5,27 +5,12 @@ import { EmptyState } from "./feedback";
 import { intervaloPagina, paginasVisiveis } from "./dados";
 import { formatarNumero } from "./formatar";
 
-/**
- * The list/table shell. Library-agnostic: the app keeps its data logic
- * (fetching, URL state, TanStack, server pagination) and hands rows and
- * render functions in. Server-safe: no hooks — interactive props
- * (`onSort`, `onPageChange`…) only make sense from client components;
- * server pages use the `…Href` props instead.
- */
-
-// ─── Skeleton ─────────────────────────────────────────────────────────────
+/** Library-agnostic and server-safe (no hooks): interactive props (`onSort`, `onPageChange`…) only from client components; server pages use the `…Href` props. */
 
 export function Skeleton({ className, style }: { className?: string | undefined; style?: React.CSSProperties | undefined }) {
   return <span aria-hidden className={cx("m-skeleton", className ?? "h-4 w-full")} style={style} />;
 }
 
-// ─── Toolbar ──────────────────────────────────────────────────────────────
-
-/**
- * One row above the list it scopes: search + filters on the left, actions
- * (export, "Nova …") on the right; a second line for the result count and
- * the active filter chips. Wraps on narrow screens.
- */
 export function Toolbar({
   search,
   filters,
@@ -37,9 +22,7 @@ export function Toolbar({
   search?: ReactNode | undefined;
   filters?: ReactNode | undefined;
   actions?: ReactNode | undefined;
-  /** "48 associações" — use `ResultCount`. */
   summary?: ReactNode | undefined;
-  /** Active filters — use `FilterChips`. */
   chips?: ReactNode | undefined;
   className?: string | undefined;
 }) {
@@ -60,7 +43,6 @@ export function Toolbar({
   );
 }
 
-/** "48 associações" / "48 associações de 312" — polite live region. */
 export function ResultCount({
   count,
   total,
@@ -83,10 +65,7 @@ export function ResultCount({
   );
 }
 
-/**
- * Search input with a visible-on-demand label. Uncontrolled with `name="q"`
- * inside a GET form (server pages), or controlled with `value`/`onChange`.
- */
+/** Uncontrolled with `name="q"` in a GET form (server pages), or controlled with `value`/`onChange`. */
 export function SearchField({
   label = "Pesquisar",
   hideLabel = true,
@@ -113,15 +92,12 @@ export function SearchField({
 
 export interface ActiveFilter {
   id: string;
-  /** "Estado" */
   label: string;
-  /** "Em atraso" */
   value: string;
   onRemove?: (() => void) | undefined;
   removeHref?: string | undefined;
 }
 
-/** The filters in force, each removable, plus "Limpar filtros". */
 export function FilterChips({
   filters,
   onClear,
@@ -182,13 +158,7 @@ export function FilterChips({
   );
 }
 
-// ─── Pagination ───────────────────────────────────────────────────────────
-
-/**
- * "A mostrar 21–40 de 312" + Anterior / pages / Seguinte. Links (`hrefFor`)
- * for server pages, `onPageChange` for client state. Page numbers collapse
- * to "Página 2 de 16" on phones.
- */
+/** `hrefFor` links for server pages, `onPageChange` for client state. */
 export function Pagination({
   page,
   pageCount,
@@ -201,7 +171,6 @@ export function Pagination({
   label = "Paginação",
   className,
 }: {
-  /** 1-based. */
   page: number;
   pageCount: number;
   totalItems?: number | undefined;
@@ -209,10 +178,8 @@ export function Pagination({
   hrefFor?: ((page: number) => string) | undefined;
   onPageChange?: ((page: number) => void) | undefined;
   LinkComponent?: ElementType | undefined;
-  /** A select for "Linhas por página" (the app's own control). */
   pageSizeControl?: ReactNode | undefined;
-  /** Name of the navigation landmark — give each one its own when a page has two
-   *  paginated lists ("Paginação das associações"). */
+  /** Landmark name; unique when a page has two paginated lists. */
   label?: string | undefined;
   className?: string | undefined;
 }) {
@@ -310,8 +277,6 @@ export function Pagination({
   );
 }
 
-// ─── DataTable ────────────────────────────────────────────────────────────
-
 export interface Column<T> {
   id: string;
   header: ReactNode;
@@ -320,16 +285,10 @@ export interface Column<T> {
   numeric?: boolean | undefined;
   align?: "start" | "center" | "end" | undefined;
   sortable?: boolean | undefined;
-  /** The row's title on phones (first column by default). */
   primary?: boolean | undefined;
-  /** Not shown in the phone card (secondary details, actions duplicated elsewhere). */
   hideOnMobile?: boolean | undefined;
-  /** Header text for the phone card when `header` is not plain text. */
   mobileLabel?: string | undefined;
-  /**
-   * Keep this column visible at the right edge while the table scrolls
-   * sideways (row actions). Use on the last column only.
-   */
+  /** Visible at the right edge while the table scrolls sideways (row actions); last column only. */
   stickyEnd?: boolean | undefined;
   className?: string | undefined;
   headerClassName?: string | undefined;
@@ -338,34 +297,25 @@ export interface Column<T> {
 export type SortDirection = "asc" | "desc";
 
 export interface DataTableProps<T> {
-  /** Names the table for screen readers ("Associações"). */
   caption: string;
   showCaption?: boolean | undefined;
   columns: Column<T>[];
   rows: readonly T[];
   rowKey: (row: T, index: number) => string;
-  /** First load: skeleton rows. */
   loading?: boolean | undefined;
-  /** Refetch: keeps the rows at reduced opacity (no flash). */
   refreshing?: boolean | undefined;
-  /** Message when loading failed. */
   error?: ReactNode | undefined;
   onRetry?: (() => void) | undefined;
-  /** Shown when there are no rows (use `EmptyState variant="inline"`). */
   empty?: ReactNode | undefined;
   toolbar?: ReactNode | undefined;
-  /** Usually `Pagination`. */
   footer?: ReactNode | undefined;
   sort?: { id: string; direction: SortDirection } | undefined;
   onSort?: ((id: string) => void) | undefined;
   sortHref?: ((id: string) => string) | undefined;
-  /** Rows open a detail page: the primary cell becomes the link. */
   rowHref?: ((row: T) => string) | undefined;
   LinkComponent?: ElementType | undefined;
-  /** Phones: "cards" (default) or keep the table with horizontal scroll. */
   mobile?: "cards" | "scroll" | undefined;
   skeletonRows?: number | undefined;
-  /** Wrap in a card surface. Default true. */
   surface?: boolean | undefined;
   className?: string | undefined;
 }
@@ -375,10 +325,6 @@ function alinhamento(c: Column<unknown>): string {
   return a === "end" ? "text-right" : a === "center" ? "text-center" : "text-left";
 }
 
-/**
- * A list page's table: toolbar, header with sorting, rows, phone cards,
- * loading/empty/error states and a footer for pagination.
- */
 export function DataTable<T>({
   caption,
   showCaption = false,

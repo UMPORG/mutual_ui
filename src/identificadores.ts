@@ -1,21 +1,9 @@
 /**
- * Portuguese identifiers: phone numbers, NIF/NIPC, código postal and
- * IBAN. Pure functions, no dependencies (server, client, edge, Bun).
- *
- * Three verbs for each identifier:
- * - `normalizar…` turns what a person typed ("912 345 678", "PT 501 234 560",
- *   "4000123", "pt50 0002…") into the stored form, or `null` when it is not
- *   one. Storage is always the normalised form: phones in E.164
- *   ("+351912345678"), NIF 9 digits, código postal "4000-123", IBAN in
- *   capitals without spaces.
- * - `validar…` returns `{ valido: true, valor }` (the normalised value) or
- *   `{ valido: false, erro }` with a plain pt-PT message for the field. Use it
- *   in zod (`comZod`), Effect Schema or by hand.
- * - `formatar…` (exported from `@umporg/ui/formatar`) shows the stored value to
- *   people: "222 084 177", "+44 207 946 0958", "501 234 560", "PT50 0002 …".
- *
- * Masks for the input components live here too (`mascara…`) so they are
- * unit-tested without a browser.
+ * Portuguese identifiers (pure, no dependencies). `normalizar…` turns typed text into the stored form or `null`
+ * (phone E.164 "+351912345678", NIF 9 digits, código postal "4000-123", IBAN in capitals without spaces);
+ * `validar…` returns `{ valido: true, valor }` or `{ valido: false, erro }` with a pt-PT message (use `comZod`,
+ * Effect Schema or by hand). Display helpers are in `@umporg/ui/formatar`; input masks (`mascara…`) live here
+ * so they are unit-tested without a browser.
  */
 
 export type ResultadoValidacao<T = string> = { valido: true; valor: T } | { valido: false; erro: string };
@@ -23,12 +11,10 @@ export type ResultadoValidacao<T = string> = { valido: true; valor: T } | { vali
 const ok = <T>(valor: T): ResultadoValidacao<T> => ({ valido: true, valor });
 const falha = (erro: string): ResultadoValidacao<never> => ({ valido: false, erro });
 
-/** Only the digits of a text. */
 export function soDigitos(texto: string | null | undefined): string {
   return (texto ?? "").replace(/\D/g, "");
 }
 
-/** Groups digits: `agrupar("912345678", [3, 3, 3])` → "912 345 678". */
 function agrupar(digitos: string, grupos: readonly number[]): string {
   const partes: string[] = [];
   let i = 0;
@@ -56,9 +42,6 @@ function gruposDeTres(n: number): number[] {
   return grupos;
 }
 
-// ─── Telefones ─────────────────────────────────────────────────────────────
-
-/** Portugal's calling code, the default everywhere. */
 export const INDICATIVO_PT = "351";
 
 // ITU calling codes are prefix-free: with the 1- and 2-digit codes known,
@@ -70,7 +53,6 @@ const INDICATIVOS_CURTOS = new Set([
   "81", "82", "84", "86", "90", "91", "92", "93", "94", "95", "98",
 ]);
 
-/** Splits the digits of an E.164 number into calling code and national number. */
 export function separarIndicativo(digitos: string): { indicativo: string; nacional: string } {
   const d = soDigitos(digitos);
   const n = INDICATIVOS_CURTOS.has(d.slice(0, 1)) ? 1 : INDICATIVOS_CURTOS.has(d.slice(0, 2)) ? 2 : 3;
@@ -109,15 +91,10 @@ const PT_MOVEL = /^9[1236]\d{7}$/;
 export type TipoTelefone = "movel" | "fixo" | "qualquer";
 
 export interface OpcoesTelefone {
-  /** Calling code for numbers typed without one. Default "351". */
   indicativo?: string | undefined;
 }
 
-/**
- * The E.164 form of a phone number, or `null`. Accepts spaces, dots, dashes,
- * brackets, "+351", "00351" and national numbers (Portugal by default):
- * `normalizarTelefone("912 345 678")` → "+351912345678".
- */
+/** E.164 form of a phone number or `null`; accepts spaces, dots, dashes, brackets, "+351", "00351" and national numbers (Portugal by default). */
 export function normalizarTelefone(texto: string | null | undefined, opcoes: OpcoesTelefone = {}): string | null {
   const bruto = (texto ?? "").trim();
   if (!bruto) return null;
@@ -140,10 +117,7 @@ export function normalizarTelefone(texto: string | null | undefined, opcoes: Opc
   return `+${digitos}`;
 }
 
-/**
- * Checks a phone number: `{ valido: true, valor: "+351912345678" }` or a pt-PT
- * message. `tipo: "movel"` accepts only mobiles (91, 92, 93, 96 in Portugal).
- */
+/** `tipo: "movel"` accepts only mobiles (91, 92, 93, 96 in Portugal). */
 export function validarTelefone(
   texto: string | null | undefined,
   opcoes: OpcoesTelefone & { tipo?: TipoTelefone | undefined } = {},
@@ -174,7 +148,6 @@ function nacionalPortugues(bruto: string, indicativoPadrao: string | undefined):
   return (soDigitos(indicativoPadrao ?? INDICATIVO_PT) || INDICATIVO_PT) === INDICATIVO_PT ? d : null;
 }
 
-/** `true` when the E.164 number is a Portuguese mobile. */
 export function eTelemovel(texto: string | null | undefined): boolean {
   const e164 = normalizarTelefone(texto);
   if (!e164) return false;
@@ -182,10 +155,7 @@ export function eTelemovel(texto: string | null | undefined): boolean {
   return indicativo === INDICATIVO_PT && PT_MOVEL.test(nacional);
 }
 
-/**
- * The display digits of a national number while typing or showing it:
- * Portugal "912 345 678", elsewhere groups of three ("207 946 0958").
- */
+/** Display digits while typing: Portugal "912 345 678", elsewhere groups of three. */
 export function mascaraTelefoneNacional(digitos: string, indicativo: string = INDICATIVO_PT): string {
   const d = soDigitos(digitos);
   if (indicativo === INDICATIVO_PT) return agrupar(d.slice(0, 9), [3, 3, 3]);
@@ -196,8 +166,6 @@ export function mascaraTelefoneNacional(digitos: string, indicativo: string = IN
 export function maxDigitosNacionais(indicativo: string = INDICATIVO_PT): number {
   return indicativo === INDICATIVO_PT ? 9 : Math.max(4, 15 - indicativo.length);
 }
-
-// ─── NIF / NIPC ────────────────────────────────────────────────────────────
 
 /** 9 digits without spaces nor the "PT" prefix, or `null` when it is not 9 digits. */
 export function normalizarNif(texto: string | null | undefined): string | null {
@@ -222,17 +190,13 @@ const NIF_COLETIVA = /^(?:[568]|7[0-9]|9[0189])/;
 
 export type TipoNif = "singular" | "coletiva" | "qualquer";
 
-/** Which kind of NIF this is (by its first digits), or `null` when the prefix is not issued. */
 export function tipoDeNif(nif: string): Exclude<TipoNif, "qualquer"> | null {
   if (NIF_SINGULAR.test(nif)) return "singular";
   if (NIF_COLETIVA.test(nif)) return "coletiva";
   return null;
 }
 
-/**
- * Checks a NIF (check digit and issued prefixes). `tipo: "singular"` accepts
- * only people, `"coletiva"` only organisations (NIPC).
- */
+/** `tipo: "singular"` accepts only people, `"coletiva"` only organisations (NIPC). */
 export function validarNif(texto: string | null | undefined, opcoes: { tipo?: TipoNif | undefined } = {}): ResultadoValidacao {
   const bruto = (texto ?? "").trim();
   if (!bruto) return falha(opcoes.tipo === "coletiva" ? "Indique o NIPC." : "Indique o NIF.");
@@ -247,10 +211,7 @@ export function validarNif(texto: string | null | undefined, opcoes: { tipo?: Ti
   return ok(nif);
 }
 
-/**
- * The last digit of a NIF is a check digit (mod 11): a typo in any digit makes
- * it disagree. The message says where to confirm the number.
- */
+/** The last digit is a mod 11 check digit; the message says where to confirm the number. */
 const MSG_CONTROLO_NIF: Record<TipoNif, string> = {
   coletiva:
     "Este NIPC não é válido: o último algarismo, de controlo, não bate certo com os outros oito. Verifique se há algum algarismo trocado (certidão permanente ou cartão de pessoa coletiva).",
@@ -259,19 +220,14 @@ const MSG_CONTROLO_NIF: Record<TipoNif, string> = {
     "Este NIF não é válido: o último algarismo, de controlo, não bate certo com os outros oito. Verifique se há algum algarismo trocado (cartão de cidadão ou de pessoa coletiva).",
 };
 
-/** Checks an organisation's NIPC: `validarNif(texto, { tipo: "coletiva" })`. */
 export function validarNipc(texto: string | null | undefined): ResultadoValidacao {
   return validarNif(texto, { tipo: "coletiva" });
 }
 
-/** Display while typing: "501 234 560". */
 export function mascaraNif(texto: string): string {
   return agrupar(soDigitos(texto).slice(0, 9), [3, 3, 3]);
 }
 
-// ─── Código postal ─────────────────────────────────────────────────────────
-
-/** "4000-123" from "4000123", "4000 123" or "4000-123"; `null` otherwise. */
 export function normalizarCodigoPostal(texto: string | null | undefined): string | null {
   const t = (texto ?? "").trim();
   if (!/^\d{4}[\s-]?\d{3}$/.test(t)) return null;
@@ -286,19 +242,15 @@ export function validarCodigoPostal(texto: string | null | undefined): Resultado
   return cp ? ok(cp) : falha("Use o formato 1234-567.");
 }
 
-/** Display while typing: "4000", "4000-1", "4000-123". */
 export function mascaraCodigoPostal(texto: string): string {
   const d = soDigitos(texto).slice(0, 7);
   return d.length > 4 ? `${d.slice(0, 4)}-${d.slice(4)}` : d;
 }
 
-// ─── IBAN ──────────────────────────────────────────────────────────────────
-
 const COMPRIMENTO_IBAN: Record<string, number> = {
   PT: 25, ES: 24, FR: 27, DE: 22, GB: 22, LU: 20, CH: 21, BE: 16, NL: 18, IT: 27, IE: 22, AT: 20, BR: 29,
 };
 
-/** Capitals without spaces ("PT50000201231234567890154"), or `null` when it is not an IBAN. */
 export function normalizarIban(texto: string | null | undefined): string | null {
   const t = (texto ?? "").replace(/[\s.\-]/g, "").toUpperCase();
   if (!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(t)) return null;
@@ -330,18 +282,12 @@ export function validarIban(texto: string | null | undefined, opcoes: { pais?: s
   return ok(iban);
 }
 
-/** Display while typing: groups of four, capitals ("PT50 0002 0123 …"). */
 export function mascaraIban(texto: string): string {
   const t = texto.replace(/[^A-Za-z0-9]/g, "").toUpperCase().slice(0, 34);
   return t.replace(/(.{4})(?=.)/g, "$1 ");
 }
 
-// ─── Mask caret ───────────────────────────────────────────────────────────
-
-/**
- * Where the caret goes after a mask rewrote the text: after the same number of
- * significant characters (letters and digits) it had before.
- */
+/** Caret after a mask rewrote the text: after the same number of significant characters (letters, digits) as before. */
 export function posicaoAposMascara(textoFormatado: string, significativosAntes: number): number {
   if (significativosAntes <= 0) return 0;
   let vistos = 0;
@@ -353,19 +299,10 @@ export function posicaoAposMascara(textoFormatado: string, significativosAntes: 
 }
 
 /**
- * Typing into a FULL fixed-length field (a NIF has 9 digits, a código postal
- * 7). The browser inserts the key, so the text has one digit too many; cutting
- * the END — what the mask alone would do — silently drops the last digit (for
- * a NIF, the check digit) and a number the person was correcting turns
- * invalid. Instead:
- *
- * - digits typed in the middle REPLACE the ones after the caret (overtype);
- * - pasting a whole number (≥ `max` digits) replaces the field with it;
- * - typing at the end of a full field does nothing (like `maxLength`).
- *
- * `anterior` is the text before the change, `novo` the input's text and
- * `cursor` its `selectionStart`. Returns the digits to show and the caret as
- * a count of digits (for `posicaoAposMascara`).
+ * Typing into a FULL fixed-length field (NIF 9 digits, código postal 7): cutting the END would silently drop the
+ * last digit (the NIF check digit). Instead digits typed in the middle REPLACE the ones after the caret, pasting
+ * a whole number (≥ `max` digits) replaces the field, typing at the end does nothing. `anterior` = text before,
+ * `novo` = input text, `cursor` = its `selectionStart`; returns the digits and the caret as a digit count.
  */
 export function digitosAoEscrever(
   anterior: string,
@@ -387,12 +324,9 @@ export function digitosAoEscrever(
   return { digitos: d.slice(0, antes - resto) + d.slice(antes + depois), cursor: antes - resto };
 }
 
-/** Significant characters (letters and digits) before a position. */
 export function significativosAte(texto: string, posicao: number): number {
   return texto.slice(0, posicao).replace(/[^A-Za-z0-9]/g, "").length;
 }
-
-// ─── zod / Effect ─────────────────────────────────────────────────────────
 
 /** The part of a zod 4 transform/check context that `comZod` needs (no zod dependency). */
 export interface ContextoZod {
@@ -400,8 +334,7 @@ export interface ContextoZod {
 }
 
 /**
- * Turns a `validar…` function into a zod 4 transform that stores the
- * normalised value and reports the pt-PT message:
+ * Turns a `validar…` function into a zod 4 transform storing the normalised value; reports the pt-PT message:
  *
  * ```ts
  * import { comZod, validarTelefone, validarNif } from "@umporg/ui/validar";

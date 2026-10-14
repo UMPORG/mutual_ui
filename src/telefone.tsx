@@ -5,31 +5,18 @@ import { formatarTelefone, hrefTelefone, SEM_VALOR } from "./formatar";
 import { BotaoCopiar } from "./campos-identificadores";
 
 export interface TelefoneProps {
-  /** The stored number (E.164 or anything a person typed). */
   numero: string | null | undefined;
   /** Show "+351" on Portuguese numbers too. */
   indicativo?: boolean | undefined;
-  /** A phone icon before the number. */
   icone?: boolean | undefined;
-  /** A 44px «Copiar número» button after the link. */
   copiar?: boolean | undefined;
   /** No `tel:` link (e.g. inside a row that is already a link). */
   semLigacao?: boolean | undefined;
-  /** What to show when there is no number. Default "—". */
   vazio?: ReactNode | undefined;
   className?: string | undefined;
 }
 
-/**
- * A phone number as people read it — "222 084 177", "+44 207 946 0958" —
- * and a `tel:` link with the raw E.164 number so phones dial it. A value that
- * is not a phone number is shown as it came, without a link. Server-safe (the
- * copy button is a small client island).
- *
- * ```tsx
- * <Telefone numero={associacao.telefone} icone copiar />
- * ```
- */
+/** Shows `tel:` with the raw E.164 number; a non-phone value is shown as typed, without a link. Server-safe (copy button is a client island). */
 export function Telefone({ numero, indicativo, icone, copiar, semLigacao, vazio, className }: TelefoneProps) {
   const texto = formatarTelefone(numero, { indicativo });
   if (texto === SEM_VALOR) return <span className={className}>{vazio ?? SEM_VALOR}</span>;

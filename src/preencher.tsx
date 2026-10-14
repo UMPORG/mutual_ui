@@ -1,19 +1,10 @@
 "use client";
 
 /**
- * `@umporg/ui/preencher` — the assistant inside the forms:
- *
- * - `PreencherComDocumento`: «Preencher com um documento» — choose a file,
- *   the Cérebro reads it (text, spreadsheets, local OCR) and PROPOSES values;
- *   the person reviews each field (current → proposed, where it came from,
- *   confidence) and applies what they keep to the form's DRAFT. Never submits.
- * - `RevisaoPropostas`, `ProgressoLeitura`: the pieces, for other layouts.
- * - `ListaDoQueFalta`: «O que falta?» — what blocks submitting, by chapter,
- *   with a link to each field.
- * - `RascunhoTexto`: an editable text with «Copiar» and «Usar» (drafting).
- *
- * Needs @base-ui/react (dialog, checkboxes). The calls go to the same origin
- * (`/api/v1/assistente/*`, the Cérebro; no app proxy).
+ * `@umporg/ui/preencher` (needs @base-ui/react; calls `/api/v1/assistente/*` on the same origin). Exports
+ * `PreencherComDocumento` (the Cérebro reads a file and PROPOSES values; the person reviews each field and applies
+ * what they keep to the form's DRAFT, never submits), its pieces `RevisaoPropostas`/`ProgressoLeitura`,
+ * `ListaDoQueFalta` («O que falta?») and `RascunhoTexto` (editable drafted text with «Copiar»/«Usar»).
  */
 import { useEffect, useId, useMemo, useRef, useState, type ElementType, type ReactNode } from "react";
 import { ArrowRight, CircleCheck, FileText, FileUp, Info } from "lucide-react";
@@ -42,8 +33,6 @@ import {
   valorLegivel,
 } from "./preencher-dados";
 
-// ─── Progress ───────────────────────────────────────────────────────────────
-
 export function ProgressoLeitura({ progresso, fase, nome }: { progresso: number; fase?: string | null | undefined; nome?: string | undefined }) {
   const p = Math.max(4, Math.min(100, Math.round(progresso)));
   return (
@@ -67,8 +56,6 @@ export function ProgressoLeitura({ progresso, fase, nome }: { progresso: number;
   );
 }
 
-// ─── Review ─────────────────────────────────────────────────────────────────
-
 const TOM_CONFIANCA = { alta: "success", media: "info", baixa: "warning" } as const;
 
 function ValorCelula({ valor, vazio = "Vazio", riscado }: { valor: unknown; vazio?: string; riscado?: boolean }) {
@@ -82,7 +69,6 @@ export interface RevisaoPropostasProps {
   escolhidos: ReadonlySet<string>;
   onChange: (escolhidos: Set<string>) => void;
   avisos?: string[] | undefined;
-  /** Custom value rendering (e.g. «Concelho» → a name). */
   formatar?: ((caminho: string, valor: unknown) => ReactNode) | undefined;
 }
 
@@ -166,8 +152,6 @@ export function RevisaoPropostas({ linhas, escolhidos, onChange, avisos, formata
   );
 }
 
-// ─── The whole flow in a dialog ─────────────────────────────────────────────
-
 type Passo =
   | { tipo: "escolher"; erro?: string | undefined }
   | { tipo: "a-ler"; nome: string; progresso: number; fase: string | null }
@@ -175,19 +159,13 @@ type Passo =
   | { tipo: "aplicado"; n: number };
 
 export interface PreencherComDocumentoProps {
-  /** The form in the Cérebro ("caracterizacao.a", "simplex.balanco", "eventos.evento"). */
   alvo: string;
-  /** What the dialog says it fills ("A. Identificação"). */
   nomeFormulario: string;
-  /** The form's current values by path (to show current → proposed). */
   valoresAtuais: Readonly<Record<string, unknown>>;
-  /** Applies the kept values to the DRAFT (never submits). */
   aoAplicar: (valores: Record<string, string | number>) => void;
   formatar?: RevisaoPropostasProps["formatar"];
-  /** Button label (default «Preencher com um documento»). */
   label?: string | undefined;
   disabled?: boolean | undefined;
-  /** Cérebro base (default `/api/v1/assistente`). */
   api?: string | undefined;
   /** For tests and the demo. */
   fetcher?: ((input: string, init?: RequestInit) => Promise<Response>) | undefined;
@@ -364,8 +342,6 @@ function PreencherComDocumentoLigado({
   );
 }
 
-// ─── «O que falta?» ─────────────────────────────────────────────────────────
-
 export function ListaDoQueFalta({ dados, LinkComponent = "a", onIr }: { dados: OQueFalta; LinkComponent?: ElementType | undefined; onIr?: ((ligacao: string) => void) | undefined }) {
   if (dados.semAcesso) return <StatusCallout tone="warning">{dados.semAcesso}</StatusCallout>;
   if (dados.mensagem) return <StatusCallout tone={dados.submetida ? "success" : "info"}>{dados.mensagem}</StatusCallout>;
@@ -423,8 +399,6 @@ export function ListaDoQueFalta({ dados, LinkComponent = "a", onIr }: { dados: O
   );
 }
 
-// ─── Drafted text ───────────────────────────────────────────────────────────
-
 const NOME_RASCUNHO: Record<string, string> = {
   email: "Email",
   convite: "Convite",
@@ -433,10 +407,7 @@ const NOME_RASCUNHO: Record<string, string> = {
   texto: "Texto",
 };
 
-/**
- * A text the assistant drafted, editable in place, with «Copiar» and «Usar»
- * (the app decides what «Usar» does: fill a field, open a draft…).
- */
+/** Drafted text, editable in place, with «Copiar» and «Usar» (the app decides what «Usar» does). */
 export interface RascunhoTextoProps {
   tipo: string;
   titulo: string;

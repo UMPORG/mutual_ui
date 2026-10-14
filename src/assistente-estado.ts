@@ -1,22 +1,11 @@
 /**
- * Shared state of the floating assistant — plain stores, no React, no
- * DOM (only `localStorage`, guarded), so they are unit-tested:
- *
- * - `estadoChat`: open or closed, corner and active conversation, kept in
- *   `localStorage` under `assistente.flutuante.*` — one origin with sub-paths
- *   (ADR 0004), so the chat reopens in the same place, with the same
- *   conversation, in every MUTU@L app. Message contents are never stored
- *   here: they always come from the Cérebro.
- * - `RegistoPosicoes`: floating widgets publish the rectangle they occupy
- *   (the «Demonstração» widget: pill + open panel); the chat yields to them.
- * - the page context (`publicarContextoPagina`): what the page on screen
- *   published with `useContextoAssistente`.
+ * Shared state of the floating assistant: plain stores, no React/DOM (only guarded `localStorage`).
+ * `estadoChat` (open/closed, corner, conversation) lives under `assistente.flutuante.*` so the chat reopens identically in every app (one origin, ADR 0004); message contents are never stored.
+ * `RegistoPosicoes`: floating widgets publish their rectangle and the chat yields.
  */
 import type { CantoChat, Retangulo } from "./assistente-posicao";
 import { eCanto } from "./assistente-posicao";
 import type { ContextoPagina } from "./assistente-contexto";
-
-// ─── A tiny store ────────────────────────────────────────────────────────────
 
 export interface Loja<T> {
   ler: () => T;
@@ -40,12 +29,9 @@ function criarLoja<T>(inicial: T) {
   };
 }
 
-// ─── Chat: open, corner, conversation ────────────────────────────────────────
-
 export interface EstadoChat {
   aberto: boolean;
   canto: CantoChat;
-  /** The conversation on screen (`null` = a new one). */
   conversaId: string | null;
 }
 
@@ -73,7 +59,6 @@ const armazem = (): Armazem | null => {
   }
 };
 
-/** Reads the kept state (anything invalid → the default). */
 export function lerEstadoGuardado(a: Armazem | null = armazem()): EstadoChat {
   if (!a) return ESTADO_INICIAL;
   try {
@@ -104,7 +89,6 @@ export function guardarEstado(e: EstadoChat, a: Armazem | null = armazem()): voi
 const lojaChat = criarLoja<EstadoChat>(ESTADO_INICIAL);
 let carregado = false;
 
-/** The chat state (read from `localStorage` on first use in the browser). */
 export const estadoChat: Loja<EstadoChat> = {
   ler: () => {
     if (!carregado && typeof window !== "undefined") {
@@ -125,12 +109,9 @@ export function mudarChat(parcial: Partial<EstadoChat>): void {
   guardarEstado(novo);
 }
 
-/** Another tab changed the kept state (the `storage` event). */
 export function recarregarChat(): void {
   lojaChat.definir(lerEstadoGuardado());
 }
-
-// ─── Position registry ───────────────────────────────────────────────────────
 
 export class RegistoPosicoes {
   private mapa = new Map<string, Retangulo>();
@@ -151,7 +132,6 @@ export class RegistoPosicoes {
     for (const f of this.ouvintes) f();
   };
 
-  /** Everything published (a stable array between changes). */
   ocupados = (): readonly Retangulo[] => this.lista;
 
   ouvir = (fn: () => void): (() => void) => {
@@ -160,36 +140,24 @@ export class RegistoPosicoes {
   };
 }
 
-/** The registry of the page (the default of the React context). */
 export const registoPosicoesGlobal = new RegistoPosicoes();
 
-// ─── Page context ────────────────────────────────────────────────────────────
-
 export interface ContextoPublicado {
-  /** The compact context (`normalizarContexto`). */
   contexto: ContextoPagina;
-  /** `hashContexto(contexto)`. */
   hash: string;
   /** Applies proposed values to the page's DRAFT (never submits). */
   aoAplicar?: ((valores: Record<string, string | number>) => void) | undefined;
 }
 
 const lojaContexto = criarLoja<ContextoPublicado | null>(null);
-/**
- * Publishers still on screen, oldest first. The newest one is shown; when it
- * withdraws (e.g. a dialog closes) the previous one's latest context returns.
- */
+/** Publishers still on screen, oldest first: the newest shows; when it withdraws, the previous one's context returns. */
 const pilhaContexto: { eu: symbol; contexto: ContextoPublicado }[] = [];
 
 function mostrarTopo(): void {
   lojaContexto.definir(pilhaContexto.at(-1)?.contexto ?? null);
 }
 
-/**
- * Publishes the page's context (the last publisher still on screen wins).
- * `atualizar` replaces this publisher's context (shown when it is on top);
- * `retirar` withdraws it and the previous publisher's context comes back.
- */
+/** Publishes the page's context (the last publisher still on screen wins). */
 export function publicarContextoPagina(c: ContextoPublicado): { atualizar: (c: ContextoPublicado) => void; retirar: () => void } {
   const eu = Symbol("contexto");
   pilhaContexto.push({ eu, contexto: c });
@@ -213,11 +181,8 @@ export function publicarContextoPagina(c: ContextoPublicado): { atualizar: (c: C
 
 export const contextoPagina: Loja<ContextoPublicado | null> = { ler: lojaContexto.ler, ouvir: lojaContexto.ouvir };
 
-// ─── «Nova resposta» while minimised ─────────────────────────────────────────
-
 const lojaAviso = criarLoja(false);
 
-/** A reply finished while the chat was minimised (a dot on «Assistente»). */
 export const avisoResposta: Loja<boolean> = { ler: lojaAviso.ler, ouvir: lojaAviso.ouvir };
 
 export function marcarAvisoResposta(v: boolean): void {

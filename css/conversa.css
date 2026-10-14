@@ -1,9 +1,4 @@
-/*
- * Conversation and Markdown — @umporg/ui/conversa and /markdown.
- */
-
 @layer components {
-  /* ─── Markdown prose ─────────────────────────────────────────────────── */
   .m-md {
     min-width: 0;
     line-height: 1.65;
@@ -127,7 +122,6 @@
   .m-md-cit:hover { background: var(--brand); color: var(--brand-foreground) !important; }
   .m-md-cit-sem { font-size: 0.75em; color: var(--muted-foreground); }
 
-  /* Streaming caret: a soft block after the last word. */
   .m-caret {
     display: inline-block;
     width: 0.55em;
@@ -140,7 +134,6 @@
   }
   @keyframes m-caret { 50% { opacity: 0.15; } }
 
-  /* ─── Messages ───────────────────────────────────────────────────────── */
   .m-mensagem {
     content-visibility: auto;
     contain-intrinsic-size: auto 140px;
@@ -162,7 +155,6 @@
     background: linear-gradient(145deg, color-mix(in oklab, var(--flag-green) 20%, var(--card)), color-mix(in oklab, var(--flag-red) 10%, var(--card)));
   }
 
-  /* Thinking: three dots breathing in turn. */
   .m-pensar { display: inline-flex; gap: 0.25rem; }
   .m-pensar > span {
     width: 0.4rem;
@@ -187,7 +179,6 @@
     animation: m-rodar 0.9s linear infinite;
   }
 
-  /* Composer: a raised field. */
   .m-compositor {
     background: var(--card);
     border: 1px solid color-mix(in oklab, var(--input) 70%, var(--border));

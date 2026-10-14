@@ -8,50 +8,28 @@ import { dicaDispensada, dispensarDica, reporDica, subscreverDicas } from "./dic
 export { dicaDispensada, dispensarDica, reporDica } from "./dicas-estado";
 
 /**
- * Dica — a tip about the screen, calm and out of the way.
- *
- * - One line by default: info icon + `titulo`. The explanation (`children`)
- *   and «Saber mais» open on demand (`aria-expanded`), so the tip never pushes
- *   the page's main action down. `aberta` starts it open.
- * - A small close button (44 px, icon only, named «Fechar a dica»), never a
- *   full-width «Percebi». The choice is kept on the device under `id`
- *   (`<app>.dica.<nome>`); blocked storage never throws.
- * - `rotuloReabrir`: after closing, a quiet link-like button that brings it
- *   back (desk screens where the help must stay reachable). Without it the
- *   tip just goes; say where the help lives in `avisoAoFechar` (read by
- *   screen readers).
- * - `dispensavel={false}`: an on-demand help line with no close button (field
- *   help). It renders on the server too.
- * - `role="note"` named by the title: findable, never interrupts.
- * - Colours: `--dica*` tokens (≥ 7:1 body, border ≥ 3:1, measured in
- *   tests/dicas.test.ts). No entrance animation; the chevron stops under
- *   Reduzir movimento. Not printed.
- *
- * Place it AFTER the action it explains (or beside a heading), never between a
- * card and its primary button.
+ * Dica: a calm tip about the screen. One line (icon + `titulo`); `children` and «Saber mais» open on demand,
+ * so it never pushes the main action down. Close button (44 px, icon only); the choice is kept on the device
+ * under `id` (`<app>.dica.<nome>`). `rotuloReabrir` adds a link-like button to bring it back; without it say
+ * where the help lives in `avisoAoFechar` (read by screen readers). `dispensavel={false}`: help line without
+ * close button, rendered on the server too. `role="note"`. Colours `--dica*` (contrast measured in
+ * tests/dicas.test.ts), no entrance animation, not printed.
+ * Place it AFTER the action it explains, never between a card and its primary button.
  */
 export interface DicaProps {
   /** Device memory key, prefixed by the app: "cartao.dica.passe-digital". */
   id: string;
-  /** The one line always visible: what the tip is about, in plain words. */
   titulo: ReactNode;
-  /** The explanation, shown when the person opens the tip. */
   children?: ReactNode | undefined;
-  /** Optional link to the full answer (help page). `rotulo` defaults to «Saber mais». */
   saberMais?: { href: string; rotulo?: string | undefined } | undefined;
-  /** The host's Link (Next `Link`); default `<a>`. */
   LinkComponent?: ElementType | undefined;
-  /** Start open (default closed: one line). */
   aberta?: boolean | undefined;
-  /** Show the close button and remember it (default true). */
   dispensavel?: boolean | undefined;
   /** Label of the button that brings a closed tip back («Mostrar a ajuda deste ecrã»). */
   rotuloReabrir?: string | undefined;
   /** Said to screen readers when the tip closes («As respostas ficam na Ajuda.»). */
   avisoAoFechar?: string | undefined;
-  /** Accessible name of the close button (default «Fechar a dica»). */
   rotuloFechar?: string | undefined;
-  /** Classes on the visible element (margins); nothing is left behind once closed. */
   className?: string | undefined;
 }
 

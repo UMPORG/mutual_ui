@@ -31,7 +31,6 @@ for (const [nome, q, vp] of casos) {
   console.log(nome, "scroll/viewport", largura.join("/"), "erros:", erros.join(" | ") || "nenhum");
   await p.close();
 }
-// Interaction: keyboard tooltip + "Ver dados".
 {
   const p = await b.newPage({ viewport: { width: 1440, height: 900 } });
   await p.goto(BASE + "?tema=claro&movimento=reduzido", { waitUntil: "networkidle" });
@@ -39,7 +38,7 @@ for (const [nome, q, vp] of casos) {
   await fig.scrollIntoViewIfNeeded();
   const alvo = fig.locator("[tabindex='0']").first();
   console.log("focável:", await alvo.evaluate((el) => el.tagName + "." + el.getAttribute("class")));
-  await p.keyboard.press("Tab"); // real keyboard path: reach the chart with Tab
+  await p.keyboard.press("Tab");
   await alvo.focus();
   await p.keyboard.press("ArrowRight"); await p.keyboard.press("ArrowRight"); await p.keyboard.press("ArrowRight");
   await p.waitForTimeout(300);

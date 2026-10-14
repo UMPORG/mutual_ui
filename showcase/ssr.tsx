@@ -1,6 +1,4 @@
-// Server-rendered fixture for verificar.mjs: the same tree is rendered to
-// HTML by serve.ts (/ssr) and hydrated by ssr-cliente.tsx, so the checks see
-// what an app's first paint (no JavaScript yet) and its hydrated page expose.
+// SSR fixture for verificar.mjs: rendered by serve.ts (/ssr) and hydrated by ssr-cliente.tsx, so checks see both the first paint and the hydrated page.
 import { useState } from "react";
 import { Checkbox, RadioGroup, Switch } from "../src/controlos";
 

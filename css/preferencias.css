@@ -1,14 +1,9 @@
-/*
- * Reactions to the "Acessibilidade" preferences (src/preferencias.ts).
- * Attributes live on <html>; every app gets the same behaviour.
- */
-
-/* Tamanho do texto — scales rem, so the whole UI grows, not only paragraphs. */
+/* Scales rem, so the whole UI grows. */
 html[data-texto="112"] { font-size: 112.5%; }
 html[data-texto="125"] { font-size: 125%; }
 html[data-texto="150"] { font-size: 150%; }
 
-/* Espaçamento amplo — the WCAG 1.4.12 text-spacing values. */
+/* WCAG 1.4.12 text-spacing values. */
 html[data-espaco="amplo"] body {
   line-height: 1.6;
   letter-spacing: 0.06em;
@@ -17,20 +12,17 @@ html[data-espaco="amplo"] body {
 html[data-espaco="amplo"] :where(p, li, dd) { line-height: 1.75; }
 html[data-espaco="amplo"] :where(p) + :where(p) { margin-top: 1em; }
 
-/* Letra de leitura fácil. */
 html[data-letra="legivel"] body,
 html[data-letra="legivel"] :where(button, input, select, textarea) {
   font-family: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", Verdana, ui-sans-serif, sans-serif;
 }
 
-/* Sublinhar ligações. */
 html[data-ligacoes="sublinhadas"] a:not([data-slot="button"]):not([role="button"]) {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
 
-/* Destacar o foco — a thick ring with a contrasting halo, on every element. */
 html[data-foco="destacado"] :focus-visible {
   outline: 4px solid var(--foco-destacado, #1c1917) !important;
   outline-offset: 3px !important;
@@ -39,7 +31,6 @@ html[data-foco="destacado"] :focus-visible {
 }
 html.dark[data-foco="destacado"] { --foco-destacado: #fafaf9; --foco-halo: #a16207; }
 
-/* Reduzir movimento — the user's choice, and the OS setting. */
 html[data-movimento="reduzido"] *,
 html[data-movimento="reduzido"] *::before,
 html[data-movimento="reduzido"] *::after {
@@ -57,8 +48,7 @@ html[data-movimento="reduzido"] *::after {
   }
 }
 
-/* Guia de leitura — a band that follows the pointer (element added by the
-   Acessibilidade menu). */
+/* Band added by the Acessibilidade menu. */
 .mutual-guia-leitura {
   position: fixed;
   inset-inline: 0;
@@ -71,8 +61,7 @@ html[data-movimento="reduzido"] *::after {
 }
 html:not([data-guia="ativo"]) .mutual-guia-leitura { display: none; }
 
-/* Alto contraste — black on white, no tints, strong borders. Status keeps its
-   meaning through dark, saturated hues that pass 7:1 on white. */
+/* Black on white, no tints; status hues pass 7:1 on white. */
 html.contraste {
   --background: #ffffff;
   --foreground: #000000;
@@ -127,11 +116,7 @@ html.contraste {
   --dica-icone: #000000;
   --dica-ligacao: #0b2a8a;
 }
-/* The frame of shell G and the app colours give way to plain black
-   and white — every app looks the same here; the app name in the top bar
-   still says where you are. The current page is white on black. These
-   selectors outrank [data-app] and .dark[data-app]. Scrollbars: solid black
-   thumb, thicker (css/rolagem.css). */
+/* Shell G and the app colours give way to plain black and white (current page white on black); these selectors outrank [data-app] and .dark[data-app]. */
 html.contraste,
 html.contraste[data-app],
 html.contraste [data-app] {
@@ -158,8 +143,7 @@ html.contraste [data-app] {
   --scroll-thumb-ink-hover: #ffffff;
   --scroll-track-ink: #000000;
   --app-accent-on-ink: #ffffff;
-  /* Nested [data-app] (Portal tiles, app marks) and the role badges also go
-     black on white, so their text keeps ≥ 7:1 here. */
+  /* Nested [data-app] and the role badges also go black on white (text >= 7:1). */
   --app-accent: #000000;
   --app-accent-foreground: #ffffff;
   --app-accent-soft: #ffffff;
@@ -179,8 +163,7 @@ html.contraste :where(a) { text-decoration: underline; }
 html.contraste :where([class*="border"]) { border-color: #000000; }
 html.contraste .mutual-ascii { display: none; }
 
-/* Printing ignores the screen preferences: normal size, light colours,
-   default spacing and typeface, no reading guide, no animation. */
+/* Printing ignores the screen preferences. */
 @media print {
   html[data-texto] { font-size: 100% !important; }
   html.dark, html.contraste { color-scheme: light; }

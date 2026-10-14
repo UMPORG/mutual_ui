@@ -1,12 +1,6 @@
 "use client";
 
-/**
- * `@umporg/ui/controlos` — interactive controls built on @base-ui/react
- * (optional peer dependency, ≥ 1.6). Import only from client components.
- *
- * Server-safe pieces (Button, FormField, Input, Badge, Stepper…) live in the
- * main entry `@umporg/ui`; dates in `@umporg/ui/datas`.
- */
+/** Needs the optional peer @base-ui/react (≥ 1.6): import only from client components. */
 export { Select, Combobox, MultiSelect, type Option, type OptionGroup, type SelectProps, type ComboboxProps, type MultiSelectProps } from "./selecao";
 export { DropdownMenu, ContextMenu, type MenuEntry, type DropdownMenuProps, type ContextMenuProps } from "./menus";
 export {

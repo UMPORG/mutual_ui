@@ -12,22 +12,13 @@ import {
   type Melhor,
 } from "./dados";
 
-/**
- * Numbers as the page's headline: stat tiles, deltas, sparklines, meters and
- * status summaries. Server-safe (no hooks). Big numbers keep proportional
- * figures; colour never carries meaning alone (arrow + words).
- */
-
-// ─── Delta ────────────────────────────────────────────────────────────────
+/** Stat tiles, deltas, sparklines, meters and status summaries. Server-safe (no hooks). */
 
 export interface DeltaProps {
-  /** Change vs the reference period: a fraction for "percentagem" (0.12 = +12%),
-   *  points for "pontos", units for "numero"/"moeda". */
+  /** Change vs the reference: a fraction for "percentagem" (0.12 = +12%), points for "pontos", units for "numero"/"moeda". */
   value: number;
-  /** The reference, in words: "face ao mês anterior", "face a 2025". */
   label?: string | undefined;
   format?: FormatoVariacao | undefined;
-  /** Which direction is good news. Default "subir". */
   better?: Melhor | undefined;
   className?: string | undefined;
 }
@@ -59,13 +50,7 @@ export function Delta({ value, label, format = "percentagem", better = "subir", 
   );
 }
 
-// ─── Sparkline ────────────────────────────────────────────────────────────
-
-/**
- * A tiny trend line (no axes) for stat tiles and table cells: the history in
- * a quiet grey, the current value as a brand dot. Pure SVG, server-safe.
- * Decorative unless `label` is given — the number beside it carries the value.
- */
+/** Tiny trend line (no axes), pure SVG, server-safe. Decorative unless `label` is given. */
 export function Sparkline({
   values,
   label,
@@ -74,7 +59,6 @@ export function Sparkline({
   area = true,
 }: {
   values: ReadonlyArray<number | null | undefined>;
-  /** Accessible summary; omit when the tile already says it. */
   label?: string | undefined;
   height?: number | undefined;
   className?: string | undefined;
@@ -126,8 +110,7 @@ export function Sparkline({
         strokeLinecap="round"
         vectorEffect="non-scaling-stroke"
       />
-      {/* Current value: a >= 8px dot with a 2px surface ring. Drawn as a
-          zero-length round-capped line so the viewBox stretch keeps it round. */}
+      {/* Dot as a zero-length round-capped line so the viewBox stretch keeps it round. */}
       <path
         d={`M${x(lastIdx)} ${y(last)} l0.001 0`}
         stroke="var(--card)"
@@ -146,42 +129,28 @@ export function Sparkline({
   );
 }
 
-// ─── StatCard ─────────────────────────────────────────────────────────────
-
 export interface StatCardProps {
-  /** What is counted, sentence case, no colon: "Associações ativas". */
   label: ReactNode;
-  /** The number (formatted with `format`) or a ready string. */
   value: number | string | null | undefined;
   format?: FormatoValor | undefined;
   /** Shorten large values ("12,3 mil"). Default true for numbers ≥ 100 000. */
   compact?: boolean | undefined;
-  /** Small unit after the value ("associados", "dias"). */
   unit?: ReactNode | undefined;
-  /** Change vs a reference period. */
   delta?: DeltaProps | undefined;
   /** History for a sparkline (oldest first; the last is the current value). */
   trend?: ReadonlyArray<number | null | undefined> | undefined;
-  /** One quiet line under the value ("Das 312 inscritas"). */
   description?: ReactNode | undefined;
   icon?: ReactNode | undefined;
-  /** Whole tile becomes a link to the detail ("Ver associações"). */
   href?: string | undefined;
   LinkComponent?: ElementType | undefined;
-  /** 3px identity line on top (app accent). */
   accent?: boolean | undefined;
   /** "hero": the one number a dashboard leads with (≥ 48px). One per page. */
   size?: "md" | "hero" | undefined;
   loading?: boolean | undefined;
-  /** Replaces the value when the number could not be loaded. */
   error?: ReactNode | undefined;
   className?: string | undefined;
 }
 
-/**
- * Stat tile / KPI: label · value · delta · sparkline. Numbers are formatted
- * in pt-PT; a missing value reads "—".
- */
 export function StatCard({
   label,
   value,
@@ -291,10 +260,7 @@ export function StatCard({
   );
 }
 
-/**
- * Responsive grid of StatCards (a KPI row). Columns shrink by themselves at
- * larger text sizes and on phones — never a horizontal scroll.
- */
+/** Responsive KPI grid; columns shrink with text size and on phones, never a horizontal scroll. */
 export function StatGroup({
   children,
   min = "13rem",
@@ -302,10 +268,8 @@ export function StatGroup({
   label,
 }: {
   children: ReactNode;
-  /** Minimum tile width before wrapping. */
   min?: string | undefined;
   className?: string | undefined;
-  /** Accessible name when the group is not under a heading. */
   label?: string | undefined;
 }) {
   return (
@@ -320,8 +284,6 @@ export function StatGroup({
   );
 }
 
-// ─── Meter ────────────────────────────────────────────────────────────────
-
 type MeterTone = "brand" | "accent" | "success" | "warning" | "danger";
 
 const METER_FILL: Record<MeterTone, string> = {
@@ -332,11 +294,7 @@ const METER_FILL: Record<MeterTone, string> = {
   danger: "var(--destructive)",
 };
 
-/**
- * A ratio against a limit (occupancy, coverage, completion). The unfilled
- * track is a lighter step of the fill's own hue. With `thresholds` the fill
- * turns warning/danger and an icon + words say so.
- */
+/** A ratio against a limit; with `thresholds` the fill turns warning/danger with icon + words. */
 export function Meter({
   label,
   value,
@@ -354,12 +312,10 @@ export function Meter({
   max?: number | undefined;
   /** How the headline value is shown; "percentagem" shows value/max. */
   format?: FormatoValor | undefined;
-  /** Right-hand detail ("32 de 40 lugares"). */
   detail?: ReactNode | undefined;
   tone?: MeterTone | undefined;
   /** Ratios (0–1) at which the fill turns warning / danger. */
   thresholds?: { warning?: number | undefined; danger?: number | undefined } | undefined;
-  /** Words for the warning/danger state ("Quase esgotado"). */
   statusLabel?: ReactNode | undefined;
   size?: "sm" | "md" | undefined;
   className?: string | undefined;
@@ -410,18 +366,12 @@ export function Meter({
   );
 }
 
-// ─── StatusSummary ────────────────────────────────────────────────────────
-
 export interface StatusItem {
-  /** Estado in words ("Pagas", "Em atraso"). */
   label: string;
   value: number;
   tone: Tone;
-  /** Drill down to the filtered list. */
   href?: string | undefined;
-  /** Use the item as a filter toggle (client components only). */
   onSelect?: (() => void) | undefined;
-  /** This filter is on. */
   selected?: boolean | undefined;
 }
 
@@ -441,11 +391,7 @@ const TONE_TEXT: Record<Tone, string> = {
   neutral: "text-muted-foreground",
 };
 
-/**
- * Counts by estado with the shared status colours, each with its icon and
- * words. `variant="bar"`: a proportion bar + legend (dashboards).
- * `variant="inline"`: one line above a list, items can filter it.
- */
+/** Counts by estado with status colours, icon and words. `bar`: proportion bar + legend; `inline`: one line above a list whose items can filter it. */
 export function StatusSummary({
   items,
   total,
@@ -456,12 +402,10 @@ export function StatusSummary({
   className,
 }: {
   items: StatusItem[];
-  /** Defaults to the sum of the items. */
   total?: number | undefined;
   totalLabel?: string | undefined;
   variant?: "bar" | "inline" | undefined;
   LinkComponent?: ElementType | undefined;
-  /** Accessible name of the group ("Quotas por estado"). */
   label?: string | undefined;
   className?: string | undefined;
 }) {

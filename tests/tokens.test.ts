@@ -2,14 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-/**
- * Shell G: the frame (top bar + navigation) is a neutral grey mixed
- * with 9% of the app's colour, the current page a pill with 20% (24% dark),
- * hover 14%; the content one neutral layer. The search field is not
- * tinted: the neutral input surface with a border ≥ 3:1 on the tinted bar. Re-measure every pair
- * in every app, light and dark, mixing exactly as `color-mix(in srgb …)`
- * does, and keep the app colours apart (OKLCH hue).
- */
+/** Shell G: frame = neutral grey mixed with 9% of the app colour, current page pill 20% (24% dark), hover 14%; the search field is untinted with a border ≥ 3:1 on the bar. Re-measure every pair in every app, light and dark (`color-mix(in srgb …)`), and keep app colours apart (OKLCH hue). */
 
 const css = readFileSync(new URL("../css/tokens.css", import.meta.url), "utf8");
 
@@ -24,12 +17,10 @@ export function contraste(a: string, b: string): number {
   const [x, y] = [luminancia(a), luminancia(b)];
   return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
 }
-/** color-mix(in srgb, a p, b). */
 export function misturar(a: string, p: number, b: string): string {
   const [x, y] = [canais(a), canais(b)];
   return "#" + x.map((v, i) => Math.round((v * p + y[i]! * (1 - p)) * 255).toString(16).padStart(2, "0")).join("");
 }
-/** OKLCH hue in degrees. */
 function matiz(hex: string): number {
   const [r, g, b] = canais(hex).map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
   const l = Math.cbrt(0.4122214708 * r! + 0.5363325363 * g! + 0.0514459929 * b!);
@@ -40,7 +31,6 @@ function matiz(hex: string): number {
   return ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360;
 }
 
-/** Every hex (or %) custom property declared in the rule(s) whose selector matches. */
 function declaracoes(seletor: RegExp): Record<string, string> {
   const out: Record<string, string> = {};
   const re = /([^{}]+)\{([^{}]*)\}/g;
@@ -147,7 +137,6 @@ test("the navigation holds no action (v0.16: page actions live in PageHeader)", 
   assert.doesNotMatch(tsx, /acaoPrincipal|AcaoPrincipal|acao-principal/);
 });
 
-// ─── useScrollShadow maths ───────────────────────────────────────────────
 import { bordasComMais } from "../src/rolagem-bordas.ts";
 
 test("bordasComMais: shadows only toward hidden content", () => {
@@ -166,7 +155,6 @@ test("bordasComMais: shadows only toward hidden content", () => {
   assert.deepEqual([vertical.cima, vertical.baixo, vertical.transbordaY], [true, true, true]);
 });
 
-// ─── Invalid fields are tinted with --destructive-soft ───────────────────
 test("invalid field tint: text, placeholder and red border stay readable (light, dark)", () => {
   for (const [tema, t] of [["claro", raiz], ["escuro", { ...raiz, ...escuroRaiz }]] as const) {
     const fundo = t["--destructive-soft"]!;
@@ -190,10 +178,7 @@ test("DataTable scroller is a containing block (sr-only text cannot widen the pa
   assert.match(tabela, /"m-tabela-rolo m-scroll-x relative"/);
 });
 
-// ─── Content tokens: neutral greys + contrast floor ─────────────────────
-// The content (canvas, cards, borders, muted text, inputs) must be NEUTRAL
-// in every theme — the app identity lives only in the frame of the shell and
-// the accents — and readable in dark.
+// Content tokens must be NEUTRAL in every theme (app identity lives only in the shell frame and accents) and readable in dark.
 const NEUTROS = ["--background", "--card", "--popover", "--secondary", "--muted", "--accent", "--border", "--input", "--foreground", "--muted-foreground"];
 for (const [tema, t] of [["claro", raiz], ["escuro", { ...raiz, ...escuroRaiz }]] as const) {
   test(`content tokens are neutral grey (${tema})`, () => {

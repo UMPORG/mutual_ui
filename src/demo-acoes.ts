@@ -1,21 +1,12 @@
 /**
- * Page ACTIONS of the DEMONSTRATION — the plain registry, no DOM, so
- * it is unit-tested. Everything demo-only lives in the floating «Demonstração»
- * widget (`DemoPreencher`): never a badge, banner or panel on the page. A page
- * with demo-only things to offer that are not forms (sample codes to read,
- * sample identifications at a counter, «repor dados»…) REGISTERS them and the
- * widget shows them as a section of its panel:
- *
- *   useAcoesDemo(demo ? { id: "amostras", titulo: "Códigos de exemplo", acoes } : null);
- *
- * Several groups may be registered at once (shown in registration order).
+ * Registry of demo-only page actions (no DOM, unit-tested), shown by the «Demonstração» widget:
+ * `useAcoesDemo(demo ? { id: "amostras", titulo: "...", acoes } : null)`. Several groups may coexist.
  */
 
 export interface AcaoDemo {
   id: string;
   nome: string;
   descricao?: string | undefined;
-  /** The action cannot run right now (e.g. a request is in progress). */
   desativada?: boolean | undefined;
   /** Runs after the panel closes. */
   executar: () => void | Promise<void>;
@@ -34,7 +25,6 @@ const avisar = () => {
   for (const f of ouvintes) f();
 };
 
-/** Registers (or replaces, by `id`) a group of demo actions. Returns an unregister function. */
 export function registarAcoesDemo(grupo: GrupoAcoesDemo): () => void {
   const i = grupos.findIndex((g) => g.id === grupo.id);
   grupos = i < 0 ? [...grupos, grupo] : grupos.map((g, j) => (j === i ? grupo : g));
@@ -46,7 +36,6 @@ export function registarAcoesDemo(grupo: GrupoAcoesDemo): () => void {
   };
 }
 
-/** The registered groups (a stable array between changes). */
 export function gruposAcoesDemo(): readonly GrupoAcoesDemo[] {
   return grupos;
 }

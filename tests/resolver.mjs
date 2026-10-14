@@ -9,7 +9,6 @@ registerHooks({
       try {
         return nextResolve(`${specifier}.ts`, context);
       } catch {
-        // fall through to the default resolution (and its error)
       }
     }
     return nextResolve(specifier, context);

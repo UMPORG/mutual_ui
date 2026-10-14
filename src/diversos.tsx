@@ -5,17 +5,7 @@ import { ScrollArea as BaseScrollArea } from "@base-ui/react/scroll-area";
 import { Avatar as BaseAvatar } from "@base-ui/react/avatar";
 import { cx } from "./cx";
 
-/**
- * ScrollArea, Avatar, AvatarGroup, built on Base UI.
- */
-
-// ─── ScrollArea ───────────────────────────────────────────────────────────
-
-/**
- * A scrolling region with a thin, calm scrollbar (lists in side panels,
- * thread lists, long menus). Keyboard users can focus it and scroll with the
- * arrows. The page itself never needs one — let the page scroll.
- */
+/** Region with a thin scrollbar for side lists and long menus (focusable, arrow-scrollable). The page itself never needs one. */
 export function ScrollArea({
   children,
   label,
@@ -24,9 +14,7 @@ export function ScrollArea({
   orientation = "vertical",
 }: {
   children: ReactNode;
-  /** Spoken name of the region ("Conversas"). */
   label?: string | undefined;
-  /** Size the root (e.g. `h-80` or `max-h-[60vh]`). */
   className?: string | undefined;
   viewportClassName?: string | undefined;
   orientation?: "vertical" | "horizontal" | "both" | undefined;
@@ -55,8 +43,6 @@ export function ScrollArea({
   );
 }
 
-// ─── Avatar ───────────────────────────────────────────────────────────────
-
 /** "Maria da Conceição Silva" → "MS" (first and last name). */
 export function iniciais(nome: string): string {
   const partes = nome
@@ -84,9 +70,7 @@ export function Avatar({
   label,
   className,
 }: {
-  /** Person or organisation name (initials and colour come from it). */
   name: string;
-  /** Photo URL; the initials show while it loads or if it fails. */
   src?: string | null | undefined;
   size?: keyof typeof TAMANHO_AVATAR | undefined;
   /** Spoken name; omit when the name is written next to the avatar (then it is decorative). */

@@ -32,21 +32,10 @@ import {
 } from "./identificadores";
 
 /**
- * Inputs for Portuguese identifiers: `CampoTelefone`, `CampoNif`,
- * `CampoCodigoPostal`, `CampoIban`. Each one shows a mask while the person
- * types ("912 345 678", "4000-123", "PT50 0002 …"), keeps the caret where it
- * was, and hands the app the NORMALISED value (`onValueChange`): E.164 for
- * phones, 9 digits for NIF, "1234-567", IBAN without spaces. Validation
- * stays with the form (`validarTelefone`… from `@umporg/ui/validar`, or
- * `comZod`) and the message goes to `FormField error` — the field wires
- * `id` and the ARIA props into the visible input.
- *
- * `name` goes on a hidden input with the normalised value, so plain forms,
- * server actions and `DemoPreencher` (which fills it by name) work too.
- *
- * TanStack Form: `value={field.state.value} onValueChange={field.handleChange}
- * onBlur={field.handleBlur}`; react-hook-form: `Controller` with
- * `value`/`onChange` → `onValueChange`.
+ * Inputs for Portuguese identifiers (`CampoTelefone`, `CampoNif`, `CampoCodigoPostal`, `CampoIban`): masked while typing, caret kept, and `onValueChange` gets the NORMALISED value
+ * (E.164 phones, 9-digit NIF, "1234-567", IBAN without spaces). Validation stays with the form (`@umporg/ui/validar` or `comZod`; message to `FormField error`).
+ * `name` goes on a hidden input with the normalised value, so plain forms, server actions and `DemoPreencher` (fills by name) work.
+ * TanStack Form: `value={field.state.value} onValueChange={field.handleChange} onBlur={field.handleBlur}`; react-hook-form: `Controller` with `value`/`onChange` → `onValueChange`.
  */
 
 type AtributosInput = Omit<
@@ -55,15 +44,10 @@ type AtributosInput = Omit<
 >;
 
 export interface CampoMascaradoProps extends AtributosInput {
-  /** The normalised value (controlled). */
   value?: string | undefined;
-  /** Initial normalised value (uncontrolled). */
   defaultValue?: string | undefined;
-  /** Called with the normalised value on every change ("" when empty). */
   onValueChange?: ((valor: string) => void) | undefined;
-  /** Name of the hidden input that carries the normalised value in a plain form submit. */
   name?: string | undefined;
-  /** Ref to the visible input (focus it on submit errors). */
   ref?: Ref<HTMLInputElement> | undefined;
   className?: string | undefined;
 }
@@ -83,7 +67,6 @@ function useEntradaOculta(aoPreencher: (valor: string) => void) {
   return ref;
 }
 
-/** Keeps the caret after the same letters/digits once the mask rewrote the text. */
 function repor(el: HTMLInputElement, formatado: string, significativos: number) {
   const pos = posicaoAposMascara(formatado, significativos);
   requestAnimationFrame(() => {
@@ -92,7 +75,6 @@ function repor(el: HTMLInputElement, formatado: string, significativos: number) 
 }
 
 interface Mascara {
-  /** Display text from whatever was typed or stored. */
   mostrar: (texto: string) => string;
   /** Normalised value from the typed text ("" when empty; best effort when incomplete). */
   valor: (texto: string) => string;
@@ -159,8 +141,6 @@ function CampoMascarado({
   );
 }
 
-// ─── NIF, código postal, IBAN ─────────────────────────────────────────────
-
 const MASCARA_NIF: Mascara = {
   mostrar: (t) => mascaraNif(t.trim().toUpperCase().replace(/^PT/, "")),
   valor: (t) => normalizarNif(t) ?? soDigitos(t),
@@ -211,8 +191,6 @@ export function CampoIban(props: CampoMascaradoProps) {
   );
 }
 
-// ─── Telefone ─────────────────────────────────────────────────────────────
-
 export interface CampoTelefoneProps extends Omit<CampoMascaradoProps, "inputMode"> {
   /** Calling code chosen when the value has none. Default "351" (Portugal). */
   indicativoPadrao?: string | undefined;
@@ -220,7 +198,6 @@ export interface CampoTelefoneProps extends Omit<CampoMascaradoProps, "inputMode
   semIndicativo?: boolean | undefined;
 }
 
-/** Reads a stored value into calling code + national digits. */
 function lerTelefone(valor: string, padrao: string): { indicativo: string; nacional: string } {
   const t = valor.trim();
   if (!t) return { indicativo: padrao, nacional: "" };
@@ -229,13 +206,7 @@ function lerTelefone(valor: string, padrao: string): { indicativo: string; nacio
   return { indicativo: padrao, nacional: d };
 }
 
-/**
- * Phone number with the country code (+351 by default). The number is masked
- * while typing ("912 345 678"); pasting "+44 20 7946 0958" or "00351…"
- * switches the country by itself. The value is E.164 ("+351912345678"; ""
- * when empty; "+351912" while incomplete, so `validarTelefone` can say what
- * is missing).
- */
+/** Phone with country code (+351 default), masked while typing; pasting "+44 20 7946 0958" or "00351…" switches the country. The value is E.164 ("" when empty; "+351912" while incomplete, so `validarTelefone` can say what is missing). */
 export function CampoTelefone({
   value,
   defaultValue,
@@ -359,9 +330,6 @@ export function CampoTelefone({
   );
 }
 
-// ─── Copiar ───────────────────────────────────────────────────────────────
-
-/** A 44px copy button with a spoken confirmation («Número copiado»). */
 export function BotaoCopiar({
   texto,
   rotulo = "Copiar",

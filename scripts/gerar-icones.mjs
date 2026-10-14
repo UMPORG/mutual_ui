@@ -1,11 +1,5 @@
-// Generates the favicon and home-screen icons of every app from the icon
-// family (src/icones.ts) into assets/icones/<app>/:
-//   icon.svg (favicon, the «folha»), favicon.ico (16 + 32 + 48),
-//   icone-16.png, icone-32.png, apple-icon.png (180, full-bleed),
-//   icone-192.png, icone-512.png (purpose "any"), icone-mascaravel-192.png,
-//   icone-mascaravel-512.png (purpose "maskable", glyph in the safe zone).
-// `node --experimental-strip-types scripts/gerar-icones.mjs` — needs a Chromium
-// (Playwright; PLAYWRIGHT_MODULE / CHROMIUM env to override the defaults).
+// Generates favicon and home-screen icons of every app into assets/icones/<app>/. Needs a Chromium (Playwright; PLAYWRIGHT_MODULE / CHROMIUM env override the defaults).
+// Run: node --experimental-strip-types scripts/gerar-icones.mjs
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { COR_MARCA_APP, svgIconeApp } from "../src/icones.ts";

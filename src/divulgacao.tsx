@@ -9,26 +9,12 @@ import { cx } from "./cx";
 import { opcional } from "./opcional";
 import { formatarNumero } from "./formatar";
 
-/**
- * Showing and hiding content: Accordion, Collapsible, Tabs, plus
- * `useUrlParam` to keep the open tab in the address (so "Voltar", reload
- * and shared links land on the same tab).
- *
- * - Accordion: FAQ, long forms split in optional sections, help pages.
- *   Content found by the browser's search opens its panel.
- * - Collapsible: one "Mostrar detalhes" block.
- * - Tabs: sibling views of the same thing (an event: Resumo, Inscrições,
- *   Pagamentos). Not for steps (use Stepper) and not for navigation between
- *   pages (use links with `aria-current`).
- */
-
-// ─── Accordion ────────────────────────────────────────────────────────────
+/** Accordion (FAQ, optional form sections; browser search opens its panel), Collapsible, Tabs (sibling views of one thing; not steps, not page navigation) and `useUrlParam`, which keeps the open tab in the address. */
 
 export interface AccordionItem {
   value: string;
   title: ReactNode;
   content: ReactNode;
-  /** Small text next to the title ("3 documentos"). */
   meta?: ReactNode | undefined;
   disabled?: boolean | undefined;
 }
@@ -44,7 +30,6 @@ export function Accordion({
   className,
 }: {
   items: AccordionItem[];
-  /** Several panels open at once (default: one at a time). */
   multiple?: boolean | undefined;
   value?: string[] | undefined;
   defaultValue?: string[] | undefined;
@@ -94,8 +79,6 @@ export function Accordion({
   );
 }
 
-// ─── Collapsible ──────────────────────────────────────────────────────────
-
 export function Collapsible({
   label,
   openLabel,
@@ -105,9 +88,7 @@ export function Collapsible({
   onOpenChange,
   className,
 }: {
-  /** "Mostrar detalhes" */
   label: ReactNode;
-  /** "Esconder detalhes" (default: same as label). */
   openLabel?: ReactNode | undefined;
   children: ReactNode;
   open?: boolean | undefined;
@@ -129,13 +110,10 @@ export function Collapsible({
   );
 }
 
-// ─── Tabs ─────────────────────────────────────────────────────────────────
-
 export interface TabItem {
   value: string;
   label: ReactNode;
   icon?: ReactNode | undefined;
-  /** A count next to the label ("Inscrições 128"). */
   count?: number | undefined;
   content: ReactNode;
   disabled?: boolean | undefined;
@@ -157,7 +135,6 @@ export function Tabs({
   onValueChange?: ((value: string) => void) | undefined;
   /** "line": under a page header (the app accent marks the tab). "pill": inside a card or a panel. */
   variant?: "line" | "pill" | undefined;
-  /** Spoken name of the tab list ("Secções do evento"). */
   label: string;
   /** Keep hidden panels in the DOM (forms whose state must survive). */
   keepMounted?: boolean | undefined;
@@ -191,8 +168,6 @@ export function Tabs({
   );
 }
 
-// ─── URL sync ─────────────────────────────────────────────────────────────
-
 const EVENTO_URL = "mutual:url";
 function subscrever(aoMudar: () => void) {
   window.addEventListener("popstate", aoMudar);
@@ -204,10 +179,8 @@ function subscrever(aoMudar: () => void) {
 }
 
 /**
- * A value kept in the query string (`?separador=inscricoes`), for tabs,
- * segmented views and filters. Uses `history.replaceState` (no navigation,
- * no scroll jump, Next's `useSearchParams` stays in sync). Server-rendered
- * pages render `fallback` first, then the value in the address.
+ * A value in the query string (`?separador=inscricoes`) via `history.replaceState` (no navigation or scroll
+ * jump; `useSearchParams` stays in sync). Server-rendered pages render `fallback` first.
  *
  * ```tsx
  * const [separador, setSeparador] = useUrlParam("separador", "resumo", ["resumo", "inscricoes"]);

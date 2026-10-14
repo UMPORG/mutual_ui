@@ -7,25 +7,13 @@ import { Check, ChevronRight } from "lucide-react";
 import { cx } from "./cx";
 import { CLASSE_FLUTUANTE, CLASSE_POSICIONADOR } from "./controlos-comum";
 
-/**
- * Menus of actions, built on Base UI Menu:
- *
- * - `DropdownMenu` — the "⋯"/"Ações" button of a row, card or page header.
- * - `ContextMenu` — the same items on right-click / long-press of an area.
- *   Always offer the same actions another way too (a visible button):
- *   context menus are hard to discover.
- *
- * Items are data, so every menu in every app looks and behaves the same.
- * Menus are for actions and view options — not for navigation (use links)
- * and not for choosing a form value (use Select).
- */
+/** Action menus on Base UI Menu: `DropdownMenu` (the "⋯"/"Ações" button) and `ContextMenu` (right-click/long-press; also offer the same actions visibly, they are hard to discover). For actions and view options, not navigation (links) or form values (Select). */
 
 export type MenuEntry =
   | {
       type?: "item" | undefined;
       label: string;
       icon?: ReactNode | undefined;
-      /** Secondary text under the label. */
       description?: string | undefined;
       /** Shown on the right in help style (e.g. "Ctrl + E"); informative only. */
       shortcut?: string | undefined;
@@ -33,7 +21,6 @@ export type MenuEntry =
       /** Red, for "Eliminar". Put it last, after a separator. */
       destructive?: boolean | undefined;
       disabled?: boolean | undefined;
-      /** Keep the menu open after choosing (e.g. "Copiar"). */
       keepOpen?: boolean | undefined;
     }
   | { type: "link"; label: string; href: string; icon?: ReactNode | undefined; external?: boolean | undefined }
@@ -160,12 +147,10 @@ function Entradas({ items, LinkComponent }: { items: MenuEntry[]; LinkComponent:
 }
 
 export interface DropdownMenuProps {
-  /** The button that opens the menu (e.g. `<Button variant="outline">Ações</Button>`). */
   trigger: ReactElement;
   items: MenuEntry[];
   side?: "top" | "bottom" | "left" | "right" | undefined;
   align?: "start" | "center" | "end" | undefined;
-  /** Next's `Link` for `type: "link"` entries. */
   LinkComponent?: ElementType | undefined;
   open?: boolean | undefined;
   onOpenChange?: ((open: boolean) => void) | undefined;
@@ -188,7 +173,6 @@ export function DropdownMenu({ trigger, items, side = "bottom", align = "start",
 }
 
 export interface ContextMenuProps {
-  /** The area that reacts to right-click / long-press. */
   children: ReactNode;
   items: MenuEntry[];
   LinkComponent?: ElementType | undefined;

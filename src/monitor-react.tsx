@@ -1,19 +1,8 @@
 "use client";
 /**
- * Monitorização (ADR 0007) — peças React para as apps:
- *
- *   // app/layout.tsx (raiz): erros não apanhados do browser
- *   <MonitorCliente app="eventos" versao={versao} />
- *
- *   // app/error.tsx e app/global-error.tsx
- *   export default function Erro({ error, reset }) {
- *     return <ErroReportado error={error} reset={reset} app="eventos" />;
- *   }
- *
- *   // uma parte da página que pode falhar sozinha
- *   <FronteiraErro app="eventos" alternativa={<p>…</p>}>…</FronteiraErro>
- *
- * Tudo o que é reportado passa por `reportarErro` (`@umporg/ui/monitor`).
+ * Monitorização (ADR 0007), peças React: `<MonitorCliente app versao />` no layout raiz (erros não apanhados do
+ * browser); `<ErroReportado error reset app />` em `error.tsx`/`global-error.tsx`; `<FronteiraErro app alternativa>`
+ * para uma parte da página. Tudo passa por `reportarErro` (`@umporg/ui/monitor`).
  */
 import { AlertTriangle, RotateCcw } from "lucide-react";
 import { Component, useEffect, useRef, type ReactNode } from "react";
@@ -24,7 +13,6 @@ import { instalarReporteGlobal, reportarErro, type OpcoesReporte } from "./monit
 
 type Opcoes = Omit<OpcoesReporte, "lado" | "chave" | "fetch">;
 
-/** Liga o reporte dos erros não apanhados do browser (uma vez, no layout raiz). */
 export function MonitorCliente({
   app,
   versao,
@@ -36,7 +24,6 @@ export function MonitorCliente({
   return null;
 }
 
-/** Reporta este erro uma vez (em `error.tsx`, num `catch` de um componente…). */
 export function useReportarErro(error: unknown, opcoes: Opcoes): void {
   const enviado = useRef<unknown>(null);
   const { app, versao, url, pedidoId, contexto, endpoint } = opcoes;
@@ -47,11 +34,7 @@ export function useReportarErro(error: unknown, opcoes: Opcoes): void {
   }, [error, app, versao, url, pedidoId, contexto, endpoint]);
 }
 
-/**
- * O ecrã de erro das apps (`error.tsx` / `global-error.tsx`): diz o que
- * aconteceu em linguagem simples, que já ficou registado, e deixa tentar de
- * novo. Mostra a referência do erro (o `digest` do Next) para quem der apoio.
- */
+/** O ecrã de erro das apps: diz em linguagem simples o que aconteceu, que ficou registado, deixa tentar de novo e mostra a referência (`digest` do Next). */
 export function ErroReportado({
   error,
   reset,
@@ -66,7 +49,6 @@ export function ErroReportado({
   app: MutualAppId;
   versao?: string | null | undefined;
   titulo?: string | undefined;
-  /** caminho do início da app (ex.: `/eventos`); omissão: sem ligação */
   inicio?: string | undefined;
   className?: string | undefined;
 }) {
@@ -106,10 +88,7 @@ interface EstadoFronteira {
   erro: Error | null;
 }
 
-/**
- * Fronteira de erro que reporta: uma parte da página que falha mostra a
- * `alternativa` (ou uma mensagem curta) sem derrubar o resto.
- */
+/** Fronteira de erro que reporta: mostra a `alternativa` (ou uma mensagem curta) sem derrubar o resto. */
 export class FronteiraErro extends Component<
   {
     app: MutualAppId;

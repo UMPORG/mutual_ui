@@ -1,12 +1,7 @@
 /**
- * Where the floating «Demonstração» pill sits — pure geometry, no
- * DOM, so it is unit-tested.
- *
- * The pill prefers the bottom-right corner ("fim"). When that spot would
- * cover something the person needs — the focused field, a form's last
- * actions (submit/cancel), anything marked `data-demo-evitar` — it moves to
- * the bottom-left corner ("inicio"), then to the middle of the right edge
- * ("meio"). When every spot collides it takes the one that covers least.
+ * Where the «Demonstração» pill sits (pure geometry). Prefers the bottom-right ("fim"); moves to
+ * bottom-left ("inicio"), then right-middle ("meio") when it would cover the focused field, a form's
+ * last actions or `data-demo-evitar`; if all collide, the one covering least.
  */
 
 export type DocaDemo = "fim" | "inicio" | "meio";
@@ -20,11 +15,7 @@ export interface Retangulo {
 
 export const DOCAS: readonly DocaDemo[] = ["fim", "inicio", "meio"];
 
-/**
- * Rectangle of the pill at a dock, inside a viewport of `vw`×`vh`. `fundo` is the
- * distance from the bottom edge in the corner docks (default `margem`; larger when
- * the app lifts the pill above a bottom navigation bar with `--demo-fundo`).
- */
+/** Pill rectangle at a dock in a `vw`×`vh` viewport; `fundo` = distance from the bottom in corner docks (default `margem`; larger above a bottom nav via `--demo-fundo`). */
 export function retanguloDaDoca(
   doca: DocaDemo,
   pilula: { w: number; h: number },
@@ -39,7 +30,6 @@ export function retanguloDaDoca(
   return { x: vw - margem - w, y: vh - fundo - h, w, h };
 }
 
-/** Area shared by two rectangles, after growing `b` by `folga` on every side. */
 export function areaSobreposta(a: Retangulo, b: Retangulo, folga = 0): number {
   const bx = b.x - folga;
   const by = b.y - folga;
@@ -50,11 +40,7 @@ export function areaSobreposta(a: Retangulo, b: Retangulo, folga = 0): number {
   return w > 0 && h > 0 ? w * h : 0;
 }
 
-/**
- * The first dock (fim → inicio → meio) that covers none of the obstacles;
- * when all collide, the one with the smallest covered area (ties keep the
- * preferred order). Obstacles are viewport rectangles (getBoundingClientRect).
- */
+/** First dock (fim → inicio → meio) covering no obstacle (viewport rects); else the least covered, ties by preferred order. */
 export function escolherDoca(
   pilula: { w: number; h: number },
   viewport: { w: number; h: number },

@@ -12,15 +12,7 @@ export const TEXTOS_EM_BREVE = {
   portal: "Ir para o Portal",
 } as const;
 
-/**
- * The one «Disponível em breve» screen: an app or a page the UMP has not
- * opened yet (`appLigada` / `paginaLigada` false, from `eu.lancamento`).
- * Server-safe (no hooks).
- *
- * - App switched off: render it instead of the app (full screen, own header).
- * - Page switched off: `dentroDoShell` renders only the card, inside the
- *   `AppShell` content layer.
- */
+/** The one «Disponível em breve» screen for an app or page not yet opened (`eu.lancamento`). Server-safe. App off: render it instead of the app; page off: `dentroDoShell` renders only the card. */
 export function EmBreve({
   app,
   dentroDoShell = false,
@@ -29,7 +21,6 @@ export function EmBreve({
   className,
 }: {
   app: MutualAppId;
-  /** `eu.lancamento` (or the public one): the configured platform name in the header. */
   lancamento?: Lancamento | null | undefined;
   /** Inside `AppShell` (a switched-off page): no own header, no full-screen canvas. */
   dentroDoShell?: boolean | undefined;

@@ -170,7 +170,6 @@ function Campos() {
   );
 }
 
-/** Fields side by side keep their controls on one line (`m-campos-alinhados`). */
 function CamposAlinhados() {
   const [email, setEmail] = useState("geral@auroradominho.pt");
   return (
@@ -188,7 +187,6 @@ function CamposAlinhados() {
           <Input value={email} onChange={(e) => setEmail(e.target.value)} />
         </FormField>
       </div>
-      {/* A sub-section: heading inside a neutral card (fieldset/legend kept). */}
       <fieldset className="m-subseccao">
         <legend>Outros contactos telefónicos</legend>
         <p className="m-subseccao-ajuda">Um serviço por linha. Por exemplo: ERPI, Clínica, Centro Infantil, Farmácia.</p>
@@ -211,7 +209,6 @@ function CamposAlinhados() {
           </Button>
         </div>
       </fieldset>
-      {/* The actions of a step: in the flow, lifted only while stuck. */}
       <div className="m-barra-acoes">
         <div className="m-barra-acoes-corpo">
           <Button variant="outline" size="lg">Anterior</Button>

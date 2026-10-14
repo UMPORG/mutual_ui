@@ -1,23 +1,16 @@
 /**
- * Pure helpers of «Preencher com um documento»: comparing the
- * assistant's proposals with the form's current values, what is kept by
- * default, reading/writing a dotted path in a draft, the Cérebro calls and
- * the pt-PT error messages. No React, no DOM — tested in tests/preencher.test.ts.
- *
- * The Cérebro only PROPOSES (ADR 0006 §12). The form reviews and applies to
- * ITS draft; nothing is ever submitted from here.
+ * Pure helpers of «Preencher com um documento» (no React/DOM; tests/preencher.test.ts): proposals vs current
+ * values, what is kept by default, dotted paths in a draft, Cérebro calls, pt-PT errors. The Cérebro only
+ * PROPOSES (ADR 0006 §12): the form applies to ITS draft, nothing is submitted from here.
  */
 
 export type Confianca = "alta" | "media" | "baixa";
 
 export interface PropostaCampo {
-  /** dotted path in the form body ("identificacao.nif", "n.inventarios") */
   caminho: string;
   rotulo: string;
   valor: string | number;
-  /** "página 1, linha 4" / "célula Balanço!C12" */
   origem: string;
-  /** the document line the value came from */
   excerto: string;
   confianca: Confianca;
   metodo: "regra" | "folha" | "modelo";
@@ -47,12 +40,10 @@ export interface Leitura {
 export type Diferenca = "novo" | "igual" | "substitui";
 
 export interface LinhaRevisao extends PropostaCampo {
-  /** the value the form has now ("" / null = empty) */
   atual: unknown;
   diferenca: Diferenca;
 }
 
-/** A value as the person reads it (numbers in pt-PT, dates dd/mm/aaaa). */
 export function valorLegivel(v: unknown): string {
   if (v === null || v === undefined || v === "") return "";
   if (typeof v === "number") {
@@ -74,7 +65,6 @@ const normal = (v: unknown): string => {
   return s.normalize("NFC").replace(/\s+/g, " ").toLowerCase();
 };
 
-/** The proposals next to the current values of the form. */
 export function compararPropostas(
   propostas: readonly PropostaCampo[],
   valoresAtuais: Readonly<Record<string, unknown>>,
@@ -88,11 +78,7 @@ export function compararPropostas(
   });
 }
 
-/**
- * Kept by default: new values with high or medium confidence. A value that
- * would REPLACE what the person already wrote, or one with low confidence,
- * starts unticked — the person decides.
- */
+/** Kept by default: new values with high/medium confidence; one that would REPLACE what the person wrote, or with low confidence, starts unticked. */
 export function escolhaInicial(linhas: readonly LinhaRevisao[]): Set<string> {
   return new Set(
     linhas
@@ -101,7 +87,6 @@ export function escolhaInicial(linhas: readonly LinhaRevisao[]): Set<string> {
   );
 }
 
-/** `{ caminho: valor }` of the kept proposals. */
 export function valoresEscolhidos(
   linhas: readonly LinhaRevisao[],
   escolhidos: ReadonlySet<string>,
@@ -111,7 +96,6 @@ export function valoresEscolhidos(
   );
 }
 
-/** Reads `a.b.c` from an object (undefined if absent). */
 export function lerCaminho(obj: unknown, caminho: string): unknown {
   let x: unknown = obj;
   for (const k of caminho.split(".")) {
@@ -121,7 +105,6 @@ export function lerCaminho(obj: unknown, caminho: string): unknown {
   return x;
 }
 
-/** A copy of `obj` with `a.b.c` = `valor` (creates the missing objects). */
 export function escreverCaminho<T>(obj: T, caminho: string, valor: unknown): T {
   const [k, ...resto] = caminho.split(".");
   const base = (obj && typeof obj === "object" ? obj : {}) as Record<string, unknown>;
@@ -132,21 +115,16 @@ export function escreverCaminho<T>(obj: T, caminho: string, valor: unknown): T {
   } as T;
 }
 
-/** Applies `{ caminho: valor }` to a draft object (immutably). */
 export function aplicarValores<T>(rascunho: T, valores: Readonly<Record<string, unknown>>): T {
   return Object.entries(valores).reduce((acc, [c, v]) => escreverCaminho(acc, c, v), rascunho);
 }
 
-/** The current values of a draft for the given paths (for `compararPropostas`). */
 export function valoresDoRascunho(rascunho: unknown, caminhos: readonly string[]): Record<string, unknown> {
   return Object.fromEntries(caminhos.map((c) => [c, lerCaminho(rascunho, c)]));
 }
 
-// ─── Cérebro ────────────────────────────────────────────────────────────────
-
 export const API_ASSISTENTE = "/api/v1/assistente";
 
-/** The accepted files (the Cérebro detects the real type by the bytes). */
 export const EXTENSOES_DOCUMENTO = ".pdf,.docx,.xlsx,.csv,.jpg,.jpeg,.png";
 
 export class ErroAssistente extends Error {
@@ -162,7 +140,6 @@ export class ErroAssistente extends Error {
 /** 503 `ASSISTENTE_INDISPONIVEL`: the UMP has not opened the assistant here yet (a calm note, not an error). */
 export const TEXTO_ASSISTENTE_INDISPONIVEL = "O assistente ainda não está disponível nesta área. A UMP vai abri-lo em breve.";
 
-/** The message for the person from a Cérebro error answer (pure). */
 export function mensagemDoErro(estado: number, corpo: unknown): string {
   const c = (corpo && typeof corpo === "object" ? corpo : {}) as { error?: unknown; code?: unknown };
   const texto = typeof c.error === "string" ? c.error : null;
@@ -253,7 +230,6 @@ export function pedirTexto(
   });
 }
 
-/** Waits for a read to finish (polling), reporting progress. */
 export async function esperarLeitura(
   f: Fetch,
   id: string,
@@ -274,5 +250,4 @@ export async function esperarLeitura(
   }
 }
 
-/** "Alta", "Média", "Baixa" (pure). */
 export const TEXTO_CONFIANCA: Record<Confianca, string> = { alta: "Confiança alta", media: "Confiança média", baixa: "Confiança baixa" };

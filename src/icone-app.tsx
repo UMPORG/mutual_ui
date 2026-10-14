@@ -9,13 +9,7 @@ function Forma({ f }: { f: FormaGlifo }) {
   return <path d={f.d} className={cx(papel, f.t === "traco" ? "m-ic-traco" : "m-ic-cheio")} />;
 }
 
-/**
- * The icon of a MUTU@L app: the «folha» base in the app's colour
- * (`--app-marca`) with its white glyph (src/icones.ts). Top bar, launcher,
- * Portal tiles, lists of apps. Decorative by default (the app's name is
- * next to it); `titulo` gives it an accessible name (`true` = the app's
- * name). Colours in css/icones.css (forced colours: monochrome).
- */
+/** App icon: the «folha» base in the app colour (`--app-marca`) with its white glyph. Decorative unless `titulo` is given (`true` = the app's name). Colours in css/icones.css (forced colours: monochrome). */
 export function IconeApp({
   app,
   tamanho = 24,
@@ -48,13 +42,7 @@ export function IconeApp({
   );
 }
 
-/**
- * The glyph of an app WITHOUT the «folha» base, in `currentColor`: it takes the
- * colour of the text it sits in, so it follows the theme (light, dark, Alto
- * contraste, forced colours) by itself. For buttons and titles that open or
- * name the app (the top-bar «Assistente», the chat title); the launcher and
- * the tiles keep `IconeApp`. Decorative unless `titulo` is given.
- */
+/** The app glyph WITHOUT the base, in `currentColor` so it follows every theme (incl. forced colours). For buttons and titles that name the app; the launcher and tiles keep `IconeApp`. Decorative unless `titulo`. */
 export function GlifoApp({
   app,
   tamanho = 20,
@@ -108,7 +96,6 @@ export function GlifoApp({
   );
 }
 
-/** The nine-dot «waffle» (3 × 3) of the launcher button. */
 export function IconeWaffle({ tamanho = 24 }: { tamanho?: number | undefined }) {
   const pontos: ReactNode[] = [];
   for (const y of [5, 12, 19]) for (const x of [5, 12, 19]) pontos.push(<circle key={`${x}-${y}`} cx={x} cy={y} r={2.1} />);

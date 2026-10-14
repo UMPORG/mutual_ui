@@ -1,13 +1,4 @@
-/**
- * pt-PT formatting for every number, amount, percentage and date the apps
- * show. Pure functions (server, client, edge). Missing or invalid values
- * render as "—" so a table never shows "NaN", "undefined" or an ISO date.
- *
- * pt-PT conventions (CLDR): decimal comma, a space groups thousands from
- * 10 000 up ("1234", "12 345"), the euro sign after the amount
- * ("1234,50 €"), "12,5%", dates as dd/MM/yyyy and everything in the
- * Europe/Lisbon time zone. Spaces inside numbers are non-breaking.
- */
+/** pt-PT formatting (pure; server, client, edge). Missing or invalid values render "—", never "NaN" or an ISO date. CLDR: decimal comma, thousands grouped from 10 000 up, "1234,50 €", "12,5%", dd/MM/yyyy, Europe/Lisbon; spaces inside numbers are non-breaking. */
 
 import {
   INDICATIVO_PT,
@@ -23,7 +14,6 @@ import {
 
 export const LOCALE = "pt-PT";
 export const FUSO_HORARIO = "Europe/Lisbon";
-/** What we show when a value is missing. */
 export const SEM_VALOR = "—";
 
 export type ValorNumerico = number | bigint | string | null | undefined;
@@ -47,11 +37,9 @@ export function paraNumero(valor: ValorNumerico): number | null {
 }
 
 export interface OpcoesNumero {
-  /** Exact number of decimals. Default: up to 2, none if the value is whole. */
   casas?: number | undefined;
   /** "1,2 mil", "3,4 M" — for tiles and axis ticks, never for tables. */
   compacto?: boolean | undefined;
-  /** Always show the sign ("+12", "-3", "0"). */
   sinal?: boolean | undefined;
 }
 
@@ -72,7 +60,6 @@ export function formatarNumero(valor: ValorNumerico, opcoes: OpcoesNumero = {}):
 }
 
 export interface OpcoesMoeda extends OpcoesNumero {
-  /** ISO 4217 code. Default "EUR". */
   moeda?: string | undefined;
 }
 
@@ -91,10 +78,7 @@ export function formatarMoeda(valor: ValorNumerico, opcoes: OpcoesMoeda = {}): s
 }
 
 export interface OpcoesPercentagem extends Omit<OpcoesNumero, "compacto"> {
-  /**
-   * "fracao" (default): 0.125 is 12,5%. "cem": the value is already a
-   * percentage (12.5 is 12,5%) — what most APIs return.
-   */
+  /** "fracao" (default): 0.125 is 12,5%; "cem": the value is already a percentage (what most APIs return). */
   escala?: "fracao" | "cem" | undefined;
 }
 
@@ -110,11 +94,9 @@ export function formatarPercentagem(valor: ValorNumerico, opcoes: OpcoesPercenta
   }).format(fracao);
 }
 
-/** How a value is shown by stat tiles, charts and tables. */
 export type FormatoValor =
   | "numero"
   | "inteiro"
-  /** Counts of things (inscrições, pedidos): whole numbers, integer axis ticks. */
   | "contagem"
   | "moeda"
   | "percentagem"
@@ -123,10 +105,7 @@ export type FormatoValor =
   | ({ tipo: "moeda"; opcoes?: OpcoesMoeda | undefined })
   | ({ tipo: "percentagem"; opcoes?: OpcoesPercentagem | undefined });
 
-/**
- * One entry point for components: `formatarValor(v, "moeda")`.
- * `compacto` shortens numbers from 10 000 up (tiles, axis ticks).
- */
+/** One entry point for components; `compacto` shortens from 10 000 up (tiles, axis ticks). */
 export function formatarValor(valor: ValorNumerico, formato: FormatoValor = "numero", compacto = false): string {
   const n = paraNumero(valor);
   if (n === null) return SEM_VALOR;
@@ -151,10 +130,7 @@ export function formatarValor(valor: ValorNumerico, formato: FormatoValor = "num
   }
 }
 
-/**
- * Axis ticks: short and without decimals that carry no information
- * ("26 mil €", "6500 €", "40%").
- */
+/** Axis ticks: short, without decimals that carry no information ("26 mil €", "6500 €", "40%"). */
 export function formatarEixo(valor: ValorNumerico, formato: FormatoValor = "numero"): string {
   const n = paraNumero(valor);
   if (n === null) return "";
@@ -172,8 +148,6 @@ export function formatarEixo(valor: ValorNumerico, formato: FormatoValor = "nume
   if (tipo === "inteiro" || tipo === "contagem") return formatarNumero(Math.round(n), { compacto: grande, casas: grande ? undefined : 0 });
   return formatarNumero(n, { compacto: grande });
 }
-
-// ─── Datas ────────────────────────────────────────────────────────────────
 
 export type ValorData = Date | string | number | null | undefined;
 
@@ -221,11 +195,7 @@ export function paraData(valor: ValorData): Date | null {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-/**
- * `formatarData("2026-10-03")` → "03/10/2026";
- * `formatarData(d, "longa")` → "sábado, 3 de outubro de 2026".
- * Always in Europe/Lisbon, whatever the server's time zone.
- */
+/** `formatarData("2026-10-03")` → "03/10/2026"; `(d, "longa")` → "sábado, 3 de outubro de 2026". Always Europe/Lisbon. */
 export function formatarData(valor: ValorData, estilo: EstiloData = "curta"): string {
   const d = paraData(valor);
   if (!d) return SEM_VALOR;
@@ -253,15 +223,11 @@ export function contar(n: number, singular: string, plural: string): string {
   return `${formatarNumero(n, { casas: 0 })} ${Math.abs(n) === 1 ? singular : plural}`;
 }
 
-// ─── Identificadores ─────────────────────────────────────────────
 // Stored values are normalised (see `@umporg/ui/validar`); these show them.
 // A value that cannot be read is shown as it came (never lost), empty is "—".
 
 export interface OpcoesFormatarTelefone {
-  /**
-   * Show "+351" on Portuguese numbers too ("+351 912 345 678"). Default:
-   * national for Portugal ("912 345 678"), always the code for other countries.
-   */
+  /** Show "+351" on Portuguese numbers too (default: national for Portugal, the code for other countries). */
   indicativo?: boolean | undefined;
 }
 

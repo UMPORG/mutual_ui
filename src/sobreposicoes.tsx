@@ -11,20 +11,7 @@ import { Button } from "./basicos";
 import { StatusCallout } from "./feedback";
 import { CLASSE_FLUTUANTE, CLASSE_POSICIONADOR } from "./controlos-comum";
 
-/**
- * Layers over the page, built on Base UI: Tooltip, Popover, Dialog,
- * ConfirmDialog (with the typed-confirmation variant) and Sheet.
- *
- * - Tooltip: a short name for an icon-only button. Never essential
- *   information (touch screens have no hover) and never interactive.
- * - Popover: a small panel tied to a button (a filter, a detail, a colour
- *   picker). Interactive content is fine.
- * - Dialog: a task that must be finished or cancelled before going on.
- * - ConfirmDialog: the one confirmation pattern (Eliminar, Revogar…).
- * - Sheet: a side panel for details or a secondary form next to a list.
- */
-
-// ─── Tooltip ──────────────────────────────────────────────────────────────
+/** Tooltip: a short name for an icon-only button; never essential information (touch has no hover) and never interactive. */
 
 /** Wrap the app (or a toolbar) once so neighbouring tooltips open instantly after the first. */
 export function TooltipProvider({ children, delay = 500 }: { children: ReactNode; delay?: number | undefined }) {
@@ -38,7 +25,6 @@ export function Tooltip({
   align = "center",
 }: {
   content: ReactNode;
-  /** The trigger — usually an icon-only `Button` with the same `aria-label`. */
   children: ReactElement;
   side?: "top" | "bottom" | "left" | "right" | undefined;
   align?: "start" | "center" | "end" | undefined;
@@ -55,8 +41,6 @@ export function Tooltip({
   );
 }
 
-// ─── Popover ──────────────────────────────────────────────────────────────
-
 export function Popover({
   trigger,
   title,
@@ -70,7 +54,6 @@ export function Popover({
   showClose = false,
 }: {
   trigger: ReactElement;
-  /** Heading of the panel (names it for screen readers). */
   title?: ReactNode | undefined;
   description?: ReactNode | undefined;
   children?: ReactNode | undefined;
@@ -79,7 +62,6 @@ export function Popover({
   open?: boolean | undefined;
   onOpenChange?: ((open: boolean) => void) | undefined;
   className?: string | undefined;
-  /** A "Fechar" button in the corner (for panels with a lot inside). */
   showClose?: boolean | undefined;
 }) {
   return (
@@ -103,24 +85,19 @@ export function Popover({
   );
 }
 
-// ─── Dialog ───────────────────────────────────────────────────────────────
-
 const LARGURA = { sm: "max-w-md", md: "max-w-lg", lg: "max-w-2xl", xl: "max-w-4xl" } as const;
 
 export interface DialogProps {
   open?: boolean | undefined;
   onOpenChange?: ((open: boolean) => void) | undefined;
-  /** Button that opens it (uncontrolled use). */
   trigger?: ReactElement | undefined;
   title: ReactNode;
   description?: ReactNode | undefined;
   children?: ReactNode | undefined;
-  /** Buttons row; primary action last. */
   footer?: ReactNode | undefined;
   size?: keyof typeof LARGURA | undefined;
   /** Close by clicking outside (default true). Turn off for forms with data. */
   dismissible?: boolean | undefined;
-  /** Element to focus first (default: the first focusable one). */
   initialFocus?: React.RefObject<HTMLElement | null> | undefined;
   className?: string | undefined;
 }
@@ -183,48 +160,32 @@ export function Dialog({ open, onOpenChange, trigger, title, description, childr
   );
 }
 
-/** A button that closes the dialog it sits in ("Cancelar"). */
 export function DialogClose({ children = "Cancelar", variant = "outline" as const }: { children?: ReactNode | undefined; variant?: "outline" | "ghost" | undefined }) {
   return <BaseDialog.Close render={<Button variant={variant} />}>{children}</BaseDialog.Close>;
 }
-
-// ─── ConfirmDialog ────────────────────────────────────────────────────────
 
 const PROTECAO_DUPLO_CLIQUE_MS = 400;
 
 export interface ConfirmDialogProps {
   open: boolean;
-  /** "Cancelar", Escape and the close button. */
   onCancel: () => void;
   onConfirm: () => void;
   title: ReactNode;
-  /** What will happen, in plain words, and whether it can be undone. */
   description?: ReactNode | undefined;
   /** The verb: "Eliminar", "Revogar", "Aprovar". Never "OK" or "Sim". */
   confirmLabel: string;
   cancelLabel?: string | undefined;
-  /** "danger" (default): red confirm button. "default": brand button. */
   tone?: "danger" | "default" | undefined;
-  /** Disables the buttons and shows a spinner while the action runs. */
   pending?: boolean | undefined;
   /** Error of the action — it stays in the dialog, not in a toast. */
   error?: ReactNode | undefined;
-  /**
-   * Typed confirmation for actions that are hard to undo (delete a DNS
-   * zone, revoke all accesses): the person must type this exact text.
-   */
+  /** Typed confirmation for hard-to-undo actions: the person must type this exact text. */
   confirmText?: string | undefined;
-  /** Label of the typed-confirmation field. Default: "Para confirmar, escreva «…»". */
   confirmTextLabel?: ReactNode | undefined;
   children?: ReactNode | undefined;
 }
 
-/**
- * The one confirmation dialog. A separate dialog, never a button that
- * changes its label on the first click; the focus starts on "Cancelar" (or
- * on the typed-confirmation field) so a habitual Enter does not confirm; a
- * double-click on the button that opened it is ignored.
- */
+/** Separate dialog, never a button relabelled on first click; focus starts on «Cancelar» (or the typed field) so a habitual Enter does not confirm; a double-click on the opener is ignored. */
 export function ConfirmDialog({
   open,
   onCancel,
@@ -337,12 +298,8 @@ export function ConfirmDialog({
   );
 }
 
-// ─── Sheet ────────────────────────────────────────────────────────────────
-
 export interface SheetProps extends Omit<DialogProps, "size"> {
-  /** Where it comes from. "bottom" suits phones (short content). */
   side?: "right" | "left" | "bottom" | undefined;
-  /** Width of side sheets. Default "md" (28rem). */
   size?: "sm" | "md" | "lg" | undefined;
 }
 

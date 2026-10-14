@@ -1,10 +1,6 @@
 "use client";
 
-/**
- * `@umporg/ui/efeitos` — decorative effects. Which one goes where:
- * docs/guia/superficies.md → "Effects". `AsciiFundo` stays in the main
- * entry (entry and login screens).
- */
+/** `@umporg/ui/efeitos`: decorative effects (placement in docs/guia/superficies.md); `AsciiFundo` stays in the main entry. */
 export {
   ConstelacaoFundo,
   TopografiaFundo,

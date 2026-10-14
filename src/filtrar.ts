@@ -1,13 +1,5 @@
-/**
- * Filtering for comboboxes and autocompletes. Pure, framework-free.
- *
- * Portuguese users type without accents and in any case: "evora" must find
- * "Évora", "sao joao" must find "São João da Madeira". Results are ranked:
- * whole label first, then start of the label, then start of a word, then
- * anywhere.
- */
+/** Pure filtering for comboboxes: accent- and case-insensitive ("evora" finds "Évora"), ranked whole label, label start, word start, anywhere. */
 
-/** Lower case, no accents, single spaces. "  São  JOÃO " → "sao joao". */
 export function normalizarTexto(texto: string): string {
   return texto
     .normalize("NFD")
@@ -35,10 +27,7 @@ export function pontuarCorrespondencia(rotulo: string, consulta: string): number
   return Math.min(79, total);
 }
 
-/**
- * Filters and ranks `itens` by `consulta`. Stable for equal scores (keeps the
- * app's order). An empty query returns everything, in order.
- */
+/** Filters and ranks `itens` by `consulta`; stable for equal scores; an empty query returns all. */
 export function filtrarOpcoes<T>(itens: readonly T[], consulta: string, rotulo: (item: T) => string, limite?: number): T[] {
   if (!normalizarTexto(consulta)) return limite ? itens.slice(0, limite) : [...itens];
   const pontuados: Array<{ item: T; p: number; i: number }> = [];
@@ -51,11 +40,7 @@ export function filtrarOpcoes<T>(itens: readonly T[], consulta: string, rotulo: 
   return limite ? r.slice(0, limite) : r;
 }
 
-/**
- * The text to offer as "Criar «…»" in a creatable combobox, or null when the
- * query is empty or already matches an item exactly (ignoring case and
- * accents).
- */
+/** Text for "Criar «…»" in a creatable combobox; null when the query is empty or matches an item exactly. */
 export function textoParaCriar<T>(consulta: string, itens: readonly T[], rotulo: (item: T) => string): string | null {
   const limpo = consulta.replace(/\s+/g, " ").trim();
   if (!limpo) return null;
@@ -63,10 +48,7 @@ export function textoParaCriar<T>(consulta: string, itens: readonly T[], rotulo:
   return itens.some((i) => normalizarTexto(rotulo(i)) === n) ? null : limpo;
 }
 
-/**
- * Splits `rotulo` into parts marking where the query matched (accent- and
- * case-insensitive), to bold the typed part in the list.
- */
+/** Splits `rotulo` into parts marking the (accent/case-insensitive) match, to bold the typed part. */
 export function partesDestacadas(rotulo: string, consulta: string): Array<{ texto: string; destaque: boolean }> {
   const q = normalizarTexto(consulta);
   if (!q) return [{ texto: rotulo, destaque: false }];

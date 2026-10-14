@@ -1,9 +1,4 @@
-/**
- * `@umporg/ui/validar` — normalise and check what people type in
- * Portuguese forms: phone numbers (E.164), NIF/NIPC, código postal, IBAN.
- * Pure, no dependencies. `comZod(validarX)` plugs any of them into zod 4;
- * the display side is in `@umporg/ui/formatar` (`formatarTelefone`…).
- */
+/** `@umporg/ui/validar`: pure normalisers and validators; `comZod(validarX)` plugs any into zod 4. */
 export {
   INDICATIVO_PT,
   INDICATIVOS,

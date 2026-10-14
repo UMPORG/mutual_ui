@@ -32,8 +32,6 @@ const VP = { w: 1440, h: 900 };
 const CHAT = { w: 400, h: 640 };
 const TOPO = 64;
 
-// ─── Snapping ────────────────────────────────────────────────────────────────
-
 test("cantoMaisProximo: the quadrant of the released centre", () => {
   assert.equal(cantoMaisProximo({ x: 1200, y: 700 }, VP), "inf-dir");
   assert.equal(cantoMaisProximo({ x: 100, y: 700 }, VP), "inf-esq");
@@ -66,8 +64,6 @@ test("posicaoDoChat: each corner, inside the margins and below the top bar", () 
   assert.equal(baixo.h, 600 - TOPO - 40);
   assert.equal(baixo.y, TOPO + 20);
 });
-
-// ─── Stacking with the «Demonstração» widget ─────────────────────────────────
 
 const PILULA: Retangulo = { x: 1372, y: 832, w: 48, h: 48 }; // bottom-right, margin 20
 
@@ -160,8 +156,6 @@ test("uniao: the footprint around several rectangles; empty ones ignored", () =>
   assert.equal(uniao([]), null);
 });
 
-// ─── Page context ────────────────────────────────────────────────────────────
-
 const ENTRADA = {
   app: "backoffice",
   pagina: "Caracterização",
@@ -226,8 +220,6 @@ test("contextoAEnviar: sent the first time and after a change, not again when un
   assert.equal(contextoAEnviar(null, undefined).contexto, undefined);
   assert.deepEqual(valoresDoContexto(a)["identificacao.fundacao"], 1923);
 });
-
-// ─── Kept state and registries ───────────────────────────────────────────────
 
 class Memoria {
   m = new Map<string, string>();
@@ -302,8 +294,6 @@ test("contexto da página: a dialog publishes and closes — the page's latest c
   p.retirar();
   assert.equal(contextoPagina.ler(), null);
 });
-
-// ─── Stream and shapes ───────────────────────────────────────────────────────
 
 test("LeitorSse: pieces of any size, CRLF, comments, multi-line data", () => {
   const l = new LeitorSse();

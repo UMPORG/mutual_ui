@@ -1,14 +1,4 @@
-/**
- * Teste de TIPOS (não corre): compilado com `exactOptionalPropertyTypes`
- * (`pnpm typecheck` — o tsconfig.json liga-a; o tsconfig.solto.json confirma
- * que tudo compila também sem ela). As apps podem ligar esse preset estrito: toda a prop opcional de um componente ou função exportada
- * tem de aceitar `undefined` explícito — `buttonClasses({ iconOnly })` com
- * `iconOnly: boolean | undefined` tem de compilar.
- *
- * A verificação é genérica: para cada função/componente exportado por cada
- * ponto de entrada, cada parâmetro (props/opções) com TODAS as chaves
- * opcionais a `undefined` tem de ser aceite. Um export que falhe aparece pelo nome no erro de `falhas`.
- */
+/** Teste de TIPOS (não corre), compilado com `exactOptionalPropertyTypes` (`pnpm typecheck`): toda a prop/opção opcional de cada export tem de aceitar `undefined` explícito. O export que falhe aparece pelo nome no erro de `falhas`. */
 import type * as Raiz from "../src/index";
 import type * as Controlos from "../src/controlos";
 import type * as Datas from "../src/datas";
@@ -38,7 +28,6 @@ type AceitaUndefined<P> = P extends object
       ? true
       : false
   : true;
-/** Todos os parâmetros (props, opções) aceitam `undefined` nas chaves opcionais. */
 type ParametrosOk<F> = F extends (...a: infer A) => unknown
   ? false extends { [I in keyof A]: AceitaUndefined<NonNullable<A[I]>> }[number]
     ? false
@@ -65,10 +54,8 @@ type Todas =
   | Falhas<typeof AssistenteApi>
   | Falhas<typeof MonitorReact>;
 
-// Se isto falhar, o erro diz que exports não aceitam `undefined` nas props opcionais.
 export const falhas: never = null as unknown as Todas;
 
-// Os casos concretos que motivaram a regra.
 declare const talvez: boolean | undefined;
 declare const texto: string | undefined;
 export const classes = buttonClasses({ iconOnly: talvez, className: texto, variant: undefined, size: undefined });

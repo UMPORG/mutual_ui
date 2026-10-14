@@ -1,35 +1,18 @@
 /**
- * Monitorização (ADR 0007) — reportar erros das apps ao Cérebro e propagar o
- * id do pedido (`x-pedido-id`). Sem React: serve o browser, o servidor Next
- * (`instrumentation.ts` → `onRequestError`) e o edge.
- *
- *   // instrumentation.ts (servidor)
- *   export const onRequestError = criarOnRequestError({
- *     app: "eventos", cerebroUrl: env.CEREBRO_URL_INTERNO ?? env.MUTUAL_URL, chave: env.MONITOR_CHAVE,
- *   });
- *
- *   // browser (layout raiz): <MonitorCliente app="eventos" /> de "@umporg/ui/monitor/react"
- *
- * Contrato do Cérebro: `POST /api/v1/monitor/erros` (`mutual_cerebro/docs/referencia/monitorizacao.md`). O browser
- * envia para o mesmo endereço (`/api/v1/monitor/erros`), com ou sem sessão, e
- * só pode dizer `lado: "browser"`; o servidor da app envia com a Machine Key
- * de serviço `monitor` (`X-Machine-Key`, variável `MONITOR_CHAVE`). Sem
- * chave, os erros do servidor não são enviados (ficam só no registo da app).
- *
- * Nunca lança, nunca atrasa quem chama mais do que o tempo limite (3 s), e
- * nunca envia corpos, cookies ou cabeçalhos: só o tipo, a mensagem, a stack,
- * a página (o Cérebro guarda apenas o caminho normalizado) e o contexto que a
- * app passar (valores simples).
+ * Monitorização (ADR 0007): reporta erros das apps ao Cérebro e propaga o `x-pedido-id`. Sem React (browser,
+ * servidor Next via `instrumentation.ts` → `onRequestError`, edge). Contrato: `POST /api/v1/monitor/erros`
+ * (mutual_cerebro/docs/referencia/monitorizacao.md). O browser envia à mesma origem, com ou sem sessão, e só
+ * pode dizer `lado: "browser"`; o servidor envia com a Machine Key do serviço `monitor` (`MONITOR_CHAVE`; sem
+ * chave não envia). Nunca lança, nunca atrasa mais de 3 s e nunca envia corpos, cookies ou cabeçalhos: só tipo,
+ * mensagem, stack, página (o Cérebro guarda o caminho normalizado) e contexto simples.
  */
 import type { MutualAppId } from "./apps";
 
-/** Cabeçalho do id do pedido (o mesmo em todo o ecossistema). */
 export const CABECALHO_PEDIDO = "x-pedido-id";
 export const CAMINHO_ERROS = "/api/v1/monitor/erros";
 
 const FORMATO_ID = /^[A-Za-z0-9._-]{8,64}$/;
 
-/** Um id novo para um pedido (UUID). */
 export function novoPedidoId(): string {
   return crypto.randomUUID();
 }
@@ -47,7 +30,6 @@ export function pedidoIdDe(cabecalhos: CabecalhosSoltos | null | undefined): str
   return v && FORMATO_ID.test(v.trim()) ? v.trim() : null;
 }
 
-/** Cabeçalhos para uma chamada ao Cérebro com o mesmo id do pedido. */
 export function cabecalhosComPedido(pedidoId: string | null | undefined): Record<string, string> {
   return pedidoId && FORMATO_ID.test(pedidoId) ? { [CABECALHO_PEDIDO]: pedidoId } : {};
 }
@@ -62,7 +44,6 @@ export interface ErroSerializado {
 
 const corta = (s: string, max: number) => (s.length > max ? `${s.slice(0, max - 1)}…` : s);
 
-/** Qualquer coisa que foi lançada → texto limitado (com a cadeia de `cause`). */
 export function serializarErro(erro: unknown): ErroSerializado {
   if (erro instanceof Error) {
     const causas: string[] = [];
@@ -112,24 +93,17 @@ export function eRuido(e: ErroSerializado): boolean {
 type ValorContexto = string | number | boolean | null;
 
 export interface OpcoesReporte {
-  /** a app que reporta */
   app: MutualAppId;
   /** omissão: `browser` no browser, `servidor` fora dele */
   lado?: "browser" | "servidor" | undefined;
-  /** versão implantada (commit curto) */
   versao?: string | null | undefined;
-  /**
-   * Para onde enviar. Browser: omissão `/api/v1/monitor/erros` (mesma origem).
-   * Servidor: o URL absoluto do Cérebro + esse caminho (`criarOnRequestError` faz isto).
-   */
+  /** Para onde enviar. Browser: `/api/v1/monitor/erros` (mesma origem); servidor: URL absoluto do Cérebro + esse caminho. */
   endpoint?: string | undefined;
   /** Machine Key de serviço `monitor` — só no servidor, nunca no browser */
   chave?: string | null | undefined;
-  /** página ou rota onde aconteceu */
   url?: string | null | undefined;
   pedidoId?: string | null | undefined;
   contexto?: Readonly<Record<string, ValorContexto>> | undefined;
-  /** para testes */
   fetch?: typeof fetch | undefined;
 }
 
@@ -140,7 +114,6 @@ const vistos = new Map<string, number>();
 let enviadosNaPagina = 0;
 const MAX_POR_PAGINA = 20;
 
-/** Para testes: esquece os travões. */
 export function reporTravoes(): void {
   vistos.clear();
   enviadosNaPagina = 0;
@@ -155,10 +128,7 @@ function contextoLimpo(c: Readonly<Record<string, ValorContexto>> | undefined) {
   return out;
 }
 
-/**
- * Envia um erro ao Cérebro. Nunca lança. Devolve `true` se o Cérebro o
- * aceitou (útil em testes e para mostrar «o erro foi registado»).
- */
+/** Envia um erro ao Cérebro; nunca lança. Devolve `true` se foi aceite. */
 export async function reportarErro(erro: unknown, o: OpcoesReporte): Promise<boolean> {
   try {
     const lado = o.lado ?? (noBrowser() ? "browser" : "servidor");
@@ -204,10 +174,7 @@ export async function reportarErro(erro: unknown, o: OpcoesReporte): Promise<boo
   }
 }
 
-/**
- * Erros não apanhados no browser (`error` e `unhandledrejection`). Devolve a
- * função que desliga os ouvintes. Chamar uma vez (o `MonitorCliente` faz isto).
- */
+/** Ouvintes de `error` e `unhandledrejection` no browser; devolve a função que os desliga. */
 export function instalarReporteGlobal(o: Omit<OpcoesReporte, "lado" | "chave">): () => void {
   if (!noBrowser()) return () => {};
   const aoErro = (ev: ErrorEvent) => {
@@ -224,7 +191,6 @@ export function instalarReporteGlobal(o: Omit<OpcoesReporte, "lado" | "chave">):
   };
 }
 
-/** O que o Next passa a `onRequestError` (instrumentation.ts). */
 export interface PedidoNext {
   path: string;
   method: string;
@@ -238,11 +204,7 @@ export interface ContextoNext {
   revalidateReason?: string | undefined;
 }
 
-/**
- * `onRequestError` para o `instrumentation.ts` das apps Next: envia o erro do
- * servidor ao Cérebro com a Machine Key. Sem `cerebroUrl` ou sem `chave` não
- * faz nada (os erros continuam no registo da própria app).
- */
+/** `onRequestError` do `instrumentation.ts`: envia o erro do servidor com a Machine Key; sem `cerebroUrl` ou `chave` não faz nada. */
 export function criarOnRequestError(o: {
   app: MutualAppId;
   cerebroUrl: string | null | undefined;

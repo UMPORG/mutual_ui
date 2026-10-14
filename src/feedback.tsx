@@ -4,7 +4,6 @@ import { cx } from "./cx";
 
 export type Tone = "success" | "warning" | "info" | "danger" | "neutral";
 
-/** Soft background + border + text for a tone (callouts, badges, chips). */
 export const TONE_CLASSES: Record<Tone, string> = {
   success: "border-success/30 bg-success-soft text-success-soft-foreground",
   warning: "border-warning/30 bg-warning-soft text-warning-soft-foreground",
@@ -16,10 +15,7 @@ export const TONE_CLASSES: Record<Tone, string> = {
 /** The icon that goes with each tone — status is never colour alone. */
 export const TONE_ICONS = { success: CheckCircle2, warning: AlertTriangle, info: Info, danger: XCircle, neutral: Info } as const;
 
-/**
- * Persistent, in-page message. Status is always icon + words, never colour
- * alone. Use it for anything the user must not miss (a toast disappears).
- */
+/** Persistent in-page message (a toast disappears): icon + words, never colour alone. */
 export function StatusCallout({
   tone = "info",
   title,
@@ -52,7 +48,6 @@ export function StatusCallout({
   );
 }
 
-/** Status pill: icon-less, but always with words. */
 export function StatusBadge({ tone = "neutral", children, className }: { tone?: Tone | undefined; children: ReactNode; className?: string | undefined }) {
   return (
     <span
@@ -67,10 +62,7 @@ export function StatusBadge({ tone = "neutral", children, className }: { tone?: 
   );
 }
 
-/**
- * "Nothing here yet" / "No results". `variant="inline"` drops the dashed box
- * for use inside a Card, a DataTable or a chart frame.
- */
+/** Empty state; `variant="inline"` drops the dashed box (inside a Card, DataTable or chart frame). */
 export function EmptyState({
   icon,
   title,

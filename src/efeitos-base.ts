@@ -1,16 +1,7 @@
 import type { CSSProperties } from "react";
 import { movimentoReduzido } from "./preferencias";
 
-/**
- * The engine shared by the canvas effects. Every effect gets the same
- * guarantees as `AsciiFundo`:
- *
- * - device-pixel-ratio capped (default 1.5) and a frame-rate cap;
- * - paused when the tab is hidden or the canvas is off screen;
- * - a single still frame under "Reduzir movimento" (or the OS setting);
- * - colours re-read when the theme, the app or the preferences change;
- * - hidden in Alto contraste by CSS (`.m-efeito`).
- */
+/** Engine shared by the canvas effects, with the guarantees of `AsciiFundo`: DPR cap (1.5) and fps cap, paused when hidden or off screen, one still frame under "Reduzir movimento", colours re-read on theme/app/preference change, hidden in Alto contraste (`.m-efeito`). */
 
 export interface CoresEfeito {
   marca: string;
@@ -28,25 +19,16 @@ export interface EstadoEfeito {
   dpr: number;
   cores: CoresEfeito;
   rato: { x: number; y: number; forca: number };
-  /** True while drawing the one still frame (reduced motion). */
   parado: boolean;
 }
 
 export interface OpcoesEfeito {
-  /** Frames per second cap. */
   fps?: number | undefined;
-  /** Max device pixel ratio. */
   dprMax?: number | undefined;
-  /** Called after every resize and theme change (precompute layers here). */
   preparar?: ((ctx: CanvasRenderingContext2D, e: EstadoEfeito) => void) | undefined;
-  /**
-   * Draws a frame at time `t` (ms). Return false to sleep until woken by the
-   * pointer (effects that are still when nobody interacts).
-   */
+  /** Draws a frame at time `t` (ms). Return false to sleep until the pointer wakes it (effects still when idle). */
   desenhar: (ctx: CanvasRenderingContext2D, e: EstadoEfeito, t: number) => boolean | void;
-  /** Wake up on pointer movement over the canvas area. */
   rato?: boolean | undefined;
-  /** Time used for the still frame. */
   tempoParado?: number | undefined;
   /** How fast the pointer's influence fades per frame (0–1, default 0.93). */
   decaimento?: number | undefined;
@@ -193,10 +175,7 @@ export function iniciarEfeito(canvas: HTMLCanvasElement, o: OpcoesEfeito): () =>
 /** Where the content sits: the effect fades out there so it never runs behind text. */
 export type Mascara = { x?: string | undefined; y?: string | undefined; largura?: string | undefined; altura?: string | undefined } | false;
 
-/**
- * CSS mask for an effect: a soft hole where the content sits (`mascara`)
- * and an optional fade at the top (under a header) — same as AsciiFundo.
- */
+/** CSS mask for an effect: a soft hole where the content sits (`mascara`) and an optional fade at the top (under a header). */
 export function estiloMascara(mascara: Mascara | undefined, fadeTopo: string | false | undefined, extra: string[] = []): CSSProperties {
   const camadas: string[] = [...extra];
   if (mascara) {
@@ -214,7 +193,6 @@ export function estiloMascara(mascara: Mascara | undefined, fadeTopo: string | f
   return estilo;
 }
 
-/** Colour with alpha from any CSS colour string (hex or rgb/oklch). */
 export function comAlfa(cor: string, alfa: number): string {
   const a = Math.max(0, Math.min(1, alfa));
   if (/^#([0-9a-f]{6})$/i.test(cor)) {

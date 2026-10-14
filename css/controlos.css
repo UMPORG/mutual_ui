@@ -1,15 +1,4 @@
-/*
- * Controls — the look of @umporg/ui/controlos and /datas.
- *
- * Behaviour (focus, keyboard, ARIA) comes from @base-ui/react; this file only
- * gives the parts their MUTU@L look, driven by the tokens so Claro, Escuro and
- * Alto contraste follow. Base UI exposes state as data attributes
- * (data-highlighted, data-checked, data-open, data-starting-style…), which is
- * what the selectors below use.
- */
-
 @layer components {
-  /* ─── Floating layers: open/close motion ─────────────────────────────── */
   .m-pop {
     transform-origin: var(--transform-origin, center top);
     transition:
@@ -37,7 +26,6 @@
   .m-backdrop[data-starting-style],
   .m-backdrop[data-ending-style] { opacity: 0; }
 
-  /* Dialog: rises a little. */
   .m-dialog {
     transition:
       opacity var(--movimento-medio) var(--curva-entrada),
@@ -50,7 +38,6 @@
     transform: translateY(8px) scale(0.98);
   }
 
-  /* Sheet: slides from its side. */
   .m-sheet { transition: transform var(--movimento-lento) var(--curva-entrada), opacity var(--movimento-medio) var(--curva-entrada); }
   .m-sheet[data-ending-style] { transition-duration: var(--movimento-medio); transition-timing-function: var(--curva-saida); }
   .m-sheet[data-lado="right"][data-starting-style],
@@ -60,7 +47,6 @@
   .m-sheet[data-lado="bottom"][data-starting-style],
   .m-sheet[data-lado="bottom"][data-ending-style] { transform: translateY(100%); }
 
-  /* ─── Items of menus, selects and comboboxes ─────────────────────────── */
   .m-item {
     position: relative;
     display: flex;
@@ -109,7 +95,6 @@
     color: var(--muted-foreground);
   }
 
-  /* ─── Trigger of a select / combobox: a field with a chevron ─────────── */
   .m-gatilho {
     display: flex;
     align-items: center;
@@ -129,10 +114,7 @@
   .m-gatilho[data-disabled],
   .m-field[data-disabled],
   .m-field:has(:disabled) { opacity: 0.6; cursor: not-allowed; }
-  /* Invalid: red border AND a light red tint, so errors stand out in dense
-     grids (a Simplex map has ~30 cells). Never colour alone: FormField
-     always adds the icon + message. Text on the tint keeps ≥ 7:1 (light,
-     dark) — tests/tokens.test.ts; Alto contraste: below. */
+  /* Red border AND tint so errors stand out in dense grids (never colour alone: FormField adds icon + message); text keeps ≥ 7:1 (tests/tokens.test.ts). */
   .m-field[aria-invalid="true"],
   .m-field:has([aria-invalid="true"]),
   .m-gatilho[aria-invalid="true"] {
@@ -141,7 +123,6 @@
   }
   .m-gatilho [data-placeholder], .m-gatilho[data-placeholder] { color: var(--muted-foreground); }
 
-  /* ─── Checkbox, radio, switch ────────────────────────────────────────── */
   .m-check,
   .m-radio {
     display: inline-grid;
@@ -201,7 +182,6 @@
   .m-switch[data-checked] .m-switch-polegar { transform: translateX(1.125rem); }
   .dark .m-switch-polegar { background: #f5f5f5; }
 
-  /* Radio cards: the whole card is the radio. */
   .m-radio-cartao {
     border: 1px solid color-mix(in oklab, var(--border) 80%, var(--foreground) 10%);
     background: var(--card);
@@ -227,7 +207,6 @@
   }
   .m-radio-cartao[data-checked] .m-radio-deco { border: 2px solid var(--brand); }
 
-  /* Segmented control: a well with a raised thumb. */
   .m-segmentos {
     display: inline-flex;
     gap: 0.25rem;
@@ -262,7 +241,6 @@
   }
   .dark .m-segmento[data-checked] { background: var(--secondary); }
 
-  /* ─── Tabs ───────────────────────────────────────────────────────────── */
   .m-tabs-linha {
     position: relative;
     display: flex;
@@ -270,7 +248,6 @@
     border-bottom: 1px solid var(--border);
     overflow-x: auto;
     overflow-y: hidden; /* the indicator must never add a vertical bar */
-    /* scrollbar and edge shadows: m-scroll-x (css/rolagem.css) */
   }
   .m-tab {
     position: relative;
@@ -306,7 +283,6 @@
     color: var(--brand-soft-foreground);
   }
 
-  /* ─── Accordion / collapsible panels animate their height ────────────── */
   .m-painel {
     height: var(--accordion-panel-height, var(--collapsible-panel-height));
     overflow: hidden;
@@ -316,7 +292,6 @@
   .m-painel[data-ending-style] { height: 0; }
   .m-seta { transition: rotate var(--movimento-medio) var(--curva-padrao), transform var(--movimento-medio) var(--curva-padrao); }
 
-  /* ─── Slider ─────────────────────────────────────────────────────────── */
   .m-slider-trilho {
     position: relative;
     height: 0.375rem;
@@ -336,7 +311,6 @@
   }
   .m-slider-polegar:has(:focus-visible) { outline: 3px solid var(--ring); outline-offset: 2px; }
 
-  /* ─── Tooltip ────────────────────────────────────────────────────────── */
   .m-dica {
     max-width: min(20rem, calc(100vw - 2rem));
     padding: 0.375rem 0.625rem;
@@ -349,7 +323,6 @@
   }
   .dark .m-dica { background: #f5f5f5; color: #12241a; }
 
-  /* ─── Kbd ────────────────────────────────────────────────────────────── */
   .m-kbd {
     display: inline-flex;
     align-items: center;
@@ -369,14 +342,10 @@
     white-space: nowrap;
   }
 
-  /* ─── Spinner ────────────────────────────────────────────────────────── */
   .m-spinner { animation: m-rodar 0.9s linear infinite; }
   @keyframes m-rodar { to { transform: rotate(360deg); } }
 
-  /* ─── Scroll area ──────────────────────────────────────────────────────
-     Same look as the native scrollbars (css/rolagem.css): a 12px lane, a
-     6px rounded thumb that grows to 8px and darkens under the pointer.
-     It fades in while the pointer is over the area or it scrolls. */
+  /* Fades in while the pointer is over the area or it scrolls. */
   .m-scroll-barra {
     display: flex;
     padding: 3px;
@@ -398,7 +367,6 @@
   .m-scroll-polegar[data-dragging],
   .m-scroll-polegar:active { background: var(--m-polegar-hover, var(--scroll-thumb-hover)); }
 
-  /* ─── Calendar (DatePicker) ──────────────────────────────────────────── */
   .m-dia {
     display: grid;
     place-items: center;
@@ -432,7 +400,6 @@
   }
   .m-dia[aria-disabled="true"] { opacity: 0.35; text-decoration: line-through; cursor: not-allowed; }
 
-  /* ─── Toasts (confirmations only) ────────────────────────────────────── */
   .m-toast {
     --gap: 0.75rem;
     --peek: 0.75rem;
@@ -483,12 +450,10 @@
   .m-toast-conteudo[data-behind] { opacity: 0; }
   .m-toast-conteudo[data-expanded] { opacity: 1; }
 
-  /* Stepper connector */
   .m-passo-linha { background: var(--border); }
   .m-passo-linha[data-feito] { background: var(--brand); }
 }
 
-/* ─── Alto contraste ───────────────────────────────────────────────────── */
 html.contraste .m-item[data-highlighted],
 html.contraste .m-item-perigo[data-highlighted] { background: #000000; color: #ffffff; }
 html.contraste .m-item[data-highlighted] > svg { color: #ffffff; }
@@ -506,8 +471,7 @@ html.contraste .m-switch-polegar { background: #000000; box-shadow: none; }
 html.contraste .m-switch[data-checked] { background: #0b4d20; }
 html.contraste .m-switch[data-checked] .m-switch-polegar { background: #ffffff; }
 html.contraste .m-radio-cartao { border: 2px solid #000000; box-shadow: none; }
-/* Invalid fields keep a dark red 3px border here (the flat black border of
-   `html.contraste .m-field` would otherwise hide it); the tint is white. */
+/* Dark red 3px border for invalid fields (the flat black .m-field border would hide it); white tint. */
 html.contraste .m-field[aria-invalid="true"],
 html.contraste .m-field:has([aria-invalid="true"]),
 html.contraste .m-gatilho[aria-invalid="true"] {
@@ -540,14 +504,8 @@ html.contraste .m-toast > * { border: 2px solid #000000; box-shadow: none; }
   .m-scroll-polegar { forced-color-adjust: none; background: CanvasText; }
 }
 
-/* ─── Modo demonstração (DemoPreencher) ────────────────────────────
-   The floating pill docks away from the focused element and the forms' last
-   actions (data-doca="fim" | "inicio" | "meio", chosen by the component).
-   `<html data-demo>` gives pages `--demo-reserva`, the room the pill needs:
-   add it to the bottom padding of the scrolling area
-   (`pb-[calc(2rem+var(--demo-reserva))]`) or put `m-demo-reserva` on it.
-   `--demo-fundo` (default 0) lifts the pill above a fixed bottom navigation
-   bar; the component measures the real position, so docking stays correct. */
+/* The pill docks away from the focused element (data-doca, set by the component). Pages reserve room with --demo-reserva as bottom padding or m-demo-reserva;
+   --demo-fundo lifts it above a fixed bottom navigation bar. */
 html[data-demo] {
   --demo-reserva: 5rem;
   scroll-padding-bottom: var(--demo-reserva);
@@ -564,7 +522,6 @@ html[data-demo] {
   position: fixed;
   z-index: 2147482000;
   right: var(--m-demo-margem);
-  /* --demo-fundo (set by an app, default 0): lift above a bottom navigation bar. */
   bottom: calc(max(var(--m-demo-margem), env(safe-area-inset-bottom, 0px)) + var(--demo-fundo, 0px));
   display: flex;
   flex-direction: column;
@@ -586,7 +543,6 @@ html[data-demo] {
 }
 .m-demo[data-doca="inicio"] > :is(.m-demo-painel, .m-demo-aviso) { right: auto; left: 0; }
 .m-demo > .m-demo-aviso { width: max-content; }
-/* The «Preencher (demonstração)» strip inside an open dialog or sheet. */
 .m-demo-camada {
   order: 9999;
   flex-shrink: 0;
@@ -596,18 +552,9 @@ html[data-demo] {
 @media print { .m-demo, .m-demo-camada { display: none !important; } }
 html.contraste .m-demo-camada { background: #ffffff; border-top: 2px dashed #000000; }
 
-/* ─── Form fields (FormField) and fields side by side ──────────
-   `.m-campo` is the FormField wrapper: a column (label, hint, control,
-   message). In a grid with `.m-campos-alinhados` each field takes FOUR rows
-   of the grid through `subgrid` — label / hint / control / message — so the
-   controls of one line always start at the same height: a label or a hint
-   that wraps, or a count («26 de 254») under one field, only grows its own
-   row. Fields per line from 40rem: `.m-campos-2|3|4` (one per line below);
-   a Tailwind `grid-cols-*` utility on the same element overrides the tracks
-   (utilities beat this layer) — then keep one field per line below 40rem,
-   because the lines are spaced by the items' top padding, which the first
-   line (1 item below 40rem, N from 40rem) does not get. The grid has no row
-   gap: a gap would also sit around an empty hint row. */
+/* .m-campo is the FormField wrapper. In a .m-campos-alinhados grid each field spans four subgrid rows (label, hint, control, message) so controls of a line align;
+   .m-campos-2|3|4 apply from 40rem. A Tailwind grid-cols-* utility overrides the tracks (then keep one field per line below 40rem: line spacing comes from the
+   items' top padding). No row gap: it would also sit around an empty hint row. */
 @layer components {
   .m-campo {
     display: flex;
@@ -637,9 +584,7 @@ html.contraste .m-demo-camada { background: #ffffff; border-top: 2px dashed #000
     .m-campos-alinhados.m-campos-4 > :nth-child(-n + 4) { padding-top: 0; }
   }
 
-  /* The field — or an element around it and nothing else (e.g. an anchor
-     `<div id>`) — shares the grid's four rows. Anything else in the grid
-     (a group of controls, a note) just takes the four rows of its line. */
+  /* The field (or its sole wrapper, e.g. an anchor <div id>) shares the four rows; anything else takes the four rows of its line. */
   .m-campos-alinhados > .m-campo,
   .m-campos-alinhados > :has(> .m-campo:only-child),
   .m-campos-alinhados > :has(> .m-campo:only-child) > .m-campo,
@@ -654,6 +599,5 @@ html.contraste .m-demo-camada { background: #ffffff; border-top: 2px dashed #000
   .m-campos-alinhados .m-campo > .m-campo-ajuda { grid-row: 2; padding-bottom: 0.375rem; }
   .m-campos-alinhados .m-campo > .m-campo-mensagem { grid-row: 4; padding-top: 0.375rem; }
   .m-campos-alinhados .m-campo > :not(.m-campo-rotulo, .m-campo-ajuda, .m-campo-mensagem) { grid-row: 3; }
-  /* A button of the line («Retirar») on the controls' row, centred on them. */
   .m-campos-alinhados > .m-campos-acao > * { grid-row: 3; align-self: center; justify-self: start; }
 }

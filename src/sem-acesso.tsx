@@ -7,15 +7,11 @@ import { AcessibilidadeMenu } from "./acessibilidade";
 import { cx } from "./cx";
 
 export type MotivoSemAcesso =
-  /** No active organisation chosen (or none left). */
   | "sem-organizacao"
-  /** The active organisation gives this person no profile in the app. */
   | "sem-perfil"
   /** App-specific second layer (e.g. Saúde: not linked to any unit). */
   | "sem-unidade"
-  /** The app is not available to this type of organisation (e.g. UMP area). */
   | "tipo-organizacao"
-  /** Cartão Digital: a team account with no associado record. */
   | "sem-associado";
 
 const TEXTO: Record<MotivoSemAcesso, (app: string) => string> = {
@@ -27,10 +23,7 @@ const TEXTO: Record<MotivoSemAcesso, (app: string) => string> = {
     "O Cartão Digital é para os associados das associações mutualistas. Esta conta não tem ficha de associado.",
 };
 
-/**
- * The one "no access" page of the ecosystem. Server-safe (no hooks).
- * Never sign the person out from here — the session belongs to every app.
- */
+/** Never signs the person out: the session belongs to every app. */
 export function SemAcesso({
   app,
   motivo,
@@ -44,18 +37,15 @@ export function SemAcesso({
   className,
 }: {
   app: Exclude<MutualAppId, "portal">;
-  /** `eu.lancamento` (or the public one): the configured platform name in the header. */
   lancamento?: Lancamento | null | undefined;
   motivo: MotivoSemAcesso;
   utilizador?: { nome: string; email: string } | null | undefined;
   organizacao?: string | null | undefined;
-  /** Show "Mudar de organização" (the person belongs to several). */
   variasOrganizacoes?: boolean | undefined;
-  /** The app's own sign-out button (it needs the app's auth client). */
+  /** Needs the app's own auth client. */
   acaoSair?: ReactNode | undefined;
-  /** Extra actions before "Ir para o Portal" (e.g. the Cartão's "Sou associado"). */
   acoes?: ReactNode | undefined;
-  /** The Portal address — absolute for an app on another host (the Cartão). */
+  /** Absolute for an app on another host (the Cartão). */
   portalHref?: string | undefined;
   className?: string | undefined;
 }) {

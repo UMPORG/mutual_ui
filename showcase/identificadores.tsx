@@ -26,8 +26,6 @@ import {
   type CatalogoDemo,
 } from "../src/index.ts";
 
-/** Phone numbers, NIF, código postal and IBAN: display, inputs and validation. */
-
 const CENARIOS: CatalogoDemo = {
   "ficha-contactos": {
     titulo: "Contactos da associação",

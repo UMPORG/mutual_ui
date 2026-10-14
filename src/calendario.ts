@@ -1,9 +1,6 @@
 /**
- * Calendar maths for the date pickers. Pure and framework-free.
- *
- * Dates are ISO calendar days ("2026-10-03") — no time, no time zone — so a
- * date never shifts a day between the server, the browser and the Cérebro.
- * "Today" is the day in Europe/Lisbon. Weeks start on Monday (pt-PT).
+ * Calendar maths (pure). Dates are ISO calendar days ("2026-10-03"), no time or zone, so they never shift between server, browser and Cérebro.
+ * "Today" is Europe/Lisbon; weeks start on Monday (pt-PT).
  */
 
 export type DataIso = string;
@@ -11,7 +8,6 @@ export type DataIso = string;
 const ISO = /^(\d{4})-(\d{2})-(\d{2})$/;
 const FUSO = "Europe/Lisbon";
 
-/** { ano, mes (1–12), dia } or null when not a real calendar day. */
 export function lerIso(iso: string | null | undefined): { ano: number; mes: number; dia: number } | null {
   const m = ISO.exec(iso ?? "");
   if (!m) return null;
@@ -93,14 +89,10 @@ export function dentroDoIntervalo(iso: DataIso, inicio?: DataIso | null, fim?: D
 export interface DiaGrelha {
   iso: DataIso;
   dia: number;
-  /** Belongs to the previous or next month (shown faded). */
   fora: boolean;
 }
 
-/**
- * The month as weeks of 7 days, Monday first, always 6 weeks (the calendar
- * keeps the same height when the month changes).
- */
+/** The month as weeks of 7 days, Monday first, always 6 weeks (constant height). */
 export function grelhaDoMes(ano: number, mes: number): DiaGrelha[][] {
   const primeiro = paraIso(ano, mes, 1);
   let atual = inicioDaSemana(primeiro);
@@ -121,11 +113,9 @@ const MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julh
 const DIAS = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado", "domingo"];
 const DIAS_CURTOS = ["seg", "ter", "qua", "qui", "sex", "sáb", "dom"];
 
-/** "outubro" (1–12). */
 export function nomeDoMes(mes: number): string {
   return MESES[mes - 1] ?? "";
 }
-/** "outubro de 2026" */
 export function tituloDoMes(ano: number, mes: number): string {
   return `${nomeDoMes(mes)} de ${ano}`;
 }
@@ -139,17 +129,12 @@ export function rotuloDoDia(iso: DataIso): string {
   if (!p) return "";
   return `${DIAS[diaDaSemana(iso)]}, ${p.dia} de ${nomeDoMes(p.mes)} de ${p.ano}`;
 }
-/** "03/10/2026" (empty for null). */
 export function formatarDataCurta(iso: DataIso | null | undefined): string {
   const p = lerIso(iso);
   return p ? `${String(p.dia).padStart(2, "0")}/${String(p.mes).padStart(2, "0")}/${p.ano}` : "";
 }
 
-/**
- * Reads what a person types in a date field: "3/10/2026", "03-10-2026",
- * "3.10.26", "03102026", "2026-10-03", "hoje", "amanhã", "ontem".
- * Two-digit years are 20xx. Returns null when it is not a real day.
- */
+/** Parses typed dates: "3/10/2026", "03-10-2026", "3.10.26", "03102026", "2026-10-03", "hoje", "amanhã", "ontem". Two-digit years are 20xx; null when not a real day. */
 export function interpretarData(texto: string, hoje: DataIso = hojeLisboa()): DataIso | null {
   const t = texto.trim().toLocaleLowerCase("pt-PT");
   if (!t) return null;
@@ -174,7 +159,6 @@ export function interpretarData(texto: string, hoje: DataIso = hojeLisboa()): Da
   return lerIso(iso) ? iso : null;
 }
 
-/** Keyboard navigation inside the calendar grid (APG date picker pattern). */
 export function moverFoco(iso: DataIso, tecla: string, shift = false): DataIso | null {
   switch (tecla) {
     case "ArrowLeft":
@@ -198,7 +182,6 @@ export function moverFoco(iso: DataIso, tecla: string, shift = false): DataIso |
   }
 }
 
-/** Ready-made ranges for the range picker ("Últimos 30 dias"…), relative to today. */
 export function intervalosRapidos(hoje: DataIso = hojeLisboa()): Array<{ id: string; rotulo: string; inicio: DataIso; fim: DataIso }> {
   const p = lerIso(hoje)!;
   const inicioMes = paraIso(p.ano, p.mes, 1);

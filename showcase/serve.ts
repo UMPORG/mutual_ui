@@ -1,6 +1,4 @@
-// Tiny static server for the showcase: `bun serve.ts` → http://localhost:5199
-// `/ssr` serves a server-rendered fixture (showcase/ssr.tsx) hydrated by
-// dist/ssr-cliente.js — `?js=0` leaves the script out (first paint only).
+// Static server for the showcase: `bun serve.ts` -> http://localhost:5199. `/ssr` serves the SSR fixture (`?js=0` omits the hydration script).
 import { renderToString } from "react-dom/server";
 import { createElement } from "react";
 import { CaixasSsr } from "./ssr";

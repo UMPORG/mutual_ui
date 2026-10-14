@@ -1,23 +1,7 @@
-/*
- * Scrolling: one scrollbar look for every app, vertical and
- * horizontal, plus edge shadows that say "there is more this way".
- *
- * - Thin (6px thumb in a 12px lane) and rounded; the thumb grows to 8px and
- *   darkens under the pointer, so the lane stays easy to grab.
- * - Colours come from tokens (css/tokens.css): --scroll-thumb,
- *   --scroll-thumb-hover, --scroll-track, and the "-ink" set on the dark ink
- *   surfaces (.bg-sidebar, .bg-nav-background, .m-tinta).
- * - Chrome, Edge and Safari use ::-webkit-scrollbar (Chrome ignores those
- *   rules on any element that sets scrollbar-width / scrollbar-color, so
- *   they are only set for Firefox, which has no ::-webkit-scrollbar).
- * - Alto contraste: 16px lane, solid black thumb (white on ink surfaces).
- *   Forced colours (Windows): system colours. Nothing here animates.
- * - Sizes are px on purpose: they follow page zoom like everything else,
- *   and keyboard scrolling is untouched.
- */
+/* Chrome ignores ::-webkit-scrollbar on elements that set scrollbar-width/color, so those are set only for Firefox.
+   Sizes are px on purpose: they follow page zoom. Colours: --scroll-thumb* tokens (css/tokens.css). */
 
-/* Which colours apply here. Surfaces placed inside an ink surface (menus,
-   popovers, cards, a canvas) go back to the light set. */
+/* Surfaces inside an ink surface (menus, popovers, cards, a canvas) go back to the light set. */
 :root {
   --m-polegar: var(--scroll-thumb);
   --m-polegar-hover: var(--scroll-thumb-hover);
@@ -81,14 +65,8 @@
   ::-webkit-scrollbar-thumb { forced-color-adjust: none; }
 }
 
-/* ─── Edge shadows: .m-scroll-x / .m-scroll-y ─────────────────────────────
-   A soft shadow at an edge while there is more content beyond it. Drawn
-   with the scroller's own background (below the content), sized by four
-   registered properties that a scroll-driven animation moves (Chrome, Edge,
-   Safari 26+). Where scroll timelines are missing (Firefox), the
-   ScrollShadow component / useScrollShadow hook sets data-rolo-* instead;
-   without either, there is simply no shadow. Content with an opaque
-   background (a hovered row) covers the shadow — keep cells transparent. */
+/* Edge shadow while there is more content: drawn with the scroller's background, moved by a scroll-driven animation (Chrome, Edge, Safari 26+);
+   Firefox falls back to ScrollShadow / useScrollShadow setting data-rolo-*. Opaque cell backgrounds cover it: keep cells transparent. */
 @property --m-sombra-ini-x { syntax: "<length>"; inherits: false; initial-value: 0px; }
 @property --m-sombra-fim-x { syntax: "<length>"; inherits: false; initial-value: 0px; }
 @property --m-sombra-ini-y { syntax: "<length>"; inherits: false; initial-value: 0px; }
@@ -151,15 +129,13 @@
     100% { --m-sombra-ini-y: 12px; --m-sombra-fim-y: 0px; }
   }
 
-  /* A focusable scroller (tabindex="0" so keyboard users can scroll it)
-     shows where the focus is. */
+  /* A focusable scroller (tabindex="0") shows where the focus is. */
   :is(.m-scroll-x, .m-scroll-y):focus-visible {
     outline: 3px solid var(--ring);
     outline-offset: -3px;
   }
 }
 
-/* High contrast: a hard edge instead of a soft shadow. */
 html.contraste :is(.m-scroll-x, .m-scroll-y) {
   background-image:
     linear-gradient(#000, #000),

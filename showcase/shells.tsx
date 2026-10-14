@@ -25,12 +25,7 @@ import {
   type MutualAppId,
 } from "../src/index.ts";
 
-/**
- * Shell G in a real page: `?pagina=shells&app=<id>` is the full
- * AppShell of that app (top bar, tinted frame, navigation, one content
- * layer); `?pagina=shells&vista=todas` shows every app side by side (one
- * iframe each, in the chosen theme) to check that no two apps look alike.
- */
+/** `?pagina=shells&app=<id>`: that app's full AppShell; `&vista=todas`: every app side by side (one iframe each, in the chosen theme). */
 
 const TODAS: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "qr", "dns", "assistente", "protocolos", "monitor"];
 
@@ -88,8 +83,6 @@ function Conteudo({ nome }: { nome: string }) {
         title="Caracterização"
         description={`Questionário anual às associações — exemplo da moldura de ${nome}.`}
         actions={
-          /* The page's own action is the primary button of its header
-             (never in the navigation); on phones it wraps under the title. */
           <a href="#nova" className="m-btn m-btn-primary inline-flex min-h-11 items-center gap-2 rounded-lg px-4">
             <Plus aria-hidden size={20} /> Nova campanha
           </a>

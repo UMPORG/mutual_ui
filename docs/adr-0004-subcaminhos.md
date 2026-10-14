@@ -88,25 +88,4 @@ configuração. Só o endereço base varia por ambiente.
   Mitigação: CSP estrita por app (já existe), `localStorage` com prefixo por
   app, sem `dangerouslySetInnerHTML` com dados de utilizador.
 
-## Configuração (depois)
-
-Cada app Next: **`MUTUAL_URL`** (runtime) e, opcional,
-`CEREBRO_URL_INTERNO` + `DEMO_MODE`. Saúde mantém os seus segredos.
-Cérebro: `MUTUAL_URL`, `CARTAO_DIGITAL_URL` e os segredos; tudo o resto
-(BETTER_AUTH_URL, PORTAL_URL, PUBLIC_EVENTOS_URL, CORS, cookie) é derivado.
-Segredos comuns definidos uma vez como **Shared Variables** do Coolify
-(nível projeto/ambiente) e referenciados em cada serviço.
-
-## Coolify
-
-Cada app continua um serviço próprio, com o domínio
-`https://mutual.mutualismo.pt/<caminho>` (Portal: `https://mutual.mutualismo.pt`,
-Cérebro: `https://mutual.mutualismo.pt/api`). O Traefik encaminha pelo
-prefixo mais longo; **não** remover o prefixo (o `basePath` espera-o).
-Health checks passam a `/<caminho>/api/health`.
-
-## Desenvolvimento local
-
-Um gateway local (`mutual_portal/scripts/gateway-local.ts`, Bun, sem
-dependências) em `http://localhost:8080` encaminha os mesmos caminhos para as
-portas de cada app e para o Cérebro — o mesmo desenho que em produção.
+Configuração e Coolify: `mutual_deploy/docs/producao.md`. Gateway local: `mutual_portal/scripts/gateway-local.ts`.

@@ -1,19 +1,10 @@
-/**
- * Pure helpers behind the data components: chart colours, text alternatives
- * for charts, "Outros" folding, deltas and pagination windows. No React, so
- * they run anywhere and are unit-tested.
- */
 
 import { formatarNumero, formatarPercentagem, formatarValor, paraNumero, SEM_VALOR, type FormatoValor } from "./formatar";
 
-// ─── Colours ──────────────────────────────────────────────────────────────
-
-/** Categorical slot (1–8, fixed order), the de-emphasis grey, or a status. */
 export type CorSerie = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | "outros" | "sucesso" | "aviso" | "perigo" | "info";
 
 export const MAX_SERIES = 8;
 
-/** CSS colour for a slot: `var(--serie-3)`, `var(--success)`… */
 export function corSerie(cor: CorSerie): string {
   switch (cor) {
     case "outros":
@@ -32,12 +23,9 @@ export function corSerie(cor: CorSerie): string {
 }
 
 export interface SerieBase {
-  /** Data key of the series in each row. */
   key: string;
-  /** Name shown in the legend, tooltip and table. */
   label: string;
-  /** Pin a slot so the entity keeps its colour on every page and after
-   *  filtering. Default: the series' position in the declared list. */
+  /** Pins a slot so the entity keeps its colour across pages and filters (default: its position in the list). */
   color?: CorSerie | undefined;
 }
 
@@ -45,11 +33,7 @@ export interface SerieComCor extends SerieBase {
   cor: string;
 }
 
-/**
- * Colour follows the entity, never its rank: series take their declared
- * position (or pinned slot). More than 8 unpinned series is an error — fold
- * the tail into "Outros" or split the chart.
- */
+/** Colour follows the entity, not its rank. More than 8 unpinned series throws: fold into "Outros" or split the chart. */
 export function atribuirCores<S extends SerieBase>(series: readonly S[]): Array<S & { cor: string }> {
   let proximo = 1;
   const usados = new Set(series.map((s) => s.color).filter((c): c is CorSerie => typeof c === "number"));
@@ -68,19 +52,13 @@ export function atribuirCores<S extends SerieBase>(series: readonly S[]): Array<
   });
 }
 
-// ─── "Outros" ─────────────────────────────────────────────────────────────
-
 export interface Fatia {
   label: string;
   value: number;
   color?: CorSerie | undefined;
 }
 
-/**
- * Keeps the `max - 1` largest slices and folds the rest into one "Outros"
- * slice (grey). Order of the kept slices is preserved (colour follows the
- * entity). With `max` or fewer slices nothing changes.
- */
+/** Keeps the `max - 1` largest slices and folds the rest into a grey "Outros"; kept order is preserved. */
 export function agruparOutros(fatias: readonly Fatia[], max = 5, rotulo = "Outros"): Fatia[] {
   const validas = fatias.filter((f) => Number.isFinite(f.value) && f.value > 0);
   if (validas.length <= max) return [...validas];
@@ -95,8 +73,6 @@ export function agruparOutros(fatias: readonly Fatia[], max = 5, rotulo = "Outro
   return [...validas.filter((f) => manter.has(f)), { label: rotulo, value: resto, color: "outros" }];
 }
 
-// ─── Text alternative ─────────────────────────────────────────────────────
-
 export type Linha = Record<string, unknown>;
 
 export interface TabelaGrafico {
@@ -104,7 +80,6 @@ export interface TabelaGrafico {
   linhas: string[][];
 }
 
-/** The chart as a table: one row per category, one column per series. */
 export function tabelaDoGrafico(
   dados: readonly Linha[],
   categoria: string,
@@ -122,10 +97,7 @@ export function tabelaDoGrafico(
   };
 }
 
-/**
- * One or two sentences describing the chart for screen readers (the svg
- * `desc`): what it shows, its size and the extremes of each series.
- */
+/** One or two sentences for screen readers (svg `desc`): what it shows, its size, each series' extremes. */
 export function descreverGrafico(
   tipo: "barras" | "linhas" | "area" | "donut",
   dados: readonly Linha[],
@@ -163,16 +135,13 @@ export function descreverGrafico(
   return partes.join(" ");
 }
 
-// ─── Deltas ───────────────────────────────────────────────────────────────
-
 /** Which direction is good news for this indicator. */
 export type Melhor = "subir" | "descer" | "neutro";
 export type FormatoVariacao = "percentagem" | "pontos" | "numero" | "moeda";
 export type SentidoVariacao = "subiu" | "desceu" | "igual";
 export type Avaliacao = "positiva" | "negativa" | "neutra";
 
-/** Relative change between two periods (0.1 = +10 %). `null` when the
- *  previous value is 0 or missing (a percentage would be meaningless). */
+/** Relative change (0.1 = +10 %); `null` when the previous value is 0 or missing. */
 export function calcularVariacao(atual: number | null | undefined, anterior: number | null | undefined): number | null {
   if (atual === null || atual === undefined || anterior === null || anterior === undefined) return null;
   if (!Number.isFinite(atual) || !Number.isFinite(anterior) || anterior === 0) return null;
@@ -200,8 +169,7 @@ export function formatarVariacao(valor: number, formato: FormatoVariacao = "perc
   }
 }
 
-/** The delta in words, for screen readers and titles:
- *  "Subiu 12,3% face ao mês anterior." */
+/** The delta in words, for screen readers: "Subiu 12,3% face ao mês anterior." */
 export function descreverVariacao(valor: number, formato: FormatoVariacao = "percentagem", referencia?: string): string {
   const { sentido } = avaliarVariacao(valor);
   const ref = referencia ? ` ${referencia}` : "";
@@ -218,13 +186,7 @@ export function descreverVariacao(valor: number, formato: FormatoVariacao = "per
   return `${sentido === "subiu" ? "Subiu" : "Desceu"} ${quanto}${ref}.`;
 }
 
-// ─── Pagination ───────────────────────────────────────────────────────────
-
-/**
- * Page numbers to show, with `null` for a gap: first, last, and `vizinhos`
- * pages either side of the current one. `paginasVisiveis(6, 20)` →
- * [1, null, 5, 6, 7, null, 20].
- */
+/** Page numbers with `null` for a gap: first, last and `vizinhos` either side of the current. `paginasVisiveis(6, 20)` → [1, null, 5, 6, 7, null, 20]. */
 export function paginasVisiveis(pagina: number, total: number, vizinhos = 1): Array<number | null> {
   if (total <= 0) return [];
   const atual = Math.min(Math.max(1, pagina), total);
@@ -248,18 +210,12 @@ export function intervaloPagina(pagina: number, porPagina: number, total: number
   return { de: Math.min(de, total), ate: Math.min(de + porPagina - 1, total) };
 }
 
-/** Share of each count in the total (0–1), for status summaries. */
 export function proporcoes(valores: readonly number[]): number[] {
   const total = valores.reduce((s, v) => s + (Number.isFinite(v) && v > 0 ? v : 0), 0);
   return valores.map((v) => (total > 0 && Number.isFinite(v) && v > 0 ? v / total : 0));
 }
 
-/**
- * True when a value axis must use whole-number ticks (no "0,5" steps): the
- * format says so ("inteiro", "contagem"), or every value is an integer and
- * the format is a plain number. Percentages, currency and custom formatters
- * keep decimals unless the format is explicit.
- */
+/** True when a value axis needs whole-number ticks: format "inteiro"/"contagem", or all-integer values with a plain number format. */
 export function eixoInteiro(dados: ReadonlyArray<Record<string, unknown>>, chaves: readonly string[], formato?: FormatoValor): boolean {
   if (formato === "inteiro" || formato === "contagem") return true;
   if (formato !== undefined && formato !== "numero" && !(typeof formato === "object" && formato.tipo === "numero" && !formato.opcoes?.casas)) return false;

@@ -1,13 +1,6 @@
 /**
- * Pedidos das apps ao Cérebro com tempo-limite e UMA semântica para «o Cérebro
- * está em baixo».
- *
- * Regra de todas as apps: uma falha do SERVIDOR (Cérebro inalcançável, sem
- * resposta dentro do tempo-limite, ou 5xx) nunca manda a pessoa para o login do
- * Portal — o Portal vê a sessão válida e devolve-a à app, em ciclo. O
- * `proxy.ts` responde 503 com a página `/indisponivel` (`ServicoIndisponivel`)
- * e o browser mostra o mesmo texto (`TEXTOS_INDISPONIVEL`).
- *
+ * Regra de todas as apps: uma falha do SERVIDOR (Cérebro inalcançável, sem resposta no tempo-limite, ou 5xx) nunca manda a pessoa para o login do Portal
+ * (o Portal vê a sessão válida e devolve-a à app, em ciclo). O `proxy.ts` responde 503 com `/indisponivel`; o browser mostra `TEXTOS_INDISPONIVEL`.
  * Sem dependências do Next: só `fetch` e `AbortSignal`.
  */
 
@@ -15,9 +8,7 @@
 export const TEMPO_LIMITE_CEREBRO_MS = {
   /** `proxy.ts` (ex.: `/acessos/eu` em cada página). */
   proxy: 5_000,
-  /** Leituras e escritas no servidor (RSC, route handlers, server actions). */
   servidor: 10_000,
-  /** Pedidos do browser (inclui uploads pequenos). */
   browser: 15_000,
 } as const;
 
@@ -26,7 +17,6 @@ export type MotivoIndisponivel = "tempo-esgotado" | "rede" | "estado";
 /** O Cérebro não respondeu (a tempo), ou respondeu 5xx. Nunca é «sem sessão». */
 export class CerebroIndisponivel extends Error {
   readonly motivo: MotivoIndisponivel;
-  /** Estado HTTP quando `motivo` é `"estado"` (≥ 500). */
   readonly estado: number | undefined;
   constructor(motivo: MotivoIndisponivel, estado?: number) {
     super(
@@ -46,24 +36,16 @@ export function eCerebroIndisponivel(e: unknown): e is CerebroIndisponivel {
   return e instanceof CerebroIndisponivel || (e as { name?: unknown })?.name === "CerebroIndisponivel";
 }
 
-/** Um estado HTTP que é falha do servidor (e não da pessoa). */
 export const eFalhaDoServidor = (estado: number): boolean => estado >= 500;
 
 export interface PedidoCerebro extends RequestInit {
   /** Omissão: `TEMPO_LIMITE_CEREBRO_MS.servidor`. */
   readonly tempoLimiteMs?: number;
-  /**
-   * Omissão `true`: um 5xx lança `CerebroIndisponivel`. `false` devolve a
-   * resposta (para quem quer ler o corpo de erro do Cérebro).
-   */
+  /** Omissão `true`: um 5xx lança `CerebroIndisponivel`; `false` devolve a resposta (para ler o corpo de erro). */
   readonly falharEm5xx?: boolean;
 }
 
-/**
- * `fetch` com tempo-limite. Lança `CerebroIndisponivel` quando não há ligação,
- * quando o tempo acaba ou (por omissão) num 5xx. Um cancelamento pedido por
- * quem chama (`signal`) continua a ser um `AbortError` normal.
- */
+/** `fetch` com tempo-limite; lança `CerebroIndisponivel` sem ligação, no tempo-limite ou (por omissão) num 5xx. Um cancelamento pedido por quem chama (`signal`) continua um `AbortError`. */
 export async function pedirAoCerebro(
   url: string | URL,
   { tempoLimiteMs = TEMPO_LIMITE_CEREBRO_MS.servidor, falharEm5xx = true, ...init }: PedidoCerebro = {},
@@ -95,7 +77,6 @@ export const CABECALHOS_INDISPONIVEL: Readonly<Record<string, string>> = {
   "Cache-Control": "no-store",
 };
 
-/** Os textos, iguais em todas as apps (página e estado no browser). */
 export const TEXTOS_INDISPONIVEL = {
   titulo: "Serviço temporariamente indisponível",
   texto:

@@ -1,15 +1,4 @@
-/*
- * Dicas — `Dica` in src/dicas.tsx. Classes are `m-nota*` (`.m-dica` is
- * the Tooltip in css/controlos.css).
- *
- * One line by default: an info icon, a title that opens the explanation on
- * demand, and a small close button. Nothing full width, no primary-looking
- * buttons, no animation beyond the chevron (none under Reduzir movimento).
- * Colours come from the `--dica*` tokens (css/tokens.css, high contrast in
- * css/preferencias.css); apps with their own palette redefine those names.
- * Every rule is plain CSS so the note looks the same whether or not the app
- * scans the package with Tailwind. Targets are 48 px (the primary-flow floor).
- */
+/* Plain CSS so the note looks the same whether or not the app scans the package with Tailwind. */
 
 @layer components {
   .m-nota {
@@ -172,8 +161,7 @@ html.contraste .m-nota { border-width: 2px; }
   .m-nota, .m-nota-reabrir { display: none !important; }
 }
 
-/* The explanation opens with a short fade (no height animation — no
-   layout jump); instant under Reduzir movimento (the tokens are 0). */
+/* Short fade, no height animation (no layout jump). */
 .m-nota-corpo:not([hidden]) {
   animation: m-nota-abre var(--movimento-medio, 180ms) var(--curva-entrada, ease-out) both;
 }

@@ -2,12 +2,6 @@ import { useState } from "react";
 import { BotaoAssistente, useContextoAssistente } from "../src/index.ts";
 import { ChatFlutuante } from "../src/assistente-chat.tsx";
 
-/**
- * The floating assistant next to the «Demonstração» widget: drag it,
- * move it with the arrows of «Mover», open the demo panel and watch it stack.
- * The answers come from a fake server (no network).
- */
-
 const json = (data: unknown, status = 200) => new Response(JSON.stringify({ success: status < 400, data }), { status, headers: { "content-type": "application/json" } });
 
 function sse(eventos: Array<[string, unknown]>): Response {

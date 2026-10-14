@@ -1,12 +1,5 @@
-/*
- * The app icon family (src/icones.ts + src/icone-app.tsx) and the grid
- * launcher (`LancadorApps`, src/app-switcher.tsx).
- *
- * Roles: base (the app's colour, --app-marca, the same in light and dark),
- * p (main shape), r (highlight), s (secondary, white at 72 %), k (cut-out =
- * the base colour). Forced colours: base Canvas with a CanvasText edge,
- * glyph CanvasText (monochrome).
- */
+/* Roles: base (--app-marca, same in light and dark), p main shape, r highlight, s secondary (white 72%), k cut-out (= base).
+   Forced colours: Canvas base with a CanvasText edge, CanvasText glyph. */
 .m-icone-app {
   display: inline-block;
   flex: none;
@@ -56,7 +49,6 @@
   }
 }
 
-/* ─── Lançador em grelha (à Google Workspace) ─────────────────────────── */
 .m-waffle {
   position: relative;
 }

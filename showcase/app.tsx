@@ -53,7 +53,6 @@ import { PaginaIcones, PaginaIconesShell } from "./icones.tsx";
 import { useAppAtual } from "./app-atual.ts";
 
 const PAGINA = new URLSearchParams(location.search).get("pagina") ?? "dados";
-/** Inside the side-by-side iframes: page content only. */
 const SO_CONTEUDO = new URLSearchParams(location.search).get("so") === "1";
 
 function Paginas() {
@@ -92,8 +91,6 @@ const TITULOS: Record<string, [string, string]> = {
   icones: ["Ícones das apps", "Uma família de ícones, um por aplicação, e o lançador em grelha — v0.15."],
   demo: ["Demonstração", "Preencher formulários com dados de exemplo, também dentro de diálogos — v0.8.7."],
 };
-
-// ─── Demo data (fictional) ───────────────────────────────────────────────
 
 const MESES = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09"];
 const mes = (v: unknown) => formatarData(`${String(v)}-15`, "mesAnoCurto").replace(/ \d{4}$/, "");
@@ -164,8 +161,6 @@ const ESTADO: Record<Associacao["estado"], { tone: "success" | "warning" | "info
   suspensa: { tone: "danger", label: "Suspensa" },
 };
 
-// ─── Page ────────────────────────────────────────────────────────────────
-
 function Tema() {
   const q = new URLSearchParams(location.search);
   const atual = q.get("tema") ?? "claro";
@@ -216,8 +211,7 @@ function Tabela() {
       cell: (r) => <StatusBadge tone={ESTADO[r.estado].tone}>{ESTADO[r.estado].label}</StatusBadge>,
     },
     { id: "atualizada", header: "Atualizada em", cell: (r) => formatarData(r.atualizada), hideOnMobile: true, sortable: true },
-    // A visually hidden header, as the apps do for row actions: verificar.mjs
-    // checks it cannot widen the page at 150% text.
+    // Visually hidden header like the apps' row actions: verificar.mjs checks it cannot widen the page at 150% text.
     {
       id: "acoes",
       header: <span className="sr-only">Ações</span>,
@@ -294,7 +288,6 @@ function App() {
     { id: "nome", header: "Associação", cell: (r) => r.nome },
     { id: "associados", header: "Associados", cell: (r) => r.associados, numeric: true },
   ];
-  // The shell page IS a whole app frame (AppShell), without the showcase header.
   if (PAGINA === "shells") return <PaginaShells />;
   if (PAGINA === "icones-shell") return <PaginaIconesShell />;
   if (SO_CONTEUDO)

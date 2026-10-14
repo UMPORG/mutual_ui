@@ -1,13 +1,4 @@
-/*
- * The floating assistant (src/assistente-chat.tsx).
- *
- * A non-modal window over the page (z-index 45: above the shell, below the
- * dialogs at 50 and far below the «Demonstração» widget, which it never
- * covers — it stacks above it, src/assistente-posicao.ts). Placed with
- * `transform` only; when released it springs to its corner
- * (--movimento-lento + --curva-mola), instantly with Reduzir movimento
- * (the tokens are 0); the chat only animates after a move the person made. At phone width it is a bottom sheet.
- */
+/* z-index 45: above the shell, below dialogs (50); stacks above the «Demonstração» widget. */
 
 @layer components {
   .m-chat-flutuante {
@@ -21,9 +12,7 @@
     border-radius: var(--radius-xl, 14px);
     will-change: transform;
   }
-  /* Only after the person moved it (drag released, arrows): a soft spring.
-     Changes of room (the demo panel opening, a resize) are instant, so the
-     chat never crosses what it yields to. */
+  /* Animate only after a move by the person; room changes (demo panel, resize) stay instant. */
   .m-chat-flutuante[data-animar] { transition: transform var(--movimento-lento) var(--curva-mola); }
   .m-chat-flutuante[hidden] { display: none !important; }
   .m-chat-flutuante[data-arrastar] { transition: none; cursor: grabbing; user-select: none; }
@@ -61,7 +50,6 @@
   .m-chat-botao:focus-visible,
   .m-chat-acao:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
 
-  /* Page context + page tools + «Abrir no Assistente». */
   .m-chat-barra {
     display: flex;
     flex-wrap: wrap;
@@ -71,9 +59,7 @@
     border-bottom: 1px solid var(--border);
     background: color-mix(in oklab, var(--muted) 45%, transparent);
   }
-  /* The page/section name: shares the line with «Abrir no Assistente» when
-     it fits; with the page tools («O que falta?», «Com um documento») it has
-     a line of its own and the tools wrap below it. */
+  /* Shares the line with «Abrir no Assistente» when it fits; with page tools it gets its own line. */
   .m-chat-contexto { min-width: 0; flex: 1 1 10rem; padding: 0.25rem 0; }
   .m-chat-contexto[data-linha] { flex-basis: 100%; padding-bottom: 0; }
   .m-chat-flutuante:focus { outline: none; }
@@ -98,7 +84,6 @@
   .m-chat-corpo { display: flex; min-height: 0; flex: 1; flex-direction: column; }
   .m-chat-compositor { padding: 0.5rem 0.625rem 0.625rem; border-top: 1px solid var(--border); }
 
-  /* «Assistente» in the top bar: a dot when a reply arrived while minimised. */
   .m-assistente-ponto {
     position: absolute;
     top: 0.5rem;
@@ -111,8 +96,7 @@
   }
 }
 
-/* Tighter than the full-page conversation (outside the layer: it overrides
-   the list's own utilities). */
+/* Outside the layer to override the list's own utilities. */
 .m-chat-mensagens > .m-scroll-y > div { padding: 1rem 0.875rem; gap: 1.25rem; }
 
 @media print { .m-chat-flutuante { display: none !important; } }

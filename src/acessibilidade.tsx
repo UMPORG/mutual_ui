@@ -54,10 +54,7 @@ function lerAtual(): Preferencias {
 }
 
 /**
- * "Acessibilidade" — the same menu in every MUTU@L app. The choices are kept
- * in one host-only cookie; every app lives on the same origin (ADR 0004), so
- * changing them in one app changes them everywhere.
- *
+ * Choices live in one host-only cookie shared by every app (same origin, ADR 0004).
  * Needs `PreferenciasScript` in the root layout <head> (no flash on load).
  */
 export function AcessibilidadeMenu({
@@ -71,7 +68,6 @@ export function AcessibilidadeMenu({
   /** Icon-only trigger (the name stays available to screen readers).
    *  "md" = icon only below the md breakpoint, label from md up. */
   compacto?: boolean | "md" | undefined;
-  /** Link to the app's accessibility statement. */
   declaracaoHref?: string | undefined;
   className?: string | undefined;
 }) {
@@ -79,8 +75,7 @@ export function AcessibilidadeMenu({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const tituloId = useId();
 
-  // Sync from the cookie on mount and whenever the tab regains focus (the
-  // person may have changed it in another app).
+  // Resync when the tab regains focus (changed in another app).
   useEffect(() => {
     const sync = () => {
       const p = lerAtual();
@@ -89,8 +84,7 @@ export function AcessibilidadeMenu({
     };
     sync();
     window.addEventListener("focus", sync);
-    // Other copies of this menu on the same page (top bar, drawer, a
-    // settings page) announce their changes; follow them.
+    // Follow other copies of this menu on the page.
     const onOutro = (e: Event) => {
       const p = (e as CustomEvent<Preferencias>).detail;
       if (p) setPrefs(p);

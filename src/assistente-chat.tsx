@@ -1,35 +1,9 @@
 "use client";
 
 /**
- * `@umporg/ui/assistente` — the floating assistant chat.
- *
- *   <AppShell … assistente={eu.assistenteNaPagina ? <ChatFlutuante app="simplex" /> : undefined}>
- *
- * The links in a reply (sources, markdown) are paths from the MUTU@L root
- * (`/ajuda/…`, `/ir/…`), so they are always plain `<a>` — a router link
- * would put the app's basePath in front.
- *
- * Mounted by `AppShell` (it survives client navigation) and portalled to
- * `<body>`. Opened by «Assistente» in the top bar. The window:
- *
- * - drags by its header (mouse, pen, touch) and, when released, springs to
- *   the nearest of four corners (`--movimento-lento` + `--curva-mola`; with
- *   «Reduzir movimento» it snaps). The «Mover» button moves it with the
- *   arrow keys. At phone width it is a bottom sheet.
- * - never covers the «Demonstração» widget: it stacks above it (position
- *   registry, `assistente-posicao.ts`).
- * - Esc minimises it and gives the focus back to «Assistente»; replies are
- *   announced (`aria-live`, `MessageList`).
- * - «Nova conversa», «Conversas» (reopen any previous one; where each was
- *   started) and «Abrir no Assistente» (the same conversation at
- *   /assistente/c/<id>).
- * - Page context (`useContextoAssistente`): sent with the next question only
- *   when it changed; with it, «O que falta?», «Preencher com um documento»
- *   and the values the assistant proposes for the current section, applied
- *   by the page to its DRAFT (the proposals review of `/preencher`).
- *
- * Open state, corner and conversation id are kept on the device
- * (`assistente.flutuante.*`); the messages always come from the server.
+ * Floating assistant chat, mounted by `AppShell` (survives navigation) and portalled to `<body>`. Never covers the «Demonstração» widget: stacks above it (`assistente-posicao.ts`).
+ * Reply links are root paths (`/ajuda/…`, `/ir/…`), so plain `<a>`: a router link would prepend the app's basePath.
+ * Open state, corner and conversation id are kept on the device (`assistente.flutuante.*`); messages always come from the server.
  */
 import {
   useCallback,
@@ -98,17 +72,11 @@ export { useContextoAssistente, BotaoAssistente, ProvedorPosicoes } from "./assi
 export type { EntradaContexto, CampoContexto, ContextoPagina } from "./assistente-contexto";
 
 export interface ChatFlutuanteProps {
-  /** The app it is in (the page context and the conversation's origin). */
   app: AppNoEndereco;
-  /**
-   * @deprecated Ignored since v0.18.2: the links in a reply are paths from
-   * the MUTU@L root and are always plain `<a>` (a router `Link` would add
-   * the app's basePath — `/backoffice/ajuda/…`).
-   */
+  /** @deprecated Ignored since v0.18.2: reply links are root paths and always plain `<a>`. */
   LinkComponent?: ElementType | undefined;
   /** Default `/api/v1/assistente` (same origin). */
   api?: string | undefined;
-  /** For tests and the showcase. */
   fetcher?: Fetch | undefined;
   /** Where the Assistente app lives (default `/assistente`). */
   enderecoAssistente?: string | undefined;
@@ -157,8 +125,6 @@ export function ChatFlutuante(props: ChatFlutuanteProps) {
   return createPortal(<Janela {...props} aberto={aberto} />, document.body);
 }
 
-// ─── The window ──────────────────────────────────────────────────────────────
-
 function useViewport() {
   const [vp, setVp] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
   useEffect(() => {
@@ -197,7 +163,6 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
   const [anuncio, setAnuncio] = useState("");
   const [animar, setAnimar] = useState(false);
 
-  // ─── Data ───
   const [estado, setEstado] = useState<EstadoAssistente | null>(null);
   const [erroEstado, setErroEstado] = useState<string | null>(null);
   const [vista, setVista] = useState<Vista>("conversa");
@@ -225,7 +190,6 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
     );
   }, [aberto, estado, erroEstado, f, api]);
 
-  // Open the kept conversation (content always from the server).
   useEffect(() => {
     if (!aberto || !estado || aResponder) return;
     if (!conversaId) {
@@ -269,10 +233,8 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
       .finally(() => setACarregar(false));
   }, [aberto, estado, conversaId, aResponder, f, api]);
 
-  // Focus: the message box when it opens; «Assistente» when it closes.
-  // On the first open the message box is still disabled (GET /estado is
-  // loading): the window itself takes the focus (so Esc works) and the box
-  // gets it as soon as it can, unless the person moved the focus meanwhile.
+  // Focus: message box on open, «Assistente» on close. On first open the box is still disabled (loading), so the window takes focus (Esc works)
+  // and the box gets it once usable, unless the person moved focus meanwhile.
   const primeiraVez = useRef(true);
   const focoPendente = useRef(false);
   const focarCaixa = useCallback(() => {
@@ -300,7 +262,6 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
     focoPendente.current = aberto;
     if (aberto) requestAnimationFrame(focarCaixa);
   }, [aberto, focarCaixa]);
-  // The box became usable (state loaded, a document attached) or an error replaced it.
   const caixaDisponivel = !!estado && !erroEstado;
   useEffect(() => {
     if (!aberto || !focoPendente.current) return;
@@ -339,7 +300,6 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
     listarConversas(f, api).then(setConversas, () => setConversas([]));
   }, [vista, f, api]);
 
-  // ─── Sending ───
   const contextoAtual = (): ContextoPagina => {
     if (ctxPagina && ctxPagina.contexto.app === app) return ctxPagina.contexto;
     return { app, rota: rotaSemIds(window.location.pathname), pagina: "", campos: [] };
@@ -468,11 +428,8 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
     );
   };
 
-  // ─── Moving ───
   const mover = (novo: CantoChat) => {
-    // Only a move the person made springs into place; a change of room (the
-    // demo panel opening, a resize) is instant, so the chat never crosses
-    // what it yields to on the way.
+    // Only a move by the person springs; room changes (demo panel, resize) are instant.
     setAnimar(true);
     mudarChat({ canto: novo });
     setAnuncio(`Assistente no ${NOMES_CANTO[novo]}.`);
@@ -512,8 +469,7 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
 
   const aoTeclar = (e: ReactKeyboardEvent<HTMLDivElement>) => {
     if (e.key !== "Escape" || e.defaultPrevented) return;
-    // Esc inside a dialog or menu opened from the chat (portalled elsewhere,
-    // but bubbling through React) closes that dialog only.
+    // Esc inside a dialog or menu opened from the chat (portalled, but bubbling through React) closes that dialog only.
     if (!(e.target instanceof Node) || !raizRef.current?.contains(e.target)) return;
     e.preventDefault();
     e.stopPropagation();
@@ -748,8 +704,6 @@ function Janela({ app, api = API_ASSISTENTE, fetcher, enderecoAssistente = CAMIN
   );
 }
 
-// ─── Cards inside a reply ────────────────────────────────────────────────────
-
 function CartaoAcao({ acao, f, api, pode }: { acao: AcaoMensagem; f: Fetch; api: string; pode: boolean }) {
   const [estado, setEstado] = useState<"proposta" | "a-aplicar" | "aplicada" | "cancelada" | "erro">(ESTADO_ACAO(acao.estado));
   const [resultado, setResultado] = useState(acao.resultado);
@@ -791,11 +745,7 @@ function CartaoAcao({ acao, f, api, pode }: { acao: AcaoMensagem; f: Fetch; api:
   );
 }
 
-/**
- * The values the assistant proposed for the page, reviewed like «Preencher
- * com um documento» (current → proposed; replacing starts unticked) and
- * applied by the page to its draft. Only on the page they were proposed for.
- */
+/** Values proposed for the page, reviewed like «Preencher com um documento» (replacing starts unticked); the page applies them to its draft, only on the page they were proposed for. */
 function CartaoPropostas({ propostas, contexto }: { propostas: PropostaPagina[]; contexto: ContextoPublicado | null }) {
   const rota = propostas.find((p) => p.rota)?.rota;
   const naPagina = !!contexto?.aoAplicar && (!rota || contexto.contexto.rota === rota);

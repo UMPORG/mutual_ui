@@ -25,14 +25,8 @@ import {
 } from "./calendario";
 
 /**
- * Dates: `Calendar`, `DatePicker`, `DateRangePicker`.
- *
- * Values are ISO calendar days ("2026-10-03"): no time, no time zone, so a
- * date never moves a day. pt-PT names, weeks start on Monday, "today" is the
- * day in Lisbon. People can type the date ("3/10/2026", "hoje") or pick it.
- *
- * On phones, for a single date far from today (birth date), `native`
- * gives the OS date wheel, which is faster there.
+ * Values are ISO days ("2026-10-03"): no time zone, so a date never moves a day; "today" is Lisbon's.
+ * `native` gives the OS date wheel on phones (birth dates).
  */
 
 type Aria = {
@@ -44,21 +38,15 @@ type Aria = {
   "aria-labelledby"?: string | undefined;
 };
 
-// ─── Calendar ─────────────────────────────────────────────────────────────
-
 export interface CalendarProps {
-  /** Single date. */
   value?: DataIso | null | undefined;
   onSelect?: ((iso: DataIso) => void) | undefined;
   /** Range mode: both ends (fim may be null while choosing). */
   range?: { inicio: DataIso | null; fim: DataIso | null } | undefined;
   min?: DataIso | null | undefined;
   max?: DataIso | null | undefined;
-  /** Days that cannot be chosen (weekends, full days). */
   isDisabled?: ((iso: DataIso) => boolean) | undefined;
-  /** Months side by side (range picker on desktop: 2). */
   months?: 1 | 2 | undefined;
-  /** Month shown first (default: the value's, or today's). */
   defaultMonth?: DataIso | undefined;
   /** Focus the active day when shown (inside a popover). */
   autoFocus?: boolean | undefined;
@@ -230,8 +218,6 @@ export function Calendar({ value, onSelect, range, min, max, isDisabled, months 
   );
 }
 
-// ─── DatePicker ───────────────────────────────────────────────────────────
-
 export interface DatePickerProps extends Aria {
   value?: DataIso | null | undefined;
   defaultValue?: DataIso | null | undefined;
@@ -239,11 +225,9 @@ export interface DatePickerProps extends Aria {
   min?: DataIso | null | undefined;
   max?: DataIso | null | undefined;
   isDisabled?: ((iso: DataIso) => boolean) | undefined;
-  /** Hidden input with the ISO value, for forms. */
   name?: string | undefined;
   required?: boolean | undefined;
   disabled?: boolean | undefined;
-  /** The OS date control (phones, birth dates). */
   native?: boolean | undefined;
   placeholder?: string | undefined;
   className?: string | undefined;
@@ -394,8 +378,6 @@ export function DatePicker({
     </div>
   );
 }
-
-// ─── DateRangePicker ──────────────────────────────────────────────────────
 
 export interface DateRange {
   inicio: DataIso | null;

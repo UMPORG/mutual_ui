@@ -1,19 +1,10 @@
-/**
- * The MUTU@L applications, as every app names and describes them.
- * Addresses are NOT here: the fixed paths are `CAMINHOS` and the Cartão's
- * host `urlCartao` (sso.ts); only the origin `MUTUAL_URL` varies per deployment.
- */
+/** App names and descriptions. Addresses are NOT here: paths are `CAMINHOS`, the Cartão's host `urlCartao` (sso.ts). */
 
 export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr" | "saude" | "dns" | "assistente" | "protocolos" | "monitor" | "cartao" | "carta";
-/** Apps served under the shared host (ADR 0004). The Cartão Digital has its own. */
+/** Apps under the shared host; the Cartão Digital has its own. */
 export type AppNoEndereco = Exclude<MutualAppId, "cartao">;
 
-/**
- * The Cartão Digital: the associados' own app (not for UMP or association
- * teams). The only app on another host (`urlCartao`, ADR 0004 exception), so
- * it is not in `MUTUAL_APPS` (the Portal launcher and the app switcher list
- * the staff apps).
- */
+/** The associados' own app, on another host (`urlCartao`, ADR 0004 exception): not in `MUTUAL_APPS`. */
 export const APP_CARTAO = {
   id: "cartao",
   nome: "Cartão Digital",
@@ -26,15 +17,12 @@ export const APP_CARTAO = {
 export interface MutualApp {
   id: Exclude<AppNoEndereco, "portal">;
   nome: string;
-  /** One line, shown under the name in the Portal and in the app switcher. */
   descricao: string;
-  /** Who the app is for — drives its shell; shown in the Portal. */
+  /** Drives its shell; shown in the Portal. */
   publico: string;
   /** Search synonyms (Portal Ctrl+K). Never displayed. */
   palavrasChave: string[];
-  /** Public app (no login, e.g. the Validador QR). Access to the others comes
-   *  from the person's profile in the active organisation
-   *  (`GET /api/v1/acessos/eu` → `apps.<id>`). */
+  /** Public app (no login, e.g. the Validador QR); access to the others comes from `GET /api/v1/acessos/eu` → `apps.<id>`. */
   publica: boolean;
 }
 
@@ -125,41 +113,30 @@ export function getMutualApp(id: MutualAppId): MutualApp | undefined {
   return MUTUAL_APPS.find((a) => a.id === id);
 }
 
-/** The display name of any app ("Portal", "Cartão Digital", "Eventos"…). */
 export function nomeDaApp(id: MutualAppId): string | undefined {
   if (id === "portal") return "Portal";
   if (id === "cartao") return APP_CARTAO.nome;
   return getMutualApp(id)?.nome;
 }
 
-// ─── Lançamento (launch switches) ────────────────────────────────────────────
-
 /**
- * The launch switches the UMP sets in the Cérebro (`GET /api/v1/acessos/eu` →
- * `lancamento`, and the public `GET /api/v1/publico/lancamento`). A missing
- * field means everything is on. Page entries are path PREFIXES relative to
- * the app's basePath (like `caminhoAtual`). An API call of a switched-off app
- * answers 503 `APP_INDISPONIVEL`; the assistant 503 `ASSISTENTE_INDISPONIVEL`.
+ * Launch switches set by the UMP (`lancamento` of `GET /api/v1/acessos/eu` and the public `GET /api/v1/publico/lancamento`); a missing field = everything on.
+ * Page entries are path PREFIXES relative to the app's basePath. Switched-off API calls answer 503 `APP_INDISPONIVEL` / `ASSISTENTE_INDISPONIVEL`.
  */
 export interface Lancamento {
-  /** Apps switched off («eventos»…). The Portal is never switched off. */
+  /** The Portal is never switched off. */
   appsDesligadas?: readonly string[] | undefined;
-  /** Per app, the pages switched off (`{ backoffice: ["/associacao/pagamentos"] }`). */
   paginasDesligadas?: Readonly<Record<string, readonly string[]>> | undefined;
   assistente?:
     | {
-        /** The floating assistant and the assistant actions are off everywhere. */
         desligado?: boolean | undefined;
-        /** Per app, the pages where the assistant is off. */
         paginasDesligadas?: Readonly<Record<string, readonly string[]>> | undefined;
       }
     | undefined;
-  /** «Nome da plataforma» set by the system super admin (trimmed, ≤ 60 code
-   *  points). Absent/null = not set: show `nomeDaPlataforma` («UMP»). */
+  /** «Nome da plataforma» (trimmed, ≤ 60 code points); absent/null = unset, show `nomeDaPlataforma`. */
   nomePlataforma?: string | null | undefined;
 }
 
-/** `lancamentoDe` result: every field present (empty = everything on). */
 export interface LancamentoNormalizado extends Lancamento {
   appsDesligadas: readonly string[];
   paginasDesligadas: Readonly<Record<string, readonly string[]>>;
@@ -185,10 +162,7 @@ function nomePlataformaDe(v: unknown): string | null {
   return Array.from(limpo).slice(0, MAX_NOME_PLATAFORMA).join("").trim();
 }
 
-/**
- * The platform name for short brand spots (shell wordmark, tab titles…): the
- * «Nome da plataforma» of the launch config, or «UMP» when unset.
- */
+/** Short brand name (wordmark, tab titles): the launch config's name, or «UMP» when unset. */
 export function nomeDaPlataforma(l?: Lancamento | null): string {
   return nomePlataformaDe(l?.nomePlataforma) ?? "UMP";
 }
@@ -208,11 +182,7 @@ function mapaDeListas(v: unknown): Record<string, string[]> {
   return out;
 }
 
-/**
- * The `lancamento` of `GET /api/v1/acessos/eu` (or of the public endpoint's
- * body), normalised. Tolerant: a missing or malformed field = everything on.
- * Accepts the whole `eu` object or the `lancamento` object itself.
- */
+/** Normalises the `lancamento` of `acessos/eu` or the public endpoint; missing or malformed = everything on. Accepts the whole `eu` or the `lancamento` object. */
 export function lancamentoDe(eu: unknown): LancamentoNormalizado {
   const o = (eu && typeof eu === "object" ? eu : {}) as Record<string, unknown>;
   const l = (o.lancamento && typeof o.lancamento === "object" ? o.lancamento : "appsDesligadas" in o || "paginasDesligadas" in o || "assistente" in o || "nomePlataforma" in o ? o : {}) as Record<string, unknown>;
@@ -238,26 +208,18 @@ export function caminhoSob(caminho: string, prefixo: string): boolean {
   return p === "/" || c === p || c.startsWith(`${p}/`);
 }
 
-/** The app is on (not in `appsDesligadas`). The Portal is always on. */
 export function appLigada(lanc: Lancamento | null | undefined, app: MutualAppId | string): boolean {
   if (app === "portal") return true;
   return !(lanc?.appsDesligadas ?? []).includes(app);
 }
 
-/**
- * The app is on AND `caminho` (relative to the app's basePath, e.g.
- * `usePathname()`) is not under one of its switched-off pages.
- */
+/** The app is on AND `caminho` (relative to its basePath) is not under a switched-off page. */
 export function paginaLigada(lanc: Lancamento | null | undefined, app: MutualAppId | string, caminho: string): boolean {
   if (!appLigada(lanc, app)) return false;
   const lista = lanc?.paginasDesligadas?.[app] ?? [];
   return !lista.some((p) => caminhoSob(caminho, p));
 }
 
-/**
- * The floating assistant and the assistant actions (fill from a document,
- * drafts) may show on this page of this app.
- */
 export function assistenteLigado(lanc: Lancamento | null | undefined, app: MutualAppId | string, caminho: string): boolean {
   const a = lanc?.assistente;
   if (a?.desligado === true) return false;
@@ -265,12 +227,7 @@ export function assistenteLigado(lanc: Lancamento | null | undefined, app: Mutua
   return !lista.some((p) => caminhoSob(caminho, p));
 }
 
-/**
- * The navigation without the entries of switched-off pages (`paginaLigada`);
- * `externo` entries (other apps) stay. Groups left empty are dropped. Works
- * with `GrupoNavApp[]` of `AppShell` (which already applies it when it gets
- * `lancamento`).
- */
+/** Navigation without switched-off pages; `externo` entries stay and empty groups are dropped. `AppShell` already applies it when given `lancamento`. */
 export function filtrarNavPorLancamento<G extends { itens: readonly { href: string; externo?: boolean | undefined }[] }>(
   grupos: readonly G[],
   lanc: Lancamento | null | undefined,
@@ -283,14 +240,8 @@ export function filtrarNavPorLancamento<G extends { itens: readonly { href: stri
 }
 
 /**
- * The apps a person can open in the active organisation, in the ecosystem's
- * order: the keys of `apps` from `GET /api/v1/acessos/eu` whose value is not
- * null, plus the Portal (always). The `disponiveis` of `AppShell` /
- * `LancadorApps` — every app uses this one function, so a new app appears in
- * every switcher by bumping `@umporg/ui`. The Validador QR is listed with
- * Eventos, as in the Portal launcher. With `lancamento` (`eu.lancamento`),
- * switched-off apps are left out (the Portal never; the Validador QR goes
- * with Eventos).
+ * Apps openable in the active organisation, in ecosystem order: non-null keys of `apps` from `acessos/eu`, plus the Portal.
+ * The Validador QR comes with Eventos (as in the Portal launcher); with `lancamento`, switched-off apps are left out.
  */
 export function appsDisponiveis(
   apps: Readonly<Record<string, unknown>> | null | undefined,
@@ -299,8 +250,7 @@ export function appsDisponiveis(
   const tem = (id: string) => apps?.[id] !== null && apps?.[id] !== undefined;
   const lista: MutualAppId[] = ["portal"];
   for (const a of MUTUAL_APPS) {
-    // The Validador QR (public, no profile) comes with Eventos — the Portal's rule:
-    // the door of an event is where it is used.
+    // The Validador QR (public) comes with Eventos, the Portal's rule.
     // The Carta Social Mutualista is public: in every launcher.
     if (!(a.id === "carta" || (a.id === "qr" ? tem("eventos") : tem(a.id)))) continue;
     if (!appLigada(lancamento, a.id) || (a.id === "qr" && !appLigada(lancamento, "eventos"))) continue;

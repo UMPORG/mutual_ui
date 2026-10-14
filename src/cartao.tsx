@@ -1,33 +1,20 @@
 import type { ElementType, HTMLAttributes, ReactNode } from "react";
 import { cx } from "./cx";
 
-/**
- * Cards, sections and description lists — the building blocks of every
- * dashboard and detail page. Server-safe (no hooks, no "use client").
- */
-
 type CardAccent = "app" | "brand";
 
 export interface CardProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   /** Element to render. Default `div`; use `section`/`article`/`li` when it fits. */
   as?: "div" | "section" | "article" | "li" | "aside" | undefined;
-  /** Lifts toward the pointer. Implied by `href`. */
   interactive?: boolean | undefined;
   /** A 3px line on top in the app's accent (or the brand). Identity, never status. */
   accent?: CardAccent | undefined;
-  /** Makes the whole card a link (one target, one tab stop). */
   href?: string | undefined;
-  /** Pass Next's `Link` for client-side navigation. */
   LinkComponent?: ElementType | undefined;
-  /** Tone down: a quiet panel inside a card or page (no shadow). */
   variant?: "raised" | "muted" | undefined;
 }
 
-/**
- * The one card of the system (`m-surface`). Compose with CardHeader,
- * CardContent and CardFooter; padding lives in those, so a table can sit
- * flush inside.
- */
+/** The one card of the system (`m-surface`); padding lives in CardHeader/CardContent/CardFooter so a table can sit flush. */
 export function Card({
   as = "div",
   interactive,
@@ -78,17 +65,12 @@ export function Card({
 export interface CardHeaderProps {
   title: ReactNode;
   description?: ReactNode | undefined;
-  /** Buttons/links on the right (wrap under the title on narrow screens). */
   actions?: ReactNode | undefined;
-  /** Small icon tile before the title. */
   icon?: ReactNode | undefined;
-  /** Small label above the title (period, category). */
   eyebrow?: ReactNode | undefined;
   /** Heading level: 2 on a page, 3 inside a Section. */
   level?: 2 | 3 | 4 | undefined;
-  /** A hairline under the header (tables, long lists). */
   divider?: boolean | undefined;
-  /** id for the heading, e.g. for `aria-labelledby`. */
   id?: string | undefined;
   className?: string | undefined;
 }
@@ -141,7 +123,6 @@ export function CardContent({
   children,
   ...rest
 }: HTMLAttributes<HTMLDivElement> & {
-  /** No padding: tables and lists that run edge to edge. */
   flush?: boolean | undefined;
 }) {
   return (
@@ -165,10 +146,6 @@ export function CardFooter({ className, children, ...rest }: HTMLAttributes<HTML
   );
 }
 
-/**
- * A titled block of a page (no surface of its own): "Indicadores",
- * "Últimos pagamentos"… Groups cards, stats or a table under one heading.
- */
 export function Section({
   title,
   description,
@@ -207,17 +184,12 @@ export function Section({
 export interface DescriptionItem {
   term: ReactNode;
   details: ReactNode;
-  /** Small icon before the term (dates, places, people). */
   icon?: ReactNode | undefined;
   /** Span the whole row in the `grid` layout (long text, addresses). */
   wide?: boolean | undefined;
 }
 
-/**
- * Key facts as a `<dl>`. `layout="grid"`: term above the value, in columns
- * (record summaries). `layout="rows"`: term on the left, value on the right
- * (detail panels); stacks when the list itself is narrower than 28rem.
- */
+/** Key facts as a `<dl>`. `grid`: term above value, in columns; `rows`: term left, value right, stacking when narrower than 28rem. */
 export function DescriptionList({
   items,
   layout = "grid",

@@ -6,18 +6,7 @@ import { bordasComMais } from "./rolagem-bordas";
 
 export { bordasComMais };
 
-/**
- * Scrolling helpers. The look lives in css/rolagem.css:
- *
- * - `.m-scroll-x` / `.m-scroll-y` (CSS only, server-safe): styled scrollbar
- *   plus a soft shadow at each edge while there is more content that way.
- *   Chrome, Edge and Safari 26+ drive the shadows with a scroll timeline.
- * - `useScrollShadow(ref)` adds the same shadows where scroll timelines are
- *   missing (Firefox) by setting `data-rolo-*` on the element, and says
- *   whether the element overflows (so it can join the Tab order).
- * - `ScrollShadow` wraps both: a scroller that keyboard users can reach
- *   (tabindex 0 only while it overflows) with a spoken name.
- */
+/** `.m-scroll-x`/`.m-scroll-y` (CSS only, server-safe: styled scrollbar + edge shadows via scroll timeline; css/rolagem.css), `useScrollShadow(ref)` (same shadows where timelines are missing, Firefox; says whether it overflows) and `ScrollShadow` (a scroller keyboard users reach: tabindex 0 only while it overflows). */
 
 type Eixo = "x" | "y" | "ambos";
 
@@ -57,13 +46,7 @@ export function useScrollShadow(ref: RefObject<HTMLElement | null>, { eixo = "x"
   return { transborda };
 }
 
-/**
- * A scrolling region with the MUTU@L scrollbar and edge shadows. Use it for
- * anything wider than a phone that must not be squeezed (wide tables, tab
- * rows, code, timelines). Give it a `label` when it holds content people
- * read ("Tabela de quotas"): it becomes a named region that keyboard users
- * can focus and scroll with the arrow keys while it overflows.
- */
+/** Scrolling region with edge shadows for anything that must not be squeezed (wide tables, tab rows, code). Give it a `label` for content people read: it becomes a named, focusable region. */
 export function ScrollShadow({
   children,
   eixo = "x",
@@ -72,9 +55,7 @@ export function ScrollShadow({
   ...rest
 }: {
   children: ReactNode;
-  /** Scroll direction: "x" (default), "y" or "ambos". */
   eixo?: Eixo | undefined;
-  /** Spoken name of the region. */
   label?: string | undefined;
   className?: string | undefined;
 } & Omit<HTMLAttributes<HTMLDivElement>, "children" | "className">) {

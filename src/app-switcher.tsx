@@ -8,11 +8,7 @@ import { indiceNaGrelha } from "./grelha-teclado";
 import { CAMINHOS } from "./sso";
 import { cx } from "./cx";
 
-/**
- * Places a popover of the top bar under its button, aligned to the button's
- * right edge (the bar's utilities sit on the right) and kept on screen;
- * flips above near the bottom edge.
- */
+/** Places the popover under its button, right-aligned and kept on screen; flips above near the bottom edge. */
 export function posicionarPopover(pop: HTMLElement, botao: HTMLElement | null, alinhar: "inicio" | "fim" = "fim") {
   if (!botao) return;
   const r = botao.getBoundingClientRect();
@@ -25,18 +21,8 @@ export function posicionarPopover(pop: HTMLElement, botao: HTMLElement | null, a
 }
 
 /**
- * The app launcher of the top bar (Google Workspace style): a round
- * nine-dot button (tooltip «Aplicações») opening a rounded panel with
- * a 3-column grid of app icon + name — only the apps the person can use in
- * the active organisation (`appsDisponiveis(eu.apps)`, the Portal first),
- * the current one marked (tick + outline + «está aqui» for screen readers).
- * The Cartão Digital (the associados' own app) is never listed. With one
- * origin (ADR 0004) the person lands signed in.
- *
- * Keyboard: on open, focus goes to the current app; arrows move in the grid
- * (←/→ one, ↑/↓ one row), Home/End; Enter opens; Esc closes and gives focus
- * back to the button. Every link is also reachable with Tab. Native Popover
- * API (light-dismiss, top layer) — no deps; motion of `m-menu-barra`.
+ * The top-bar app launcher: only the apps the person can use (`appsDisponiveis`), the current one marked; the Cartão Digital is never listed.
+ * Keyboard: focus starts on the current app, arrows/Home/End move in the grid, Esc closes and returns focus. Native Popover API.
  */
 export function LancadorApps({
   atual,
@@ -103,8 +89,7 @@ export function LancadorApps({
             const alvo = ligacoes().find((a) => a.getAttribute("aria-current") === "page") ?? ligacoes()[0];
             alvo?.focus();
           } else if (botao) {
-            // Esc or a click outside: focus back on the button unless the
-            // person clicked something focusable.
+            // Esc or outside click: focus back on the button unless something focusable was clicked.
             const foco = document.activeElement;
             if (!foco || foco === document.body || e.currentTarget.contains(foco)) {
               botao.setAttribute("data-dica", "oculta");

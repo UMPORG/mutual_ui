@@ -1,21 +1,13 @@
 /**
- * The floating assistant's calls to the Cérebro — same origin
- * (`/api/v1/assistente/*`, no app proxy), `fetch` injected, no React:
- * tested in `tests/assistente.test.ts` (the SSE reader and the shapes).
- *
- * Contract: ADR 0006 in the Cérebro (`src/routes/assistente/assistente.ts`).
- * `POST /perguntar` answers JSON errors before the stream (401, 403, 422,
- * 429 `ASSISTENTE_LIMITE_DIARIO`, 503) and then `text/event-stream`:
- * `conversa`, `passo`, `texto`, `fontes`, `rascunho`, `acao`, `propostas`,
- * `fim`, `erro`.
+ * Calls to the Cérebro (`/api/v1/assistente/*`): same origin, `fetch` injected, no React. Contract: ADR 0006 (Cérebro `src/routes/assistente/assistente.ts`).
+ * `POST /perguntar` answers JSON errors before the stream (401, 403, 422, 429 `ASSISTENTE_LIMITE_DIARIO`, 503), then `text/event-stream`:
+ * `conversa`, `passo`, `texto`, `fontes`, `rascunho`, `acao`, `propostas`, `fim`, `erro`.
  */
 import type { ChatSource } from "./conversa-dados";
 import type { ContextoPagina } from "./assistente-contexto";
 import { API_ASSISTENTE, ErroAssistente, mensagemDoErro, type PropostaCampo } from "./preencher-dados";
 
 export type Fetch = (input: string, init?: RequestInit) => Promise<Response>;
-
-// ─── Shapes (checked, never trusted with `as`) ───────────────────────────────
 
 const obj = (v: unknown): Record<string, unknown> => (v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {});
 const txt = (v: unknown, omissao = ""): string => (typeof v === "string" ? v : omissao);
@@ -78,7 +70,6 @@ export interface AcaoMensagem {
   detalhes: Array<{ termo: string; valor: string }>;
   app: string;
   estado: string;
-  /** After «Criar rascunho»: where the draft is. */
   resultado: { href: string; mensagem: string } | null;
 }
 
@@ -87,7 +78,6 @@ const lerResultado = (v: unknown): { href: string; mensagem: string } | null => 
   return txt(r.href) ? { href: txt(r.href), mensagem: txt(r.mensagem, "Rascunho criado.") } : null;
 };
 
-/** A proposal from the conversation for a field of the page (ADR 0006 §16). */
 export interface PropostaPagina extends PropostaCampo {
   /** The page the values are for (only applied there). */
   rota?: string | undefined;
@@ -185,8 +175,6 @@ export function lerMensagem(v: unknown): MensagemAssistente {
   };
 }
 
-// ─── Calls ───────────────────────────────────────────────────────────────────
-
 async function pedirJson(f: Fetch, caminho: string, init: RequestInit = {}): Promise<unknown> {
   const r = await f(caminho, { credentials: "same-origin", ...init });
   let corpo: unknown = null;
@@ -235,8 +223,6 @@ export async function aplicarAcao(f: Fetch, id: string, api = API_ASSISTENTE): P
   return { estado: txt(r.estado, "aplicada"), resultado: lerResultado(r.resultado) };
 }
 
-// ─── The stream ──────────────────────────────────────────────────────────────
-
 export type EventoPergunta =
   | { tipo: "conversa"; id: string; titulo: string }
   | { tipo: "passo"; id: string; rotulo: string; estado: "active" | "done" }
@@ -248,7 +234,6 @@ export type EventoPergunta =
   | { tipo: "fim"; mensagemId: string }
   | { tipo: "erro"; codigo: string; mensagem: string };
 
-/** One SSE event (`event:` + `data:`) → a checked event, or `null` if unknown. */
 export function eventoDoSse(evento: string, dados: string): EventoPergunta | null {
   let d: Record<string, unknown>;
   try {
@@ -317,11 +302,7 @@ export interface CorpoPergunta {
   contextoPagina?: ContextoPagina | undefined;
 }
 
-/**
- * `POST /perguntar` and the stream. Errors before the stream throw
- * `ErroAssistente` (pt-PT message). A stream that ends without `fim`/`erro`
- * ends with an `erro` «A ligação foi interrompida». Abort with `sinal`.
- */
+/** `POST /perguntar` and the stream. Errors before the stream throw `ErroAssistente`; a stream ending without `fim`/`erro` ends with an `erro` «A ligação foi interrompida». Abort with `sinal`. */
 export async function perguntar(
   f: Fetch,
   corpo: CorpoPergunta,

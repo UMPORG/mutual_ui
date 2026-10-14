@@ -1,15 +1,4 @@
-/**
- * Pure helpers of shell G (src/shell.tsx) — no React, unit-tested in
- * tests/shell.test.ts.
- */
-
-/**
- * The navigation entry of the current page: the LONGEST `href` that is the
- * path itself or a prefix of it at a `/` boundary («/admin/caracterizacao»
- * stays current on «/admin/caracterizacao/respostas» — its tabs). A root
- * href («/», «/admin») only wins when nothing longer matches, so «Início»
- * is not current everywhere. Query strings and hashes are ignored.
- */
+/** Longest `href` equal to the path or a prefix of it at a `/` boundary; a root href («/», «/admin») only wins when nothing longer matches. Query and hash ignored. */
 export function hrefAtivo(hrefs: readonly string[], caminho: string): string | null {
   const limpar = (h: string) => {
     const sem = h.split(/[?#]/)[0] ?? "";
@@ -29,13 +18,7 @@ export function hrefAtivo(hrefs: readonly string[], caminho: string): string | n
   return melhor;
 }
 
-/**
- * The ONE current entry of a menu. An app may mark entries itself (`ativo`: a
- * section that owns several paths, its tabs); then nothing is inferred, so a
- * prefix like «/admin» (Início) never lights up next to it. Without
- * any explicit `ativo: true`, the longest matching href of the entries that
- * leave `ativo` undefined wins; links to other apps never do.
- */
+/** An explicit `ativo: true` wins and nothing is inferred (so «/admin» never lights up beside it); otherwise the longest match among entries with `ativo` undefined; external links never match. */
 export function hrefAtualDoMenu(
   itens: readonly { href: string; ativo?: boolean | undefined; externo?: boolean | undefined }[],
   caminho: string,
@@ -48,7 +31,6 @@ export function hrefAtualDoMenu(
   );
 }
 
-/** Initials for the account avatar: first and last name («Ana Maria Martins» → «AM»). */
 export function iniciais(nome: string): string {
   const partes = nome
     .trim()
@@ -60,7 +42,6 @@ export function iniciais(nome: string): string {
   return (primeira + ultima).toLocaleUpperCase("pt-PT");
 }
 
-/** Where the Ajuda of an app lives by default: the Portal's help centre. */
 export function ajudaDaApp(app: string, caminhoAjuda: string): string {
   return `${caminhoAjuda}/${app === "qr" ? "validador-qr" : app}`;
 }

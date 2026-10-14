@@ -12,13 +12,8 @@ import {
   type PersonaDemo,
 } from "./demo-entrar-dados";
 
-/**
- * «Entrar como…» inside the floating «Demonstração» widget. Not
- * exported: pages register a context (`registarEntrarComo` /
- * `useEntrarComoDemo`) and `DemoPreencher` shows this section in its panel.
- */
+/** «Entrar como…» section of the «Demonstração» widget; not exported (pages use `useEntrarComoDemo`). */
 
-/** Registers the page's demo sign-in context while the component is mounted. */
 export function useEntrarComoDemo(contexto: ContextoEntrarComo | null): void {
   const destino = contexto?.destino;
   const api = contexto?.api;
@@ -29,7 +24,6 @@ export function useEntrarComoDemo(contexto: ContextoEntrarComo | null): void {
   }, [destino, aoEntrar, api]);
 }
 
-/** The registered context and its personas (null until loaded; null when unavailable). */
 export function usePersonasDemo(ativo: boolean): { contexto: ContextoEntrarComo; personas: PersonaDemo[] } | null {
   const contexto = useSyncExternalStore(ouvirEntrarComo, contextoEntrarComo, () => null);
   const [carregado, setCarregado] = useState<{ chave: string; personas: PersonaDemo[] } | null>(null);

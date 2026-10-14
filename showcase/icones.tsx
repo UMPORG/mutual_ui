@@ -1,11 +1,7 @@
 import { House, Plus, RotateCw, X } from "lucide-react";
 import { AppShell, GlifoApp, IconeApp, LancadorApps, ProcuraApp, nomeDaApp, nomeDaPlataforma, type MutualAppId } from "../src/index.ts";
 
-/**
- * The app icon family and the grid launcher. `?pagina=icones` shows
- * the family at every size, the top bar and a browser tab strip;
- * `?pagina=icones-shell&app=<id>` is the real frame (AppShell).
- */
+/** `?pagina=icones`: the family at every size; `?pagina=icones-shell&app=<id>`: the real AppShell frame. */
 
 const TODAS: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "qr", "dns", "assistente", "protocolos", "monitor", "cartao", "carta"];
 const LANCADOR: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "dns", "assistente", "protocolos", "monitor", "qr", "carta"];
@@ -44,7 +40,6 @@ function Grelha() {
   );
 }
 
-/** A browser tab strip (mock): the favicons at 16 px, in a light and a dark window. */
 function Separadores({ escuro }: { escuro: boolean }) {
   const abas: MutualAppId[] = ["portal", "eventos", "simplex", "saude", "backoffice", "monitor", "assistente", "dns", "protocolos", "qr", "cartao", "carta"];
   const fundo = escuro ? "#202124" : "#dee1e6";
@@ -171,7 +166,6 @@ export function PaginaIcones() {
   );
 }
 
-/** The real frame (AppShell): its tile and its launcher. */
 export function PaginaIconesShell() {
   const app = (document.documentElement.dataset.app ?? "eventos") as Exclude<MutualAppId, "cartao">;
   const nome = nomeDaApp(app) ?? app;

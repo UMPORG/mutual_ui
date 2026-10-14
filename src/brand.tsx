@@ -18,13 +18,7 @@ export function MutualFlag({ height = 24, className, title }: { height?: number 
   );
 }
 
-/**
- * Brand lock-up: flag + the platform name (`nomeDaPlataforma`, «UMP» when
- * unset) + the app name. The app name is what tells
- * the user where they are, so it is always shown in full.
- *
- * tone="ink" on the dark ink (the Cartão's bars), "default" on light surfaces.
- */
+/** Flag + platform name (`nomeDaPlataforma`, «UMP» when unset) + app name, always shown in full. tone="ink" on dark bars (the Cartão's). */
 export function MutualWordmark({
   app,
   tone = "default",

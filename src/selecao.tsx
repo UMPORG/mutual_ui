@@ -8,23 +8,11 @@ import { cx } from "./cx";
 import { filtrarOpcoes, normalizarTexto, textoParaCriar } from "./filtrar";
 import { CLASSE_FLUTUANTE, CLASSE_POSICIONADOR, Destacado, useControlado } from "./controlos-comum";
 
-/**
- * Choosing from lists, built on Base UI:
- *
- * - `Select` — a closed list of up to ~15 options, no typing (estado, tipo).
- * - `Combobox` — many options or a remote search (associação, utente), with
- *   an optional "Criar «…»" entry.
- * - `MultiSelect` — several values shown as chips (distritos, etiquetas).
- *
- * Put each inside `FormField` for the label, hint and error: the field hands
- * `id` and the ARIA props to the control. For long plain lists on phones and
- * for GET filter forms of server pages use `NativeSelect` instead.
- */
+/** `Select` (closed list), `Combobox` (many options or remote search), `MultiSelect` (chips). Use inside `FormField`; for long lists on phones and GET filter forms of server pages use `NativeSelect`. */
 
 export interface Option {
   value: string;
   label: string;
-  /** Second line in the list (NIF, distrito…). */
   description?: string | undefined;
   disabled?: boolean | undefined;
   icon?: ReactNode | undefined;
@@ -34,7 +22,6 @@ export interface OptionGroup {
   options: Option[];
 }
 
-/** ARIA and id props a `FormField` hands to its control. */
 interface PropsDeCampo {
   id?: string | undefined;
   "aria-describedby"?: string | undefined;
@@ -57,8 +44,6 @@ function ariaDe(p: PropsDeCampo) {
 
 const eGrupo = (x: Option | OptionGroup): x is OptionGroup => "options" in x;
 
-// ─── Select ───────────────────────────────────────────────────────────────
-
 export interface SelectProps extends PropsDeCampo {
   options: Array<Option | OptionGroup>;
   value?: string | null | undefined;
@@ -66,7 +51,6 @@ export interface SelectProps extends PropsDeCampo {
   onValueChange?: ((value: string | null) => void) | undefined;
   /** Shown while nothing is chosen. Default "Escolha uma opção". */
   placeholder?: string | undefined;
-  /** Form field name (a hidden input carries the value). */
   name?: string | undefined;
   required?: boolean | undefined;
   disabled?: boolean | undefined;
@@ -137,24 +121,16 @@ export function Select({
   );
 }
 
-// ─── Combobox (single) ────────────────────────────────────────────────────
-
 type ItemInterno = Option & { criar?: string | undefined };
 
 export interface ComboboxProps extends PropsDeCampo {
   /** Local options (filtered as the person types, accents ignored). */
   options?: Option[] | undefined;
-  /**
-   * Remote search: called (debounced) with what the person typed. Abort
-   * the request when `signal` fires. Return the matching options.
-   */
+  /** Remote search (debounced); abort the request when `signal` fires. */
   onSearch?: ((query: string, signal: AbortSignal) => Promise<Option[]>) | undefined;
   /** Minimum characters before searching remotely. Default 2. */
   minChars?: number | undefined;
-  /**
-   * Offers "Criar «texto»" when nothing matches exactly. Return the new
-   * option (it becomes the value) or nothing to keep the current value.
-   */
+  /** Offers «Criar «texto»» when nothing matches; return the new option (becomes the value) or nothing. */
   onCreate?: ((text: string) => Option | void | Promise<Option | void>) | undefined;
   value?: string | null | undefined;
   defaultValue?: string | null | undefined;
@@ -370,15 +346,11 @@ export function Combobox({
   );
 }
 
-// ─── MultiSelect (chips) ──────────────────────────────────────────────────
-
 export interface MultiSelectProps extends Omit<ComboboxProps, "value" | "defaultValue" | "onValueChange" | "initialOption"> {
   value?: string[] | undefined;
   defaultValue?: string[] | undefined;
   onValueChange?: ((value: string[], options: Option[]) => void) | undefined;
-  /** Options of the initial values when options load remotely. */
   initialOptions?: Option[] | undefined;
-  /** Max number of values; the list disables the rest when reached. */
   max?: number | undefined;
 }
 

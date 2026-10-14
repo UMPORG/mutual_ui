@@ -7,32 +7,19 @@ import { analisarMarkdown, estabilizarParcial, type Block, type Inline } from ".
 
 export { analisarMarkdown, analisarInline, estabilizarParcial, markdownParaTexto, sanitizarUrl, type Block, type Inline } from "./markdown-ast";
 
-/**
- * Safe Markdown for assistant replies and help text. The text is
- * parsed into a tree and rendered as React elements — never as HTML — so a
- * reply cannot inject markup or scripts. Links are limited to http(s),
- * mailto, tel and relative paths; images are shown as links, never loaded.
- *
- * Code blocks have "Copiar"; tables scroll sideways in their own region;
- * "[1]" markers become links to the reply's sources when `citations` is
- * given.
- */
+/** Safe Markdown for replies and help text: parsed to a tree and rendered as React elements, never HTML. Links limited to http(s), mailto, tel and relative paths; images shown as links. Code blocks have "Copiar"; "[1]" markers link to `citations`. */
 
 export interface Citation {
-  /** Where the source opens: a help-centre page or an app record. */
   href: string;
   title: string;
 }
 
 export interface MarkdownProps {
   children: string;
-  /** Number → source, for "[1]" markers. */
   citations?: Record<number, Citation> | undefined;
-  /** Next's `Link` for relative links. */
   LinkComponent?: ElementType | undefined;
   /** Level of "#" headings (default 3: replies sit under the page's h1/h2). */
   headingLevel?: 2 | 3 | 4 | undefined;
-  /** A blinking caret after the last word (streaming). */
   caret?: boolean | undefined;
   className?: string | undefined;
 }
@@ -42,8 +29,6 @@ interface Ctx {
   Link: ElementType;
   nivel: number;
 }
-
-// ─── Copy button ──────────────────────────────────────────────────────────
 
 /** "Copiar" → "Copiado" for 2 s. The label change is announced (it is the button's name). */
 export function CopyButton({
@@ -87,8 +72,6 @@ export function CopyButton({
     </button>
   );
 }
-
-// ─── Rendering ────────────────────────────────────────────────────────────
 
 function Inlines({ c, ctx }: { c: Inline[]; ctx: Ctx }): ReactNode {
   return c.map((x, i) => {

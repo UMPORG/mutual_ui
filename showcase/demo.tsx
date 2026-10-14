@@ -3,8 +3,6 @@ import { Button, DemoPreencher, FormField, Input, NativeSelect, Textarea, type C
 import { Dialog, DialogClose, Sheet } from "../src/controlos.ts";
 import { AssistenteFlutuanteDemo } from "./assistente.tsx";
 
-/** Demonstration mode: a long form, a decision dialog and a sheet. */
-
 const CENARIOS: CatalogoDemo = {
   "ficha-associacao": {
     titulo: "Ficha da associação",
