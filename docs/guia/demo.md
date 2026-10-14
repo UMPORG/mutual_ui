@@ -1,6 +1,6 @@
 # Demo mode (`DEMO_MODE=true`, server env, never in production)
 
-The demo environment presents the platform to UMP leadership and associações (production runs separately). Demo = the `main` branch with
+The demo environment lets UMP and the associações try the platform with fictitious data (production runs separately, without demo code). Demo = the `main` branch with
 `DEMO_MODE=true`; demo-only code is inert without it.
 
 ## Everything demo-only lives in the «Demonstração» widget

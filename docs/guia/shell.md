@@ -13,6 +13,7 @@ app (`src/shell.tsx`, `css/shell.css`), no local variants.
 | Saúde | Reception, health professionals, managers | Desk shell + unit selector; Balcão is the reception home; tablet-friendly |
 | Eventos (gestão) / (público) | Organisers / associates and public | Desk shell with an event workspace / public site, one call to action per page |
 | Validador QR | Staff at the door | Full-screen tool, big result states, no navigation |
+| Carta Social Mutualista | Public (no login), anyone in Portugal | No `AppShell`: own public header (Pesquisar, Indicadores, Sobre), `m-canvas`, footer; `/carta` and its own domain; always in the launcher |
 | Cartão Digital | Associados | Own host and design (`urlCartao`), not in `CAMINHOS`/`MUTUAL_APPS` |
 
 ## `AppShell`

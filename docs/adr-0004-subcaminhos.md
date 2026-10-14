@@ -8,7 +8,7 @@ cookie de sessão partilhado pelo domínio-pai (`AUTH_COOKIE_DOMAIN`).
 
 Todas as aplicações dos funcionários e o site público de eventos vivem num
 **só endereço** (`MUTUAL_URL`, produção `https://mutual.mutualismo.pt`;
-staging e demonstração têm o seu próprio endereço com o mesmo desenho):
+a demonstração, que é também o ambiente de ensaio (não há staging separado), tem o seu próprio endereço com o mesmo desenho):
 
 | Caminho | Serviço | Notas |
 | --- | --- | --- |
@@ -18,6 +18,11 @@ staging e demonstração têm o seu próprio endereço com o mesmo desenho):
 | `/simplex` | Simplex | `basePath: "/simplex"` |
 | `/saude` | Saúde | `basePath: "/saude"` |
 | `/qr` | Validador QR | `basePath: "/qr"` (PWA com `scope: /qr/`) |
+| `/monitor` | Monitorização | `basePath: "/monitor"` |
+| `/dns` | Servidores e DNS | `basePath: "/dns"` |
+| `/protocolos` | Protocolos | `basePath: "/protocolos"` |
+| `/assistente` | Assistente | `basePath: "/assistente"` |
+| `/carta` | Carta Social Mutualista | pública, sem login; também no domínio próprio |
 | `/api` | Cérebro | `/api/v1/*`, `/api/auth/*` — sem remover o prefixo |
 
 O Cartão Digital (associados) mantém o seu endereço próprio — ver a exceção
@@ -49,7 +54,6 @@ anfitrião (sem `basePath`; PWA, manifesto e service worker em `/`).
   da equipa no gateway `:8080`.
 - Sem contas Google/Apple (retiradas pelo dono): só email e palavra-passe,
   com verificação do email e código por email.
-- A app nativa (Capacitor) abre o mesmo `CARTAO_DIGITAL_URL`.
 - O Portal tem uma ligação discreta «É associado? Abra o Cartão Digital» para o
   endereço absoluto do Cartão (`@umporg/ui` › `urlCartao`).
 

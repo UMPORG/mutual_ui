@@ -94,7 +94,7 @@ test("NIF / NIPC", () => {
   assert.deepEqual(validarNif("123456789"), { valido: true, valor: "123456789" });
   const mau = validarNif("123456788");
   assert.ok(!mau.valido && mau.erro.startsWith("Este NIF não é válido: o último algarismo, de controlo"));
-  // A NIPC with a wrong check digit (501 234 561: the check digit would be 0).
+  // A NIPC with a wrong check digit (the correct check digit would be 0).
   assert.deepEqual(validarNipc("501 234 561"), {
     valido: false,
     erro: "Este NIPC não é válido: o último algarismo, de controlo, não bate certo com os outros oito. Verifique se há algum algarismo trocado (certidão permanente ou cartão de pessoa coletiva).",
