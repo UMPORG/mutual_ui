@@ -34,7 +34,7 @@ escuro); hoje o par mais próximo está a 34° / 28,9°. O Servidores e DNS é a
 
 | App | Claro (azulejo e acento) | Escuro | Matiz |
 | --- | --- | --- | --- |
-| Portal, Cartão Digital | marca `#1f6f36` | `#7cc97a` | 149° |
+| Portal, Carta Social Mutualista, Cartão Digital | marca `#1f6f36` | `#7cc97a` | 149° |
 | Backoffice | `#1d4ed8` | `#93b4fb` | 264° |
 | Eventos | `#7a1fc4` púrpura | `#d4a5f9` | 303° |
 | Simplex | `#9c6100` ocre | `#f2bf5e` | 69° |

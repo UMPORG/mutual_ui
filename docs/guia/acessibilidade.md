@@ -34,7 +34,7 @@ The apps are used by the UMP and associações across the country; text is for t
   «sistema de design», internal app codes, English words («scans» → «leituras»).
 - Short formal pt-PT, imperatives («Indique», «Escolha», «Guarde»), one idea per sentence, no
   exclamation marks, no emoji, no abbreviations in navigation.
-- Headlines name the place («Portal MUTU@L», «Eventos e formações»); sub-lines optional and ≤ 1 line.
+- Headlines name the place («Portal», «Eventos e formações»); sub-lines optional and ≤ 1 line.
 - Never raw enums or ISO dates: words and `dd/MM/yyyy` or «sábado, 3 de outubro de 2026».
 - Help text explains a field only when its meaning is not obvious.
 - Examples: «Use o email e a palavra-passe da sua conta MUTU@L.» → «Indique o seu email e

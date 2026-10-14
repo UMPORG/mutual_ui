@@ -39,7 +39,7 @@ topic you need. **Public repo** `UMPORG/mutual_ui`: never commit secrets, creden
 
 ## Shell G and navigation (every desk app)
 
-- One `AppShell`, no local variants: top bar (tile + «MUTU@L» + app name, search, Ajuda, Acessibilidade,
+- One `AppShell`, no local variants: top bar (tile + platform name (default «UMP») + app name, search, Ajuda, Acessibilidade,
   launcher, account) → navigation → one neutral content layer. Pages in `.m-pagina`, starting with
   `PageHeader`. Details: [docs/guia/shell.md](docs/guia/shell.md).
 - **Actions go in the page header, never in the navigation**: the page's action is the brand-green primary

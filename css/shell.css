@@ -2,7 +2,7 @@
  * Shell G — the frame of every desk app (src/shell.tsx).
  *
  * Google Workspace structure + Fluent layering: a top
- * bar (app tile + «MUTU@L» + app name, search in the middle, Ajuda,
+ * bar (app tile + platform name + app name, search in the middle, Ajuda,
  * Acessibilidade, the app launcher and the account) and the navigation on
  * the left share ONE surface, --moldura (neutral grey + 9% of the app's
  * colour); the content sits on ONE neutral elevated layer (--camada, 8px

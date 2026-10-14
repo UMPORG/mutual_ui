@@ -17,7 +17,7 @@ app (`src/shell.tsx`, `css/shell.css`), no local variants.
 
 ## `AppShell`
 
-Top bar (☰, tile + «MUTU@L» + app name, search, Ajuda and Acessibilidade with text, launcher, avatar) →
+Top bar (☰, tile + platform name (default «UMP») + app name, search, Ajuda and Acessibilidade with text, launcher, avatar) →
 navigation (grouped destinations only) → one neutral content layer (`--camada`, 8px corners). Below
 64rem: top bar + drawer (Ajuda, Acessibilidade and the account at its end).
 
@@ -61,9 +61,9 @@ Never tinted with the app colour.
 ## Launcher and app icons
 
 - `disponiveis = appsDisponiveis(eu.apps, eu.lancamento)` from `GET /api/v1/acessos/eu`: Portal + every app whose
-  `apps.<id>` is not null (Validador QR only with Eventos) — the same set and order as the Portal launcher.
+  `apps.<id>` is not null (Validador QR only with Eventos; the public Carta Social Mutualista always) — the same set and order as the Portal launcher.
   Show the profile name (`apps.<app>.nome`) and organisation, never a login role.
-- `LancadorApps` (inside `AppShell`): round nine-dot button (tooltip «Aplicações MUTU@L»), grid of 3
+- `LancadorApps` (inside `AppShell`): round nine-dot button (tooltip «Aplicações»), grid of 3
   columns of icon + name, only `disponiveis` (Portal first, Cartão never), current app with a tick +
   «(está aqui)». Keyboard: focus on the current app, arrows, Home/End, Enter, Esc back to the button.
 - `IconeApp({ app, tamanho?, titulo? })`: the «folha» base in `--app-marca` with a white glyph — used in
