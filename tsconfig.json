@@ -10,7 +10,8 @@
     "noEmit": true,
     "skipLibCheck": true,
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "types": ["node"]
   },
   "include": ["src", "tests"]
 }
