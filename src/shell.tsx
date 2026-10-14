@@ -26,34 +26,9 @@ import { cx } from "./cx";
 export { hrefAtivo, hrefAtualDoMenu, iniciais } from "./shell-nav";
 
 /**
- * Shell G — the frame of every MUTU@L desk app (Google Workspace structure +
- * Fluent layering). One component, same
- * anatomy everywhere; only the navigation and the search are the app's:
- *
- *   <AppShell
- *     app="backoffice" caminhoAtual={usePathname()} LinkComponent={Link}
- *     disponiveis={appsDisponiveis(eu.apps, eu.lancamento)} lancamento={eu.lancamento}
- *     conta={{ nome, perfil, organizacao, variasOrganizacoes, onTerminarSessao }}
- *     navegacao={[{ itens: [{ href: "/admin", rotulo: "Início", icone: House }] },
- *                 { titulo: "Rede mutualista", itens: [...] }]}
- *     procura={<ProcuraApp rotulo="Procurar no Backoffice" action="/backoffice/admin/procurar" />}
- *   >
- *     <div className="m-pagina">…</div>
- *   </AppShell>
- *
- * Top bar: ☰, the app's tile + the platform name (`nomeDaPlataforma`) + its name (link to the app's home),
- * the search (centre), Ajuda and Acessibilidade WITH text, the app launcher
- * (waffle) and the account (avatar → name, profile, organisation, «Mudar de
- * organização», «Terminar sessão»). Left: ONLY navigation, ≤ 8
- * destinations in 2–3 short groups; the current page is a pill. A page's
- * own action («Nova campanha», «Criar evento») is the primary button of its
- * `PageHeader actions`, on that page only. Sub-pages
- * are tabs on the page (`Separadores`), never a second navigation level.
- * The content is ONE neutral layer (`<main id="conteudo-principal">`, the
- * scroller; back to the top on every navigation). Below 64rem the
- * navigation is a drawer (native <dialog>). Tour targets:
- * `[data-shell="navegacao|ajuda|acessibilidade|aplicacoes|conta|organizacao|
- * sair|menu|assistente"]`.
+ * Shell G: the frame of every desk app (top bar, navigation, one neutral content layer).
+ * Only the navigation and the search are the app's. Anatomy and rules: docs/guia/shell.md.
+ * Tour targets: `[data-shell="navegacao|ajuda|acessibilidade|aplicacoes|conta|organizacao|sair|menu|assistente"]`.
  */
 
 // Lucide icons (their props do not accept `undefined`, hence no `| undefined`).

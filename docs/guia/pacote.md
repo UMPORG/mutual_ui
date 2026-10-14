@@ -90,9 +90,9 @@ node showcase/verificar.mjs          # Playwright checks (server running)
 node showcase/shots*.mjs <outDir>    # screenshots
 ```
 
-The Playwright scripts (`verificar.mjs`, `shots*.mjs`, `scripts/gerar-icones.mjs`) load Playwright from
-`D:/Mutual/mutual_eventos/node_modules` and a local Chromium; only `gerar-icones.mjs` takes
-`PLAYWRIGHT_MODULE` / `CHROMIUM` to override them.
+The Playwright scripts (`verificar.mjs`, `shots*.mjs`, `scripts/gerar-icones.mjs`) import Playwright from a
+sibling checkout's `node_modules` (`../mutual_eventos`) and need a Chromium (`pnpm exec playwright install
+chromium`); only `gerar-icones.mjs` takes `PLAYWRIGHT_MODULE` / `CHROMIUM` to override them.
 
 Pages (`?pagina=`): `dados` (default), `controlos`, `efeitos`, `conversa`, `shells` (`&app=<id>`,
 `&vista=todas`), `rolagem`, `demo`, `identificadores`, `icones`, `icones-shell`; `/ssr`
