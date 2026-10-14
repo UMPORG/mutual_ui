@@ -99,6 +99,10 @@ Pages (`?pagina=`): `dados` (default), `controlos`, `efeitos`, `conversa`, `shel
 serves a server-rendered, hydrated fixture. The showcase resolves React, Recharts and Base UI from the
 package's own devDependencies (one React copy); it installs only Tailwind.
 
+## Toolchain
+
+Node 24.21.x (`engines`), pnpm 12.11.2 (`packageManager`), Bun 1.4.3 (showcase build), TypeScript 7 (`tsconfig.json` lists `types: ["node"]`, TS 7 no longer loads every `@types/*`).
+
 ## CI
 
 `.github/workflows/ci.yml` (GitHub-hosted; push to `main`, PRs, `v*` tags): frozen install,

@@ -38,13 +38,15 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 24
+          node-version: 24.21.0
           cache: pnpm
           cache-dependency-path: |
             pnpm-lock.yaml
             showcase/pnpm-lock.yaml
 
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
 
       - name: Instalar (lockfile congelado)
         run: pnpm install --frozen-lockfile
@@ -61,5 +63,6 @@ jobs:
       - name: Build do showcase
         working-directory: showcase
         run: |
-          pnpm install --frozen-lockfile --ignore-workspace
+          # O watcher do Tailwind (@parcel/watcher) não precisa do seu script de build no build do showcase.
+          pnpm install --frozen-lockfile --ignore-workspace --config.strict-dep-builds=false
           pnpm build
