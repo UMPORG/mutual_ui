@@ -94,12 +94,12 @@ test("NIF / NIPC", () => {
   assert.deepEqual(validarNif("123456789"), { valido: true, valor: "123456789" });
   const mau = validarNif("123456788");
   assert.ok(!mau.valido && mau.erro.startsWith("Este NIF não é válido: o último algarismo, de controlo"));
-  // The NIPC reported by the association (526 705 245: the check digit would be 8).
-  assert.deepEqual(validarNipc("526 705 245"), {
+  // A NIPC with a wrong check digit (501 234 561: the check digit would be 0).
+  assert.deepEqual(validarNipc("501 234 561"), {
     valido: false,
     erro: "Este NIPC não é válido: o último algarismo, de controlo, não bate certo com os outros oito. Verifique se há algum algarismo trocado (certidão permanente ou cartão de pessoa coletiva).",
   });
-  assert.equal(validarNipc("526705248").valido, true);
+  assert.equal(validarNipc("501234560").valido, true);
   assert.deepEqual(validarNif("401234567"), {
     valido: false,
     erro: "O NIF não pode começar por 40. Verifique os primeiros algarismos.",
@@ -165,12 +165,12 @@ test("NIF cheio: um algarismo escrito no meio substitui o seguinte (nunca empurr
     cursor: 9,
   });
   // Pasting a whole NIF replaces the field (at the end or at the start).
-  assert.deepEqual(digitosAoEscrever("501 234 560", "501 234 560526 705 248", 22, 9), {
-    digitos: "526705248",
+  assert.deepEqual(digitosAoEscrever("501 234 560", "501 234 560123 456 789", 22, 9), {
+    digitos: "123456789",
     cursor: 9,
   });
-  assert.deepEqual(digitosAoEscrever("501 234 560", "526705248501 234 560", 9, 9), {
-    digitos: "526705248",
+  assert.deepEqual(digitosAoEscrever("501 234 560", "123456789501 234 560", 9, 9), {
+    digitos: "123456789",
     cursor: 9,
   });
   // Not full: nothing changes; a selection replaced by a digit is ordinary typing.
@@ -181,7 +181,7 @@ test("NIF cheio: um algarismo escrito no meio substitui o seguinte (nunca empurr
 });
 
 test("NIF: a mensagem do algarismo de controlo não fala de «anteriores»", () => {
-  const r = validarNif("526705245", { tipo: "coletiva" });
+  const r = validarNif("501234561", { tipo: "coletiva" });
   assert.equal(r.valido, false);
   assert.ok(!r.valido && !r.erro.includes("anteriores"));
 });

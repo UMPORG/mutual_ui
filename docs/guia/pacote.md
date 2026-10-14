@@ -26,7 +26,7 @@ transpilePackages: ["@umporg/ui"],
 
 Peers: `react` ≥ 19, `lucide-react`; optional `@base-ui/react` ≥ 1.6 < 2 and `recharts` ≥ 3.1 (only
 for the sub-paths that need them). `css/index.css` imports every sheet; import it whole. Importing single
-sheets is not supported (`css/icones.css`, needed by `IconeApp`, has no `exports` entry).
+sheets is not recommended (most are exported, but only `index.css` is supported; `css/icones.css`, needed by `IconeApp`, has no `exports` entry).
 
 ## Entry points
 

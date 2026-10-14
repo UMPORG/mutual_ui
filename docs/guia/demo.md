@@ -1,6 +1,6 @@
 # Demo mode (`DEMO_MODE=true`, server env, never in production)
 
-The demo environment presents MUTU@L to UMP leadership and associações. Demo = the `main` branch with
+The demo environment presents the platform to UMP leadership and associações (production runs separately). Demo = the `main` branch with
 `DEMO_MODE=true`; demo-only code is inert without it.
 
 ## Everything demo-only lives in the «Demonstração» widget
