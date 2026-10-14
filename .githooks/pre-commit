@@ -1,0 +1,8 @@
+#!/bin/sh
+# Bloqueia segredos nos ficheiros em stage. --no-glob: os caminhos são literais.
+ficheiros=$(git diff --cached --name-only --diff-filter=ACM -z | tr '\0' '\n')
+[ -z "$ficheiros" ] && exit 0
+printf '%s\n' "$ficheiros" | tr '\n' '\0' | xargs -0 pnpm exec secretlint --no-glob --secretlintignore .secretlintignore || {
+  echo "pre-commit: segredo detetado nos ficheiros em stage; remova-o antes de fazer commit." >&2
+  exit 1
+}
