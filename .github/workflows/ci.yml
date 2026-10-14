@@ -48,7 +48,7 @@ jobs:
       - name: Tipos (tsc, pacote e ficheiro solto)
         run: pnpm typecheck
 
-      - name: Testes (node --test)
+      - name: Testes (vp test run)
         run: pnpm test
 
       - name: Auditoria de dependências (qualquer nível)

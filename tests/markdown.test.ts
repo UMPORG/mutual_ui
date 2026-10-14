@@ -1,4 +1,4 @@
-import { test } from "node:test";
+import { test } from "vite-plus/test";
 import assert from "node:assert/strict";
 import { analisarInline, analisarMarkdown, markdownParaTexto, sanitizarUrl, type Block, type Inline } from "../src/markdown-ast.ts";
 

@@ -9,7 +9,7 @@ topic you need. **Public repo** `UMPORG/mutual_ui`: never commit secrets, creden
 - Consumed as `"@umporg/ui": "github:UMPORG/mutual_ui#vX.Y.Z"` (always a tag). Release = bump
   `package.json` `version`, commit, `git tag vX.Y.Z`, push the tag; apps bump the ref and regenerate the
   lockfile. **No tag for a docs-only change.** Setup in an app: [docs/guia/pacote.md](docs/guia/pacote.md).
-- Commands: `pnpm typecheck` (with and without `exactOptionalPropertyTypes`) · `pnpm test` (`node --test`,
+- Commands: `pnpm typecheck` (with and without `exactOptionalPropertyTypes`) · `pnpm test` (`vp test run`, Vite+,
   CI sets `TZ=Europe/Lisbon`) · `pnpm icones` (favicons) · `pnpm embed-logo`. Showcase (unpublished review
   page, :5199): see pacote.md. Before push: `pnpm typecheck` + `pnpm test` (no lint or format script).
   `.githooks/pre-commit` (enabled by `pnpm install` via `prepare`) blocks commits with secrets (secretlint).
