@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { ScrollArea as BaseScrollArea } from "@base-ui/react/scroll-area";
 import { Avatar as BaseAvatar } from "@base-ui/react/avatar";
 import { cx } from "./cx";
+import { iniciais } from "./shell-nav";
 
 /** Region with a thin scrollbar for side lists and long menus (focusable, arrow-scrollable). The page itself never needs one. */
 export function ScrollArea({
@@ -41,18 +42,6 @@ export function ScrollArea({
       )}
     </BaseScrollArea.Root>
   );
-}
-
-/** "Maria da Conceição Silva" → "MS" (first and last name). */
-export function iniciais(nome: string): string {
-  const partes = nome
-    .trim()
-    .split(/\s+/)
-    .filter((p) => !/^(da|de|do|das|dos|e)$/i.test(p));
-  if (!partes.length) return "?";
-  const a = partes[0]![0] ?? "";
-  const b = partes.length > 1 ? (partes[partes.length - 1]![0] ?? "") : "";
-  return (a + b).toLocaleUpperCase("pt-PT");
 }
 
 function tomDoNome(nome: string): number {

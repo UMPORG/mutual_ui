@@ -6,6 +6,12 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 
 ## [Unreleased]
 
+## [0.21.3] - 2026-10-15
+
+### Corrigido
+
+- As iniciais do avatar ignoram parênteses e pontuação: «Administração UMP (Demo)» passa a mostrar «AD» em vez de «A(».
+
 ## [0.21.2] - 2026-10-15
 
 ### Segurança

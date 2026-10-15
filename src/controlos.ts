@@ -18,5 +18,6 @@ export {
 export { Accordion, Collapsible, Tabs, useUrlParam, type AccordionItem, type TabItem } from "./divulgacao";
 export { Switch, Checkbox, RadioGroup, RadioCards, SegmentedControl, Slider, NumberField, type RadioOption } from "./escolhas";
 export { Toaster, toast, type ToastOptions } from "./avisos";
-export { ScrollArea, Avatar, AvatarGroup, iniciais } from "./diversos";
+export { ScrollArea, Avatar, AvatarGroup } from "./diversos";
+export { iniciais } from "./shell-nav";
 export { ScrollShadow, useScrollShadow } from "./rolagem";

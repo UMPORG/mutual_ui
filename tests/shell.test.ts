@@ -41,6 +41,9 @@ test("iniciais: first and last name, without particles", () => {
   assert.equal(iniciais("  teresa  "), "T");
   assert.equal(iniciais("Élio Órfão"), "ÉÓ");
   assert.equal(iniciais(""), "?");
+  assert.equal(iniciais("Administração UMP (Demo)"), "AD");
+  assert.equal(iniciais("(Demo)"), "D");
+  assert.equal(iniciais("- ( ) "), "?");
 });
 
 test("ajudaDaApp: the Portal's help centre; the QR's section is «validador-qr»", () => {

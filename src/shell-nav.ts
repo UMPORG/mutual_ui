@@ -31,14 +31,16 @@ export function hrefAtualDoMenu(
   );
 }
 
+/** "Administração UMP (Demo)" → "AD": punctuation and parentheses are skipped. */
 export function iniciais(nome: string): string {
   const partes = nome
     .trim()
     .split(/\s+/)
+    .map((p) => p.replace(/^[^\p{L}\p{N}]+/u, ""))
     .filter((p) => p.length > 0 && !/^(de|da|do|das|dos|e)$/i.test(p));
   if (partes.length === 0) return "?";
-  const primeira = partes[0]!.charAt(0);
-  const ultima = partes.length > 1 ? partes[partes.length - 1]!.charAt(0) : "";
+  const primeira = Array.from(partes[0]!)[0]!;
+  const ultima = partes.length > 1 ? Array.from(partes[partes.length - 1]!)[0]! : "";
   return (primeira + ultima).toLocaleUpperCase("pt-PT");
 }
 
