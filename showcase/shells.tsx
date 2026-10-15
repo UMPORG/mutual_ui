@@ -17,6 +17,7 @@ import {
 import {
   AppShell,
   PageHeader,
+  PontoCarregamento,
   ProcuraApp,
   Separadores,
   StatusBadge,
@@ -74,6 +75,11 @@ const LINHAS: [string, string, string, "info" | "neutral"][] = [
   ["Caracterização 2024", "2 set – 15 nov 2024", "79 de 85", "neutral"],
   ["Caracterização 2023", "1 set – 31 out 2023", "80 de 84", "neutral"],
 ];
+
+/** `&pendente=1`: every in-app entry shows the loading dot (in an app it comes from `useLinkStatus`). */
+function PendenteShowcase() {
+  return <PontoCarregamento pendente />;
+}
 
 function Conteudo({ nome }: { nome: string }) {
   return (
@@ -193,6 +199,7 @@ export function PaginaShells() {
       }
       navegacao={semNav ? undefined : app === "backoffice" ? NAV_BACKOFFICE : NAV_SIMPLES}
       procura={app === "qr" ? undefined : <ProcuraApp rotulo={`Procurar em ${nome}`} onProcurar={() => undefined} />}
+      IndicadorLigacao={new URLSearchParams(location.search).get("pendente") === "1" ? PendenteShowcase : undefined}
       inicioHref="#"
     >
       <Conteudo nome={nome} />

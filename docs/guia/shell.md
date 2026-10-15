@@ -25,16 +25,23 @@ navigation (grouped destinations only) → one neutral content layer (`--camada`
 Props: `app`, `caminhoAtual` (`usePathname()`), `LinkComponent`, `disponiveis`, `conta` (`{ nome,
 perfil, organizacao, variasOrganizacoes, onTerminarSessao, aTerminar, extra }` → avatar menu with
 «Mudar de organização» and «Terminar sessão»), `navegacao` (`GrupoNavApp[]`: `{ titulo?, itens: { href,
-rotulo, icone, contador?, externo?, ativo? }[] }`), `procura` (`<ProcuraApp rotulo action|onProcurar/>`),
+rotulo, icone, contador?, externo?, ativo? }[] }`), `procura` (`<ProcuraApp rotulo onProcurar action?/>`, see [Search](#search-procuraapp)),
 `antesDaNavegacao`/`depoisDaNavegacao` (e.g. a unit selector), `barraExtra`, `inicioHref`, `ajudaHref`,
 `declaracaoHref` (accessibility statement), `assistente` (see [assistente.md](assistente.md)), `lancamento`
-(`eu.lancamento`, see [Lançamento](#lançamento)).
+(`eu.lancamento`, see [Lançamento](#lançamento)), `IndicadorLigacao` (with `LinkComponent={Link}`, a component
+rendered inside each in-app link: `function Pendente() { const { pending } = useLinkStatus(); return
+<PontoCarregamento pendente={pending} />; }` with `useLinkStatus` from `next/link`; a small dot fades in on the
+entry whose page is loading, after a short delay so a quick navigation never flashes it. Never pass the hook
+itself as a prop: the React Compiler rejects it).
 
 - Renders `<main id="conteudo-principal">` (the scroller, back to the top on every navigation). Wrap
   pages in `.m-pagina` (16px gutters on phones, 24px from 40rem, 32px from 64rem; bottom room for the demo
   pill; max 80rem, centred) or `m-pagina-larga` (no maximum).
 - Screens without navigation (Validador QR, Portal launcher) omit `navegacao`; public screens omit
   `conta`/`disponiveis`.
+- The «Esconder o menu» choice is kept per app (`<app>.navegacao-recolhida`) and applied before first paint by
+  `<PreferenciasScript />` (it reads `data-app` on `<html>`, so that value must be the `AppShell` `app`): a
+  collapsed menu never shows for a frame.
 - Tour targets: `[data-shell="menu|navegacao|ajuda|acessibilidade|aplicacoes|conta|organizacao|sair|assistente"]`.
 - Exported pieces for special cases: `NavApp`, `MenuConta`, `hrefAtivo`, `hrefAtualDoMenu`, `iniciais`,
   `classeItemMenu`, `classeItemNav`, `posicionarPopover`.
@@ -53,6 +60,11 @@ rotulo, icone, contador?, externo?, ativo? }[] }`), `procura` (`<ProcuraApp rotu
 - Links to another MUTU@L app are `externo` (↗).
 
 ## Search (`ProcuraApp`)
+
+`onProcurar` is required and navigates client-side, never a full page load:
+`<ProcuraApp rotulo="Procurar protocolos" action="/protocolos/protocolos" onProcurar={(t) => router.push(t ? `/protocolos?q=${encodeURIComponent(t)}` : "/protocolos")} />`.
+Paths given to `router.push` are relative to the app's basePath; `action` (absolute, `?q=`) only serves a
+submit before the page is interactive.
 
 `.m-procura` is the neutral input surface (`--procura-fundo`: white light, `#1c1c1c` dark — the form
 fields' surface) with a 1px `--procura-borda` (≥ 3:1 on every tinted bar and its hover), muted

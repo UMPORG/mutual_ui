@@ -73,6 +73,21 @@ function Ligacao({ LinkComponent, externo, ...props }: LinkProps & { LinkCompone
   return <L {...props} />;
 }
 
+/**
+ * Loading dot for a navigation entry: fades in (after a short delay, so quick navigations never flash) while
+ * `pendente`. Apps feed it Next's `useLinkStatus` through `AppShell IndicadorLigacao`:
+ * `function Pendente() { const { pending } = useLinkStatus(); return <PontoCarregamento pendente={pending} />; }`.
+ */
+export function PontoCarregamento({ pendente }: { pendente: boolean }) {
+  return <span aria-hidden className="m-nav-pendente" data-pendente={pendente ? "true" : undefined} />;
+}
+
+/** `<html data-navegacao="recolhida">`: set by `PREFERENCIAS_SCRIPT` before first paint and kept in step by `AppShell`. */
+function marcarNavegacaoRecolhida(recolhida: boolean) {
+  if (recolhida) document.documentElement.dataset.navegacao = "recolhida";
+  else delete document.documentElement.dataset.navegacao;
+}
+
 export function NavApp({
   grupos,
   caminhoAtual,
@@ -81,12 +96,15 @@ export function NavApp({
   rotulo = "Menu principal",
   antes,
   depois,
+  IndicadorLigacao,
   className,
 }: {
   grupos: readonly GrupoNavApp[];
   caminhoAtual: string;
   LinkComponent?: ElementType | undefined;
   onNavegar?: (() => void) | undefined;
+  /** Rendered inside each in-app link (a `PontoCarregamento` fed by `useLinkStatus`): shows which entry is loading. */
+  IndicadorLigacao?: ComponentType | undefined;
   rotulo?: string | undefined;
   antes?: ReactNode | undefined;
   depois?: ReactNode | undefined;
@@ -123,6 +141,7 @@ export function NavApp({
                         onClick={onNavegar}
                         {...item.atributos}
                       >
+                        {IndicadorLigacao && !item.externo && <IndicadorLigacao />}
                         {Icone && <Icone aria-hidden />}
                         <span className="m-nav-texto">{item.rotulo}</span>
                         {item.contador ? (
@@ -232,7 +251,10 @@ function ContaAcoes({ app, conta }: { app: AppNoEndereco; conta: ContaShell }) {
   );
 }
 
-/** GET form to `action` (`?q=`) or `onProcurar` for client-side search; `rotulo` is its name and the default placeholder. */
+/**
+ * Top-bar search: `onProcurar` navigates client-side (`(t) => router.push(...)`), never a full page load. `action` (`?q=`)
+ * only serves a submit before the page is interactive. `rotulo` is its name and the default placeholder.
+ */
 export function ProcuraApp({
   rotulo,
   placeholder,
@@ -247,7 +269,7 @@ export function ProcuraApp({
   action?: string | undefined;
   nome?: string | undefined;
   valorInicial?: string | undefined;
-  onProcurar?: ((texto: string) => void) | undefined;
+  onProcurar: (texto: string) => void;
   className?: string | undefined;
 }) {
   const id = useId();
@@ -257,15 +279,11 @@ export function ProcuraApp({
       action={action}
       method="get"
       className={cx("m-procura", className)}
-      onSubmit={
-        onProcurar
-          ? (e) => {
-              e.preventDefault();
-              const valor = new FormData(e.currentTarget).get(nome);
-              onProcurar(typeof valor === "string" ? valor.trim() : "");
-            }
-          : undefined
-      }
+      onSubmit={(e) => {
+        e.preventDefault();
+        const valor = new FormData(e.currentTarget).get(nome);
+        onProcurar(typeof valor === "string" ? valor.trim() : "");
+      }}
     >
       <Search aria-hidden />
       <label htmlFor={id} className="sr-only">
@@ -334,6 +352,8 @@ export interface AppShellProps {
   /** `eu.lancamento`: hides switched-off apps, pages and assistant; the pages themselves are gated by the app (`paginaLigada` + `<EmBreve dentroDoShell />`). */
   lancamento?: Lancamento | null | undefined;
   LinkComponent?: ElementType | undefined;
+  /** With `LinkComponent={Link}`: a component that calls `useLinkStatus` (from `next/link`) and renders `PontoCarregamento`; the entry being opened shows a loading dot. */
+  IndicadorLigacao?: ComponentType | undefined;
   rotuloNavegacao?: string | undefined;
   idConteudo?: string | undefined;
   classeConteudo?: string | undefined;
@@ -356,6 +376,7 @@ export function AppShell({
   assistente,
   lancamento,
   LinkComponent = "a",
+  IndicadorLigacao,
   rotuloNavegacao = "Menu principal",
   idConteudo = "conteudo-principal",
   classeConteudo,
@@ -384,12 +405,16 @@ export function AppShell({
   const chave = `${app}.navegacao-recolhida`;
   const Link = LinkComponent;
 
+  // The <head> script already hid a collapsed navigation before first paint; this only syncs the state.
   useEffect(() => {
+    let r = false;
     try {
-      setRecolhida(localStorage.getItem(chave) === "1");
+      r = localStorage.getItem(chave) === "1";
     } catch {
       /* private mode */
     }
+    setRecolhida(r);
+    marcarNavegacaoRecolhida(r);
   }, [chave]);
 
   // Every navigation: scroll to top, close the drawer, fade the page in (opacity only, off under Reduzir movimento).
@@ -410,14 +435,14 @@ export function AppShell({
   }, [caminhoAtual]);
 
   function alternarRecolhida() {
-    setRecolhida((r) => {
-      try {
-        localStorage.setItem(chave, r ? "0" : "1");
-      } catch {
-        /* private mode */
-      }
-      return !r;
-    });
+    const nova = !recolhida;
+    try {
+      localStorage.setItem(chave, nova ? "1" : "0");
+    } catch {
+      /* private mode */
+    }
+    marcarNavegacaoRecolhida(nova);
+    setRecolhida(nova);
   }
 
   const fecharGaveta = () => gavetaRef.current?.close();
@@ -513,6 +538,7 @@ export function AppShell({
               grupos={nav}
               caminhoAtual={caminhoAtual}
               LinkComponent={LinkComponent}
+              IndicadorLigacao={IndicadorLigacao}
               rotulo={rotuloNavegacao}
               antes={antesDaNavegacao}
               depois={depoisDaNavegacao}
@@ -549,6 +575,7 @@ export function AppShell({
                   caminhoAtual={caminhoAtual}
                   LinkComponent={LinkComponent}
                   onNavegar={fecharGaveta}
+                  IndicadorLigacao={IndicadorLigacao}
                   rotulo={rotuloNavegacao}
                   antes={antesDaNavegacao}
                   depois={depoisDaNavegacao}

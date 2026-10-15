@@ -6,6 +6,19 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-10-15
+
+### Adicionado
+
+- `@umporg/ui/consultas`: `criarQueryClient` com os mesmos valores em todas as apps. Os dados ficam frescos durante 60 s, deixam de ser todos pedidos de novo ao voltar ao separador, e um pedido só se repete uma vez, em falha de rede ou erro do servidor (nunca num 4xx). As caches de cada app (sessão expirada) mantêm-se.
+- Navegação: com `IndicadorLigacao` (um componente da app que lê `useLinkStatus` de `next/link` e mostra `PontoCarregamento`), aparece um ponto discreto na entrada cuja página está a carregar, só depois de um breve intervalo.
+
+### Alterado
+
+- Pesquisa da barra superior (`ProcuraApp`): `onProcurar` passa a ser obrigatório, e a pesquisa deixa de recarregar a página inteira. As apps que só passavam `action` (Backoffice, DNS, Protocolos, Portal) têm de passar `onProcurar` com `router.push` ao atualizar.
+- O menu escondido com «Esconder o menu» já não aparece por um instante ao abrir cada página.
+- Fundo ASCII dos ecrãs de entrada mais leve: 10 imagens por segundo, pausa fora do ecrã e imobiliza-se alguns segundos depois de o ponteiro parar (volta a mexer com o ponteiro).
+
 ## [0.21.3] - 2026-10-15
 
 ### Corrigido

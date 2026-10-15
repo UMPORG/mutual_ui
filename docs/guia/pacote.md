@@ -24,8 +24,8 @@ transpilePackages: ["@umporg/ui"],
   <head><PreferenciasScript nonce={nonce} /></head>
 ```
 
-Peers: `react` ≥ 19, `lucide-react`; optional `@base-ui/react` ≥ 1.6 < 2 and `recharts` ≥ 3.1 (only
-for the sub-paths that need them). `css/index.css` imports every sheet; import it whole. Importing single
+Peers: `react` ≥ 19, `lucide-react`; optional `@base-ui/react` ≥ 1.6 < 2, `recharts` ≥ 3.1 and
+`@tanstack/react-query` ≥ 5.100 < 6 (only for the sub-paths that need them). `css/index.css` imports every sheet; import it whole. Importing single
 sheets is not recommended (most are exported, but only `index.css` is supported; `css/icones.css`, needed by `IconeApp`, has no `exports` entry).
 
 ## Entry points
@@ -44,6 +44,7 @@ sheets is not recommended (most are exported, but only `index.css` is supported;
 | `/icones` | `GLIFOS_APPS`, `COR_MARCA_APP`, `BASE_ICONE`, `svgIconeApp` | nothing |
 | `/sso` · `/apps` | `CAMINHOS`, `portalLoginUrl`, `safeReturnUrl`, `portalAfterLogoutUrl`, `urlAbsoluta`, `urlCartao` · `MUTUAL_APPS`, `APP_CARTAO`, `appsDisponiveis`, `nomeDaApp` | nothing |
 | `/cerebro` | `pedirAoCerebro`, `CerebroIndisponivel`, `TEMPO_LIMITE_CEREBRO_MS`, `PAGINA_INDISPONIVEL` | nothing |
+| `/consultas` | `criarQueryClient` (shared defaults: fresh for 60 s, no refetch on tab focus, one retry on network/5xx only, mutations never retried; keeps the app's `queryCache`/`mutationCache`), `repetirConsulta`, `estadoDoErro` | `@tanstack/react-query` |
 | `/seguranca` | `cabecalhosNext`, `comCsp`, `NONCE_CABECALHO` (plain JS + `.d.ts`) | nothing |
 | `/monitor` · `/monitor/react` | `reportarErro`, `criarOnRequestError`, request ids · `MonitorCliente`, `ErroReportado`, `FronteiraErro` | nothing · React |
 | `/preferencias` | preference helpers used by `PreferenciasScript` | nothing |

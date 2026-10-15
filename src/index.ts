@@ -10,6 +10,7 @@ export {
   NavApp,
   MenuConta,
   ProcuraApp,
+  PontoCarregamento,
   Separadores,
   classeItemMenu,
   classeItemNav,

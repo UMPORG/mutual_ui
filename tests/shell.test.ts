@@ -105,3 +105,37 @@ test("form sub-sections and the actions bar (v0.16): legend inside the card, no 
   assert.match(sup, /@container scroll-state\(stuck: bottom\)/);
   assert.match(sup, /html\.contraste \.m-subseccao:not\(\.m-subseccao-simples\) \{ border: 2px solid #000000;/);
 });
+
+test("NavApp: `IndicadorLigacao` (PontoCarregamento) only inside in-app entries", async () => {
+  const { createElement } = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { NavApp, PontoCarregamento } = await import("../src/shell.tsx");
+  const Parado = () => createElement(PontoCarregamento, { pendente: false });
+  const ACarregar = () => createElement(PontoCarregamento, { pendente: true });
+  const grupos = [{ itens: [{ href: "/", rotulo: "Início" }, { href: "/kpis", rotulo: "Indicadores" }, { href: "/protocolos", rotulo: "Protocolos", externo: true }] }];
+  const sem = renderToStaticMarkup(createElement(NavApp, { grupos, caminhoAtual: "/" }));
+  assert.doesNotMatch(sem, /m-nav-pendente/);
+  const parado = renderToStaticMarkup(createElement(NavApp, { grupos, caminhoAtual: "/", IndicadorLigacao: Parado }));
+  assert.equal(parado.match(/class="m-nav-pendente"/g)?.length, 2);
+  assert.doesNotMatch(parado, /data-pendente/);
+  const aCarregar = renderToStaticMarkup(createElement(NavApp, { grupos, caminhoAtual: "/", IndicadorLigacao: ACarregar }));
+  assert.equal(aCarregar.match(/data-pendente="true"/g)?.length, 2);
+  assert.match(aCarregar, /<span aria-hidden="true" class="m-nav-pendente"/);
+});
+
+test("collapsed menu: hidden from <html data-navegacao> before first paint; the dot moves with tokens only", () => {
+  const shell = readFileSync(new URL("../css/shell.css", import.meta.url), "utf8");
+  assert.match(shell, /html\[data-navegacao="recolhida"\] \.m-app-nav \{ display: none; \}/);
+  assert.match(shell, /html:not\(\[data-navegacao="recolhida"\]\) \.m-app-com-nav/);
+  const ponto = shell.slice(shell.indexOf(".m-nav-pendente {"), shell.indexOf(".m-nav-pendente[data-pendente"));
+  assert.doesNotMatch(ponto, /\d+ms/);
+  assert.match(ponto, /transition:\s*opacity var\(--movimento-rapido\)/);
+});
+
+test("ProcuraApp: always handled client-side (onProcurar), the GET action is only the fallback", async () => {
+  const { createElement } = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { ProcuraApp } = await import("../src/shell.tsx");
+  const html = renderToStaticMarkup(createElement(ProcuraApp, { rotulo: "Procurar", action: "/dns/", onProcurar: () => {} }));
+  assert.match(html, /^<form role="search"[^>]* action="\/dns\/" method="get"/);
+});

@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties } from "react";
-import { movimentoReduzido } from "./preferencias";
+import { iniciarEfeito } from "./efeitos-base";
 import { cx } from "./cx";
 
 /**
- * Decorative (aria-hidden) and calm by design: ~20 fps, paused when the tab is hidden, one still frame under reduced motion, hidden in high contrast.
+ * Decorative (aria-hidden) and calm by design: 10 fps, paused when the tab is hidden or off screen, still a few seconds after the pointer stops (the next move wakes it), one still frame under reduced motion, hidden in high contrast.
  * `mascara` cuts a soft hole where content sits, so characters never run behind text.
  */
 export interface AsciiFundoProps {
@@ -67,143 +67,81 @@ export function AsciiFundo({
   );
 }
 
+const TEMPO_PARADO = 12_000;
+/** Without pointer movement the animation freezes after this long (ms of animation) and wakes on the next move. */
+const ATE_CONGELAR = 6_000;
+
 export function iniciarAsciiFundo(
   canvas: HTMLCanvasElement,
   { celula = 15, intensidade = 1 }: { celula?: number | undefined; intensidade?: number | undefined } = {},
 ): () => void {
-  const ctx = canvas.getContext("2d", { alpha: true });
-  if (!ctx) return () => {};
-
-  let largura = 0;
-  let altura = 0;
-  let colunas = 0;
-  let linhas = 0;
-  let dpr = 1;
-  let raf = 0;
-  let ultimo = 0;
-  let parado = false;
-  const rato = { x: -9999, y: -9999, forca: 0 };
-  const cores = { verde: "#6dba6a", vermelho: "#e8393c", tinta: "#1c1917", escuro: false };
-
-  const lerCores = () => {
-    const s = getComputedStyle(document.documentElement);
-    cores.verde = s.getPropertyValue("--flag-green").trim() || cores.verde;
-    cores.vermelho = s.getPropertyValue("--flag-red").trim() || cores.vermelho;
-    cores.tinta = s.getPropertyValue("--foreground").trim() || cores.tinta;
-    cores.escuro = document.documentElement.classList.contains("dark");
-  };
-
-  const medir = () => {
-    const r = canvas.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    largura = r.width;
-    altura = r.height;
-    canvas.width = Math.round(largura * dpr);
-    canvas.height = Math.round(altura * dpr);
-    colunas = Math.ceil(largura / (celula * 0.62)) + 1;
-    linhas = Math.ceil(altura / celula) + 1;
-    lerCores();
-  };
-
-  const desenhar = (t: number) => {
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, largura, altura);
-    ctx.font = `500 ${celula - 2}px ui-monospace, "Geist Mono", "SFMono-Regular", Menlo, monospace`;
-    ctx.textBaseline = "top";
-    const cw = celula * 0.62;
-    const base = (cores.escuro ? 0.5 : 0.36) * intensidade;
-    const faixa = altura / 7; // the flag has 7 bands (4 red + 3 green lines)
-
-    for (let j = 0; j < linhas; j++) {
-      const y = j * celula;
-      for (let i = 0; i < colunas; i++) {
-        const x = i * cw;
-        const onda = Math.sin(x * 0.0065 + t * 0.00042) * 26 + Math.sin(x * 0.017 - t * 0.0007 + y * 0.004) * 9;
-        const yy = y + onda;
-        const posFaixa = yy / faixa;
-        const indiceFaixa = Math.floor(posFaixa);
-        const dentro = posFaixa - indiceFaixa; // 0..1 within the band
-        let v = Math.sin(dentro * Math.PI) ** 2;
-        const diag = Math.sin((x - y * 1.35) * 0.0045 - t * 0.00025);
-        v *= 0.55 + 0.45 * (diag * 0.5 + 0.5);
-        if (rato.forca > 0.01) {
-          const dx = x - rato.x;
-          const dy = y - rato.y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 160) v += (1 - d / 160) * 0.55 * rato.forca * (0.6 + 0.4 * Math.sin(d * 0.09 - t * 0.012));
-        }
-        if (v < 0.08) continue;
-        const idx = Math.min(RAMPA.length - 1, Math.floor(v * (RAMPA.length - 1)));
-        const ch = RAMPA[idx];
-        if (!ch || ch === " ") continue;
-        const vermelha = ((indiceFaixa % 2) + 2) % 2 === 0;
-        ctx.globalAlpha = Math.min(1, base * (0.35 + v * 0.9));
-        ctx.fillStyle = vermelha ? cores.vermelho : cores.verde;
-        ctx.fillText(ch, x, y);
+  // Animation time: advances only while frames are drawn, so waking up never jumps the wave.
+  let tempo = 0;
+  let anterior = -1;
+  let ultimoMovimento = 0;
+  let ondaColuna = new Float64Array(0);
+  return iniciarEfeito(canvas, {
+    fps: 10,
+    rato: true,
+    decaimento: 0.9,
+    tempoParado: TEMPO_PARADO,
+    desenhar: (ctx, e, t) => {
+      const { largura, altura, cores, rato } = e;
+      let agora = TEMPO_PARADO;
+      if (!e.parado) {
+        tempo += anterior < 0 ? 0 : Math.min(t - anterior, 250);
+        anterior = t;
+        if (rato.forca > 0.99) ultimoMovimento = tempo;
+        agora = tempo + TEMPO_PARADO;
       }
-    }
-    ctx.globalAlpha = 1;
-    rato.forca *= 0.95;
-  };
+      ctx.clearRect(0, 0, largura, altura);
+      ctx.font = `500 ${celula - 2}px ui-monospace, "Geist Mono", "SFMono-Regular", Menlo, monospace`;
+      ctx.textBaseline = "top";
+      const cw = celula * 0.62;
+      const colunas = Math.ceil(largura / cw) + 1;
+      const linhas = Math.ceil(altura / celula) + 1;
+      if (ondaColuna.length < colunas) ondaColuna = new Float64Array(colunas);
+      for (let i = 0; i < colunas; i++) ondaColuna[i] = Math.sin(i * cw * 0.0065 + agora * 0.00042) * 26;
+      const base = (cores.escuro ? 0.5 : 0.36) * intensidade;
+      const faixa = altura / 7; // the flag has 7 bands (4 red + 3 green lines)
+      const comRato = rato.forca > 0.01;
 
-  const ciclo = (agora: number) => {
-    raf = requestAnimationFrame(ciclo);
-    if (agora - ultimo < 50) return;
-    ultimo = agora;
-    desenhar(agora);
-  };
-
-  const arrancar = () => {
-    cancelAnimationFrame(raf);
-    medir();
-    if (movimentoReduzido()) {
-      parado = true;
-      desenhar(12_000);
-      return;
-    }
-    parado = false;
-    raf = requestAnimationFrame(ciclo);
-  };
-
-  const onPointer = (e: PointerEvent) => {
-    const r = canvas.getBoundingClientRect();
-    rato.x = e.clientX - r.left;
-    rato.y = e.clientY - r.top;
-    rato.forca = 1;
-  };
-  const onVisibilidade = () => {
-    if (document.hidden) cancelAnimationFrame(raf);
-    else arrancar();
-  };
-  const onPreferencias = () => {
-    lerCores();
-    arrancar();
-  };
-  const ro = new ResizeObserver(() => {
-    medir();
-    if (parado) desenhar(12_000);
+      for (let j = 0; j < linhas; j++) {
+        const y = j * celula;
+        for (let i = 0; i < colunas; i++) {
+          const x = i * cw;
+          const onda = (ondaColuna[i] ?? 0) + Math.sin(x * 0.017 - agora * 0.0007 + y * 0.004) * 9;
+          const posFaixa = (y + onda) / faixa;
+          const indiceFaixa = Math.floor(posFaixa);
+          const dentro = posFaixa - indiceFaixa; // 0..1 within the band
+          let v = Math.sin(dentro * Math.PI) ** 2;
+          const diag = Math.sin((x - y * 1.35) * 0.0045 - agora * 0.00025);
+          v *= 0.55 + 0.45 * (diag * 0.5 + 0.5);
+          if (comRato) {
+            const dx = x - rato.x;
+            const dy = y - rato.y;
+            const d2 = dx * dx + dy * dy;
+            if (d2 < 25_600) {
+              const d = Math.sqrt(d2);
+              v += (1 - d / 160) * 0.55 * rato.forca * (0.6 + 0.4 * Math.sin(d * 0.09 - agora * 0.012));
+            }
+          }
+          if (v < 0.08) continue;
+          const idx = Math.min(RAMPA.length - 1, Math.floor(v * (RAMPA.length - 1)));
+          const ch = RAMPA[idx];
+          if (!ch || ch === " ") continue;
+          const vermelha = ((indiceFaixa % 2) + 2) % 2 === 0;
+          ctx.globalAlpha = Math.min(1, base * (0.35 + v * 0.9));
+          ctx.fillStyle = vermelha ? cores.vermelho : cores.verde;
+          ctx.fillText(ch, x, y);
+        }
+      }
+      ctx.globalAlpha = 1;
+      if (e.parado) return;
+      // Calm by design: still a few seconds after the pointer stops.
+      if (tempo - ultimoMovimento < ATE_CONGELAR) return;
+      anterior = -1;
+      return false;
+    },
   });
-  const mq = matchMedia("(prefers-reduced-motion: reduce)");
-  const temaObs = new MutationObserver(() => {
-    lerCores();
-    if (parado) desenhar(12_000);
-  });
-
-  ro.observe(canvas);
-  temaObs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-movimento"] });
-  window.addEventListener("pointermove", onPointer, { passive: true });
-  document.addEventListener("visibilitychange", onVisibilidade);
-  window.addEventListener("mutual:preferencias", onPreferencias);
-  mq.addEventListener("change", onPreferencias);
-  arrancar();
-
-  return () => {
-    cancelAnimationFrame(raf);
-    ro.disconnect();
-    temaObs.disconnect();
-    window.removeEventListener("pointermove", onPointer);
-    document.removeEventListener("visibilitychange", onVisibilidade);
-    window.removeEventListener("mutual:preferencias", onPreferencias);
-    mq.removeEventListener("change", onPreferencias);
-  };
 }
