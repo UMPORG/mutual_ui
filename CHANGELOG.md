@@ -8,9 +8,9 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 
 ## [Unreleased]
 
-## [0.21.2] - 2026-10-15
-
 Linhas (kellhect): +1,2k / −2,8k
+
+## [0.21.2] - 2026-10-15
 
 ### Segurança
 
