@@ -12,7 +12,7 @@ topic you need. **Public repo** `UMPORG/mutual_ui`: never commit secrets, creden
 - Commands: `pnpm typecheck` (with and without `exactOptionalPropertyTypes`) · `pnpm test` (`vp test run`, Vite+,
   CI sets `TZ=Europe/Lisbon`) · `pnpm icones` (favicons) · `pnpm embed-logo`. Showcase (unpublished review
   page, :5199): see pacote.md. Before push: `pnpm typecheck` + `pnpm test` (no lint or format script).
-  `.githooks/pre-commit` (enabled by `pnpm install` via `prepare`) blocks commits with secrets (secretlint).
+  `.githooks/pre-commit` (enable once with `pnpm run hooks`, never via `prepare`: pnpm refuses git dependencies that have lifecycle scripts) blocks commits with secrets (secretlint).
 - Optional props are `name?: T | undefined` (`tests/tipos-exatos.tsx` fails otherwise); props handed to
   Recharts/Base UI that reject `undefined` go through `opcional()`.
 - The main entry never imports Recharts or Base UI: heavy deps sit behind a sub-path + optional peer.

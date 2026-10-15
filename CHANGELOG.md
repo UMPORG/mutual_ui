@@ -8,7 +8,9 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 
 ## [Unreleased]
 
-Linhas (kellhect): +1k / −2,8k
+## [0.21.2] - 2026-10-15
+
+Linhas (kellhect): +1,2k / −2,8k
 
 ### Segurança
 
@@ -23,6 +25,7 @@ Linhas (kellhect): +1k / −2,8k
 ### Corrigido
 
 - Build do showcase no CI instala com pnpm 12 sem falhar no build ignorado do `@parcel/watcher`.
+- Instalar o pacote por git deixa de falhar no pnpm 12: removido o script `prepare`, que ele recusa em dependências git. Os hooks ativam-se à mão com `pnpm run hooks`.
 
 ## [0.21.1] - 2026-10-14
 
