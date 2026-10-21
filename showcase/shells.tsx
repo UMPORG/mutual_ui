@@ -28,7 +28,7 @@ import {
 
 /** `?pagina=shells&app=<id>`: that app's full AppShell; `&vista=todas`: every app side by side (one iframe each, in the chosen theme). */
 
-const TODAS: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "qr", "dns", "assistente", "protocolos", "monitor"];
+const TODAS: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "qr", "dns", "assistente", "protocolos", "monitor", "comunicacao"];
 
 const NAV_BACKOFFICE: GrupoNavApp[] = [
   { itens: [{ href: "/inicio", rotulo: "Início", icone: House }] },

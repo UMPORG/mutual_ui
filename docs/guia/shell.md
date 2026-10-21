@@ -8,7 +8,7 @@ app (`src/shell.tsx`, `css/shell.css`), no local variants.
 | App | Audience | Shell |
 | --- | --- | --- |
 | Portal | UMP and association teams | Gateway: login, launcher of the apps the account can use |
-| Backoffice, Servidores e DNS, Monitorização, Protocolos | UMP services / IT, association leaders | Desk shell, tables first |
+| Backoffice, Servidores e DNS, Monitorização, Protocolos, Comunicação | UMP services / IT, association leaders | Desk shell, tables first |
 | Simplex | Treasurers, accountants, boards | Desk shell; forms and financial maps, sticky action bar |
 | Saúde | Reception, health professionals, managers | Desk shell + unit selector; Balcão is the reception home; tablet-friendly |
 | Eventos (gestão) / (público) | Organisers / associates and public | Desk shell with an event workspace / public site, one call to action per page |

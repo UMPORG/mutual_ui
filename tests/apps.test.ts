@@ -14,6 +14,8 @@ test("appsDisponiveis lists every app of MUTUAL_APPS the profile opens (new apps
   assert.ok(appsDisponiveis({ eventos: { nome: "x" } }).includes("qr"), "QR comes with Eventos");
   assert.ok(appsDisponiveis(todas).includes("protocolos"));
   assert.ok(appsDisponiveis(todas).includes("monitor"));
+  assert.ok(appsDisponiveis(todas).includes("comunicacao"));
+  assert.ok(!appsDisponiveis(null).includes("comunicacao"), "Comunicação is not public");
 });
 
 test("appsDisponiveis without data still offers the Portal and the public Carta Social Mutualista", () => {

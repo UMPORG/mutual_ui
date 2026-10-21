@@ -29,6 +29,7 @@ export const COR_MARCA_APP: Record<MutualAppId, string> = {
   monitor: "#6b7500",
   cartao: "#1f6f36",
   carta: "#1f6f36",
+  comunicacao: "#1f6f36",
 };
 
 export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
@@ -89,6 +90,12 @@ export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
     { t: "traco", d: "M4.75 7.25l4.5-2 5.5 2 4.5-2v11.5l-4.5 2-5.5-2-4.5 2Z" },
     { t: "traco", d: "M9.25 5.25v11.5M14.75 7.25v11.5", papel: "s" },
     { t: "circulo", x: 12, y: 11.5, r: 1.9, papel: "r" },
+  ],
+  // Comunicação: a megaphone with one sound wave.
+  comunicacao: [
+    { t: "cheio", d: "M4.75 9.5h3.5l7.25-4.25v13.5L8.25 14.5h-3.5Z" },
+    { t: "traco", d: "M8.75 15l1 3.5", papel: "s" },
+    { t: "traco", d: "M18.25 9.5a3.5 3.5 0 0 1 0 5", papel: "r" },
   ],
   cartao: [
     { t: "traco", d: "M6.5 6.5h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" },

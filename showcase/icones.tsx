@@ -3,8 +3,8 @@ import { AppShell, GlifoApp, IconeApp, LancadorApps, ProcuraApp, nomeDaApp, nome
 
 /** `?pagina=icones`: the family at every size; `?pagina=icones-shell&app=<id>`: the real AppShell frame. */
 
-const TODAS: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "qr", "dns", "assistente", "protocolos", "monitor", "cartao", "carta"];
-const LANCADOR: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "dns", "assistente", "protocolos", "monitor", "qr", "carta"];
+const TODAS: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "qr", "dns", "assistente", "protocolos", "monitor", "comunicacao", "cartao", "carta"];
+const LANCADOR: MutualAppId[] = ["portal", "backoffice", "eventos", "simplex", "saude", "dns", "assistente", "protocolos", "monitor", "comunicacao", "qr", "carta"];
 const TAMANHOS = [16, 20, 24, 32, 48];
 
 const CURTO: Partial<Record<MutualAppId, string>> = { dns: "DNS", qr: "QR", monitor: "Monitorização", cartao: "Cartão", carta: "Carta Social" };
@@ -41,7 +41,7 @@ function Grelha() {
 }
 
 function Separadores({ escuro }: { escuro: boolean }) {
-  const abas: MutualAppId[] = ["portal", "eventos", "simplex", "saude", "backoffice", "monitor", "assistente", "dns", "protocolos", "qr", "cartao", "carta"];
+  const abas: MutualAppId[] = ["portal", "eventos", "simplex", "saude", "backoffice", "monitor", "assistente", "dns", "protocolos", "comunicacao", "qr", "cartao", "carta"];
   const fundo = escuro ? "#202124" : "#dee1e6";
   const aba = escuro ? "#35363a" : "#ffffff";
   const texto = escuro ? "#e8eaed" : "#202124";
@@ -95,7 +95,7 @@ export function PaginaIcones() {
       >
         <ul className="m-surface list-disc space-y-1.5 py-4 pr-5 pl-9 text-[0.9375rem]">
           <li>Uma base comum a toda a família: a «folha» (quadrado com cantos alternados, 7 e 2,5 de 24), a assinatura comum a todas as aplicações antes do glifo.</li>
-          <li>Um glifo próprio por app, com silhueta diferente (arco, frontão, calendário, gráfico circular, cruz, moldura, servidores, balão, anéis, pulso, cartão) — distingue-se sem cor.</li>
+          <li>Um glifo próprio por app, com silhueta diferente (arco, frontão, calendário, gráfico circular, cruz, moldura, servidores, balão, anéis, pulso, megafone, cartão) — distingue-se sem cor.</li>
           <li>Grelha de 24, área viva 4,5–19,5 (62 %), traço 2, pontas redondas; formas ≥ 2,5 e intervalos ≥ 1,5 — legível a 16 px.</li>
           <li>A base na cor da app (a mesma nos temas claro e escuro), glifo branco (≥ 4,8:1).</li>
           <li>Tema escuro e cores forçadas são só CSS (css/icones.css); em cores forçadas o ícone fica monocromático (Canvas / CanvasText).</li>

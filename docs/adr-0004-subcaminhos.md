@@ -22,6 +22,7 @@ a demonstração, que é também o ambiente de ensaio (não há staging separado
 | `/dns` | Servidores e DNS | `basePath: "/dns"` |
 | `/protocolos` | Protocolos | `basePath: "/protocolos"` |
 | `/assistente` | Assistente | `basePath: "/assistente"` |
+| `/comunicacao` | Comunicação | `basePath: "/comunicacao"` |
 | `/carta` | Carta Social Mutualista | pública, sem login; também no domínio próprio |
 | `/api` | Cérebro | `/api/v1/*`, `/api/auth/*` — sem remover o prefixo |
 

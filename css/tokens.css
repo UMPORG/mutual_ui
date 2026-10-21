@@ -184,6 +184,7 @@
 [data-app="protocolos"] { --app-accent: #b93a2e; --app-accent-soft: #fdf0ee; --app-accent-on-ink: #fca99f; }
 [data-app="portal"],
 [data-app="carta"],
+[data-app="comunicacao"],
 [data-app="cartao"]     { --app-accent: var(--brand); }
 
 .dark[data-app="backoffice"], .dark [data-app="backoffice"] { --app-accent: #93b4fb; --app-accent-soft: #172544; }
@@ -209,6 +210,7 @@
 [data-app="protocolos"] { --app-marca: #b93a2e; }
 [data-app="portal"],
 [data-app="carta"],
+[data-app="comunicacao"],
 [data-app="cartao"]     { --app-marca: #1f6f36; }
 
 /* Frame (shell G): top bar and navigation share ONE surface, neutral grey + 9% of the app colour; current page pill 20% (24% dark), hover 14%.

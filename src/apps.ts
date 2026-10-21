@@ -1,6 +1,6 @@
 /** App names and descriptions. Addresses are NOT here: paths are `CAMINHOS`, the Cartão's host `urlCartao` (sso.ts). */
 
-export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr" | "saude" | "dns" | "assistente" | "protocolos" | "monitor" | "cartao" | "carta";
+export type MutualAppId = "portal" | "backoffice" | "eventos" | "simplex" | "qr" | "saude" | "dns" | "assistente" | "protocolos" | "monitor" | "cartao" | "carta" | "comunicacao";
 /** Apps under the shared host; the Cartão Digital has its own. */
 export type AppNoEndereco = Exclude<MutualAppId, "cartao">;
 
@@ -89,6 +89,14 @@ export const MUTUAL_APPS: readonly MutualApp[] = [
     descricao: "Estado das aplicações, erros, entradas e segurança, desempenho e tarefas, em linguagem simples.",
     publico: "Equipa de informática da UMP",
     palavrasChave: ["monitorização", "erros", "disponibilidade", "segurança", "ips", "países", "registos", "logs", "alertas", "desempenho"],
+    publica: false,
+  },
+  {
+    id: "comunicacao",
+    nome: "Comunicação",
+    descricao: "Notícias do setor recolhidas de sites e feeds, filtradas com IA, e os resumos semanais para os artigos.",
+    publico: "Gabinete de comunicação da UMP",
+    palavrasChave: ["notícias", "imprensa", "redes sociais", "artigos", "rss", "comunicação"],
     publica: false,
   },
   {

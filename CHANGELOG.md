@@ -6,6 +6,12 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-10-21
+
+### Adicionado
+
+- A aplicação Comunicação (`comunicacao`, em `/comunicacao`), para o gabinete de comunicação da UMP: notícias do setor recolhidas de sites e feeds, filtradas com IA, e os resumos semanais para os artigos. Aparece no lançador a quem tem acesso, com a cor da marca e um glifo de megafone; ícones e favicons incluídos.
+
 ## [0.22.0] - 2026-10-15
 
 ### Adicionado

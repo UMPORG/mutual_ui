@@ -5,7 +5,7 @@
 - Every staff app and the public events site live on ONE origin `MUTUAL_URL` (production
   `https://mutual.mutualismo.pt`) at fixed paths (`CAMINHOS`): Portal `/`, `/backoffice`, `/eventos`
   (organisers `/eventos/gestao`), `/simplex`, `/saude`, `/qr`, `/dns`, `/assistente`, `/protocolos`,
-  `/monitor`, `/carta`, help centre `/ajuda`, Cérebro `/api`. No sub-domains.
+  `/monitor`, `/comunicacao`, `/carta`, help centre `/ajuda`, Cérebro `/api`. No sub-domains.
 - Next apps set `basePath` to their path (Portal: none). Browsers call the Cérebro at `/api/v1` and
   `/api/auth` on the same origin (no rewrites); server code uses `CEREBRO_URL_INTERNO` or
   `${MUTUAL_URL}/api`.

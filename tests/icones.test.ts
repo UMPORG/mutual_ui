@@ -3,14 +3,14 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { COR_MARCA_APP, GLIFOS_APPS, svgIconeApp } from "../src/icones.ts";
 
-const APPS = ["portal", "backoffice", "eventos", "simplex", "saude", "qr", "dns", "assistente", "protocolos", "monitor", "cartao"] as const;
+const APPS = ["portal", "backoffice", "eventos", "simplex", "saude", "qr", "dns", "assistente", "protocolos", "monitor", "cartao", "carta", "comunicacao"] as const;
 
 test("icon family: every app has a glyph, and the tile colour is its --app-marca", () => {
   const tokens = readFileSync(new URL("../css/tokens.css", import.meta.url), "utf8");
   for (const app of APPS) {
     assert.ok(GLIFOS_APPS[app].length > 0, `${app} has a glyph`);
     const m = tokens.match(new RegExp(String.raw`\[data-app="${app}"\]\s*\{\s*--app-marca:\s*(#[0-9a-f]{6})`));
-    const esperado = m?.[1] ?? "#1f6f36"; // portal/cartao: the brand
+    const esperado = m?.[1] ?? "#1f6f36"; // portal/cartao/carta/comunicacao: the brand
     assert.equal(COR_MARCA_APP[app], esperado, `${app} tile colour`);
   }
 });
