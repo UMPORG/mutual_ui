@@ -19,7 +19,7 @@ export const BASE_ICONE = "M7 0H21.5A2.5 2.5 0 0 1 24 2.5V17A7 7 0 0 1 17 24H2.5
 export const COR_MARCA_APP: Record<MutualAppId, string> = {
   portal: "#1f6f36",
   backoffice: "#1d4ed8",
-  eventos: "#7a1fc4",
+  eventos: "#6c29cd",
   simplex: "#9c6100",
   saude: "#b8166e",
   qr: "#0e7490",
@@ -29,7 +29,7 @@ export const COR_MARCA_APP: Record<MutualAppId, string> = {
   monitor: "#6b7500",
   cartao: "#1f6f36",
   carta: "#1f6f36",
-  comunicacao: "#1f6f36",
+  comunicacao: "#94249d",
 };
 
 export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
@@ -91,11 +91,14 @@ export const GLIFOS_APPS: Record<MutualAppId, readonly FormaGlifo[]> = {
     { t: "traco", d: "M9.25 5.25v11.5M14.75 7.25v11.5", papel: "s" },
     { t: "circulo", x: 12, y: 11.5, r: 1.9, papel: "r" },
   ],
-  // Comunicação: a megaphone with one sound wave.
+  // Comunicação: a megaphone (rounded horn, grip underneath) sending one wave.
   comunicacao: [
-    { t: "cheio", d: "M4.75 9.5h3.5l7.25-4.25v13.5L8.25 14.5h-3.5Z" },
-    { t: "traco", d: "M8.75 15l1 3.5", papel: "s" },
-    { t: "traco", d: "M18.25 9.5a3.5 3.5 0 0 1 0 5", papel: "r" },
+    {
+      t: "cheio",
+      d: "M6.25 9.5H8.5l5.6-3.5a1.1 1.1 0 0 1 1.65.95v10.1a1.1 1.1 0 0 1-1.65.95L8.5 14.5H6.25a1.5 1.5 0 0 1-1.5-1.5v-2a1.5 1.5 0 0 1 1.5-1.5Z",
+    },
+    { t: "traco", d: "M8 14.75l1 3.75", papel: "s" },
+    { t: "traco", d: "M17.75 9.5a3.5 3.5 0 0 1 0 5", papel: "r" },
   ],
   cartao: [
     { t: "traco", d: "M6.5 6.5h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z" },

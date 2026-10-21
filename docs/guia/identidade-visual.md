@@ -30,16 +30,17 @@ testes em `tests/tokens.test.ts`. Classes e movimento: [superficies.md](superfic
 ## Cores de aplicação (`--app-accent`, `--app-marca`)
 
 Matiz OKLCH: `tests/tokens.test.ts` falha se dois apps ficarem a menos de 30° no claro (28° no
-escuro); hoje o par mais próximo está a 34° / 28,9°. O Servidores e DNS é a ardósia (pouco croma).
+escuro); hoje os pares mais próximos (Backoffice / Eventos / Comunicação / Saúde) estão a 30,1° / 28,9°: um tom novo exige mexer nos vizinhos. O Servidores e DNS é a ardósia (pouco croma).
 
 | App | Claro (azulejo e acento) | Escuro | Matiz |
 | --- | --- | --- | --- |
 | Portal, Carta Social Mutualista, Cartão Digital | marca `#1f6f36` | `#7cc97a` | 149° |
 | Backoffice | `#1d4ed8` | `#93b4fb` | 264° |
-| Eventos | `#7a1fc4` púrpura | `#d4a5f9` | 303° |
+| Eventos | `#6c29cd` violeta | `#c0aeff` | 294° |
+| Comunicação | `#94249d` ameixa | `#e4a2ec` | 325° |
 | Simplex | `#9c6100` ocre | `#f2bf5e` | 69° |
 | Validador QR | `#0e7490` | `#7fd3e6` | 223° |
-| Saúde | `#b8166e` framboesa | `#f59ecb` | 355° |
+| Saúde | `#b8166e` framboesa | `#f89dc5` | 355° |
 | Servidores e DNS | `#475569` ardósia | `#cbd5e1` | — |
 | Monitorização | `#6b7500` oliva | `#d9dc6a` | 116° |
 | Assistente | `#0b7a72` verde-água | `#72dfcf` | 187° |

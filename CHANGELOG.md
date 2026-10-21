@@ -6,6 +6,13 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-10-21
+
+### Alterado
+
+- A Comunicação tem cor própria (ameixa, `#94249d`; `#e4a2ec` no tema escuro) em vez do verde da marca, e um megafone redesenhado: corpo arredondado, pega presa ao corpo e uma onda de som.
+- Eventos passa a um violeta ligeiramente mais azul (`#6c29cd`; `#c0aeff` no escuro) e o tom escuro da Saúde a `#f89dc5`, para as cores das aplicações continuarem afastadas umas das outras. Ícones e favicons atualizados.
+
 ## [0.23.0] - 2026-10-21
 
 ### Adicionado

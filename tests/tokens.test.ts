@@ -44,7 +44,7 @@ function declaracoes(seletor: RegExp): Record<string, string> {
 
 const raiz = declaracoes(/^:root$/);
 const escuroRaiz = declaracoes(/^\.dark$/);
-const APPS = ["portal", "backoffice", "eventos", "simplex", "qr", "saude", "dns", "monitor", "assistente", "protocolos"];
+const APPS = ["portal", "backoffice", "eventos", "simplex", "qr", "saude", "dns", "monitor", "assistente", "protocolos", "comunicacao"];
 const pct = (t: Record<string, string>, k: string) => parseFloat(t[k]!) / 100;
 
 function tema(app: string, escuro: boolean): Record<string, string> {

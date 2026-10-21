@@ -170,37 +170,38 @@
 
 /* App identity: OKLCH hues at least 30° apart in light / 28° in dark (tests/tokens.test.ts):
      Saúde 355 · Protocolos 29 · Simplex 69 · Monitorização 116 · Portal 149 ·
-     Assistente 187 · Validador QR 223 · Backoffice 264 · Eventos 303,
+     Assistente 187 · Validador QR 223 · Backoffice 264 · Eventos 294 · Comunicação 325,
      Servidores e DNS = slate (low chroma).
   --app-accent ≥ 5.0:1 on white (light) / the light tone on dark; --app-marca = the tile behind the white glyph (light accent in both themes, ≥ 5.0:1 with white). */
 [data-app="backoffice"] { --app-accent: #1d4ed8; --app-accent-soft: #eef4ff; --app-accent-on-ink: #93b4fb; }
-[data-app="eventos"]    { --app-accent: #7a1fc4; --app-accent-soft: #f5edfd; --app-accent-on-ink: #d4a5f9; }
+[data-app="eventos"]    { --app-accent: #6c29cd; --app-accent-soft: #f3eefd; --app-accent-on-ink: #c0aeff; }
 [data-app="simplex"]    { --app-accent: #9c6100; --app-accent-soft: #fbf3e4; --app-accent-on-ink: #f2bf5e; }
 [data-app="qr"]         { --app-accent: #0e7490; --app-accent-soft: #e7f6fa; --app-accent-on-ink: #7fd3e6; }
-[data-app="saude"]      { --app-accent: #b8166e; --app-accent-soft: #fdeff6; --app-accent-on-ink: #f59ecb; }
+[data-app="saude"]      { --app-accent: #b8166e; --app-accent-soft: #fdeff6; --app-accent-on-ink: #f89dc5; }
 [data-app="dns"]        { --app-accent: #475569; --app-accent-soft: #f1f5f9; --app-accent-on-ink: #cbd5e1; }
 [data-app="monitor"]    { --app-accent: #6b7500; --app-accent-soft: #f6f7e4; --app-accent-on-ink: #d9dc6a; }
 [data-app="assistente"] { --app-accent: #0b7a72; --app-accent-soft: #e7f6f4; --app-accent-on-ink: #72dfcf; }
 [data-app="protocolos"] { --app-accent: #b93a2e; --app-accent-soft: #fdf0ee; --app-accent-on-ink: #fca99f; }
+[data-app="comunicacao"] { --app-accent: #94249d; --app-accent-soft: #fbeffb; --app-accent-on-ink: #e4a2ec; }
 [data-app="portal"],
 [data-app="carta"],
-[data-app="comunicacao"],
 [data-app="cartao"]     { --app-accent: var(--brand); }
 
 .dark[data-app="backoffice"], .dark [data-app="backoffice"] { --app-accent: #93b4fb; --app-accent-soft: #172544; }
-.dark[data-app="eventos"],    .dark [data-app="eventos"]    { --app-accent: #d4a5f9; --app-accent-soft: #2c1c44; }
+.dark[data-app="eventos"],    .dark [data-app="eventos"]    { --app-accent: #c0aeff; --app-accent-soft: #241d44; }
 .dark[data-app="simplex"],    .dark [data-app="simplex"]    { --app-accent: #f2bf5e; --app-accent-soft: #352a10; }
 .dark[data-app="qr"],         .dark [data-app="qr"]         { --app-accent: #7fd3e6; --app-accent-soft: #0f2f38; }
-.dark[data-app="saude"],      .dark [data-app="saude"]      { --app-accent: #f59ecb; --app-accent-soft: #3a1429; }
+.dark[data-app="saude"],      .dark [data-app="saude"]      { --app-accent: #f89dc5; --app-accent-soft: #3a1429; }
 .dark[data-app="dns"],        .dark [data-app="dns"]        { --app-accent: #cbd5e1; --app-accent-soft: #1e2733; }
 .dark[data-app="monitor"],    .dark [data-app="monitor"]    { --app-accent: #d9dc6a; --app-accent-soft: #29290f; }
 .dark[data-app="assistente"], .dark [data-app="assistente"] { --app-accent: #72dfcf; --app-accent-soft: #0f2e2b; }
 .dark[data-app="protocolos"], .dark [data-app="protocolos"] { --app-accent: #fca99f; --app-accent-soft: #3a1712; }
+.dark[data-app="comunicacao"], .dark [data-app="comunicacao"] { --app-accent: #e4a2ec; --app-accent-soft: #2e1733; }
 
 /* The tile colour: the light accent in both themes (white glyph ≥ 5.0:1). */
 :root { --app-marca: var(--brand); }
 [data-app="backoffice"] { --app-marca: #1d4ed8; }
-[data-app="eventos"]    { --app-marca: #7a1fc4; }
+[data-app="eventos"]    { --app-marca: #6c29cd; }
 [data-app="simplex"]    { --app-marca: #9c6100; }
 [data-app="qr"]         { --app-marca: #0e7490; }
 [data-app="saude"]      { --app-marca: #b8166e; }
@@ -208,9 +209,9 @@
 [data-app="monitor"]    { --app-marca: #6b7500; }
 [data-app="assistente"] { --app-marca: #0b7a72; }
 [data-app="protocolos"] { --app-marca: #b93a2e; }
+[data-app="comunicacao"] { --app-marca: #94249d; }
 [data-app="portal"],
 [data-app="carta"],
-[data-app="comunicacao"],
 [data-app="cartao"]     { --app-marca: #1f6f36; }
 
 /* Frame (shell G): top bar and navigation share ONE surface, neutral grey + 9% of the app colour; current page pill 20% (24% dark), hover 14%.

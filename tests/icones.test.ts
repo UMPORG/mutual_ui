@@ -23,9 +23,9 @@ test("icon family: no two apps share a glyph", () => {
 test("svgIconeApp: standalone SVG with the tile colour; maskable is full-bleed", () => {
   const s = svgIconeApp("eventos");
   assert.match(s, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 24 24">/);
-  assert.match(s, /fill="#7a1fc4"/);
+  assert.match(s, /fill="#6c29cd"/);
   assert.match(s, /<\/svg>$/);
-  assert.match(svgIconeApp("eventos", { mascaravel: true }), /<rect width="24" height="24" fill="#7a1fc4"\/>/);
+  assert.match(svgIconeApp("eventos", { mascaravel: true }), /<rect width="24" height="24" fill="#6c29cd"\/>/);
 });
 
 test("generated assets exist for every app (scripts/gerar-icones.mjs)", () => {
