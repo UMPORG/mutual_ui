@@ -51,7 +51,7 @@
     "./assets/*": "./assets/*"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.solto.json",
+    "typecheck": "bun check && bun check -p tsconfig.solto.json",
     "test": "vp test run",
     "embed-logo": "node scripts/embed-logo.mjs",
     "icones": "node --experimental-strip-types scripts/gerar-icones.mjs",

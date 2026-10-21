@@ -45,7 +45,7 @@ jobs:
       - name: Instalar (lockfile congelado)
         run: pnpm install --frozen-lockfile
 
-      - name: Tipos (tsc, pacote e ficheiro solto)
+      - name: Tipos (bun check, pacote e ficheiro solto)
         run: pnpm typecheck
 
       - name: Testes (vp test run)
