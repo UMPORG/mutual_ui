@@ -90,6 +90,10 @@ export function GrelhaEditavel({
     edicaoRef.current = e;
     setEdicaoEstado(e);
   };
+  /** Keeps the roving tab stop on the cell the user focused or clicked. */
+  const ativar = (linha: number, coluna: number) => {
+    if (posicao.linha !== linha || posicao.coluna !== coluna) setAtiva({ linha, coluna });
+  };
   const colunaDe = (c: number): ColunaGrelha | undefined => colunas[c - desvio];
 
   const focar = (linha: number, coluna: number) => {
@@ -240,10 +244,11 @@ export function GrelhaEditavel({
     setMensagem(`Colar: ${partes.join(", ")}.`);
   }
 
-  const cabecalho = "border-b border-border bg-muted px-3 py-2 text-left text-[0.9375rem] font-semibold text-foreground";
-  const celula = "relative border-b border-border px-3 py-1.5 align-top text-[0.9375rem]";
+  const cabecalho = "border-b border-border bg-muted py-2 text-left text-[0.9375rem] font-semibold text-foreground";
+  const celula = "relative border-b border-border py-1.5 align-top text-[0.9375rem]";
   const pegajosoSel = "sticky left-0 z-[2] w-12 min-w-12 px-0 text-center";
-  const pegajosoNome = cx("sticky z-[2] w-36 min-w-36 max-w-[10rem] break-words sm:w-48 sm:max-w-[14rem]", desvio ? "left-12" : "left-0");
+  const px = "px-3";
+  const pegajosoNome = cx("sticky z-[2] border-r border-border w-28 min-w-28 max-w-[10rem] break-words sm:w-48 sm:max-w-[14rem]", desvio ? "left-12" : "left-0");
 
   return (
     <div className={cx("m-surface relative min-w-0 max-w-full overflow-x-auto rounded-lg", className)}>
@@ -267,11 +272,11 @@ export function GrelhaEditavel({
                 </label>
               </th>
             )}
-            <th scope="col" className={cx(cabecalho, pegajosoNome, "!bg-muted")}>
+            <th scope="col" className={cx(cabecalho, px, pegajosoNome, "!bg-muted")}>
               {rotuloNome}
             </th>
             {colunas.map((col) => (
-              <th key={col.chave} scope="col" className={cabecalho} style={{ minWidth: col.largura ?? LARGURA[col.tipo] }}>
+              <th key={col.chave} scope="col" className={cx(cabecalho, px)} style={{ minWidth: col.largura ?? LARGURA[col.tipo] }}>
                 {col.rotulo}
                 {col.obrigatoria && (
                   <>
@@ -305,10 +310,11 @@ export function GrelhaEditavel({
                     tabIndex={posicao.linha === l && posicao.coluna === 0 ? 0 : -1}
                     aria-label={`Selecionar ${linha.nome}`}
                     aria-selected={selecionada}
-                    onClick={() => setAtiva({ linha: l, coluna: 0 })}
+                    onFocus={(e) => e.target === e.currentTarget && ativar(l, 0)}
+                    onClick={() => ativar(l, 0)}
                     className={cx(celula, pegajosoSel, fundo, FOCO)}
                   >
-                    <span className="grid size-11 cursor-pointer place-items-center">
+                    <label className="mx-auto grid size-11 cursor-pointer place-items-center">
                       <input
                         type="checkbox"
                         tabIndex={-1}
@@ -317,11 +323,11 @@ export function GrelhaEditavel({
                         checked={selecionada}
                         onChange={() => alternarLinha(linha.id)}
                       />
-                    </span>
+                    </label>
                   </td>
                 )}
-                <th scope="row" className={cx(celula, pegajosoNome, fundo, "text-left font-medium")}>
-                  {linha.nome}
+                <th scope="row" className={cx(celula, px, pegajosoNome, fundo, "text-left font-medium")}>
+                  <span className="flex min-h-11 items-center">{linha.nome}</span>
                 </th>
                 {colunas.map((col, j) => {
                   const c = j + desvio;
@@ -345,12 +351,13 @@ export function GrelhaEditavel({
                       aria-required={col.obrigatoria ? true : undefined}
                       aria-invalid={erro ? true : undefined}
                       aria-describedby={erro ? erroId : undefined}
+                      onFocus={(e) => e.target === e.currentTarget && ativar(l, c)}
                       onClick={(e) => {
                         if ((e.target as HTMLElement).closest("input,select,button")) return;
                         if (col.tipo === "simNao" || col.apenasLeitura) setAtiva({ linha: l, coluna: c });
                         else abrirEdicao(l, c);
                       }}
-                      className={cx(celula, FOCO, col.apenasLeitura && "bg-muted/50 text-muted-foreground")}
+                      className={cx(celula, px, FOCO, col.apenasLeitura && "bg-muted/50 text-muted-foreground")}
                     >
                       {suja && (
                         <>
