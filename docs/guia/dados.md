@@ -175,4 +175,12 @@ const colunas: ColunaGrelha[] = [
 - Paste: tab/newline text (Excel, Sheets) pasted on a cell fills the block from there; `0,5`/`0.5`,
   `dd/mm/aaaa`, Sim/Não and option labels are read per column. Pure helpers (`analisarColagem`,
   `aplicarColagem`, `converterTexto`, `textoDaCelula`, `moverNaGrelha`) are exported and unit tested.
-- The grid scrolls sideways inside its own box; the name column (and selection column) stay fixed.
+- The grid scrolls sideways inside its own box; the name column (and selection column) stay fixed. Columns are at
+  least 6.5 rem wide, and a cell error wraps inside its cell (the row grows), so it is never clipped or widened.
+- Row actions: `renderAcoes={(linha) => <Button …/>}` (+ `rotuloAcoes`, default «Ações») adds a last column with
+  the app's own controls. Arrows/Home/End reach the cell («Linha, Ações»); Enter or F2 moves focus into the
+  controls, where Tab moves between them, and Esc returns to the cell. Outside that the controls are out of the
+  Tab order, so the grid stays one tab stop. Paste never reaches it. It is a plain last column (not sticky-right):
+  with the name column fixed on the left, a second fixed column would leave a phone almost no room for the data;
+  the column is reached by scrolling the grid or with End. Give each control a name with the row (e.g.
+  «Ver ficha de Ana») and ≥ 44 px.

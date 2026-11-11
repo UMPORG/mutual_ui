@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Eye } from "lucide-react";
 import {
   chaveCelula,
   GrelhaEditavel,
@@ -9,7 +10,7 @@ import {
 } from "../src/index.ts";
 
 const COLUNAS: ColunaGrelha[] = [
-  { chave: "nota", rotulo: "Nota final", tipo: "numero", min: 0, max: 20, casas: 1, obrigatoria: true },
+  { chave: "nota", rotulo: "Nota", tipo: "numero", min: 0, max: 10, casas: 1, obrigatoria: true, largura: "5rem" },
   { chave: "aprovado", rotulo: "Aprovado", tipo: "simNao", obrigatoria: true },
   {
     chave: "resultado",
@@ -32,7 +33,7 @@ function inicial(): LinhaGrelha[] {
   return NOMES.map((nome, i) => ({
     id: `f${i + 1}`,
     nome,
-    valores: { nota: i === 0 ? 15.5 : null, aprovado: i === 0 ? true : null, turma: "Turma A" },
+    valores: { nota: i === 0 ? 8.5 : null, aprovado: i === 0 ? true : null, turma: "Turma A" },
   }));
 }
 
@@ -40,7 +41,7 @@ function inicial(): LinhaGrelha[] {
 export function PaginaGrelha({ vazia = false }: { vazia?: boolean }) {
   const [linhas, setLinhas] = useState<LinhaGrelha[]>(vazia ? [] : inicial());
   const [erros, setErros] = useState<Record<string, string>>(
-    vazia ? {} : { [chaveCelula("f3", "nota")]: "Preencha este valor." },
+    vazia ? {} : { [chaveCelula("f3", "nota")]: "A nota tem de estar entre 0 e 10" },
   );
   const [alteradas, setAlteradas] = useState<Set<string>>(new Set());
   const [selecionadas, setSelecionadas] = useState<Set<string>>(new Set());
@@ -80,6 +81,12 @@ export function PaginaGrelha({ vazia = false }: { vazia?: boolean }) {
         selecionadas={selecionadas}
         aoSelecionar={(ids) => setSelecionadas(new Set(ids))}
         vazio="Ainda não há formandos inscritos."
+        rotuloAcoes="Ações"
+        renderAcoes={(l) => (
+          <button type="button" className="m-btn m-btn-outline inline-flex h-11 items-center gap-2 rounded-lg px-3" aria-label={`Ver ficha de ${l.nome}`}>
+            <Eye aria-hidden size={18} /> Ficha
+          </button>
+        )}
       />
     </div>
   );

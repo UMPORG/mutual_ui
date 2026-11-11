@@ -132,3 +132,18 @@ test("moverNaGrelha: setas, extremos da linha, Ctrl+Home/End e páginas", () => 
   assert.deepEqual(moverNaGrelha(p(1, 1), "a", 4, 3, false), p(1, 1));
   assert.deepEqual(moverNaGrelha(p(0, 0), "ArrowDown", 0, 3, false), p(0, 0));
 });
+
+test("aplicarColagem: o que passa da última coluna de dados (p. ex. a coluna de ações) conta como fora da tabela", () => {
+  const linhas: LinhaGrelha[] = [{ id: "a", nome: "Ana", valores: {} }];
+  const r = aplicarColagem([nota, sn], linhas, { linha: 0, coluna: 1 }, [["Sim", "x", "y"]]);
+  assert.deepEqual(r.alteracoes, [{ linhaId: "a", chave: "ok", valor: true }]);
+  assert.equal(r.ignoradas, 2);
+  assert.equal(r.erros.length, 0);
+});
+
+test("moverNaGrelha: uma coluna extra à direita (ações) entra na navegação e as setas param nela", () => {
+  const p = (linha: number, coluna: number) => ({ linha, coluna });
+  assert.deepEqual(moverNaGrelha(p(0, 6), "ArrowRight", 3, 8, false), p(0, 7));
+  assert.deepEqual(moverNaGrelha(p(0, 7), "ArrowRight", 3, 8, false), p(0, 7));
+  assert.deepEqual(moverNaGrelha(p(1, 3), "End", 3, 8, false), p(1, 7));
+});

@@ -37,6 +37,10 @@ export interface GrelhaEditavelProps {
   rotuloNome?: string | undefined;
   /** Shown when there are no rows. */
   vazio?: ReactNode | undefined;
+  /** Adds a last column with the app's own controls for each row (buttons, menus). Arrows reach the cell, Enter moves focus into the controls, Esc returns to the cell; the controls stay out of the Tab order until then. Not part of paste. */
+  renderAcoes?: ((linha: LinhaGrelha) => ReactNode) | undefined;
+  /** Header and accessible name of the actions column (default «Ações»). */
+  rotuloAcoes?: string | undefined;
   className?: string | undefined;
 }
 
@@ -69,12 +73,17 @@ export function GrelhaEditavel({
   aoSelecionar,
   rotuloNome = "Nome",
   vazio,
+  renderAcoes,
+  rotuloAcoes = "Ações",
   className,
 }: GrelhaEditavelProps) {
   const base = useId();
   const tabela = useRef<HTMLTableElement>(null);
   const desvio = aoSelecionar ? 1 : 0;
-  const nColunas = desvio + colunas.length;
+  const temAcoes = !!renderAcoes;
+  const nColunas = desvio + colunas.length + (temAcoes ? 1 : 0);
+  const colAcoes = desvio + colunas.length;
+  const [acoesAbertas, setAcoesAbertas] = useState<number | null>(null);
   const [ativa, setAtiva] = useState<PosicaoGrelha>({ linha: 0, coluna: desvio });
   const [edicao, setEdicaoEstado] = useState<Edicao | null>(null);
   const edicaoRef = useRef<Edicao | null>(null);
@@ -106,6 +115,24 @@ export function GrelhaEditavel({
     focarPendente.current = false;
     tabela.current?.querySelector<HTMLElement>(`td[data-l="${posicao.linha}"][data-c="${posicao.coluna}"]`)?.focus();
   }, [ativa, edicao, posicao.linha, posicao.coluna]);
+
+  // Controls of the actions column stay out of the Tab order (one stop for the grid) until Enter opens that row's cell.
+  useEffect(() => {
+    tabela.current?.querySelectorAll<HTMLElement>("td[data-acoes]").forEach((td) => {
+      const aberta = Number(td.dataset.l) === acoesAbertas;
+      td.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"]), [data-grelha-tab]').forEach((el) => {
+        if (aberta) {
+          if (el.dataset.grelhaTab) {
+            el.removeAttribute("tabindex");
+            delete el.dataset.grelhaTab;
+          }
+        } else if (el.getAttribute("tabindex") !== "-1") {
+          el.dataset.grelhaTab = "1";
+          el.setAttribute("tabindex", "-1");
+        }
+      });
+    });
+  });
 
   /** Reads `texto` into the cell; returns false (and reports the error) when it is not valid. */
   const confirmar = (l: number, c: number, texto: string): boolean => {
@@ -157,6 +184,31 @@ export function GrelhaEditavel({
     const c = Number(td.dataset.c);
     const col = colunaDe(c);
     const ctrl = e.ctrlKey || e.metaKey;
+
+    // Actions column: Enter goes into the controls, Esc comes back; the controls handle their own keys.
+    if (td.dataset.acoes) {
+      if (alvo !== td) {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          setAcoesAbertas(null);
+          focar(l, c);
+        }
+        return;
+      }
+      if (TECLAS_NAVEGACAO.has(e.key)) {
+        e.preventDefault();
+        const p = moverNaGrelha({ linha: l, coluna: c }, e.key, linhas.length, nColunas, ctrl);
+        focar(p.linha, p.coluna);
+      } else if (e.key === "Enter" || e.key === "F2") {
+        const primeiro = td.querySelector<HTMLElement>('button, a[href], input, select, textarea, [tabindex], [data-grelha-tab]');
+        if (primeiro) {
+          e.preventDefault();
+          setAcoesAbertas(l);
+          primeiro.focus();
+        }
+      }
+      return;
+    }
 
     // Edit mode: text/date input or choice select.
     if (alvo.dataset.edicao) {
@@ -230,6 +282,7 @@ export function GrelhaEditavel({
     const emEdicao = !!edicaoRef.current;
     if (emEdicao && !/[\t\n]/.test(texto.replace(/\r?\n$/, ""))) return; // one value into the open field: the browser does it
     const td = (e.target as HTMLElement).closest<HTMLElement>("td[data-l]");
+    if (td?.dataset.acoes || (!td && posicao.coluna === colAcoes && temAcoes)) return;
     const l = td ? Number(td.dataset.l) : posicao.linha;
     const c = td ? Number(td.dataset.c) : posicao.coluna;
     const col = colunaDe(c) ? c - desvio : 0;
@@ -276,7 +329,7 @@ export function GrelhaEditavel({
               {rotuloNome}
             </th>
             {colunas.map((col) => (
-              <th key={col.chave} scope="col" className={cx(cabecalho, px)} style={{ minWidth: col.largura ?? LARGURA[col.tipo] }}>
+              <th key={col.chave} scope="col" className={cx(cabecalho, px)} style={{ minWidth: `max(6.5rem, ${col.largura ?? LARGURA[col.tipo]})` }}>
                 {col.rotulo}
                 {col.obrigatoria && (
                   <>
@@ -287,6 +340,11 @@ export function GrelhaEditavel({
                 {col.apenasLeitura && <span className="sr-only"> (só de leitura)</span>}
               </th>
             ))}
+            {temAcoes && (
+              <th scope="col" className={cx(cabecalho, px)}>
+                {rotuloAcoes}
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -441,7 +499,7 @@ export function GrelhaEditavel({
                         </span>
                       )}
                       {erro && (
-                        <p id={erroId} className="mt-1 flex items-start gap-1 text-[0.875rem] font-medium text-destructive">
+                        <p id={erroId} className="mt-1 flex w-0 min-w-full items-start gap-1 break-words text-[0.875rem] font-medium text-destructive">
                           <AlertCircle aria-hidden size={14} className="mt-0.5 shrink-0" />
                           <span>{erro}</span>
                         </p>
@@ -449,6 +507,24 @@ export function GrelhaEditavel({
                     </td>
                   );
                 })}
+                {renderAcoes && (
+                  <td
+                    role="gridcell"
+                    data-l={l}
+                    data-c={colAcoes}
+                    data-acoes="1"
+                    tabIndex={posicao.linha === l && posicao.coluna === colAcoes ? 0 : -1}
+                    aria-label={`${linha.nome}, ${rotuloAcoes}`}
+                    onFocus={(e) => e.target === e.currentTarget && ativar(l, colAcoes)}
+                    onBlur={(e) => {
+                      if (acoesAbertas === l && !e.currentTarget.contains(e.relatedTarget as Node | null)) setAcoesAbertas(null);
+                    }}
+                    onClick={() => ativar(l, colAcoes)}
+                    className={cx(celula, px, FOCO)}
+                  >
+                    <div className="flex min-h-11 flex-wrap items-center gap-2">{renderAcoes(linha)}</div>
+                  </td>
+                )}
               </tr>
             );
           })}
