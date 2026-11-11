@@ -12,6 +12,10 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 
 - A grelha editável (`GrelhaEditavel`) para preencher valores por linha e coluna, como as notas e os resultados de cada formando: navegação e edição pelo teclado, botões Sim/Não, erros junto a cada célula, marca das alterações por guardar, seleção de linhas e colagem de blocos copiados de uma folha de cálculo.
 
+### Corrigido
+
+- As opções do controlo segmentado (`SegmentedControl`) passam de 40 px para 44 px de altura, o mínimo para tocar com segurança.
+
 ## [0.24.0] - 2026-10-21
 
 ### Alterado
