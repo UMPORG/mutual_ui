@@ -47,6 +47,7 @@ import { PaginaEfeitos } from "./efeitos.tsx";
 import { PaginaConversa } from "./conversa.tsx";
 import { PaginaShells } from "./shells.tsx";
 import { PaginaRolagem } from "./rolagem.tsx";
+import { PaginaGrelha } from "./grelha.tsx";
 import { PaginaDemo } from "./demo.tsx";
 import { PaginaIdentificadores } from "./identificadores.tsx";
 import { PaginaIcones, PaginaIconesShell } from "./icones.tsx";
@@ -608,6 +609,13 @@ function App() {
 
         <Section id="s-tab" title="Tabela de dados" description="Pesquisa, filtros, ordenação, paginação e cartões no telemóvel.">
           <Tabela />
+        </Section>
+
+        <Section id="s-grelha" title="Grelha editável" description="Notas e resultados por formando: setas, Enter para editar, colar do Excel.">
+          <PaginaGrelha />
+          <div className="mt-6">
+            <PaginaGrelha vazia />
+          </div>
         </Section>
 
         <Section id="s-tabest" title="Estados da tabela">

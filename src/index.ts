@@ -73,6 +73,7 @@ export * from "./dados";
 export * from "./cartao";
 export * from "./estatisticas";
 export * from "./tabela";
+export * from "./grelha-editavel";
 export { ScrollShadow, useScrollShadow, bordasComMais } from "./rolagem";
 export * from "./basicos";
 export { FormField, Fieldset, Input, Textarea, NativeSelect, type FormFieldProps, type FieldControlProps } from "./campo";

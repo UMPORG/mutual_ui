@@ -6,6 +6,12 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-11-11
+
+### Adicionado
+
+- A grelha editável (`GrelhaEditavel`) para preencher valores por linha e coluna, como as notas e os resultados de cada formando: navegação e edição pelo teclado, botões Sim/Não, erros junto a cada célula, marca das alterações por guardar, seleção de linhas e colagem de blocos copiados de uma folha de cálculo.
+
 ## [0.24.0] - 2026-10-21
 
 ### Alterado

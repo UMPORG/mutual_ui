@@ -139,3 +139,40 @@ const colunas: Column<Associacao>[] = [
 - The horizontal scroller is a focusable, named `role="group"`. Name each `Pagination` (`label`) when a
   page has two paginated lists.
 - `Skeleton className="h-4 w-40"` for custom placeholders (stops under Reduzir movimento).
+
+## GrelhaEditavel (client, `@umporg/ui`)
+
+Editable grid for typing a value per row and column (e.g. grades and results per trainee; columns defined at
+run time). **Controlled and without saving**: the page owns the values, shows «Guardar» in the `PageHeader`
+and the «Alterações por guardar» count. Read-only data stays in `DataTable`.
+
+```tsx
+const colunas: ColunaGrelha[] = [
+  { chave: "nota", rotulo: "Nota final", tipo: "numero", min: 0, max: 20, casas: 1, obrigatoria: true },
+  { chave: "aprovado", rotulo: "Aprovado", tipo: "simNao" },
+  { chave: "resultado", rotulo: "Resultado", tipo: "escolha", opcoes: [{ valor: "ap", rotulo: "Aprovado" }] },
+  { chave: "conclusao", rotulo: "Data de conclusão", tipo: "data" },
+  { chave: "obs", rotulo: "Observações", tipo: "texto" },
+];
+<GrelhaEditavel legenda="Notas dos formandos" rotuloNome="Formando" colunas={colunas}
+  linhas={linhas /* { id, nome, valores: { nota: 15.5, … } } */}
+  aoAlterar={(alteracoes, novosErros) => { /* apply, mark dirty, merge errors */ }}
+  erros={erros /* { [chaveCelula(linhaId, chave)]: "mensagem" } */}
+  alteradas={alteradas /* Set<chaveCelula> */}
+  selecionadas={sel} aoSelecionar={(ids) => …} />   {/* selection column only with aoSelecionar */}
+```
+
+- Values: `numero` → number, `texto` → string, `data` → `"AAAA-MM-DD"`, `simNao` → boolean, `escolha` → option
+  `valor`; empty = `null`. `aoAlterar(alteracoes, erros)`: the app applies `alteracoes`, deletes the errors of
+  those cells and adds `erros` (unreadable typed or pasted text, with the text kept in `ErroCelula.texto`).
+- Semantics: `role="grid"`, name column = `rowheader`, every cell named «Linha, Coluna: valor», one tab stop
+  (roving), so Tab leaves the grid. Errors show as text with an icon below the value
+  (`aria-describedby`); changed cells carry an icon and hidden text.
+- Keys on a focused cell: arrows, Home/End (row), Ctrl+Home/End, PageUp/PageDown move; Enter or F2 or a click
+  edits; typing a character starts a number/text edit; Delete clears. In edit: arrows move the caret, Enter
+  commits and goes down (Shift+Enter up), Esc restores. Yes/no: two `aria-pressed` buttons; Enter on the cell
+  focuses them, ←/→ switch, Enter picks and goes down; picking the pressed one clears it.
+- Paste: tab/newline text (Excel, Sheets) pasted on a cell fills the block from there; `0,5`/`0.5`,
+  `dd/mm/aaaa`, Sim/Não and option labels are read per column. Pure helpers (`analisarColagem`,
+  `aplicarColagem`, `converterTexto`, `textoDaCelula`, `moverNaGrelha`) are exported and unit tested.
+- The grid scrolls sideways inside its own box; the name column (and selection column) stay fixed.
