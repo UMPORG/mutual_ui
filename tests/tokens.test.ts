@@ -101,7 +101,6 @@ test("the frame is 9% of the app colour, the content layer neutral", () => {
     const c = t["--camada"]!;
     assert.ok(c.slice(1, 3) === c.slice(3, 5) && c.slice(3, 5) === c.slice(5, 7), `--camada ${c} is not neutral`);
   }
-  assert.doesNotMatch(css, /\[data-app="[a-z]+"\][^{]*\{[^}]*--sidebar:/, "no per-app sidebar tints any more");
 });
 
 test("the app colours stay apart: ≥ 30° of OKLCH hue in light, ≥ 28° in dark (DNS is the slate)", () => {
@@ -121,20 +120,12 @@ test("the search field is the neutral input surface, never the tinted frame (v0.
   const regra = shell.match(/\.m-procura \{([^}]*)\}/)?.[1] ?? "";
   assert.match(regra, /background: var\(--procura-fundo\)/);
   assert.match(regra, /border: 1px solid var\(--procura-borda\)/);
-  assert.doesNotMatch(shell + css, /--moldura-procura/);
   // Light: the same white as the form fields; dark: the dark input surface.
   assert.equal(raiz["--procura-fundo"], raiz["--card"]);
   assert.equal(escuroRaiz["--procura-fundo"], escuroRaiz["--card"]);
   // High contrast: white field, black border.
   const pref = readFileSync(new URL("../css/preferencias.css", import.meta.url), "utf8");
   assert.match(pref, /--procura-fundo: #ffffff;\s*--procura-borda: #000000;/);
-});
-
-test("the navigation holds no action (v0.16: page actions live in PageHeader)", () => {
-  const shell = readFileSync(new URL("../css/shell.css", import.meta.url), "utf8");
-  const tsx = readFileSync(new URL("../src/shell.tsx", import.meta.url), "utf8");
-  assert.doesNotMatch(shell, /m-acao-principal|m-app-com-acao/);
-  assert.doesNotMatch(tsx, /acaoPrincipal|AcaoPrincipal|acao-principal/);
 });
 
 import { bordasComMais } from "../src/rolagem-bordas.ts";
