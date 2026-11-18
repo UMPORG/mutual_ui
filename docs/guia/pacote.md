@@ -24,8 +24,8 @@ transpilePackages: ["@umporg/ui"],
   <head><PreferenciasScript nonce={nonce} /></head>
 ```
 
-Peers: `react` ≥ 19, `lucide-react`; optional `@base-ui/react` ≥ 1.6 < 2, `recharts` ≥ 3.1 and
-`@tanstack/react-query` ≥ 5.100 < 6 (only for the sub-paths that need them). `css/index.css` imports every sheet; import it whole. Importing single
+Peers (`peerDependencies`): `react`, `lucide-react`; optional `@base-ui/react`, `recharts` and
+`@tanstack/react-query` (only for the sub-paths that need them). `css/index.css` imports every sheet; import it whole. Importing single
 sheets is not recommended (most are exported, but only `index.css` is supported; `css/icones.css`, needed by `IconeApp`, has no `exports` entry).
 
 ## Entry points
@@ -54,14 +54,14 @@ A `Record<MutualAppId, …>` in an app needs an entry for every app id.
 ## Release
 
 Bump `package.json` `version`, commit, `git tag vX.Y.Z`, push the tag; each app bumps its `#vX.Y.Z`
-ref and regenerates its lockfile (`pnpm install --ignore-workspace`). No tag for docs-only changes.
+ref and regenerates its lockfile (`pnpm install`). No tag for docs-only changes.
 
 ## New app checklist
 
 `MUTUAL_APPS` (`src/apps.ts`), `CAMINHOS` (`src/sso.ts`), `--app-accent` (light + dark),
 `--app-accent-soft`, `--app-marca` in `css/tokens.css`, glyph in `GLIFOS_APPS` + `COR_MARCA_APP`
 (`src/icones.ts`), then `pnpm icones`. `tests/tokens.test.ts` checks the contrast pairs and that app hues
-stay ≥ 30° apart in OKLCH.
+stay apart in OKLCH (≥ 30° light, ≥ 28° dark).
 
 ## Favicons and home-screen icons
 
@@ -102,7 +102,7 @@ package's own devDependencies (one React copy); it installs only Tailwind.
 
 ## Toolchain
 
-Node 24.21.x (`engines`), pnpm 12.11.2 (`packageManager`), Bun 1.4.3 (showcase build), TypeScript 7 (`tsconfig.json` lists `types: ["node"]`, TS 7 no longer loads every `@types/*`).
+Node (`engines`), pnpm (`packageManager`), Bun (`bun-version` in `.github/workflows/ci.yml`; typecheck and showcase build), TypeScript 7 (`tsconfig.json` lists `types: ["node"]`, TS 7 no longer loads every `@types/*`).
 
 ## CI
 

@@ -45,8 +45,6 @@ import {
 } from "./conversa-dados";
 
 /**
- * Conversation components for the MUTU@L assistant.
- *
  * The app owns the data (threads, messages, streaming, tools); these render
  * it with the MUTU@L look and the accessibility the pattern needs:
  *
@@ -59,8 +57,6 @@ import {
  *   they scrolled up to read, it stays put and offers "Ir para o fim".
  * - Focus stays in the composer after sending and after "Parar".
  */
-
-// ─── Announcer ────────────────────────────────────────────────────────────
 
 function useAnunciador() {
   const [educado, setEducado] = useState("");
@@ -82,8 +78,6 @@ function useAnunciador() {
   );
   return { anunciar, regiao };
 }
-
-// ─── Sources ──────────────────────────────────────────────────────────────
 
 /** Numbered chips to help-centre pages ("ajuda") and app records ("registo"). */
 export function SourceList({ sources, LinkComponent = "a", className }: { sources: ChatSource[]; LinkComponent?: ElementType | undefined; className?: string | undefined }) {
@@ -116,8 +110,6 @@ export function SourceList({ sources, LinkComponent = "a", className }: { source
     </div>
   );
 }
-
-// ─── Feedback ─────────────────────────────────────────────────────────────
 
 const MOTIVOS = ["Informação errada", "Não respondeu à pergunta", "Incompleta", "Difícil de perceber"];
 
@@ -223,8 +215,6 @@ export function MessageFeedback({
   );
 }
 
-// ─── Thinking / working ───────────────────────────────────────────────────
-
 export interface WorkStep {
   label: string;
   status: "done" | "active" | "pending";
@@ -266,8 +256,6 @@ export function ThinkingIndicator({ label = "A pensar", steps }: { label?: strin
     </div>
   );
 }
-
-// ─── Action card (tool call) ──────────────────────────────────────────────
 
 export type ActionStatus = "proposta" | "a-aplicar" | "aplicada" | "cancelada" | "erro";
 
@@ -362,8 +350,6 @@ export function ActionCard({
   );
 }
 
-// ─── Suggestions ──────────────────────────────────────────────────────────
-
 export function SuggestionChips({
   suggestions,
   onSelect,
@@ -394,8 +380,6 @@ export function SuggestionChips({
     </div>
   );
 }
-
-// ─── Message ──────────────────────────────────────────────────────────────
 
 export interface ChatMessageProps {
   message: ChatMessageData;
@@ -501,8 +485,6 @@ export function ChatMessage({ message: m, LinkComponent = "a", onRetry, onRegene
     </article>
   );
 }
-
-// ─── Message list ─────────────────────────────────────────────────────────
 
 export interface MessageListProps {
   messages: ChatMessageData[];
@@ -653,8 +635,6 @@ export function MessageList({
   );
 }
 
-// ─── Empty state ──────────────────────────────────────────────────────────
-
 export function ChatEmptyState({
   title = "Como posso ajudar?",
   description,
@@ -706,8 +686,6 @@ export function ChatEmptyState({
     </div>
   );
 }
-
-// ─── Conversation title ───────────────────────────────────────────────────
 
 /** The conversation's name with "Mudar o nome" (inline; Enter saves, Escape cancels). */
 export function ConversationTitle({
@@ -804,8 +782,6 @@ export function ConversationTitle({
     </div>
   );
 }
-
-// ─── Thread list ──────────────────────────────────────────────────────────
 
 export interface ThreadListProps<T extends ChatThread> {
   threads: T[];
@@ -959,8 +935,6 @@ function RenomearLinha({ titulo, onGuardar, onCancelar }: { titulo: string; onGu
     </form>
   );
 }
-
-// ─── Layout ───────────────────────────────────────────────────────────────
 
 export function ChatLayout({
   threads,

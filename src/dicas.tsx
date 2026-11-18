@@ -9,7 +9,7 @@ export { dicaDispensada, dispensarDica, reporDica } from "./dicas-estado";
 
 /**
  * Dica: a calm tip about the screen. One line (icon + `titulo`); `children` and «Saber mais» open on demand,
- * so it never pushes the main action down. Close button (44 px, icon only); the choice is kept on the device
+ * so it never pushes the main action down. Close button (48 px, icon only); the choice is kept on the device
  * under `id` (`<app>.dica.<nome>`). `rotuloReabrir` adds a link-like button to bring it back; without it say
  * where the help lives in `avisoAoFechar` (read by screen readers). `dispensavel={false}`: help line without
  * close button, rendered on the server too. `role="note"`. Colours `--dica*` (contrast measured in

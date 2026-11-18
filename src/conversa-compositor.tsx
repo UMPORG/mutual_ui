@@ -8,8 +8,6 @@ import { formatarNumero } from "./formatar";
 import { teclaEnvia } from "./conversa-dados";
 
 /**
- * Composer: where the person writes to the assistant.
- *
  * - Grows with the text up to ~8 lines, then scrolls.
  * - Enter sends, Shift + Enter starts a new line (IME-safe).
  * - While a reply is being written, "Parar" replaces "Enviar"; the text
