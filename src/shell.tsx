@@ -180,7 +180,7 @@ export function MenuConta({ app, conta }: { app: AppNoEndereco; conta: ContaShel
         ref={botaoRef}
         type="button"
         popoverTarget={popId}
-        aria-label={`Conta: ${conta.nome}`}
+        aria-label={`Conta: ${conta.nome}, ${iniciais(conta.nome)}`}
         data-shell="conta"
         className="m-barra-botao"
       >
