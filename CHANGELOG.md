@@ -10,7 +10,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 
 ### Corrigido
 
-- O botão da conta no cabeçalho passa a incluir as iniciais visíveis no nome acessível («Conta: Ana Sá (AS)»), para quem comanda a página por voz.
+- O botão da conta no cabeçalho passa a incluir as iniciais visíveis no nome acessível («Conta: Ana Sá, AS»), para quem comanda a página por voz.
 
 ## [0.25.0] - 2026-11-12
 
