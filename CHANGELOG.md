@@ -6,6 +6,12 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 
 ## [Unreleased]
 
+## [0.25.2] - 2026-11-26
+
+### Corrigido
+
+- Os botões − e + do campo numérico (`NumberField`) passam a indicar corretamente o campo que controlam, para os leitores de ecrã.
+
 ## [0.25.1] - 2026-11-24
 
 ### Corrigido

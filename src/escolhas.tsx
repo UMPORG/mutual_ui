@@ -406,6 +406,7 @@ export function NumberField({
   disabled,
   required,
   className,
+  id,
   ...aria
 }: Aria & {
   value?: number | null | undefined;
@@ -421,8 +422,11 @@ export function NumberField({
   className?: string | undefined;
 }) {
   const botao = "grid h-full w-11 shrink-0 place-items-center text-muted-foreground hover:bg-foreground/6 hover:text-foreground disabled:opacity-40";
+  // `id` goes on Root, which gives it to the input and to the − / + buttons' `aria-controls`; on the Input it would
+  // replace Base UI's id and leave `aria-controls` pointing at an element that does not exist.
   return (
     <BaseNumberField.Root
+      id={id}
       value={value}
       defaultValue={defaultValue}
       onValueChange={onValueChange ? (v) => onValueChange(v) : undefined}
