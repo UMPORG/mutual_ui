@@ -220,5 +220,55 @@ const alvoTel = await p.locator('a[href^="tel:"]').first().evaluate((e) => { con
 ok(alvoTel >= 44, `Telefone: alvo ${Math.round(alvoTel)}px`);
 ok((await p.locator('a[href^="tel:"]').first().getAttribute("href")) === "tel:+351253000111", "Telefone: tel: com E.164");
 
+// ContextMenu from the keyboard: Menu key and Shift+F10 on the focused element, never the browser's own menu.
+await p.goto(BASE + "?pagina=controlos");
+await p.waitForTimeout(500);
+await p.evaluate(() => {
+  window.__menusDoBrowser = [];
+  window.addEventListener("contextmenu", (e) => { if (e.isTrusted) setTimeout(() => window.__menusDoBrowser.push(e.defaultPrevented)); }, true);
+});
+const gatilhoCtx = p.locator("button", { hasText: "Clique com o botão direito ou prima a tecla Menu" });
+const menuCtx = p.getByRole("menu");
+const focoCtx = () => p.evaluate(() => document.activeElement?.textContent?.trim() ?? "");
+for (const tecla of ["ContextMenu", "Shift+F10"]) {
+  await gatilhoCtx.focus();
+  await p.keyboard.press(tecla);
+  await p.waitForTimeout(300);
+  ok(await menuCtx.isVisible(), `ContextMenu: ${tecla} abre o menu`);
+  ok((await focoCtx()) === "Abrir ficha", `ContextMenu: ${tecla} põe o foco no primeiro item`);
+  const [g, m] = await Promise.all([gatilhoCtx.boundingBox(), menuCtx.boundingBox()]);
+  ok(g && m && Math.abs(m.x - g.x) < 12 && Math.abs(m.y - (g.y + g.height)) < 12, `ContextMenu: ${tecla} abre junto ao canto inferior esquerdo do elemento`);
+  await p.keyboard.press("Escape");
+  await p.waitForTimeout(300);
+  ok(!(await menuCtx.isVisible()), `ContextMenu: Escape fecha (${tecla})`);
+  ok((await focoCtx()) === "Clique com o botão direito ou prima a tecla Menu", `ContextMenu: Escape devolve o foco (${tecla})`);
+}
+await gatilhoCtx.focus();
+await p.keyboard.press("Shift+F10");
+await p.waitForTimeout(300);
+await p.keyboard.press("ArrowDown");
+await p.keyboard.press("Enter");
+await p.waitForTimeout(300);
+ok(!(await menuCtx.isVisible()) && (await focoCtx()) === "Clique com o botão direito ou prima a tecla Menu", "ContextMenu: escolher um item fecha e devolve o foco");
+ok((await p.evaluate(() => window.__menusDoBrowser)).every(Boolean), "ContextMenu: o menu do browser não abre com as teclas");
+for (const tecla of ["F10", "Shift", "Control+F10"]) {
+  await gatilhoCtx.focus();
+  await p.keyboard.press(tecla);
+  await p.waitForTimeout(200);
+  ok(!(await menuCtx.isVisible()), `ContextMenu: ${tecla} não abre o menu`);
+}
+await p.getByRole("button", { name: "Mais opções" }).focus();
+await p.keyboard.press("Shift+F10");
+await p.waitForTimeout(200);
+ok((await menuCtx.count()) === 0, "ContextMenu: Shift+F10 fora do elemento não abre o menu");
+await p.keyboard.press("Escape");
+await p.mouse.click(1, 1);
+await gatilhoCtx.click({ button: "right" });
+await p.waitForTimeout(300);
+ok(await menuCtx.isVisible(), "ContextMenu: o botão direito continua a abrir o menu");
+const rato = await p.evaluate(() => window.__menusDoBrowser.slice(-1)[0]);
+ok(rato === true, "ContextMenu: o botão direito não abre o menu do browser");
+await p.keyboard.press("Escape");
+
 await b.close();
 if (falhas.length) process.exit(1);

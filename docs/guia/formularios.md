@@ -39,7 +39,7 @@
 | Sibling sections of one thing | `Tabs` (`line` under the page header, `pill` inside cards; `useUrlParam` keeps it in the address) | steps (→ `Stepper`), page navigation (→ links / `Separadores`) |
 | Optional or secondary content, FAQ | `Accordion`, `Collapsible` | hiding required fields |
 | Actions of a row, card or page | `DropdownMenu` (destructive last, after a separator) | navigation, form values |
-| The same actions on right-click | `ContextMenu` — always also reachable another way | the only way to an action |
+| The same actions on right-click | `ContextMenu` (also the Menu key and Shift+F10 on a focusable element inside it) — always also reachable another way | the only way to an action |
 | Name of an icon-only button | `Tooltip` + the same `aria-label` | essential information |
 | Small interactive panel tied to a button | `Popover` | long forms (→ `Dialog` / `Sheet`) |
 | A task to finish or cancel | `Dialog` (`dismissible={false}` when it holds typed data) | messages (→ `StatusCallout`) |

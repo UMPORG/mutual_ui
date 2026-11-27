@@ -347,7 +347,9 @@ function Menus() {
             { label: "Eliminar", icon: <Trash2 aria-hidden size={18} />, destructive: true },
           ]}
         >
-          Clique com o botão direito aqui
+          <button type="button" className="m-btn m-btn-ghost">
+            Clique com o botão direito ou prima a tecla Menu
+          </button>
         </ContextMenu>
       </Grupo>
       <Grupo titulo="Dica e painel">

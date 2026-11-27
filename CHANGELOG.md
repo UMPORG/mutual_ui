@@ -11,6 +11,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), e o 
 ### Corrigido
 
 - Os botões − e + do campo numérico (`NumberField`) passam a indicar corretamente o campo que controlam, para os leitores de ecrã.
+- O menu de contexto (`ContextMenu`) abre também com a tecla Menu e com Shift+F10 no elemento focado, junto a ele e com o foco no primeiro item ativo; ao fechar, o foco volta ao elemento. O menu do próprio browser deixa de abrir por cima.
 
 ## [0.25.1] - 2026-11-24
 
